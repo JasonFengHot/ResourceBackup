@@ -231,6 +231,9 @@ download the latest version from official website
 # 安装最新版 Eclipse
 download the latest version from official website
 https://www.eclipse.org/downloads/download.php?file=/oomph/epp/2018-09/R/eclipse-inst-linux64.tar.gz
+配置eclipse adt
+配置sdk
+配置快捷键
 
 # 安装VSCode
 download the latest version from official website
@@ -382,9 +385,16 @@ sudo make install
 ```
 
 # 下载SVG图片查看工具
+``` bash
 git clone git@github.com:MegatronKing/SVG-Android.git
+```
 
-# 下载反编译工具
+# 下载反编译工具jadx
+``` bash
+git@github.com:skylot/jadx.git
+```
+
+# 下载
 
 
 # 安装gnome桌面
@@ -401,14 +411,52 @@ sudo apt-get remove libreoffice-common
 ```
 
 # 卸载firefox
+``` bash
 sudo apt-get purge firefox
+```
 
 # 卸载一些不常用的软件(不建议)
 ``` bash
 sudo apt-get remove thunderbird totem rhythmbox empathy brasero simple-scan gnome-mahjongg aisleriot onboard deja-dup gnome-mines cheese transmission-common gnome-orca webbrowser-app gnome-sudoku  landscape-client-ui-install
 ```
 
+# 安装gnome桌面通知
+``` bash
+sudo apt-get install libnotify-bin
+notify-send -i /usr/share/pixmaps/faces/fish.jpg "i'm a fish, haha"
+
+sudo apt-get install gnome-osd
+
+//语音播报
+spd-say "mission complete"
+
+//mocp　命令行音乐播放器
+sudo apt-get install mocp
+mocp xx.mp3
+
+//zenity 弹出一个对话框
+zenity --info --text="message text"
+
+//调用系统自己的蜂鸣器beep(不建议使用，不好听，可能是频率的问题)
+sudo apt-get install beep
+因为系统默认屏蔽了蜂鸣器的驱动，所以需要修改 /etc/modprobe.d/blacklist.conf 文件，注释掉里面的blacklist pcspkr
+sudo modprobe pcspkr
+for i in $(seq 500) ; do  /usr/bin/beep -f 300.7 -r 2 -d 100 -l 400; /bin/sleep 1; done
+
+
+??有没有办法发送通知到手机上？？
+```
+
+# 安装pip
+sudo apt-get install python-pip
+sudo pip --proxy 127.0.0.1:8118 install --upgrade pip
+
+# 安装wechat_sender
+sudo pip --proxy 127.0.0.1:8118 install wechat_sender
+
 
 # 如何通过代理链接ssh服务器
+``` bash
 sudo apt-get install corkscrew
 ssh root@45.32.165.125 -o "ProxyCommand corkscrew 127.0.0.1 8118 45.32.165.125 22"
+```
