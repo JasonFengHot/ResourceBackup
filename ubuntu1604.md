@@ -37,12 +37,15 @@ sudo apt-get install openjdk-7-jdk
 ```
 
 ## 安装jdk1.6:
-这部分是12.04装机文档上的步骤，因时间紧张，本人暂时没去尝试，理论上应该还是有效的，后期如果有问题欢迎补充；
 ``` bash
-sudo cp     #文件路径/jdk-6u27-linux-x64.bin /opt
-cd /opt     #进入opt文件下
-sudo chmod a+x jdk-6u27-linux-x64.bin      #给bin文件添加可执行权限
-sudo ./jdk-6u27-linux-x64.bin              #运行安装
+sudo cd /
+sudo mkdir -p /mtkoss/jdk/1.6.0_45-ubuntu-10.04/x86_64/   	（请查看KK工程根目录下的mbldenv.sh）
+cd /mtkoss/jdk/1.6.0_45-ubuntu-10.04/x86_64/
+sudo ln -s /opt/jdk1.6.0_27/*  ./
+
+sudo mkdir -p /mtkoss/jdk/jdk1.6.0_23/	（请查看JB工程根目录下的mbldenv.sh）
+cd /mtkoss/jdk/jdk1.6.0_23/
+sudo ln -s /opt/jdk1.6.0_27/*  ./
 ```
 
 ## GNU make编译器降版本
@@ -234,6 +237,8 @@ https://www.eclipse.org/downloads/download.php?file=/oomph/epp/2018-09/R/eclipse
 配置eclipse adt
 配置sdk
 配置快捷键
+配置eclipse用4个空格代替tab??
+配置eclipse的格式化模板
 
 # 安装VSCode
 download the latest version from official website
@@ -349,9 +354,9 @@ wget https://github.com/geeeeeeeeek/electronic-wechat/releases/download/V2.0/lin
 sudo apt install vlc browser-plugin-vlc
 ```
 
-# 安装主题管理工具 tweak-tool
+# 安装主题管理工具 gnome-tweak-tool
 ``` bash
-sudo apt-get install unity-tweak-tool
+sudo apt-get install gnome-tweak-tool
 ```
 
 # 安装字体
@@ -359,7 +364,12 @@ sudo apt-get install unity-tweak-tool
 sudo apt-get install fonts-wqy-microhei
 ```
 
-# 安装 flatabulous 主题
+# 安装 matcha 主题
+sudo add-apt-repository ppa:ryu0/aesthetics
+sudo apt-get update
+sudo apt install matcha-theme
+
+# 安装 flatabulous 主题(主题可以到　https://www.gnome-look.org/　网站上搜索下载，目前使用Canta theme挺不错)
 ``` bash
 sudo add-apt-repository ppa:noobslab/themes
 sudo apt-get update
@@ -375,6 +385,12 @@ git clone git@github.com:erikdubois/yltra-flat-icon-theme.git
 ```
 把下载下来的图标放到 ~/.icons 目录下，然后用 unity-tweak-tool 工具替换图标
 
+# 安装 Numix 图标
+``` bash
+sudo apt-add-repository ppa:numix/ppa
+sudo apt-get update
+sudo apt-get install numix-icon-theme-circle
+```
 
 # 安装Early OOM
 ``` bash
@@ -393,9 +409,6 @@ git clone git@github.com:MegatronKing/SVG-Android.git
 ``` bash
 git@github.com:skylot/jadx.git
 ```
-
-# 下载
-
 
 # 安装gnome桌面
 ``` bash
@@ -444,7 +457,7 @@ sudo modprobe pcspkr
 for i in $(seq 500) ; do  /usr/bin/beep -f 300.7 -r 2 -d 100 -l 400; /bin/sleep 1; done
 
 
-??有没有办法发送通知到手机上？？
+??有没有办法发送通知到手机上??
 ```
 
 # 安装pip
@@ -454,9 +467,27 @@ sudo pip --proxy 127.0.0.1:8118 install --upgrade pip
 # 安装wechat_sender
 sudo pip --proxy 127.0.0.1:8118 install wechat_sender
 
+# 终端发送邮件
+[配置方法](https://blog.csdn.net/chijiaodaxie/article/details/77893464)
+sudo apt-get install mailutils
+mail -s "Test email from ubuntu server!" 356480127@qq.com <<< 'Here is the message body.'
+strings `which mail` | grep '\.rc' 　　　　//查找 mail 的配置文件，添加如下信息
+set from=356480127@qq.com
+set smtp=smtp.qq.com
+set smtp-auth-user=zq
+set smtp-auth-password=a356480127
+set smtp-auth=login
+
 
 # 如何通过代理链接ssh服务器
 ``` bash
 sudo apt-get install corkscrew
 ssh root@45.32.165.125 -o "ProxyCommand corkscrew 127.0.0.1 8118 45.32.165.125 22"
 ```
+
+# 去掉ubuntu文件中^M符号的方法
+sudo apt-get install tofrodos(ubuntu16.04默认安装)
+fromdos xxx.txt
+
+# 配置快捷键返回桌面
+Settings/Keyboard/Shortcuts/Navigation/Hide all normal windows //把这个改为 WIN+D 键，和windows保持一致
