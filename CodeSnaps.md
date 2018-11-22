@@ -21,14 +21,22 @@ sudo update-alternatives --config javac
 jsoup
 爬虫的包
 
-# 常用默认值的修改
+# 常用缩写的意思(单开一个)
+
+# 常用默认值的修改(单开一个)
 
 # 常用库(AndroidStudio)
 
 # 常用adb命令
 https://github.com/mzlogin/awesome-adb
 
-# Android进阶学习
+# 常用git命令
+
+# 常用工具安装
+qgit
+vscode
+
+# Android进阶学习网站
 https://github.com/lizhangqu/CoreLink
 https://github.com/GcsSloop/AndroidNote?utm_source=gold_browser_extension
 
@@ -43,14 +51,38 @@ button.setOnClickListener(new View.OnClickListener(){
 ```
 
 # OnKeyListener
+``` Java
 button.setOnKeyListener(new OnKeyListener() {
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         return false;
     }
 });
+```
+
+# 对话框的按键监听
+``` Java
+mDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+    @Override
+    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+        if(event.getAction() == KeyEvent.ACTION_UP){
+            if(keyCode == KeyEvent.KEYCODE_STAR){
+                keyRemappingSendFakeKeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_VOLUME_DOWN);
+                keyRemappingSendFakeKeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_VOLUME_DOWN);
+                return true;
+            }else if(keyCode == KeyEvent.KEYCODE_POUND || keyCode == KeyEvent.KEYCODE_DEL){
+                keyRemappingSendFakeKeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_VOLUME_UP);
+                keyRemappingSendFakeKeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_VOLUME_UP);
+                return true;
+            }
+        }
+        return false;
+    }
+});
+```
 
 # OnFocusChangeListener
+``` Java
 view.setOnFocusChangeListener(new View.OnFocusChangeListener() {
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
@@ -59,35 +91,199 @@ view.setOnFocusChangeListener(new View.OnFocusChangeListener() {
         }
     }
 });
+```
 
 # onLongClickListener
+``` Java
 view.setOnLongClickListener(new OnLongClickListener() {
     @Override
     public boolean onLongClick(View v) {
         return false;
     }
 });
+```
 
 # onLayoutChangeListener 监听布局的变化
 ``` Java
 getListView().addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
     @Override
     public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-        android.util.Log.e("OnLayoutChangeListener", "WifiSettings->onLayoutChange(1)" + position);
         LinearLayoutManager llm = getLayoutManager();
         if (llm != null) {
-            android.util.Log.e("OnLayoutChangeListener", "WifiSettings->onLayoutChange(2)" + position);
             if (position >= 0) {
                 View mView = llm.findViewByPosition(position);
-                android.util.Log.e("OnLayoutChangeListener", "WifiSettings->onLayoutChange(3)" + position);
                 if (mView != null) {
-                    android.util.Log.e("OnLayoutChangeListener", "WifiSettings->onLayoutChange(4)" + position);
                     mView.requestFocus();
                 }
             }
         }
     }
 });
+```
+
+# ListView onItemClickListener
+``` Java
+mListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+    }
+});
+```
+
+# CheckBox.setOnCheckedChangeListener
+``` Java
+mSwitch.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+        } else {
+        }
+    }
+});
+```
+
+# 监听全局布局的变化
+``` Java
+getWindow().getDecorView().addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+        TextView search_src_text = (TextView) findViewById(getResources().getIdentifier("android:id/search_src_text", null, null));
+        if(search_src_text != null){
+            search_src_text.setTextColor(android.graphics.Color.parseColor("#ffffff"));
+            setTextCursorColor(search_src_text, 0xffffffff);
+        }
+    }
+});
+```
+
+# ListView上seekbar的按键监听
+``` Java
+getListView().setOnKeyListener(new android.view.View.OnKeyListener(){
+    public boolean onKey(View v, int keyCode , KeyEvent event){
+        if(event.getAction() == KeyEvent.ACTION_UP && (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)){
+            View selectedView = getListView().getSelectedView();
+            if(selectedView != null){
+                SeekBar seekbar = (SeekBar)selectedView.findViewById(com.android.internal.R.id.seekbar);
+                seekbar.onKeyDown(keyCode, new KeyEvent(KeyEvent.ACTION_DOWN, keyCode));
+                seekbar.onKeyUp(keyCode, new KeyEvent(KeyEvent.ACTION_UP, keyCode));
+                return true;
+            }
+        }
+        return false;
+    }
+});
+```
+
+# 监听音量的变化
+``` Java
+mAudioManager.listenRingerModeAndVolume(new AudioProfileListener(){
+    public void onRingerVolumeChanged(int oldVolume, int newVolume, String extra) {
+        android.util.Log.e("listenRingerModeAndVolume", "StatusBarWindowView->onRingerVolumeChanged("+oldVolume+","+newVolume+")");
+        seekbar_volume.setProgress(mAudioManager.getStreamVolume(AudioManager.STREAM_RING));
+    }
+}, AudioProfileListener.LISTEN_RINGER_VOLUME_CHANGED);
+```
+
+# 监听sim状态的变化
+``` Java
+mTelephonyManager = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
+mTelephonyManager.listen(mPhoneServiceListener, PhoneStateListener.LISTEN_SERVICE_STATE);
+private PhoneStateListener mPhoneServiceListener = new PhoneStateListener() {
+    @Override
+    public void onServiceStateChanged(ServiceState serviceState) {
+        mServiceState = serviceState.getState();
+        Resources mRes = getResources();
+        String display = mRes.getString(R.string.radioInfo_unknown);
+        switch (mServiceState) {
+            case ServiceState.STATE_IN_SERVICE:
+                //display = mRes.getString(R.string.radioInfo_service_in);
+                display = "";
+                break;
+            case ServiceState.STATE_OUT_OF_SERVICE:
+                display = "out of service";
+                display = mRes.getString(R.string.radioInfo_service_emergency);
+                break;
+            case ServiceState.STATE_EMERGENCY_ONLY:
+                display = mRes.getString(R.string.radioInfo_service_out);
+                display = mRes.getString(R.string.radioInfo_service_emergency);
+                break;
+            case ServiceState.STATE_POWER_OFF:
+                display = mRes.getString(R.string.radioInfo_service_off);
+                display = mRes.getString(R.string.radioInfo_service_emergency);
+                break;
+            default:
+                display = mRes.getString(R.string.radioInfo_service_emergency);
+                break;
+        }
+        btn_arrow.setText(display);
+    }
+};
+```
+
+# Handler handleMessage
+``` Java
+private Handler mHandler = new Handler() {
+    public void handleMessage(Message msg) {
+        switch (msg.what) {
+            case 1:
+                break;
+            case 2:
+                break;
+        }
+    }
+};
+
+//sendMessage
+Message msg = mHandler.obtainMessage(1);
+msg.what = 1;
+msg.arg1 = 0x777;
+msg.obj = new Object();
+mHandler.sendMessage(msg);
+
+```
+
+# 通过handler处理长按的消息
+
+# 启动线程
+``` Java
+new Thread(new Runnable() {
+    public void run() {
+    }
+}).start();
+```
+
+# try-catch模板
+``` Java
+try {
+} catch (Exception e) {
+    e.printStackTrace();
+}
+```
+
+# apn-conf.xml 文件中各个参数的含义
+
+# listenRingerModeAndVolume 监听情景模式的变化
+``` Java
+mAudioManager.listenRingerModeAndVolume(new AudioProfileListener(){
+    public void onRingerModeChanged(int ringerMode) {
+        // silent mode
+        if (ringerMode == 1) {
+            Vibrator vibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+            vibrator.vibrate(500);
+        }
+    }
+}, AudioProfileListener.LISTEN_RINGERMODE_CHANGED);
+```
+
+# 调节情景模式
+``` Java
+AudioProfileManager mProfileManager = (AudioProfileManager) mContext.getSystemService(Context.AUDIOPROFILE_SERVICE);
+if(indexToRingerMode(index) == AudioManager.RINGER_MODE_NORMAL){
+    int mSetVolume = Settings.System.getInt(mContext.getContentResolver(), "audio_profile_general_volume", 9);
+    mProfileManager.setStreamVolume("mtk_audioprofile_general", AudioProfileManager.STREAM_RING, mSetVolume);
+    mAudioManager.setStreamVolume(AudioManager.STREAM_RING, mSetVolume, 9);
+}else if(indexToRingerMode(index) == AudioManager.RINGER_MODE_VIBRATE){
+    Settings.System.putInt(mContext.getContentResolver(), "audio_profile_general_volume", mProfileManager.getStreamVolume("mtk_audioprofile_general", AudioProfileManager.STREAM_RING));
+    mProfileManager.setStreamVolume("mtk_audioprofile_general", AudioProfileManager.STREAM_RING, 0);
+    mAudioManager.setStreamVolume(AudioManager.STREAM_RING, 0, 0);
+}
 ```
 
 # onKeyDown / onKeyUp
@@ -102,16 +298,32 @@ public boolean onKeyUp(int keyCode, android.view.KeyEvent event) {
 }
 ```
 
+# 下拉通知栏
+``` Java
+((android.app.StatusBarManager)getSystemService("statusbar")).expandNotificationsPanel();
+```
+
 # 获取View的几种方法
+``` Java
+int id = getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+View mView = findViewById(id);
+```
 
 # 启动service
+Intent intent = new Intent("xxx");
+intent.setPackage("xxx");
+intent.setComponent(new ComponentName("aaa", "bbb"));
+startService(intent);
 
-# 绑定service
+# 绑定service bindService
+``` Java
+mContext.bindService(new Intent("android.intent.action.START_MMS_SETTINGS_SERVICE_AIDL"), conn, Service.BIND_AUTO_CREATE);
+```
 
 # 用代码写LinearLayout
 
 # 常用View控件的xml模板
-``` Java
+``` xml
 <ImageView
     android:id="@+id/delete"
     android:layout_width="wrap_content"
@@ -125,13 +337,74 @@ public boolean onKeyUp(int keyCode, android.view.KeyEvent event) {
     android:src="@drawable/ic_delete" />
 ```
 
+``` xml
+<TextClock
+    android:id="@+id/digital_clock"
+    android:format12Hour="@string/main_clock_12_hours_format"
+    android:format24Hour="@string/clock_24_hours_format"
+    android:layout_gravity="center"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="-8dp"
+    android:singleLine="true"
+    android:ellipsize="none"
+    style="@style/big_thin"
+    android:textSize="80dp"
+    android:textColor="#ffffff" />
+```
+
+``` xml
+<SeekBar
+    android:id="@+id/seekbar_volume"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_selector"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:focusable="false"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp" />
+```
+
+# 常用属性
+``` xml
+android:focusable="true"
+android:focusableInTouchMode="true"
+android:descendantFocusability="afterDescendants" 
+android:textColorLink="@color/linkColor"
+android:ellipsize="marquee" 　　　//跑马灯跑动的几个条件, selected=true focusable=true focusableInTouch=true
+<item name="android:actionBarStyle">@style/ActionBarStyle</item>
+<item name="android:selectableItemBackground">@*android:drawable/item_background_holo_dark</item>
+<item name="android:textColorSecondary">#ffffff</item>
+```
+
 # 发送广播
 ``` Java
 sendBroadcast(new Intent(""));
 ```
 
-# 发送通知
+# 发送通知模板Notification
 https://blog.csdn.net/lilu_leo/article/details/6608101
+``` Java
+NotificationManager notMgr = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+Notification n = new Notification();
+n.icon = R.drawable.ic_launcher;
+n.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
+n.flags |= Notification.FLAG_ONGOING_EVENT;
+n.defaults = Notification.DEFAULT_SOUND;
+n.tickerText = title;
+n.when = timeStamp;
+Intent openIntent = new Intent(Constants.ACTION_INCOMING_FILE_CONFIRM);
+openIntent.setClassName(Constants.THIS_PACKAGE_NAME, BluetoothOppReceiver.class.getName());
+openIntent.setDataAndNormalize(uri);
+n.setLatestEventInfo(context, title, caption, PendingIntent.getBroadcast(context, 0, openIntent, 0));
+Intent hideIntent = new Intent(Constants.ACTION_HIDE);
+hideIntent.setClassName(Constants.THIS_PACKAGE_NAME, BluetoothOppReceiver.class.getName());
+hideIntent.setDataAndNormalize(uri);
+n.deleteIntent = PendingIntent.getBroadcast(context, 0, hideIntent, 0);
+notMgr.notify(id, n);
+```
 
 # 动态注册监听广播
 ``` Java
@@ -153,7 +426,22 @@ textView.setTextColor(android.graphics.Color.parseColor("#0096ff"));
 
 # 给apk签名
 
-# Android.mk模板
+# Android.mk模板(各个属性的含义)
+``` Makefile
+LOCAL_PATH:= $(call my-dir)
+include $(CLEAR_VARS)
+LOCAL_MODULE_TAGS := optional
+# 需要修改====apk的名称
+LOCAL_PACKAGE_NAME := VodafoneLauncher
+LOCAL_SRC_FILES := $(call all-java-files-under, src)
+# 不一定需要修改====签名
+LOCAL_CERTIFICATE := platform
+LOCAL_PROGUARD_FLAG_FILES := proguard-project.txt
+# 如果要预置进去可卸载,需要添加以下这行
+#LOCAL_MODULE_PATH := $(TARGET_OUT_DATA_APPS)
+include $(BUILD_PACKAGE)
+include $(call all-makefiles-under,$(LOCAL_PAT))
+```
 
 # AndroidManifest中的模板
 ## Activity模板
@@ -161,6 +449,14 @@ textView.setTextColor(android.graphics.Color.parseColor("#0096ff"));
 ## Receiver模板
 ## ContentProvider模板
 ## 常用权限
+``` xml
+//T卡读写权限
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE" />
+
+//全局对话框的权限
+<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+```
 
 # Style常用属性
 
@@ -178,7 +474,7 @@ boolean isFirst = getSharedPreferences("prefs", Context.MODE_APPEND).getBoolean(
 android.os.SystemProperties.get("ro.build.type", "null");
 ```
 
-# persist值的保存读取？
+# persist值的保存读取？权限问题
 
 # ContentObserver监听某个数据库的值
 ``` Java
@@ -198,12 +494,42 @@ private class DownloadsChangeObserver extends ContentObserver {
 android.widget.Toast.makeText(mContext, "", android.widget.Toast.LENGTH_SHORT).show();
 ```
 
+高级版
+``` Java
+private Toast mToast;
+public void showToast(String msg){
+    if (mToast == null) {
+        mToast = Toast.makeText(mContext, msg, 2000);
+    }
+    if (mToast != null) {
+        mToast.setText(msg);
+        mToast.show();
+    }
+}
+```
+
+
 # Dialog模板
+``` Java
+Dialog mDialog = new Dialog(Launcher.this, R.style.dialog_theme);
+View dialogView = LayoutInflater.from(Launcher.this).inflate(R.layout.dialog_first_run, null);
+View btn_cling = dialogView.findViewById(R.id.btn_cling);
+btn_cling.setOnClickListener(new OnClickListener(){
+    public void onClick(View v){
+    }
+});
+mDialog.setCancelable(false);
+mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+mDialog.setContentView(dialogView);
+mDialog.show();
+```
 
 # AlertDialog模板
 ``` Java
 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 builder.setTitle("Title");
+builder.setMessage("Message");
+builder.setIconAttribute(android.R.attr.alertDialogIcon)
 builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
 	@Override
 	public void onClick(DialogInterface dialog, int which) {
@@ -264,8 +590,11 @@ public class Setting extends PreferenceActivity {
         addPreferencesFromResource(R.xml.settings);  
     }
 }
+```
 
+``` xml
 Setting.xml:
+<Preference
 android:key="seting2"
 android:title="@string/seting2"
 android:summary="@string/seting2"/>
@@ -274,6 +603,43 @@ android:title="@string/seting1"
 android:summaryOff="@string/seting1summaryOff" 
 android:summaryOn="@stringseting1summaryOff"/>
 ```
+
+# 通话录音之前播放DTMF声音通知对方
+``` Java
+CallCommandClient.getInstance().playDtmfTone('9', true);
+CallCommandClient.getInstance().stopDtmfTone();
+```
+
+# 按键转发
+``` Java
+import android.view.KeyEvent;
+
+private long mKeyRemappingSendFakeKeyDownTime;
+private void keyRemappingSendFakeKeyEvent(int action, int keyCode) {
+    long eventTime = android.os.SystemClock.uptimeMillis();
+    if (action == KeyEvent.ACTION_DOWN) {
+        mKeyRemappingSendFakeKeyDownTime = eventTime;
+    }
+    android.view.KeyEvent keyEvent = new android.view.KeyEvent(mKeyRemappingSendFakeKeyDownTime, eventTime, action, keyCode, 0);
+    android.hardware.input.InputManager inputManager = (android.hardware.input.InputManager) getActivity().getSystemService(Context.INPUT_SERVICE);
+    inputManager.injectInputEvent(keyEvent, android.hardware.input.InputManager.INJECT_INPUT_EVENT_MODE_ASYNC);
+}
+
+mEditTextFrequency.setOnKeyListener(new View.OnKeyListener() {
+    @Override
+    public boolean onKey(View view, int i, KeyEvent keyEvent) {
+        if(keyEvent.getAction() == KeyEvent.ACTION_UP && keyEvent.getKeyCode() == KeyEvent.KEYCODE_STAR){
+            //转发
+            keyRemappingSendFakeKeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_NUMPAD_DOT);
+            keyRemappingSendFakeKeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_NUMPAD_DOT);
+            return true;
+        }
+        return false;
+    }
+});
+```
+
+
 
 # 去掉状态栏
 ``` Java
@@ -301,9 +667,24 @@ Hanlder
 AsyncTask
 ```
 
-# 静止截屏
+# 通话静音
 ``` Java
-getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+ITelephony telephonyManager = ITelephony.Stub.asInterface(ServiceManager.checkService(Context.TELEPHONY_SERVICE));
+if (telephonyManager != null) {
+    try {
+        if (telephonyManager.isRinging()) {
+            telephonyManager.silenceRinger();
+            return true;
+        }
+    } catch(Exception e) {
+        e.printStackTrace();
+    }
+}
+```
+
+# 禁止截屏
+``` Java
+getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
 ```
 
 # 判断屏幕旋转方向
@@ -1246,12 +1627,13 @@ public static String getDeviceIMEI(Context context) {
 ```
 
 # 获取SIM卡的IMSI号码
-//强哥的方法
+方法1
 ``` Java
 TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
 String mIMSI = tm.getSubscriberIdGemini(PhoneConstants.GEMINI_SIM_1);
 ```
-//MTK的方法
+
+方法2
 ``` Java
 import com.android.internal.telephony.Phone;
 import com.android.internal.telephony.PhoneFactory;
@@ -2435,7 +2817,7 @@ public View onInterceptFocusSearch(View focused, int direction) {
 }
 ```
 
-
+---------------------------------- 17-3-20 ----------------------------------
 
 
 

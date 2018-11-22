@@ -48,6 +48,28 @@ cd /mtkoss/jdk/jdk1.6.0_23/
 sudo ln -s /opt/jdk1.6.0_27/*  ./
 ```
 
+# modem编译不过
+提示 perl/make/SHELL 版本过高
+a:系统推荐使用 perl5.10.1
+sudo apt-get install perlbrew
+perlbrew install 5.10.1 //这里会提示失败，因为perlbrew下载包的时候没有走代理，需要先用wget把perl的安装包下载下载，再安装
+wget http://www.cpan.org/src/5.0/perl-5.10.1.tar.bz2
+perlbrew --notest install /home/zq/http://www.cpan.org/src/5.0/perl-5.10.1.tar.bz2 //这里必须使用绝对路径，否则安装不上
+
+需要更新gcc的版本为4.8.1
+
+一键编译脚本在16.04上有问题，./mk 会出现问题
+sub build_modem
+{
+  my $bld = shift;
+  my $bldmak = $bld . ".mak";
+    if (!-e {"make/" . $bldmak})    //去掉这里的大括号
+    {
+      print "build OK!\n";
+      exit 1;
+    }
+}
+
 ## GNU make编译器降版本
 自ubutu15.04及之后，ubutu系统自带的make编译器版本已经是4.1，但是在变异android代码的时候总是报一些莫名其妙的错误，这时候我们需要将make编译器的版本降到3.81版本以支持android代码的编译，具体操作如下(亲测有效):
 6.1 下载make3.81的make编译器:
@@ -87,10 +109,10 @@ make: *** [out/host/linux-x86/obj/lib/libart.so] Error 1
 网上说法:clang编译器导致的问题。
 解决方法:
 在art/build/Android.common_build.mk ,中将host 默认编辑器使用clang关掉，在art/build/Android.common_build.mk文件中搜索:WITHOUT_HOST_CLANG
-# Host.
+//Host.
 ART_HOST_CLANG := false
 ifneq ($(WITHOUT_HOST_CLANG),true)
-# By default, host builds use clang for better warnings.
+//By default, host builds use clang for better warnings.
 ART_HOST_CLANG := true                                      ###此处将true改成false，编译通过
 endif
 
@@ -144,7 +166,7 @@ git config --global user.name "Your Name"     #Your Name换成自己的名字，
 git config --global user.email "Your Name@example.com"        #Your Name@example.com换成自己公司使用的邮箱
 
 //复制下面这段代码到~/.gitconfig文件中
-``` bashrc
+``` bash
 [color]
 ​	ui = true
 [user]
