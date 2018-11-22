@@ -164,6 +164,8 @@ sudo apt-get install git qgit git-core
 以下这两项是配置name和邮箱的，跟拉代码没有关系，但是在上传代码的时候会要求设置这两项，所以推荐直接配置完:
 git config --global user.name "Your Name"     #Your Name换成自己的名字，全小写
 git config --global user.email "Your Name@example.com"        #Your Name@example.com换成自己公司使用的邮箱
+//中文乱码的问题
+git config --global core.quotepath false
 
 //复制下面这段代码到~/.gitconfig文件中
 ``` bash
@@ -172,8 +174,6 @@ git config --global user.email "Your Name@example.com"        #Your Name@example
 [user]
 ​	name = xyz
 ​	email = xyz@zyx.com
-[https]
-[http]
 [credential]
 ​	helper = cache --timeout 3600
 ```
@@ -187,6 +187,10 @@ ssh-keygen -t rsa
 在 /etc/hosts 文件中添加如下host
 151.101.72.249 http://global-ssl.fastly.net
 192.30.253.112 http://github.com
+
+# github push 不上去
+在 /etc/hosts 文件中添加如下host
+192.30.253.122 ssh.github.com
 
 
 # 配置USB
