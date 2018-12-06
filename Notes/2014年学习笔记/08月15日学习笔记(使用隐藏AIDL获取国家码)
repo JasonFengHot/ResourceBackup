@@ -1,0 +1,55 @@
+    1.拨号的时候进行号码格式化的时候会出现根据国家编码来获取formatter的情况？？
+
+    解决：
+    只要把GeoUtil.java中的return 改为只 return Locale.getDefault().getCountry();
+    public static String getCurrentCountryIso(Context context) {
+        /*只要把下面这段代码注释掉就可以了
+        final CountryDetector detector = (CountryDetector) context.getSystemService(Context.COUNTRY_DETECTOR);
+        if (detector != null) {
+            final Country country = detector.detectCountry();            
+            if (country != null) {
+                return country.getCountryIso();        //这里会通过检测SIM卡来获取国家编码
+            }
+        }*/
+        return Locale.getDefault().getCountry();
+    }
+    //在自己的代码中使用AIDL调用CountryDetector中的接口来获取国家编码？？？
+    private String getCountryCode() {
+        String countryCode = "";
+        try {
+            Method method = Class.forName("android.os.ServiceManager").getMethod("getService", String.class);
+            IBinder binder = (IBinder) method.invoke(null, new Object[] { "country_detector" });            //这里的country_detector不要写错，否则获取不到服务
+            ICountryDetector countryDetector = ICountryDetector.Stub.asInterface(binder);
+            Country country = countryDetector.detectCountry();
+            if (country != null) {
+                countryCode = country.getCountryIso();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return countryCode;
+    }
+
+    //使用aidl接口获取系统隐藏接口的方法
+    //1.需要将使用到的AIDL文件都导入进来
+    //2.编写以下代码
+    Method method = Class.forName("android.os.ServiceManager").getMethod("getService",String.class);        //这句代码是固定的
+    IBinder binder = (IBinder)method.invoke(null, new Object[]{"country_detector"});                        //这里的country_detector就是在SystemService中addService(?,?)的第一个参数
+
+    2.修改V35锁屏界面显示日期？？？
+
+    解决：
+    只要将 frameworks/base/packages/Keyguard/res/layout/keyguard_status_view.xml 中的 R.id.clock_text 的 textSize 改小一点就可以了 65dp
+
+3.修改Settings中Storage的字符串？？？
+
+解决：
+只要将frameworks/base/core/res/res/values-es/string.xml中的storage_phone字符串中的Almacenamiento去掉就可以了
+
+Borra todos los datos tarjeta SD,                          como la música y las fotos.        //Settings下
+
+Borra todos los datos de la Almacenamiento, del teléfono como la música y las fotos.        //原来
+    
+Borra todos los datos                         del teléfono como la música y las fotos.        //目标,需要把Almancenamiento去掉
+
+4.

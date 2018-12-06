@@ -1,0 +1,13 @@
+	1.只在第一次进入相机的时候显示相机向导？？？？
+
+	解决：
+	mediatek\packages\apps\applicationguide\src\com\mediatek\appguide\plugin\camera\ScrollAndZoomExt.java文件中的AppGuideDialog的初始化方法中添加
+	//zhangqi modified begin
+	setOnShowListener(new android.content.DialogInterface.OnShowListener(){
+		@Override
+		public void onShow(android.content.DialogInterface dialog){
+			mSharedPrefs.edit().putBoolean(KEY_CAMERA_GUIDE, true).commit();		//在显示出来的时候就将	
+		}
+	});
+	//zhangqi modified end
+	这里编好ApplicationGuide.apk之后需要重启才会生效

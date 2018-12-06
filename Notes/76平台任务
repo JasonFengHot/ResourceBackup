@@ -1,0 +1,3187 @@
+5月09日：	调整屏幕密度120				zq
+5月10日：	a.调节桌面布局4*3 			zq
+				Launcher: packages/apps/Launcher3/res/values/dimens.xml
+					<dimen name="app_icon_size">64dp</dimen>
+				workspace:
+					packages/apps/Launcher3/src/com/android/launcher3/DynamicGrid.java
+						allAppsNumRows = 4;		//4行
+						allAppsNumCols = 3;		//3列
+				
+			b.去掉搜索条					zq
+				packages/apps/Launcher3/res/values/dimens.xml
+					<dimen name="dynamic_grid_search_bar_height">0dp</dimen>
+				common.mk
+					用宏控去掉 QuickSearchBox
+					
+5月11日：
+			默认不锁屏					zq
+				<bool name="def_lockscreen_disabled">true</bool>
+5月12日：
+			hotseat改为3个				zq
+				packages/apps/Launcher3/src/com/android/launcher3/DynamicGrid.java
+        			deviceProfiles.add(new DeviceProfile("Short Stubby", 275, 420,  3, 3,  64, 15, (hasAA ? 3 : 3), 64));	//修改hotseat个数，图标大小，字体大小
+5月13日：
+			音量调节功能，用 * 键和 # 键代替		zq
+				alps/frameworks/base/media/java/android/media/AudioManager.java
+				alps/frameworks/base/policy/src/com/android/internal/policy/impl/PhoneFallbackEventHandler.java
+				alps/frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindow.java
+				
+				alps/packages/apps/Launcher3/src/com/android/launcher3/Launcher.java
+				Launcher.java
+					onKeyDown(){
+						......
+						//zhangqi modified begin
+						if (keyCode == KeyEvent.KEYCODE_STAR || keyCode == KeyEvent.KEYCODE_POUND) {
+							return false;
+						}
+						//zhangqi modified end
+						......
+					}
+
+5月17日：
+			主界面点击数字按钮拨号的功能	rwd
+			alps/packages/apps/Launcher3/src/com/android/launcher3/Launcher.java
+				if(KeyEvent.KEYCODE_0 <= keyCode && keyCode <= KeyEvent.KEYCODE_9){
+					Intent intent = new Intent(Intent.ACTION_DIAL);
+					intent.setData(Uri.parse("tel:" + (keyCode - KEYCODE_0)));
+					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					try {
+						startActivity(intent);
+					} catch (ActivityNotFoundException e) {
+						Log.w(TAG, "No activity found for android.intent.action.DIAL.");
+					}
+				}
+			
+5月18日：	
+			去掉Launcher向导				zq
+				Launcher.java
+					//showFirstRunCling();
+					
+5月19日：
+			修改开机进不去，Launcher报错，SystemUI报错，Framework报错		zq
+			添加ldpi资源					zq
+			添加 IQQI_T12 输入法			zq
+			
+5月20日：
+			移植到新72KK平台上			zq
+			短信报错，需要添加 frameworks/ex/chips/res/drawable-ldpi 资源		zq
+			字体滚动显示（默认实现）
+			
+5月21日：
+			添加google基本服务 phonesky(playstore)，facebook，whatsapp，instegram，twitter		zq
+			
+5月23日：
+			默认 IQQI_T12 输入法			rwd
+			隐藏 Settings-apps			rwd
+			增加编译 mdpi 资源			rwd
+			
+5月24日：
+			修改拨号键功能 				xyl
+			隐藏About phone				xyl
+			power键短按显示home			zq
+			还原使用*#键调节音量			zq
+			分区调节（system区加大，data区减小，fat区不变）		zq
+			
+5月25日：
+			添加桌面时钟小部件			zq
+				alps/packages/apps/Launcher3/Android.mk
+					LOCAL_PRIVILEGED_MODULE := true
+					
+			修改工程模式 *#*#3646633#*#* 为 *#36951#
+				alps/packages/apps/Dialer/src/com/android/dialer/dialpad/DialpadFragment.java
+				
+			idle界面按数字键显示拨号界面	rwd
+				alps/packages/apps/Dialer/src/com/android/dialer/DialtactsActivity.java
+				alps/packages/apps/Dialer/src/com/android/dialer/dialpad/DialpadFragment.java
+					已用 SAGEREAL_DFSHOW_DIALPAD 宏控
+5月26日：
+			长按方向键调节音量键乱跳		zq
+				alps/frameworks/base/packages/SystemUI/src/com/android/systemui/settings/BrightnessController.java
+					//updateSlider();
+					
+			idle界面点击右软键进入联系人	xyl
+				alps/packages/apps/Launcher3/src/com/android/launcher3/Launcher.java
+					已用 SAGEREAL_KEYCODE_BACK_ENTRY_CONTACTS 宏控
+					
+5月27日：
+			在工程模式下添加开发者选项		zq
+				alps/mediatek/packages/apps/EngineerMode/res/values/strings.xml
+				alps/mediatek/packages/apps/EngineerMode/res/xml/telephony.xml
+			拨号界面获取不到焦点？？？添加Enter键显示键盘		zq
+				alps/packages/apps/Dialer/src/com/android/dialer/DialtactsActivity.java
+				
+5月30日：
+			修改 #键 为 TAB键 浏览网页测试	zq
+				alps/frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
+					public int interceptKeyBeforeQueueing(KeyEvent event, int policyFlags, boolean isScreenOn) {
+						...
+						//zhangqi begin
+						if (event.getKeyCode() == KeyEvent.KEYCODE_STAR){
+							keyRemappingSendFakeKeyEvent(event.getAction(), KeyEvent.KEYCODE_FUNCTION);
+							return 0;
+						}
+						if (event.getKeyCode() == KeyEvent.KEYCODE_POUND){
+							keyRemappingSendFakeKeyEvent(event.getAction(), KeyEvent.KEYCODE_TAB);
+							return 0;
+						}
+						...
+					}
+					
+5月31日：
+			修改Facebook下面的注册按钮获取焦点		zq
+				alps/frameworks/base/core/java/android/view/View.java
+					public void setFocusable(boolean focusable) {
+						...
+						if ("com.facebook.katana".equalsIgnoreCase(getContext().getPackageName())){
+							//signup button
+							if (this.getId() == 0x7f0a0489){
+								setBackgroundResource(android.R.drawable.btn_default);	//修改注册按钮的背景图片
+								focusable = true;
+							}
+						}
+						...
+					}
+
+6月01日：
+			ActionBar上获取不到焦点？？？
+			如何确定按键的id？？？				ZQ
+				private String getNameById(int id) {
+					Resources r = getResources();
+					String entryname = "";
+					if (id != 0 && r != null) {
+						try {
+							entryname = r.getResourceEntryName(id);
+						} catch (Resources.NotFoundException e) {
+							e.printStackTrace();
+						}
+					}
+					return entryname;
+				}
+			Redmine62818 : 主菜单页面控制			ZQ
+				alps/packages/apps/Launcher3/src/com/android/launcher3/FocusHelper.java
+					handleAppsCustomizeKeyEvent()
+					
+			Redmine64086 : 添加T9输入法			ZQ
+				alps/mediatek/config/mt6572/Init_Config.mk
+				alps/mediatek/config/sr72_w_lca/mtk-kpd.kcm
+				
+			修改 MP3_T9 输入法在 TODOS 中输入错乱	ZQ
+				alps/mediatek/packages/apps/Todos/src/com/mediatek/todos/EditTodoActivity.java
+					//mTodoTitle.setMaxLength(titleMaxLength);
+					//mTodoDescription.setMaxLength(descMaxLength);
+					mTodoTitle.setFilters(new InputFilter[]{new InputFilter.LengthFilter(titleMaxLength)});
+					mTodoDescription.setFilters(new InputFilter[]{new InputFilter.LengthFilter(descMaxLength)});
+					
+6月02日：
+			EditText 中右软键back键的回删功能？	zq
+				alps/frameworks/base/core/java/android/widget/EditText.java
+					public boolean onKeyDown(int keyCode, KeyEvent event) {
+						if (keyCode == KeyEvent.KEYCODE_BACK){
+							if(getText().toString().length() > 0){
+								keyRemappingSendFakeKeyEvent(event.getAction(), KeyEvent.KEYCODE_DEL);	//映射成 DEL 按键
+								return true;
+							}
+						}
+						return super.onKeyDown(keyCode, event);
+					}
+				
+			隐藏输入法软键盘？					zq
+				alps/packages/inputmethods/LatinIME/java/src/com/android/inputmethod/latin/LatinIME.java
+					public void showWindow(boolean showInput) {
+						......
+							//Redmine64084 zhangqi modified to hide softkeyboard 2016/06/02:begin
+							showInput = false;
+							//Redmine64084 zhangqi modified to hide softkeyboard 2016/06/02:end
+							super.showWindow(showInput);
+						......
+					}
+					
+			Redmine62818 : 主菜单页面控制----(循环切换功能 + 优化页面切换速度)		ZQ
+				alps/packages/apps/Launcher3/src/com/android/launcher3/FocusHelper.java
+				
+				//优化页面切换速度(0秒切换)
+				alps/packages/apps/Launcher3/src/com/android/launcher3/FocusHelper.java
+				把 FocusHelper 中的 snapToPage() 都换成 snapToPageImmediately() 即可
+				
+			Settings->AudioProfiles->General右边的详情按钮点不到？？				zq
+				alps/packages/apps/Settings/src/com/mediatek/audioprofile/AudioProfilePreference.java
+				alps/packages/apps/Settings/src/com/mediatek/audioprofile/AudioProfileSettings.java
+				
+			修改灭屏的时候短按power键无效？？									ZQ
+				alps/frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
+					-if (top != null && !(packageName.equals("com.android.launcher3") && className.equals("com.android.launcher3.Launcher"))) {
+					+if (isScreenOn && top != null && !(packageName.equals("com.android.launcher3") && className.equals("com.android.launcher3.Launcher"))) {
+				
+			修改浏览器的UA和APN，让它可以正常浏览网页？？			ZQ
+				替换成功能机UA，部分网站可以显示wap页面
+					browser.UserAgent = NokiaE70-1/3.0 (1.0610.05.06) SymbianOS/9.1 Series60/3.0 Profile/MIDP-2.0 Configuration/CLDC-1.1;
+					browser.UAProfileURL = http://nds.nokia.com/uaprof/NE70-1r100.xml
+			
+6月03日：	
+			Redmine64527 : 添加联系人界面"确定"按钮点不到			ZQ
+				M:alps/packages/apps/Contacts/res/layout/mtk_raw_sim_contact_editor_view.xml
+				M:alps/packages/apps/Contacts/res/layout/mtk_raw_sim_contact_editor_view_blue.xml
+				M:alps/packages/apps/Contacts/res/layout/mtk_raw_sim_contact_editor_view_green.xml
+				M:alps/packages/apps/Contacts/res/layout/mtk_raw_sim_contact_editor_view_orange.xml
+				M:alps/packages/apps/Contacts/res/layout/mtk_raw_sim_contact_editor_view_purple.xml
+				M:alps/packages/apps/Contacts/res/layout/raw_contact_editor_view.xml
+				M:alps/packages/apps/Contacts/src/com/android/contacts/activities/ContactEditorActivity.java
+				M:alps/packages/apps/Contacts/src/com/android/contacts/editor/BaseRawContactEditorView.java
+				M:alps/packages/apps/Contacts/src/com/android/contacts/editor/ContactEditorFragment.java
+				
+6月04日：
+			Redmine64705 : 修改Settings->Display->Font Size列表里面的字体大小		ZQ
+				//修改默认字体大小为 1.1(Large)
+				alps/frameworks/base/core/java/android/content/res/Configuration.java
+				public void setToDefaults() {
+					fontScale = 1.1f;	//default 1(normal)
+					....
+				}
+				
+				//去掉 Small 字体
+				alps/packages/apps/Settings/res/values/arrays.xml
+				alps/packages/apps/Settings/src/com/android/settings/DisplaySettings.java
+				
+6月06日：
+			Redmine64983 : 隐藏ActionBar上的More按钮			ZQ
+				alps/frameworks/base/core/java/com/android/internal/view/ActionBarPolicy.java
+					public boolean showsOverflowMenuButton() {
+						//Redmine64983 zhangqi modified to hide overflow button 2016/06/06:begin
+						if(com.mediatek.common.featureoption.FeatureOption.SAGEREAL_KEYCODE_BACK_ENTRY_CONTACTS){
+							return !ViewConfiguration.get(mContext).hasPermanentMenuKey();
+						}
+						//Redmine64983 zhangqi modified to hide overflow button 2016/06/06:end
+						return true;
+					}
+			
+			添加联系人按钮和搜索按钮都放到Menu下面				ZQ
+				alps/packages/apps/Contacts/res/menu/people_options.xml
+					去掉所有的  android:showAsAction="ifRoom"
+					
+			修改主菜单页面排序								ZQ
+				alps/packages/apps/Launcher3/res/xml/default_toppackage.xml
+				
+			计算器界面修改									LY
+				alps/packages/apps/Calculator/*
+				
+6月07日：
+			Redmine62817 : dialog左右软键					zq
+				M:alps/frameworks/base/core/java/android/app/AlertDialog.java
+				M:alps/frameworks/base/core/res/res/layout/alert_dialog_holo.xml
+				
+			将 *#36951# 改为 *#0777#							zq
+				M:alps/packages/apps/Dialer/src/com/android/dialer/dialpad/DialpadFragment.java
+				
+			Redmine63013 : idle界面右上键进入联系人---在overviewMode状态下点击返回键，返回到workspace		zq
+				alps/packages/apps/Launcher3/src/com/android/launcher3/Launcher.java
+				
+6月08日:
+			Redmine65353 : 来消息对话框点击左软键无效果		zq
+				alps/packages/apps/Mms/src/com/android/mms/ui/DialogModeActivity.java
+					//添加左软键点击效果，查看新消息
+					case KeyEvent.KEYCODE_MENU:
+						onClick(mDeleteBtn);
+						break;
+						
+			Redmine63045 : 通话或来电或去电时，按power键挂断	zq
+				frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
+				
+6月13日:
+			Redmine65646 : 图库界面修改
+				packages/apps/Gallery2/src/com/android/gallery3d/app/AbstractGalleryActivity.java
+				packages/apps/Gallery2/src/com/android/gallery3d/app/AlbumPage.java
+				packages/apps/Gallery2/src/com/android/gallery3d/app/AlbumSetPage.java
+				
+6月14日:
+			Redmine65677 : 相机界面修改
+				1.设置中的选项点击不到，获取不到焦点？？
+					packages/apps/Camera/src/com/android/camera/manager/ViewManager.java
+						public void show() {
+							...
+							mView.setVisibility(View.VISIBLE);
+							mView.requestFocus();				//请求获取焦点
+							...
+						}
+					
+					packages/apps/Camera/src/com/android/camera/ui/InLineSettingSublist.java
+						public boolean expendChild() {
+							...
+							fadeIn(mSettingLayout);
+							mSettingLayout.requestFocus();		//请求获取焦点
+							highlight();
+							...
+						}
+				
+				2.Camera 设置对话框显示效果不好？？
+					packages/apps/Camera/res/drawable/bg_list_background_1.9.png
+					packages/apps/Camera/res/drawable/bg_list_background_2.9.png
+					
+				3.Camera 设置下每一项得到焦点的时候没有高亮显示？？
+					packages/apps/Camera/res/drawable/setting_picker.xml
+					
+				4.GPS等一些带开关的Camera设置项，点击了之后没有反映？？
+				
+				5.Camera右边的相册进不去？？
+				
+6月15日：
+			Redmine65743 : [Bug](信息)发送彩信添加附件界面，无法选中高亮菜单
+				M:alps/packages/apps/Mms/res/drawable/share_item_selector.xml
+					<item android:drawable="@drawable/ipmsg_share_press" android:state_selected="true"/>	//添加这一行即可
+				M:alps/packages/apps/Mms/res/values/mtk_arrays.xml
+					<!-- <item>@string/attach_vcalendar</item> -->											//移除calendar项
+				M:alps/packages/apps/Mms/src/com/mediatek/ipmsg/ui/SharePanel.java
+					//addSharePage(1);																		//只显示一页
+					mDotSec.setVisibility(View.GONE);														//隐藏下面的点点
+					
+				MMS中添加照片附件，照片列表没有高亮显示
+				M:frameworks/base/packages/DocumentsUI/res/drawable/item_background.xml
+					<item android:state_selected="true" android:drawable="@drawable/ic_grid_card_pressed" />//添加这一行
+					
+			Redmine65714 : [Bug](通话)通话过程中自动灭屏后，按任意键无法点亮屏幕，按power直接挂断电话
+				M:alps/frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
+					if (event.getAction() != KeyEvent.ACTION_UP && !getTelephonyService().isIdle() && isScreenOn) 	//修改挂断电话判断条件
+				
+			Redmine65752 : [Bug](相机)拍摄完的图片与视频无法在相机右下角查看
+				在 SettingManager 和 ThumbnailManager 的 getView() 方法中设置 tag 为 gone
+				在 ViewManager 中通过 tag 来判断是否隐藏图标
+					M:alps/packages/apps/Camera/src/com/android/camera/manager/SettingManager.java
+					M:alps/packages/apps/Camera/src/com/android/camera/manager/ThumbnailManager.java
+					M:alps/packages/apps/Camera/src/com/android/camera/manager/ViewManager.java
+					
+			Redmine65696 : [Bug](设置)设置锁屏功能中滑动解锁和图案解锁无法实现，请移除
+				用 SAGEREAL_SLIDE_PATTERN 宏控是否显示 Slide 和 Pattern 锁屏，yes 为显示，no 为隐藏
+				M:alps/packages/apps/Settings/src/com/android/settings/ChooseLockGeneric.java
+                     } else if (KEY_UNLOCK_SET_NONE.equals(key)) {
+                         visible = false;					//隐藏 Slide
+                     } else if (KEY_UNLOCK_SET_PATTERN.equals(key)) {
+                         visible = false;					//隐藏 Pattern
+                         
+			Redmine65747 : [bug](流媒体播放器)流媒体播放器的问题----Music
+				M:alps/packages/apps/Music/res/layout-ldpi/audio_player.xml
+				M:alps/packages/apps/Music/res/layout-ldpi/audio_player_common.xml
+				M:alps/packages/apps/Music/res/layout-ldpi/buttonbar.xml
+				M:alps/packages/apps/Music/src/com/android/music/MediaPlaybackActivity.java
+					Comment:
+					1.进入音乐界面上方的名称字体显示不全--- buttonbar.xml 中修改 tab 的高度
+					2.播放歌曲时不能上一首，下一首切换----- 音乐播放界面，在 MediaPlaybackActivity.java 中修改映射 4键切上一首，6键切下一首
+					3.播放歌曲时，播放标记偏下------------ audio_player_common.xml 中修改 seekbar 的布局
+					4.播放音乐，FM，视频等都可以调节音量--- 音乐播放界面，在 MediaPlaybackActivity.java 中修改映射 *键调低音量，#键调高音量
+
+			Redmine65735 : [bug](录音)录音完成后在文件管理中显示的是视频文件
+				参照 Redmine32968 和 Redmine39561 修改
+				M:alps/mediatek/packages/apps/FileManager/src/com/mediatek/filemanager/FileInfo.java
+				M:alps/mediatek/packages/apps/FileManager/src/com/mediatek/filemanager/FileManagerOperationActivity.java
+				M:alps/mediatek/packages/apps/FileManager/src/com/mediatek/filemanager/service/FileManagerService.java
+				
+6月16日:
+			Redmine62817 : dialog左右软键--STK
+				修改STK对话框可以通过点击左右软键关闭对话框
+				M:alps/mediatek/packages/apps/Stk1/res/layout/stk_msg_dialog.xml
+				M:alps/mediatek/packages/apps/Stk1/src/com/android/stk/NotificationAlertActivity.java
+				M:alps/mediatek/packages/apps/Stk1/src/com/android/stk/StkDialogInstance.java
+				case KeyEvent.KEYCODE_MENU:
+					View mOkButton = new View(parent);
+					mOkButton.setId(OK_BUTTON);
+					handleOnClick(mOkButton);			//模拟OK_BUTTON的点击
+					break;
+					
+			Redmine65892 : 添加 power键+#键 截屏功能
+				修改Power键+#键截屏功能，
+				M:alps/frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
+					if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_POUND)		//在有 KEYCODE_VOLUME_DOWN 的地方都加上 KEYCODE_POUND
+				把原来的power键短按返回home的功能改到 KEYCODE_POWER 的 down 方法里面
+					if (isScreenOn && !isLauncherTop()) {
+						keyRemappingSendFakeKeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_HOME);
+						keyRemappingSendFakeKeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_HOME);
+					} else {
+	                    result = (result & ~ACTION_WAKE_UP) | ACTION_GO_TO_SLEEP;
+					}
+				
+6月17日:
+			Redmine65734 : [Bug](通话记录)进入通话记录界面无法用下导航键向下浏览通话记录列表，并且无法选中高亮
+				M:alps/packages/apps/ContactsCommon/res/drawable/list_selector_background_transition_holo_light.xml
+				M:alps/packages/apps/Dialer/res/drawable/contact_list_item_background.xml
+				M:alps/packages/apps/Dialer/res/layout/call_log_activity.xml
+				M:alps/packages/apps/Dialer/res/layout/call_log_fragment.xml
+				M:alps/packages/apps/Dialer/res/layout/call_log_list_item.xml
+				M:alps/packages/apps/Dialer/src/com/mediatek/dialer/calllogex/CallLogActivityEx.java
+				M:alps/packages/apps/Dialer/src/com/mediatek/dialer/calllogex/CallLogAdapterEx.java
+				M:alps/packages/apps/Dialer/src/com/mediatek/dialer/calllogex/CallLogFragmentEx.java
+
+			Redmine65747 : [bug](流媒体播放器)流媒体播放器的问题----FileManager
+				//修改FileManager中打开音乐调节音量和播放暂停的功能
+				M:alps/packages/apps/Music/src/com/android/music/AudioPreview.java
+
+			Redmine65684 : [Bug](拨号盘)拨号中按*键和#键时，按键音会一直响
+				//Launcher上 *# 键没有处理好，已优化
+				M:alps/packages/apps/Launcher3/src/com/android/launcher3/Launcher.java
+					public boolean dispatchKeyEvent(KeyEvent event) {
+						...
+						//为什么进不到onKeyDown()方法里面去
+						if(event.getKeyCode() == KeyEvent.KEYCODE_STAR || event.getKeyCode() == KeyEvent.KEYCODE_POUND){	
+							startCallActivity(event.getKeyCode());
+							return true;
+						}
+						...
+					}
+				//还需要修改 DialpadFragment 中的 TONE_LENGTH_INFINITE = 100; 否则会还是会一直响？？？
+				M:alps/packages/apps/Dialer/src/com/android/dialer/dialpad/DialpadFragment.java
+				
+			Redmine65725 : [bug](计算器)输入一串数字后，按右软键不能直接返回到上一级菜单
+				//在 EditText 中做特殊判断，不处理Calculator的back键
+				M:alps/frameworks/base/core/java/android/widget/EditText.java
+				 	public boolean onKeyDown(int keyCode, KeyEvent event) {
+						if (getContext() != null && "com.android.calculator2".equalsIgnoreCase(getContext().getPackageName())){
+							return super.onKeyDown(keyCode, event);
+						}
+						...
+					}
+					
+			Redmine65737 : [Bug](联系人)添加联系人头像无法设置成功，且无法显示
+				//在 CropActivity 中添加 saveButton 按钮，否则会报错
+				M:alps/packages/apps/Gallery2/res/layout/crop_activity.xml
+				M:alps/packages/apps/Gallery2/src/com/android/gallery3d/filtershow/crop/CropActivity.java
+
+			Redmine65748 : [Bug](设置)设置壁纸后，无法保存
+				//修改为第二次点击图片的时候弹出对话框确认是否要设置壁纸
+				M:alps/packages/apps/Launcher3/src/com/android/launcher3/WallpaperPickerActivity.java
+
+6月18日:
+			Redmine66374 : Settings界面点击左右按键可以快捷开关wlan，蓝牙等设置项
+				//Settings中点击左右按键可以快捷开关WLAN，蓝牙等设置项
+				M:alps/packages/apps/Settings/src/com/android/settings/Settings.java
+					getListView().setOnKeyListener(new android.view.View.OnKeyListener(){
+						public boolean onKey(View v, int keyCode , KeyEvent event){
+						    if(event.getAction() == KeyEvent.ACTION_UP && (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)){
+						        View selectedView = getListView().getSelectedView();		//关键代码，不能直接设置 ListView Item 的 onKeyListener 事件
+						        if(selectedView != null){
+						            View switchView = selectedView.findViewById(R.id.switchWidget);
+						            if(switchView != null && switchView instanceof Switch){
+						                Switch mSwitchView = (Switch)switchView;
+						                if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT && mSwitchView.isChecked()){
+						                    switchView.performClick();
+						                    return true;
+						                }else if(keyCode == KeyEvent.KEYCODE_DPAD_RIGHT && !mSwitchView.isChecked()){
+						                    switchView.performClick();
+						                    return true;
+						                }
+						            }
+						        }
+						    }
+						    return false;
+						}
+					});
+					
+			Redmine62810 : power键长按
+				//添加重启功能
+				M:alps/frameworks/base/core/java/android/view/WindowManagerPolicy.java
+				A:alps/frameworks/base/core/res/res/drawable-hdpi/ic_lock_power_reboot.png
+				A:alps/frameworks/base/core/res/res/drawable-mdpi/ic_lock_power_reboot.png
+				M:alps/frameworks/base/core/res/res/values-ar/strings.xml
+				M:alps/frameworks/base/core/res/res/values-bn-rIN/strings.xml
+				M:alps/frameworks/base/core/res/res/values-da/strings.xml
+				M:alps/frameworks/base/core/res/res/values-de/strings.xml
+				M:alps/frameworks/base/core/res/res/values-es/strings.xml
+				M:alps/frameworks/base/core/res/res/values-fr/strings.xml
+				M:alps/frameworks/base/core/res/res/values-hi/strings.xml
+				M:alps/frameworks/base/core/res/res/values-in/strings.xml
+				M:alps/frameworks/base/core/res/res/values-it/strings.xml
+				M:alps/frameworks/base/core/res/res/values-ms/strings.xml
+				M:alps/frameworks/base/core/res/res/values-nb/strings.xml
+				M:alps/frameworks/base/core/res/res/values-nl/strings.xml
+				M:alps/frameworks/base/core/res/res/values-pl/strings.xml
+				M:alps/frameworks/base/core/res/res/values-pt/strings.xml
+				M:alps/frameworks/base/core/res/res/values-ru/strings.xml
+				M:alps/frameworks/base/core/res/res/values-sv/strings.xml
+				M:alps/frameworks/base/core/res/res/values-sw/strings.xml
+				M:alps/frameworks/base/core/res/res/values-th/strings.xml
+				M:alps/frameworks/base/core/res/res/values-tr/strings.xml
+				M:alps/frameworks/base/core/res/res/values-vi/strings.xml
+				M:alps/frameworks/base/core/res/res/values-zh-rCN/strings.xml
+				M:alps/frameworks/base/core/res/res/values-zh-rTW/strings.xml
+				M:alps/frameworks/base/core/res/res/values/strings.xml
+				M:alps/frameworks/base/core/res/res/values/symbols.xml
+				M:alps/frameworks/base/policy/src/com/android/internal/policy/impl/GlobalActions.java
+				M:alps/frameworks/base/services/java/com/android/server/power/ShutdownThread.java
+				M:alps/frameworks/base/services/java/com/android/server/wm/WindowManagerService.java
+
+			Redmine65682 : [bug](*#0*#)输入*#0*#不能恢复出厂设置
+				//添加 *#0*# 恢复出厂设置的功能
+				M:alps/packages/apps/Dialer/AndroidManifest.xml
+					<uses-permission android:name="android.permission.MASTER_CLEAR" />		//添加恢复出厂设置的权限
+				M:alps/packages/apps/Dialer/src/com/android/dialer/dialpad/DialpadFragment.java
+					String resetCode = "*#0*#";
+					if(mDigits.getText().toString().equals(resetCode)){
+						AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+						builder.setTitle("确定要恢复出厂设置吗？");
+						builder.setPositiveButton(android.R.string.ok, new android.content.DialogInterface.OnClickListener() {
+							public void onClick(android.content.DialogInterface dialog, int which) {
+								if (com.mediatek.common.featureoption.FeatureOption.MTK_FAT_ON_NAND) {
+								    Intent intent = new Intent("com.android.internal.os.storage.FORMAT_AND_FACTORY_RESET");
+								    intent.setComponent(new android.content.ComponentName("android", "com.android.internal.os.storage.ExternalStorageFormatter"));
+								    getActivity().startService(intent);
+								} else {
+								    getActivity().sendBroadcast(new Intent("android.intent.action.MASTER_CLEAR"));
+								}
+							}
+						});
+						builder.setNegativeButton(android.R.string.cancel, null);
+						builder.create().show();
+						mDigits.getText().clear();
+						return;
+					}
+
+			Redmine65690 : [bug](设置)设置--流量使用情况--移动数据开关不能开启
+				修改 设置->流量使用情况->移动数据开关 可以通过点击和左右方向按键开关
+				M:alps/packages/apps/Settings/src/com/android/settings/DataUsageSummary.java
+				
+			Redmine62818 : 主菜单页面控制
+				优化页面切换速度
+				M:alps/packages/apps/Launcher3/src/com/android/launcher3/FocusHelper.java
+
+6月20日:
+			Redmine62812 : idle界面默认焦点
+				1.修改 idle 界面默认焦点在 allapp 上
+				M:alps/packages/apps/Launcher3/src/com/android/launcher3/Hotseat.java
+				M:alps/packages/apps/Launcher3/src/com/android/launcher3/Launcher.java
+				protected void onResume(){
+					......
+					View allAppBtn = mHotseat.getAllAppButton();
+					if (allAppBtn != null) {
+						allAppBtn.requestFocus();
+					}
+				}
+				
+				2.修改 allapp 界面默认焦点在 whatsapp 上
+				M:alps/packages/apps/Launcher3/src/com/android/launcher3/Launcher.java
+				void showAllApps(boolean animated, AppsCustomizePagedView.ContentType contentType, boolean resetPageToZero) {
+					......
+					if(mAppsCustomizeTabHost.isTabContainerVisible() == false) {
+						mAppsCustomizeContent.requestFocus();
+						ViewGroup newParent = getAppsCustomizePage(mAppsCustomizeContent, 0);
+						if (newParent != null) {
+							View childView = newParent.getChildAt(4);
+							if (childView != null) {
+							    childView.requestFocus();				//whatsapp 获取焦点
+							}
+						}
+					}
+				}
+
+
+6月23日:
+			Redmine65667 : [Bug](按键)idle界面按左上功能键，进入wallpaper,widgets,settings快捷界面后，无法用其它键选中
+				//去掉 Launcher 界面点击左软键显示 Overview 的功能，改为进入拨号界面
+				M:alps/packages/apps/Launcher3/src/com/android/launcher3/Launcher.java
+				@Override
+				public boolean onPrepareOptionsMenu(Menu menu) {
+					...
+						//mWorkspace.enterOverviewMode();		//显示Overview界面
+						Intent intent = new Intent(Intent.ACTION_DIAL);
+						intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						try {
+							startActivity(intent);
+						} catch (ActivityNotFoundException e) {
+							Log.w(TAG, "No activity found for android.intent.action.DIAL.");
+						}
+					...
+				}
+
+			Redmine67262 : 修改所有的ActionBar不能获取焦点
+				M:alps/frameworks/base/core/java/com/android/internal/widget/ActionBarView.java
+				mExpandedHomeLayout.setEnabled(false);
+				mExpandedHomeLayout.setFocusable(false);
+				//mUpGoerFive.setOnClickListener(mUpClickListener);
+				mUpGoerFive.setClickable(false);
+				mUpGoerFive.setFocusable(false);
+
+6月24日:
+			Redmine65832 : [bug](USB)用数据线将手机与电脑连接，界面字体重叠
+				修改USB连接界面
+				M:alps/frameworks/base/core/res/res/layout/usb_storage_activity.xml
+				M:alps/frameworks/base/packages/SystemUI/AndroidManifest.xml
+				A:alps/frameworks/base/packages/SystemUI/res/mipmap-mdpi/ic_usb_storage.png
+
+			Redmine67256 : [需求]添加多语言支持及相关输入法
+				添加 法语，德语，西班牙语，葡萄牙语 输入法
+				M:alps/frameworks/base/core/java/android/text/method/MultiTapKeyListener.java
+
+6月25日:
+			Redmine67424 : [需求]定时开关机界面修改
+				M:alps/mediatek/packages/apps/SchedulePowerOnOff/res/layout/schpwr_alarm_time.xml
+				M:alps/mediatek/packages/apps/SchedulePowerOnOff/src/com/mediatek/schpwronoff/AlarmClock.java
+				M:alps/mediatek/packages/apps/SchedulePowerOnOff/src/com/mediatek/schpwronoff/SetAlarm.java
+
+
+			修改日期时间选择对话框的背景
+				M:alps/frameworks/base/core/res/res/layout/date_picker_holo.xml
+				M:alps/frameworks/base/core/res/res/layout/time_picker_holo.xml
+					<NumberPicker android:background="@drawable/list_selector_holo_light" />
+
+6月29日:
+			Redmine67960 : [bug](设置)辅助功能中一些菜单与实际不符
+				移除设置下的辅助功能，用 SAGEREAL_REMOVE_ACCESSIBILITY 宏控
+				M:alps/packages/apps/Settings/src/com/android/settings/Settings.java
+
+7月01日:
+			Redmine67501 : [bug](设置)SIM管理下修改SIM卡中的设置背景颜色时无法设置颜色
+				修改 SIM 卡颜色选择对话框
+				M:alps/packages/apps/Settings/res/layout/color_picker.xml
+				M:alps/packages/apps/Settings/src/com/mediatek/gemini/ColorPickerPreference.java
+
+
+7月05日:
+			如何自定义EditText的光标？？
+
+				解决：
+				cursor.xml
+				<?xml version="1.0" encoding="utf-8"?>
+				<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+					<size android:width="1dp" />
+					<solid android:color="#008000" />
+				</shape>
+
+				<EditText android:textCursorDrawable="@drawable/color_cursor" />
+			
+			Redmine65646 : 图库界面修改----优化改进
+				修改图库界面的功能
+				M:alps/packages/apps/Gallery2/src/com/android/gallery3d/app/AbstractGalleryActivity.java
+				M:alps/packages/apps/Gallery2/src/com/android/gallery3d/app/ActivityState.java
+				M:alps/packages/apps/Gallery2/src/com/android/gallery3d/app/AlbumPage.java
+				M:alps/packages/apps/Gallery2/src/com/android/gallery3d/app/AlbumSetPage.java
+				M:alps/packages/apps/Gallery2/src/com/android/gallery3d/app/MovieActivity.java
+				M:alps/packages/apps/Gallery2/src/com/android/gallery3d/app/MovieControllerOverlay.java
+				M:alps/packages/apps/Gallery2/src/com/android/gallery3d/app/PhotoPage.java
+				M:alps/packages/apps/Gallery2/src/com/android/gallery3d/ui/PhotoView.java
+				M:alps/packages/apps/Gallery2/src/com/android/gallery3d/ui/SlotView.java
+				
+			Redmine67256 : [需求]添加多语言支持及相关输入法----隐藏输入法键盘
+				隐藏输入法键盘
+				M:alps/frameworks/base/core/java/android/widget/EditText.java
+				setShowSoftInputOnFocus(false);
+				
+			Redmine67247 : [Bug]（拨号）拨号输入框建议去除删除图标，同时增加光标显示
+				拨号界面修改
+				M:alps/packages/apps/Dialer/res/layout/dialpad_fragment.xml
+				M:alps/packages/apps/Dialer/src/com/android/dialer/dialpad/DialpadFragment.java
+
+7月07日:
+			Redmine65746 : [Bug](蓝牙)接收到蓝牙文件时，状态栏信息无法下拉进行接收
+				1.修改Launcher界面左软键进入通知栏
+				2.修改长按power键进入快捷设置
+				3.修改蓝牙接收文件直接弹出对话框
+				M:alps/frameworks/base/core/res/res/values/config.xml
+				A:alps/frameworks/base/packages/SystemUI/res/drawable/profile_background.xml
+				M:alps/frameworks/base/packages/SystemUI/res/drawable/qs_tile_background.xml
+				M:alps/frameworks/base/packages/SystemUI/res/layout/quick_settings.xml
+				M:alps/frameworks/base/packages/SystemUI/res/layout/quick_settings_profile_switch_dialog.xml
+				M:alps/frameworks/base/packages/SystemUI/res/layout/quick_settings_tile.xml
+				M:alps/frameworks/base/packages/SystemUI/res/layout/status_bar_notification_row.xml
+				M:alps/frameworks/base/packages/SystemUI/res/values/dimens.xml
+				M:alps/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/BaseStatusBar.java
+				M:alps/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/QuickSettingsTileView.java
+				M:alps/frameworks/base/packages/SystemUI/src/com/mediatek/systemui/statusbar/toolbar/QuickSettingsConnectionModel.java
+				M:alps/frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
+				M:alps/packages/apps/Launcher3/AndroidManifest.xml
+				M:alps/packages/apps/Launcher3/src/com/android/launcher3/Launcher.java
+				M:alps/packages/apps/Bluetooth/src/com/android/bluetooth/opp/BluetoothOppIncomingFileConfirmActivity.java
+				M:alps/packages/apps/Bluetooth/src/com/android/bluetooth/opp/BluetoothOppNotification.java
+				
+				//展开通知栏
+				((StatusBarManager)getSystemService("statusbar")).expandNotificationsPanel();
+				//展开快捷设置
+				((StatusBarManager)getSystemService("statusbar")).expandSettingsPanel();
+				需要添加权限 <uses-permission android:name="android.permission.EXPAND_STATUS_BAR"/>
+
+7月13日：
+			Redmine67358 : [ UI ]通话中动画替换
+				通话界面修改
+				A:alps/packages/apps/InCallUI/res/drawable-ldpi/bg_message.png
+				A:alps/packages/apps/InCallUI/res/drawable-ldpi/bg_more.png
+				A:alps/packages/apps/InCallUI/res/drawable-ldpi/bg_mute.png
+				A:alps/packages/apps/InCallUI/res/drawable-ldpi/bg_silent.png
+				A:alps/packages/apps/InCallUI/res/drawable-ldpi/picture_unknown.png
+				A:alps/packages/apps/InCallUI/res/drawable/background_photo.png
+				A:alps/packages/apps/InCallUI/res/drawable/call_anim_blank.png
+				A:alps/packages/apps/InCallUI/res/drawable/call_anim_left.xml
+				A:alps/packages/apps/InCallUI/res/drawable/call_anim_left_1.png
+				A:alps/packages/apps/InCallUI/res/drawable/call_anim_left_2.png
+				A:alps/packages/apps/InCallUI/res/drawable/call_anim_left_3.png
+				A:alps/packages/apps/InCallUI/res/drawable/call_anim_right.xml
+				A:alps/packages/apps/InCallUI/res/drawable/call_anim_right_1.png
+				A:alps/packages/apps/InCallUI/res/drawable/call_anim_right_2.png
+				A:alps/packages/apps/InCallUI/res/drawable/call_anim_right_3.png
+				M:alps/packages/apps/InCallUI/res/layout/answer_fragment.xml
+				M:alps/packages/apps/InCallUI/res/layout/call_button_fragment.xml
+				M:alps/packages/apps/InCallUI/res/layout/mtk_vt_call_button_fragment.xml
+				M:alps/packages/apps/InCallUI/res/layout/primary_call_info.xml
+				M:alps/packages/apps/InCallUI/res/menu/mtk_incall_menu.xml
+				M:alps/packages/apps/InCallUI/src/com/android/incallui/CallButtonFragment.java
+				M:alps/packages/apps/InCallUI/src/com/android/incallui/CallCardFragment.java
+				A:alps/packages/apps/InCallUI/src/com/android/incallui/CircleImageView.java
+				M:alps/packages/apps/InCallUI/src/com/android/incallui/InCallActivity.java
+
+			Redmine67256 : [需求]添加多语言支持及相关输入法
+				修改切换成别的语言之后再切换到英语异常
+				M:alps/frameworks/base/core/java/android/text/method/MultiTapKeyListener.java
+
+7月18日：		
+			Redmine67070 : [bug](Email)输入Email地址时按手机上的按键不起作用
+				修改Email登录界面可以输入邮箱地址
+				M:alps/packages/apps/Email/src/com/android/email/activity/setup/AccountSetupBasics.java
+					//mEmailView.setTokenizer(mHisAddressTokenizer);
+
+			Redmine67967 : [bug](相机)进入相机录像，录像时长旁边有暂停、继续按钮，但无法选中
+				录像时，点击菜单键暂停录像
+				M:alps/packages/apps/Camera/src/com/android/camera/Camera.java
+				M:alps/packages/apps/Camera/src/com/android/camera/actor/VideoActor.java
+				M:alps/packages/apps/Camera/src/com/android/camera/manager/RecordingView.java
+						
+7月19日：
+			Redmine67051 : [bug](拨号盘)拨号盘的问题----长按
+				拨号盘长按------学习添加长按按键处理方法
+				M:alps/packages/apps/Dialer/src/com/android/dialer/dialpad/DialpadFragment.java
+				M:alps/packages/apps/Dialer/src/com/android/dialer/dialpad/DigitsEditText.java
+
+7月20日：
+			Redmine #67070 : [bug](Email)输入Email地址时按手机上的按键不起作用
+				输入Email地址到@字符后按数字1键和3键可以显示出相应的字符
+				M:alps/packages/apps/Email/src/com/android/email/activity/setup/AccountSetupBasics.java
+				M:alps/packages/apps/Email/src/com/mediatek/email/ui/EmailAccountAutoCompleteTextView.java
+					//replacePartTextIfNeed();		去掉这行代码就可以了
+
+			Redmine #67067 : [bug](联系人)新建联系人至手机，选择图片后不能上下移动
+				图片裁剪界面可以上下移动裁剪图片
+				M:alps/packages/apps/Gallery2/src/com/android/gallery3d/filtershow/crop/CropActivity.java
+				M:alps/packages/apps/Gallery2/src/com/android/gallery3d/filtershow/crop/CropView.java
+				
+7月21日：
+			Redmine #65281 : 拨号界面修改----修改拨号界面长按返回键清空
+				长按返回键清空
+				M:alps/frameworks/base/core/java/android/widget/EditText.java
+				M:alps/packages/apps/Mms/src/com/android/mms/ui/ComposeMessageActivity.java
+
+7月22日：
+			Redmine #67024 : [bug](待机界面)待机界面点击数字键进入联系人界面，屏幕上方会闪现一条白线
+				修改 Activity 渐变色背景为纯色背景
+				M:alps/frameworks/base/core/res/res/drawable/background_holo_dark.xml
+				M:alps/frameworks/base/core/res/res/drawable/background_holo_light.xml
+					 <gradient
+							 android:startColor="#ff000000"
+				-            android:endColor="#ff272d33"
+				+            android:endColor="#ff000000"
+							 android:angle="270" />
+
+			Redmine #66785 : [Bug](情景模式)设置里面开启触摸震动或不开启时，拨号盘按键只有*#键可以有震动，且不能关闭
+				去掉按键震动，添加按键音，并可以通过情景模式中控制
+				M:alps/packages/apps/Dialer/src/com/android/dialer/dialpad/DialpadFragment.java
+				M:alps/packages/apps/Dialer/src/com/android/dialer/dialpad/DigitsEditText.java
+				
+7月26日：
+            Redmine #70368 : [Bug](T1反馈)拨号界面按第一个数字的右边会显示一条线
+                去掉拨号界面的滚动条
+                M:alps/packages/apps/ContactsCommon/res/layout/contact_list_content.xml
+                    android:fastScrollEnabled="false"
+
+            Redmine #70376 : [Bug](T1反馈)蓝牙地址为：00:00:46:65:72:01，全部一样
+                随机蓝牙地址
+                M:alps/mediatek/external/bluetooth/driver/combo/radiomod.c
+                M:alps/mediatek/external/bluetooth/driver/standalone/radiomod.c
+                    #ifdef BD_ADDR_AUTOGEN
+                    #if 1                   //把 #ifdef BD_ADDR_AUTOGEN 改为 #if 1 即可
+                    GetRandomValue(btinit->bt_nvram.fields.addr);
+                    #endif
+
+            Redmine #67113 : [bug](通话)拨打电话界面调出拨号盘，键盘显示不全且按“*”键和“#”键不响应
+                添加通话界面DTMF功能
+                M:alps/packages/apps/InCallUI/res/layout-land/dtmf_twelve_key_dialer_view.xml
+                M:alps/packages/apps/InCallUI/res/layout/dtmf_twelve_key_dialer_view.xml
+                M:alps/packages/apps/InCallUI/src/com/android/incallui/DialpadFragment.java
+                M:alps/packages/apps/InCallUI/src/com/android/incallui/InCallActivity.java
+
+            Redmine #67362 : [UI]相机界面修改
+                修改相机界面图标
+                M:alps/packages/apps/Camera/res/layout-port/camera_shutter_photo_video.xml
+                M:alps/packages/apps/Camera/res/layout/camera_shutter_photo.xml
+                M:alps/packages/apps/Camera/res/layout/camera_shutter_video.xml
+                A:alps/packages/apps/Camera/res/drawable/ic_camera_back.png
+                A:alps/packages/apps/Camera/res/drawable/ic_camera_left.png
+                A:alps/packages/apps/Camera/res/drawable/ic_camera_right.png
+
+7月27日：
+            Redmine #62812 : idle界面默认焦点
+                M:alps/packages/apps/Launcher3/src/com/android/launcher3/Launcher.java
+
+            Redmine #68188 : [Bug](Facebook)进入应用部分功能不能使用----更新FaceBook
+                更新 Facebook.apk
+                M:alps/build/target/product/common.mk
+                M:alps/packages/apps/SageRealApp/FaceBook/Android.mk
+                M:alps/packages/apps/SageRealApp/FaceBook/FaceBook.apk
+                A:alps/packages/apps/SageRealApp/FaceBook/lib/libcpp_helper.so
+                D:alps/packages/apps/SageRealApp/FaceBook/lib/libcryptox.so
+                A:alps/packages/apps/SageRealApp/FaceBook/lib/libdistract.so
+                D:alps/packages/apps/SageRealApp/FaceBook/lib/libfb.so
+                D:alps/packages/apps/SageRealApp/FaceBook/lib/libfb_breakpad_client.so
+                D:alps/packages/apps/SageRealApp/FaceBook/lib/libfb_cpucapabilities.so
+                D:alps/packages/apps/SageRealApp/FaceBook/lib/libfb_crypto.so
+                D:alps/packages/apps/SageRealApp/FaceBook/lib/libfb_dalvik-internals.so
+                D:alps/packages/apps/SageRealApp/FaceBook/lib/libfb_filesystem.so
+                D:alps/packages/apps/SageRealApp/FaceBook/lib/libfb_imgproc.so
+                D:alps/packages/apps/SageRealApp/FaceBook/lib/libfb_jpegturbo.so
+                D:alps/packages/apps/SageRealApp/FaceBook/lib/libfb_stl_shared.so
+                D:alps/packages/apps/SageRealApp/FaceBook/lib/libfb_tracker.so
+                M:alps/packages/apps/SageRealApp/FaceBook/lib/libfb_xzdecoder.so
+                A:alps/packages/apps/SageRealApp/FaceBook/lib/libfbdexopt.so
+                D:alps/packages/apps/SageRealApp/FaceBook/lib/libfbjni.so
+                A:alps/packages/apps/SageRealApp/FaceBook/lib/libgnustl_shared.so
+                D:alps/packages/apps/SageRealApp/FaceBook/lib/libmozgluelinker.so
+                D:alps/packages/apps/SageRealApp/FaceBook/lib/libpeanut.so
+                D:alps/packages/apps/SageRealApp/FaceBook/lib/libreflex-jni.so
+                D:alps/packages/apps/SageRealApp/FaceBook/lib/libreflex.so
+                A:alps/packages/apps/SageRealApp/FaceBook/lib/libsigmux.so
+                D:alps/packages/apps/SageRealApp/FaceBook/lib/libstopmotion.so
+                D:alps/packages/apps/SageRealApp/FaceBook/lib/libwebp.so
+
+            打 PATCH
+                ALPS02823082(For_SR72_W_KK_ALPS.KK1.MP7.V1.22_P1)
+                ALPS02823051(For_SR72_W_KK_ALPS.KK1.MP7.V1.22_P2)
+                ALPS02823022(For_SR72_W_KK_ALPS.KK1.MP7.V1.22_P3)
+
+8月01日：
+            Redmine #67337 : [bug](视频电话)手机没有前摄，建议去除视频通话
+                M:sagereal/mk/up19_h353_common/ProjectConfig.mk
+                    MTK_VT3G324M_SUPPORT = no
+
+            Redmine #67206 : [bug](联系人)联系人放在主屏幕上后，进入后对应的功能不能使用
+                隐藏创建联系人快捷方式的功能,用 SAGEREAL_CONTACT_SHORTCUT_SUPPORT 宏控
+                M:alps/packages/apps/Contacts/src/com/android/contacts/detail/ContactLoaderFragment.java
+
+            Redmine #70374 : [Bug](T1反馈)图库只有一张照片时不能全屏打开
+                图库只有一张照片时可以全屏打开,不通过 FilmStrip 打开
+                M:alps/packages/apps/Gallery2/src/com/android/gallery3d/app/AlbumSetPage.java
+                    private static final boolean ALBUM_SHOULD_OPEN_IN_FILMSTRIP = false;
+                    if (!ALBUM_SHOULD_OPEN_IN_FILMSTRIP) {
+                        return false;
+                    }
+                    
+            Redmine #70736 : [需求]移植FOTA
+                移植FOTA
+                M:alps/bootable/recovery/Android.mk
+                M:alps/bootable/recovery/install.cpp
+                A:alps/bootable/recovery/libadupsfota.a
+                M:alps/bootable/recovery/recovery.cpp
+                M:alps/bootable/recovery/roots.cpp
+                M:alps/build/core/Makefile
+                M:alps/build/core/main.mk
+                M:alps/build/target/product/common.mk
+                A:alps/packages/apps/AdupsFotaApp/AdupsFota/Android.mk
+                A:alps/packages/apps/AdupsFotaApp/AdupsFota/noIcon/FWUpgrade.apk
+                A:alps/packages/apps/AdupsFotaApp/AdupsFota/noMenu/FWUpgrade.apk
+                A:alps/packages/apps/AdupsFotaApp/AdupsFota/withIcon/FWUpgrade.apk
+                A:alps/packages/apps/AdupsFotaApp/AdupsFotaReboot/Android.mk
+                A:alps/packages/apps/AdupsFotaApp/AdupsFotaReboot/FWUpgradeProvider.apk
+                A:alps/packages/apps/AdupsFotaApp/FWUpgradeInfo.sh
+                A:alps/packages/apps/AdupsFotaApp/FWUpgradeInit.rc
+                A:alps/packages/apps/AdupsFotaApp/FWUpgradePackage.sh
+                A:alps/packages/apps/AdupsFotaApp/Update.sh
+                A:alps/packages/apps/AdupsFotaApp/UpdateInfo.sh
+                A:alps/packages/apps/AdupsFotaApp/fotabinder
+                M:alps/packages/apps/Settings/res/xml/device_info_settings.xml
+                M:alps/packages/apps/Settings/src/com/android/settings/DeviceInfoSettings.java
+                M:sagereal/mk/up19_h353_common/ProjectConfig.mk
+                M:sagereal/mk/up249_Aponi/ProjectConfig.mk
+                M:sagereal/mk/up249_XB52U_common/ProjectConfig.mk
+                M:sagereal/mk/up249_m2412_common/ProjectConfig.mk
+                    
+8月03日：
+            Redmine #67113 : [bug](通话)拨打电话界面调出拨号盘，键盘显示不全且按“*”键和“#”键不响应
+                修改点击 *# 键会响两次按键音
+                M:alps/packages/apps/Dialer/src/com/android/dialer/dialpad/DialpadFragment.java
+                    public void onKeyShortClick(int keyCode){
+                        ....
+                        case KeyEvent.KEYCODE_POUND:
+                            //Redmine67113 zhangqi modified for playTone 2016/08/03:begin
+                            //playTone(ToneGenerator.TONE_DTMF_P, TONE_LENGTH_INFINITE);
+                            //Redmine67113 zhangqi modified for playTone 2016/08/03:end
+                            break;
+                        case KeyEvent.KEYCODE_STAR:
+                            //Redmine67113 zhangqi modified for playTone 2016/08/03:begin
+                            //playTone(ToneGenerator.TONE_DTMF_S, TONE_LENGTH_INFINITE);
+                            //Redmine67113 zhangqi modified for playTone 2016/08/03:end
+                        ....
+                    }
+                
+            Redmine #67180 : [bug](通话)设置快速拨号后，长按数字键不会拨出快速拨号的号码
+                修改删除图标，长按可以删除快速拨号
+                A:alps/packages/apps/Dialer/res/drawable-ldpi/ic_image_delete.png
+                M:alps/packages/apps/Dialer/res/layout/mtk_speed_dial_list_item.xml
+                    android:src="@drawable/ic_image_delete"
+
+8月04日：
+            Redmine #69026 : [需求]待机界面左软键和右软键功能修改----隐藏自动转屏AutoRotate
+                隐藏自动转屏AutoRotate，用 SAGEREAL_AUTOROTATE_SUPPORT 宏控
+                M:alps/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/QuickSettings.java
+                M:alps/frameworks/base/packages/SystemUI/src/com/mediatek/systemui/statusbar/toolbar/QuickSettingsConnectionModel.java
+                
+                默认关闭自动转屏
+                alps/frameworks/base/packages/SettingsProvider/res/values/defaults.xml
+                    <bool name="def_accelerometer_rotation">false</bool>
+                    
+            Redmine #70736 : [需求]移植FOTA
+                处理FOTA.apk中的焦点问题
+                M:alps/frameworks/base/core/java/android/view/View.java
+                M:alps/frameworks/base/core/java/android/app/Dialog.java
+                M:alps/frameworks/base/core/java/android/app/Activity.java
+                M:alps/frameworks/base/core/java/android/widget/PopupWindow.java
+                
+8月05日：
+            Redmine #71471 : [Bug](工厂测试)*906#中的测试页面无法向下翻页
+                IMEI 测试显示不全，修改字体大小
+                M:alps/packages/apps/FactoryDevelopX/res/layout/imei_test.xml
+               
+            Redmine #71500 : [bug](拨号盘)*#06#无法查看IMEI码
+                拨号盘输入*#06#查看IMEI码
+                M:alps/packages/apps/Dialer/src/com/android/dialer/dialpad/DialpadFragment.java
+                    private boolean handleIMEIDisplay(Context context) {
+                        TelephonyManager telephonyManager = getTelephonyManager();
+                        int phoneType = telephonyManager.getCurrentPhoneType();
+                        if (phoneType == TelephonyManager.PHONE_TYPE_GSM || phoneType == TelephonyManager.PHONE_TYPE_CDMA) {
+                            String imeiStr = telephonyManager.getDeviceId();
+                            if (TextUtils.isEmpty(imeiStr)) {
+                                imeiStr = context.getResources().getString(R.string.imei_invalid);
+                            }
+                            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                            if (phoneType == TelephonyManager.PHONE_TYPE_CDMA) {
+                                alert.setTitle(R.string.meid);
+                                alert.setMessage(imeiStr);
+                            } else if (phoneType == TelephonyManager.PHONE_TYPE_GSM) {
+                                alert.setTitle(R.string.imei);
+                                if (SlotUtils.isGeminiEnabled()) {
+                                    List<String> imeis = new ArrayList<String>();
+                                    String imei_invalid = context.getResources().getString(R.string.imei_invalid);
+                                    for (int slotId : SlotUtils.getAllSlotIds()) {
+                                        String imei = TelephonyManagerEx.getDefault().getDeviceId(slotId);
+                                        imeis.add(TextUtils.isEmpty(imei) ? imei_invalid : imei);
+                                    }
+                                    if (FeatureOption.MTK_SINGLE_IMEI) {
+                                        alert.setMessage(imeis.get(0));
+                                    } else {
+                                        alert.setItems(imeis.toArray(new String[imeis.size()]), null);
+                                    }
+                                }
+                            }
+                            alert.setPositiveButton(android.R.string.ok, null);
+                            alert.setCancelable(false);
+                            alert.create().show();
+                            return true;
+                        }
+                        return false;
+                    }
+                
+            Redmine #68180 : [bug](工厂模式)不能进入工厂模式测试----版本号不一致
+                已修改脚本，编译完了之后，自动重命名，用 rename_copybin 宏控，默认关闭
+                M:sagereal/script/copy_bin.sh
+                M:sagereal/script/copy_bin_sign.sh
+
+            Redmine #71402 : [bug](菜单)进入一些菜单后，左上角有返回箭头，但是不能操作
+                隐藏所有界面上ActionBar的返回箭头
+                M:alps/frameworks/base/core/java/com/android/internal/widget/ActionBarView.java
+                    public void setShowUp(boolean isUp) {
+                        mUpView.setVisibility(GONE);
+                    }
+                
+            Redmine #71469 : [bug](录音)录音文件列表中长按删除，被选中的文件和高亮框不在同一位置
+                录音文件列表中长按删除，被选中的文件和高亮框不在同一位置
+                M:alps/packages/apps/SoundRecorder/src/com/android/soundrecorder/RecordingFileList.java
+
+8月08日：
+            Redmine #71570 : [bug](拨号盘)拨号盘界面，下方边缘有一条白线
+                去掉拨号盘界面下方边缘的白线
+                M:alps/packages/apps/Mms/src/com/android/mms/ui/ComposeMessageActivity.java
+                M:alps/packages/apps/Mms/src/com/android/mms/ui/MessageListAdapter.java
+
+8月09日：
+            Redmine #70736 : [需求]移植FOTA----隐藏feedback,exit菜单
+                隐藏feedback,exit菜单
+                M:alps/packages/apps/AdupsFotaApp/FWUpgradeInfo.sh
+                    echo "ro.fota.feedback=0"
+                    echo "ro.fota.exit=0"
+
+            Redmine #71284 : [需求](输入法)波兰语，罗马尼亚语输入法开发
+                M:alps/frameworks/base/core/java/android/text/method/MultiTapKeyListener.java
+                添加波兰语，罗马尼亚语输入法
+                    private SparseArray<String> sRecs_ro = new SparseArray<String>() {
+                        {
+                            this.put(KeyEvent.KEYCODE_0,     "0 +");
+                            this.put(KeyEvent.KEYCODE_1,     "1.,-?!'@:#$/_)(;*");
+                            this.put(KeyEvent.KEYCODE_2,     "2abcăâáäABCĂÂÁÄ");
+                            this.put(KeyEvent.KEYCODE_3,     "3deféDEFÉ");
+                            this.put(KeyEvent.KEYCODE_4,     "4ghiîíGHIÎÍ");
+                            this.put(KeyEvent.KEYCODE_5,     "5jklJKL");
+                            this.put(KeyEvent.KEYCODE_6,     "6mnoóöőMNOÓÖŐ");
+                            this.put(KeyEvent.KEYCODE_7,     "7pqrsşßPQRSŞ");
+                            this.put(KeyEvent.KEYCODE_8,     "8tuvţúüűTUVŢÚÜŰ");
+                            this.put(KeyEvent.KEYCODE_9,     "9wxyzWXYZ");
+                        }
+                    };
+                    private SparseArray<String> sRecs_pl = new SparseArray<String>() {
+                        {
+                            this.put(KeyEvent.KEYCODE_0,     "0 +");
+                            this.put(KeyEvent.KEYCODE_1,     "1.,-?!'@:#$/_");
+                            this.put(KeyEvent.KEYCODE_2,     "2abcáäąčćABCÄÁĄČĆ");
+                            this.put(KeyEvent.KEYCODE_3,     "3defďéĕęDEFĎÉĔĘ");
+                            this.put(KeyEvent.KEYCODE_4,     "4ghiíGHIÍ");
+                            this.put(KeyEvent.KEYCODE_5,     "5jklĺľłJKLĽĹŁ");
+                            this.put(KeyEvent.KEYCODE_6,     "6mnońňóôöMNOŃŇÓÖÔ");
+                            this.put(KeyEvent.KEYCODE_7,     "7pqrsŕřśšßPQRSŔŘŚŠß");
+                            this.put(KeyEvent.KEYCODE_8,     "8tuvťůúüTUVŤŮÚÜ");
+                            this.put(KeyEvent.KEYCODE_9,     "9wxyzýźżžWXYZÝŹŽŻ");
+                        }
+                    };
+
+8月10日：
+            Redmine #71799 : [bug](设置)请移除显示下锁定屏幕通知菜单
+                用 SAGEREAL_SCREEN_NOTIFICATION_SUPPORT 宏控，默认关闭
+                M:alps/packages/apps/Settings/src/com/mediatek/settings/DisplaySettingsExt.java
+                    private static final int DEFAULT_LOCK_SCREEN_NOTIFICATIONS = 0;//1改为0
+                    //Redmine71799 zhangqi modified to remove LockScreenNotifications 2016/08/10:begin
+                    if (mLockScreenNotifications != null) {
+                        mDisplayPerCategory.removePreference(mLockScreenNotifications);
+                    }
+                    //Redmine71799 zhangqi modified to remove LockScreenNotifications 2016/08/10:end
+                    
+            Redmine #71825 : [bug](设置)安全菜单下出现的问题
+                移除机主信息，用 SAGEREAL_OWNER_INFO_SUPPORT 宏控，默认关闭
+                M:alps/packages/apps/Settings/src/com/android/settings/SecuritySettings.java
+                    Preference ownerInfoPref = findPreference(KEY_OWNER_INFO_SETTINGS);
+                    PreferenceGroup security = (PreferenceGroup)root.findPreference(KEY_SECURITY_CATEGORY);
+                    if(!FeatureOption.SAGEREAL_OWNER_INFO_SUPPORT && ownerInfoPref != null && security != null){
+                        security.removePreference(ownerInfoPref);       //移除机主信息
+                    }
+                移除 Anti-theft 功能，关闭 MTK_PRIVACY_PROTECTION_LOCK 宏
+                    
+8月11日：
+            Redmine #72011 : [bug](工厂模式)工厂模式下的问题
+                1.移除EngineerMode下的 touchscreen 测试，用 SAGEREAL_TOUCHSCREEN_SUPPORT 宏控，默认关闭
+                2.移除EngineerMode下的 sensor 测试，用 SAGEREAL_SENSORTEST_SUPPORT 宏控，默认关闭
+                M:alps/mediatek/packages/apps/EngineerMode/src/com/mediatek/engineermode/PrefsFragment.java
+                
+8月15日：
+            Redmine #72423 : [基本移植任务]移植#888#
+                M:alps/packages/apps/Dialer/src/com/android/dialer/dialpad/DialpadFragment.java
+                    String phoneInformation = "#888#";
+                    if(mDigits.getText().toString().equals(phoneInformation)){
+                        StringBuffer msg = new StringBuffer("")
+                            .append("model:  " + SystemProperties.get("ro.product.model") + "\n")
+                            .append("brand:  " + SystemProperties.get("ro.product.brand") + "\n")
+                            .append("name:  " + SystemProperties.get("ro.product.name") + "\n")
+                            .append("device:  " + SystemProperties.get("ro.product.device") + "\n")
+                            .append("board:  " + SystemProperties.get("ro.product.board") + "\n")
+                            .append("manufacturer:  " + SystemProperties.get("ro.product.manufacturer") + "\n")
+                            .append("id:  " + SystemProperties.get("ro.build.display.id") + "\n")
+                            .append("gmsversion:  " + SystemProperties.get("ro.com.google.gmsversion"));
+                        new AlertDialog.Builder(getActivity())
+                            .setTitle("Phone Information")
+                            .setMessage(msg)
+                            .setPositiveButton("ok",null)
+                            .setNegativeButton("cancel",null).create().show();
+                        mDigits.getText().clear();
+                        return;
+                    }
+
+            Redmine #71246 : [bug](设置)设置屏幕锁后，锁屏时拨打紧急电话界面有拨号盘显示
+                M:alps/packages/apps/Settings/src/com/android/settings/ChooseLockPassword.java
+                M:alps/packages/services/Telephony/res/layout/dialpad.xml
+                M:alps/packages/services/Telephony/res/layout/emergency_dialer.xml
+                
+            Redmine #65678 : [Bug](充电)关机状态下充电图标显示始终为低电量
+                M:alps/mediatek/custom/common/lk/logo/qvga/qvga_low_battery.bmp
+                
+            Redmine #70818 : 根据客户需求修改应用图标
+                A:alps/packages/apps/Browser/res/mipmap-ldpi/ic_launcher_browser.png
+                A:alps/packages/apps/Browser/res/mipmap-ldpi/ic_launcher_shortcut_browser_bookmark.png
+                A:alps/packages/apps/Calculator/res/mipmap-ldpi/ic_launcher_calculator.png
+                A:alps/packages/apps/Calendar/res/mipmap-ldpi/ic_launcher_calendar.png
+                A:alps/packages/apps/Contacts/res/mipmap-ldpi/ic_launcher_shortcut_contact.png
+                A:alps/packages/apps/Contacts/res/mipmap-ldpi/ic_launcher_shortcut_directdial.png
+                A:alps/packages/apps/Contacts/res/mipmap-ldpi/ic_launcher_shortcut_directmessage.png
+                A:alps/packages/apps/DeskClock/res/mipmap-ldpi/ic_launcher_alarmclock.png
+                A:alps/packages/apps/Dialer/res/mipmap-ldpi/ic_launcher_phone.png
+                A:alps/packages/apps/Dialer/res/mipmap-ldpi/mtk_ic_launcher_phone.png
+                A:alps/packages/apps/Email/res/mipmap-ldpi/ic_launcher_email.png
+                A:alps/packages/apps/Email/res/mipmap-ldpi/ic_launcher_mail.png
+                A:alps/packages/apps/Email/res/mipmap-ldpi/ic_launcher_shortcut_folder.png
+                A:alps/packages/apps/Gallery2/res/mipmap-ldpi/ic_launcher_camera.png
+                A:alps/packages/apps/Gallery2/res/mipmap-ldpi/ic_launcher_gallery.png
+                A:alps/packages/apps/Mms/res/mipmap-ldpi/ic_launcher_smsmms.png
+                A:alps/packages/apps/Settings/res/mipmap-ldpi/ic_launcher_settings.png
+                A:alps/packages/providers/DownloadProvider/res/mipmap-ldpi/ic_launcher_download.png
+                A:alps/packages/apps/ContactsCommon/res/mipmap-ldpi/ic_launcher_contacts.png
+                A:alps/packages/providers/DownloadProvider/ui/res/mipmap-ldpi/ic_launcher_download.png
+                A:sagereal/product/up249_XB52U_AllView/alps/mediatek/packages/apps/BackupRestore/res/drawable-ldpi/ic_backuprestore_launcher_am.png
+                A:sagereal/product/up249_XB52U_AllView/alps/mediatek/packages/apps/FMRadio/res/drawable-ldpi/ic_launcher_temp.png
+                A:sagereal/product/up249_XB52U_AllView/alps/mediatek/packages/apps/FileManager/res/drawable-ldpi/app_filemanager.png
+                A:sagereal/product/up249_XB52U_AllView/alps/mediatek/packages/apps/StkSelection/res/drawable-ldpi/ic_launcher_sim_toolkit.png
+                A:sagereal/product/up249_XB52U_AllView/alps/mediatek/packages/apps/Todos/res/drawable-ldpi/ic_launcher_todo.png
+                A:sagereal/product/up249_XB52U_AllView/alps/mediatek/packages/apps/VideoPlayer/res/drawable-ldpi/ic_video_app.png
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/Browser/res/mipmap-ldpi/ic_launcher_browser.png
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/Calculator/res/mipmap-ldpi/ic_launcher_calculator.png
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/Calendar/res/mipmap-ldpi/ic_launcher_calendar.png
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/ContactsCommon/res/mipmap-ldpi/ic_launcher_contacts.png
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/DeskClock/res/mipmap-ldpi/ic_launcher_alarmclock.png
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/Email/res/mipmap-ldpi/ic_launcher_email.png
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/Email/res/mipmap-ldpi/ic_launcher_mail.png
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/Email/res/mipmap-ldpi/ic_launcher_shortcut_folder.png
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/Gallery2/res/mipmap-ldpi/ic_launcher_camera.png
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/Gallery2/res/mipmap-ldpi/ic_launcher_gallery.png
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/Mms/res/mipmap-ldpi/ic_launcher_smsmms.png
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/Music/res/drawable-ldpi/app_music.png
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/SoundRecorder/res/drawable-ldpi/ic_launcher_soundrecorder_am.png
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/providers/DownloadProvider/ui/res/mipmap-ldpi/ic_launcher_download.png
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/Settings/res/mipmap-ldpi/ic_launcher_settings.png
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/Dialer/res/mipmap-ldpi/ic_launcher_phone.png
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/Dialer/res/mipmap-ldpi/mtk_ic_launcher_phone.png
+
+8月26日：
+            Redmine #73442 : [需求]Launcher界面上添加whatsapp,facebook,message
+                M:alps/packages/apps/Launcher3/res/xml/default_workspace.xml
+
+            Redmine #73445 : [bug]Todos不能设置expire date
+                M:alps/mediatek/packages/apps/Todos/res/layout/item_details.xml
+                M:alps/mediatek/packages/apps/Todos/res/menu/detail_edit.xml
+                M:alps/mediatek/packages/apps/Todos/src/com/mediatek/todos/EditTodoActivity.java
+                
+            Redmine #71689 : [bug](音乐播放器)后台播放音乐，进入通知栏查看，界面上的按钮不能操作
+                M:alps/packages/apps/Music/res/layout/newstatusbar.xml
+                M:alps/packages/apps/Music/src/com/android/music/MediaPlaybackService.java
+
+            Redmine #72265 : [bug](工厂模式)*#0777#中YGPS界面显示不全
+                *#0777#中YGPS界面显示不全
+                M:alps/mediatek/packages/apps/YGPS/res/values/styles.xml
+                M:alps/mediatek/packages/apps/YGPS/src/com/mediatek/ygps/SatelliteSignalView.java
+
+            Redmine #70736 : [需求]移植FOTA----把fota功能移到Settings-more中
+                把fota功能移到Settings->More中，用 SAGEREAL_MORE_FOTA_SUPPORT 宏控
+                M:alps/packages/apps/Settings/src/com/android/settings/WirelessSettings.java
+                M:alps/packages/apps/Settings/res/xml/wireless_settings.xml
+
+8月29日：
+            Redmine #68117 : [bug](图库)图库中的问题----隐藏视频播放 Trim 菜单项
+                隐藏视频播放 Trim 菜单项
+                M:alps/packages/apps/Gallery2/src/com/mediatek/gallery3d/video/TrimVideoHooker.java
+                    private boolean isUriSupportTrim(Uri uri) {
+                        //Redmine68117 zhangqi modified to remove trim 2016/08/29:begin
+                        if(!com.mediatek.common.featureoption.FeatureOption.SAGEREAL_GALLERY_TRIM_SUPPORT){
+                            return false;
+                        }
+                        //Redmine68117 zhangqi modified to remove trim 2016/08/29:end
+                        return String.valueOf(uri).toLowerCase().startsWith(VIDEO_CONTENT_MEDIA) || String.valueOf(uri).toLowerCase().startsWith("file://");
+                    }
+
+            Redmine #68117 : [bug](图库)图库中的问题----隐藏视频播放全屏选项
+                隐藏视频播放全屏选项
+                M:alps/packages/apps/Gallery2/src/com/android/gallery3d/app/MovieControllerOverlay.java
+                    //Redmine68117 zhangqi modified to hide VideoMode 2016/08/29:begin
+                    mTimeBar.layout(pl, y - mTimeBar.getPreferredHeight(), w - pr, y);
+                    //Redmine68117 zhangqi modified to hide VideoMode 2016/08/29:end
+
+            Redmine #68117 : [bug](图库)图库中的问题----隐藏部分菜单
+                隐藏部分菜单(修剪，编辑，打印)
+                M:alps/packages/apps/Gallery2/src/com/android/gallery3d/ui/MenuExecutor.java
+                    supportCrop = false;
+                    supportTrim = false;
+                    supportEdit = false;
+                    supportPrint = false;
+
+            Redmine #71657 : [bug](应用)应用不能使用
+                1.添加DocumentUI
+                2.修改FOTA.apk的焦点问题
+                M:alps/frameworks/base/core/java/android/view/View.java
+                M:alps/frameworks/base/core/java/android/app/Dialog.java
+                M:alps/frameworks/base/core/java/android/app/Activity.java
+                M:alps/frameworks/base/core/java/android/widget/PopupWindow.java
+
+            Redmine #71654 : [bug](视频)不能对视频进行修剪
+                隐藏视频修剪菜单
+                M:alps/packages/apps/Gallery2/src/com/android/gallery3d/ui/MenuExecutor.java
+    
+8月31日：
+            Redmine #71564 : [bug](文件管理)视频播放的问题
+                1.将播放进度条加长至左右空隙一致
+                    ----已修改
+                2.视频在播放时按ok键调出暂停、播放按钮，不会直接暂停，此时再按ok键会暂停播放
+                    ----正常现象，不修改
+                3.不支持的文件应显示与手机中图标一样
+                    ----正常现象，不修改
+                4.建议与查看文件时的滚动条显示一致
+                    ----去掉快速滚动条显示
+                5.建议改成按左、右导航键进行快进与后退
+                    ----不支持快进快退
+                M:alps/packages/apps/Gallery2/src/com/android/gallery3d/app/MovieControllerOverlay.java
+                M:alps/frameworks/base/core/java/android/widget/FastScroller.java
+                M:alps/mediatek/packages/apps/FileManager/src/com/mediatek/filemanager/FileInfoAdapter.java
+                M:alps/mediatek/packages/apps/FileManager/src/com/mediatek/filemanager/FileManagerOperationActivity.java
+                M:alps/mediatek/packages/apps/FileManager/src/com/mediatek/filemanager/IconManager.java
+
+            Redmine #67813 : [bug](设置)情景模式下添加新模式后，不能进入新模式中进行设置
+                把"+"按钮和"reset"按钮放到Menu菜单中，通过Menu菜单显示
+                M:alps/packages/apps/Settings/src/com/mediatek/audioprofile/AudioProfileSettings.java
+                    //Redmine67813 zhangqi modified for AudioProfileMenuItems 2016/08/31:begin
+                    menu.add(0, MENUID_ADD, 0, R.string.audio_profile_add).setIcon(R.drawable.ic_menu_add).setShowAsAction(
+                            MenuItem.SHOW_AS_ACTION_NEVER | MenuItem.SHOW_AS_ACTION_WITH_TEXT);  //这里把SHOW_AS_ACTION_IF_ROOM改为SHOW_AS_ACTION_NEVER
+                    menu.add(0, MENUID_RESET, 0, R.string.audio_profile_reset).setIcon(R.drawable.ic_menu_reset).setShowAsAction(
+                            MenuItem.SHOW_AS_ACTION_NEVER | MenuItem.SHOW_AS_ACTION_WITH_TEXT);  //这里把SHOW_AS_ACTION_IF_ROOM改为SHOW_AS_ACTION_NEVER
+                    //Redmine67813 zhangqi modified for AudioProfileMenuItems 2016/08/31:end
+
+            Redmine #64431 : Settings->AudioProfiles->General右边的详情按钮点不到
+                修改点击可以选中情景模式，长按弹出对话框，选中 Profile settings 可以进入设置情景模式
+                M:alps/packages/apps/Settings/src/com/mediatek/audioprofile/AudioProfileSettings.java
+
+            Redmine #62797 : 第三方apk无法安装----不允许用户创建快捷方式
+                不允许用户创建快捷方式，用 SAGEREAL_SHORTCUT_SUPPORT 宏控，默认关闭
+                M:alps/packages/apps/Launcher3/src/com/android/launcher3/InstallShortcutReceiver.java
+                    public void onReceive(Context context, Intent data) {
+                        ...
+                        //Redmine62797 zhangqi modified for disable shortcut 2016/08/31:begin
+                        if (!com.mediatek.common.featureoption.FeatureOption.SAGEREAL_SHORTCUT_SUPPORT) {
+                            return;
+                        }
+                        //Redmine62797 zhangqi modified for disable shortcut 2016/08/31:end
+                        ...
+                    }
+
+            Redmine #62797 : 第三方apk无法安装----隐藏Settings/Security/DeviceAdmin
+                隐藏Settings/Security/DeviceAdmin，用 SAGEREAL_SHORTCUT_SUPPORT 宏控，默认关闭
+                M:alps/packages/apps/Settings/src/com/android/settings/SecuritySettings.java
+                    root.removePreference(deviceAdminCategory);
+
+9月02日：
+            Redmine #68191 : [Bug](Whatsapp)应用中部分功能不能使用----更新WhatsApp.apk
+                更新 WhatsApp.apk
+                修改录像界面功能
+                隐藏crop菜单
+                隐藏slide_to_cancel提示
+                添加图片按钮可以点击
+                隐藏Contact卡片上的add,message按钮
+                M:alps/packages/apps/SageRealApp/WhatsApp/WhatsApp.apk
+                M:alps/packages/apps/SageRealApp/WhatsApp/lib/libcurve25519.so
+                A:alps/packages/apps/SageRealApp/WhatsApp/lib/libpl_droidsonroids_gif.so
+                M:alps/packages/apps/SageRealApp/WhatsApp/lib/libresample.so
+                M:alps/packages/apps/SageRealApp/WhatsApp/lib/libvlc.so
+                A:alps/packages/apps/SageRealApp/WhatsApp/lib/libwa_dalvik.so
+                M:alps/packages/apps/SageRealApp/WhatsApp/lib/libwhatsapp.so
+                M:alps/packages/apps/SageRealApp/WhatsApp/Android.mk
+
+9月03日：
+            Redmine #74310 : [需求](WiFi)In Settings->WiFi->WiFi Direct pls rename it in M9 Connect
+                M:alps/frameworks/base/packages/SettingsProvider/res/values/defaults.xml
+                M:alps/frameworks/base/packages/SettingsProvider/src/com/android/providers/settings/DatabaseHelper.java
+                M:alps/frameworks/base/wifi/java/android/net/wifi/p2p/WifiP2pService.java
+                M:sagereal/mk/up249_XB52U_AllView/ProjectConfig.mk
+                M:sagereal/script/clone_mmi.sh
+                修改wifi直连名称为M9 Connect
+
+            Redmine #74297 : [需求](Settings)The vibration on profile general must be on like default
+                修改客户需求，默认震动打开，用 SAGEREAL_DEFAULT_VIBRATION_GENERAL 宏控，默认关闭
+                M:alps/mediatek/frameworks/base/media/audio/java/com/mediatek/audioprofile/AudioProfileManager.java
+
+            Redmine #74355 : [需求](Roaming)Please add in GSMSERVICESTATETRACKER.JAVA the PLMN as mentioned in attachment
+                修改AllView plmn需求,请客户帮忙测试，谢谢！
+                M:alps/frameworks/opt/telephony/src/java/com/android/internal/telephony/gsm/GsmServiceStateTracker.java
+
+9月05日：
+            Redmine #74267 : [需求](Call)The phone vibrate when outgoing call is answered. Pls add option Out call answer notification and make it OFF like default
+                在 Phone->Settings->Other Settings 下添加接听震动功能开关，用 dial_listen_vibrate 宏控，默认关闭
+                M:alps/frameworks/base/core/java/android/provider/Settings.java
+                M:alps/frameworks/base/packages/SettingsProvider/res/values/defaults.xml
+                M:alps/frameworks/base/packages/SettingsProvider/src/com/android/providers/settings/DatabaseHelper.java
+                M:alps/packages/services/Telephony/res/*
+                M:alps/packages/services/Telephony/res/xml/mtk_others_settings.xml
+                M:alps/packages/services/Telephony/src/com/android/phone/CallNotifier.java
+                M:alps/packages/services/Telephony/src/com/mediatek/settings/OthersSettings.java
+                M:sagereal/mk/up249_XB52U_AllView/ProjectConfig.mk
+                M:sagereal/script/clone_mmi.sh
+
+            Redmine #74262 : [需求](Alarm)In alarm, the first day of the week when I set custom alarm must be Monday.
+                修改时钟星期的顺序，用 SAGEREAL_DAY_ORDER_ALLVIEW 宏控，默认关闭
+                M:alps/packages/apps/DeskClock/src/com/android/deskclock/AlarmClockFragment.java
+
+            Redmine #74289 : [需求](Main Menu)When you open the main menu, the default active icon will be on the message icon
+                修改主菜单默认焦点在短信图标上面
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/Launcher3/res/xml/default_toppackage.xml
+
+            Redmine #74292 : [需求](Mode Service)The code for check the version of sw
+                添加查看软件版本号的命令 *#08#
+                M:alps/packages/apps/Dialer/src/com/android/dialer/dialpad/DialpadFragment.java
+
+            Redmine #74288 : [需求](Location)Pls make Location ON like default
+                修改 GPS 默认打开高精度，用 def_location_providers_allowed 宏控
+                M:sagereal/script/clone_mmi.sh
+                M:sagereal/mk/up249_m2412_common/ProjectConfig.mk
+
+            Redmine #74273 : [需求](Camera)Pls make Face detection ON like default
+                默认打开人脸识别，用 pref_camera_face_detect_default 宏控
+                M:sagereal/script/clone_mmi.sh
+                M:sagereal/mk/up249_XB52U_AllView/ProjectConfig.mk
+
+            Redmine #74268 : [需求](Camera)In details of pictures need to be: "Maker: Allview" and "Model: M9 Connect"
+                修改 make,model 的值，用 SAGEREAL_MAKE_MODEL 宏控
+                M:alps/mediatek/custom/common/hal/inc/camera_custom_exif.h
+
+Redmine74260 同 #58786
+
+9月06日：
+            Redmine #74274 : [需求](Data traffic)Data traffic must be on like default
+                数据连接默认打开，用 MTK_DEFAULT_DATA_OFF 宏控
+                M:mediatek/frameworks/base/op/java/com/mediatek/op/telephony/TelephonyExt.java
+                    public boolean isDefaultDataOn() {
+                        //Redmin74274 zhangqi modified for default data connection on 2016/09/06:begin
+                        if(!com.mediatek.common.featureoption.FeatureOption.MTK_DEFAULT_DATA_OFF){
+                            return true;
+                        }
+                        //Redmin74274 zhangqi modified for default data connection on 2016/09/06:end
+                        return false;
+                    }
+                
+9月08日：
+            Redmine #74855 : [需求](Profile)Pls add option to set mp3 for ringtone from intern memory or sd card
+                显示 more ringtone,用 SAGEREAL_MORE_RINGTONE_SUPPORT 宏控
+                M:alps/packages/apps/Settings/src/com/mediatek/audioprofile/DefaultRingtonePreference.java
+                M:alps/packages/apps/Settings/ext/src/com/mediatek/settings/ext/DefaultAudioProfileExt.java
+
+9月09日：
+            Redmine #75046 : [bug](tone)selecting a ringtone or message tone
+                修改铃声选择对话框的焦点问题
+                M:alps/frameworks/base/core/java/com/android/internal/app/AlertController.java
+
+9月21日：
+            Redmine #76040 : [bug](*906#)工厂测试模式下，界面字体显示不全
+                工厂测试模式下，界面字体显示不全
+                A:alps/packages/apps/FactoryDevelopX/res/values/dimens.xml
+                M:alps/packages/apps/FactoryDevelopX/res/layout/activity_main.xml
+                M:alps/packages/apps/FactoryDevelopX/res/layout/audio_test.xml
+                M:alps/packages/apps/FactoryDevelopX/res/layout/camera_test.xml
+                M:alps/packages/apps/FactoryDevelopX/res/layout/headset_test.xml
+                M:alps/packages/apps/FactoryDevelopX/res/layout/imei_test.xml
+                M:alps/packages/apps/FactoryDevelopX/res/layout/key_test.xml
+                M:alps/packages/apps/FactoryDevelopX/res/layout/rec_test.xml
+                M:alps/packages/apps/FactoryDevelopX/res/layout/sdcard_test.xml
+                
+            Redmine #76010 : [bug](文件管理器)文件管理器中分享文件，分享选项图标错误
+                文件管理器中分享文件，分享选项图标错误
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/Contacts/res/drawable-ldpi/mtk_ic_launcher_contacts.png
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/Contacts/res/drawable-ldpi/mtk_ic_launcher_smsmms.png
+
+9月22日：
+            Redmine #75198 :  [bug](文件管理器)截图的图片在文件管理器里时间分钟未显示
+                文件管理器中文件名显示不全，改为两行显示，改小字体
+                M:alps/mediatek/packages/apps/FileManager/res/layout/adapter_fileinfos.xml
+
+            Redmine #75179 : [bug](录音机)录音机文件列表界面录音图标太大
+                修改录音文件列表的录音图标大小，修改录音文件名为两行显示，改小录音文件名的字体大小
+                M:alps/packages/apps/SoundRecorder/res/layout/navigation_adapter.xml
+
+            Redmine #67229 : [bug](状态栏)状态栏中有一些图标显示小
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/stat_notify_call_mute.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/stat_notify_car_mode.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/stat_notify_chat.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/stat_notify_disabled.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/stat_notify_disk_full.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/stat_notify_email_generic.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/stat_notify_error.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/stat_notify_gmail.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/stat_notify_missed_call.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/stat_notify_more.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/stat_notify_rssi_in_range.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/stat_notify_sdcard.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/stat_notify_sdcard_prepare.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/stat_notify_sdcard_usb.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/stat_notify_sim_toolkit.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/stat_notify_sync.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/stat_notify_sync_anim0.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/stat_notify_sync_error.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/stat_notify_voicemail.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/stat_notify_wifi_in_range.png
+                M:alps/frameworks/base/packages/SystemUI/res/drawable-ldpi/stat_notify_image.png
+                M:alps/frameworks/base/packages/SystemUI/res/drawable-ldpi/stat_notify_image_error.png
+                M:alps/frameworks/base/packages/SystemUI/res/drawable-ldpi/stat_notify_more.png
+                M:alps/packages/apps/Calendar/res/drawable-ldpi/stat_notify_calendar.png
+                M:alps/packages/apps/Calendar/res/drawable-ldpi/stat_notify_calendar_multiple.png
+                M:alps/packages/apps/DeskClock/res/drawable-ldpi/stat_notify_alarm.png
+                M:alps/packages/apps/DeskClock/res/drawable-ldpi/stat_notify_stopwatch.png
+                M:alps/packages/apps/DeskClock/res/drawable-ldpi/stat_notify_timer.png
+                M:alps/packages/apps/Email/UnifiedEmail/res/drawable-ldpi/stat_notify_email.png
+                M:alps/packages/apps/Email/UnifiedEmail/res/drawable-ldpi/stat_notify_email_vip.png
+                M:alps/packages/apps/Mms/res/drawable-ldpi/stat_notify_mms.png
+                M:alps/packages/apps/Mms/res/drawable-ldpi/stat_notify_sms.png
+                M:alps/packages/apps/Mms/res/drawable-ldpi/stat_notify_sms_failed.png
+                M:alps/packages/apps/Mms/res/drawable-ldpi/stat_notify_wappush.png
+                M:alps/packages/apps/Mms/res/drawable-ldpi/stat_sys_no_sim.png
+
+            Redmine #76256 : [需求](Sw)Into Settings/ Sim Management I cannot deactivate a Sim card. Please make to can be deactivate using left/right key
+                修改 Settings->Sim Management->SIM INFORMATION 可以通过左右导航键开关SIM卡
+                M:alps/packages/apps/Settings/src/com/mediatek/gemini/SimManagement.java
+                    public void onResume() {
+                        ...
+                        if(getListView() != null){
+                            getListView().setOnKeyListener(new android.view.View.OnKeyListener(){
+                                public boolean onKey(View v, int keyCode , KeyEvent event){
+                                    android.util.Log.e("zhangqi0000", "SimManagement->onKey0("+keyCode+")");
+                                    if(event.getAction() == KeyEvent.ACTION_UP && (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)){
+                                        View selectedView = getListView().getSelectedView();
+                                        android.util.Log.e("zhangqi0000", "SimManagement->onKey1("+keyCode+")");
+                                        if(selectedView != null){
+                                            View switchView = selectedView.findViewById(R.id.widget_switch);
+                                            android.util.Log.e("zhangqi0000", "SimManagement->onKey2("+keyCode+")");
+                                            if(switchView != null && switchView instanceof Switch){
+                                                android.util.Log.e("zhangqi0000", "SimManagement->onKey3("+keyCode+")");
+                                                Switch mSwitchView = (Switch)switchView;
+                                                if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT && mSwitchView.isChecked()){
+                                                    android.util.Log.e("zhangqi0000", "SimManagement->onKey4("+keyCode+")");
+                                                    switchView.performClick();
+                                                    return true;
+                                                }else if(keyCode == KeyEvent.KEYCODE_DPAD_RIGHT && !mSwitchView.isChecked()){
+                                                    switchView.performClick();
+                                                    return true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    return false;
+                                }
+                            });
+                        }
+                        ...
+                    }
+9月23日：
+            Redmine #76259 : [需求](SW)When I first open Contact/Dialer I get notification as in attachment and I cannot hit OK button
+                修改导航按钮可以点击
+                M:alps/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java
+                
+            Redmine #74277 : [需求](Bluetooth)Name of device : Allview M9 Connect
+                M:alps/mediatek/external/bluetooth/bt_cust/bt_cust_table.h
+                    Comment:
+                        修改蓝牙名称为 Allview M9 Connect
+                        参考 https://onlinesso.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ12627
+                        1、mediatek\config\common下的custom.conf中的bluetooth.HostName = ANDROID BT修改为客制化名称；
+                        2、检查 mediatek/external/bluetooth/bt_cust/bt_cust_table.h以下value必须为0。
+                        {
+                            .name = "LocalNameCustPermission",
+                            .value = (void *)0,        /* default can't customize local name */
+                        }
+
+            Redmine #71780 : [bug](时钟)设置下调节音量没有声音
+                修改时钟设置下调节音量可以播放音乐
+                M:alps/frameworks/base/core/java/android/preference/VolumePreference.java
+
+9月28日：
+            Redmine #74308 : [需求](Video player)The size of screen in video player must be to whole screen
+                修改视频全屏播放
+                M:mediatek/packages/apps/VideoPlayer/src/com/mediatek/videoplayer/MovieListActivity.java
+                
+            Redmine #74324 : [需求](Call)When you dial some contact from history call, after you close the conversation , device must come back in idle screen (auto)
+                修改在通话记录中拨打电话之后返回到 idle 界面
+                M:alps/packages/apps/Dialer/res/layout-land/call_log_activity.xml
+                M:alps/packages/apps/Dialer/res/layout/call_log_activity.xml
+                M:alps/packages/apps/Dialer/src/com/android/dialer/calllog/CallLogActivity.java
+                M:alps/packages/apps/Dialer/src/com/mediatek/dialer/calllogex/CallLogFragmentEx.java
+                M:alps/packages/apps/InCallUI/src/com/android/incallui/InCallActivity.java
+
+            Redmine #76261 : [需求](Sw)When I make factory reset I can see the Android Robot not framed on the screen. Please try to solve it, see attachment
+                修改 recovery 模式机器人动画
+                M:alps/bootable/recovery/screen_ui.cpp
+                M:alps/mediatek/custom/sr72_w_lca/recovery/res/images/*
+
+            Redmine #74329 : [需求](Camera)For get the position in Camera the GPS not working. I think is same issue like all your devices (HW issue)
+                修改显示 Location 信息
+                M:alps/packages/apps/Gallery2/src/com/android/gallery3d/ui/MenuExecutor.java
+                M:alps/packages/apps/Gallery2/src/com/android/gallery3d/data/LocalMediaItem.java
+
+9月29日：
+            Redmine #76450 : [需求](Messaging)When receiving SMS the display does not turn on.
+                修改收到短信之后点亮屏幕，用 SAGEREAL_MMS_SCREEN_ON_SUPPORT 宏控，默认打开
+                M:alps/packages/apps/Mms/src/com/android/mms/transaction/MessagingNotification.java
+
+10月09日：
+            Redmine #77212 : [bug](#888#)输入#888#显示不全
+                修改对话框Message的字体大小
+                M:alps/packages/apps/Dialer/src/com/android/dialer/dialpad/DialpadFragment.java
+
+            Redmine #76448 : [需求](Main Menu)Use main menu sent by us .Please see attachment
+                修改桌面布局及名称
+                M:sagereal/product/up249_XB52U_AllView/alps/packages/apps/Launcher3/res/xml/default_workspace.xml
+                M:alps/packages/apps/Contacts/res/values/strings.xml
+                M:alps/packages/apps/Mms/res/values-en-rUS/strings.xml
+                M:alps/packages/apps/Mms/res/values/strings.xml
+                M:alps/packages/apps/SoundRecorder/res/values-en-rUS/strings.xml
+                M:alps/packages/apps/SoundRecorder/res/values/strings.xml
+
+            Redmine #77209 : [bug](SIM卡)待机界面点击任一个数字，弹出图片点按左右导航键无响应
+                设置按钮可以获取焦点并可以点击，隐藏提示语
+                M:alps/frameworks/base/packages/SystemUI/res/drawable/app_guide_button_bg.xml
+                M:alps/frameworks/base/packages/SystemUI/res/layout-land/application_guide.xml
+                M:alps/frameworks/base/packages/SystemUI/res/layout-port/application_guide.xml
+                M:alps/frameworks/base/packages/SystemUI/res/layout-sw600dp-land/application_guide.xml
+                M:alps/frameworks/base/packages/SystemUI/res/layout-sw600dp-port/application_guide.xml
+
+            Redmine #77197 : [需求](Sound)Pls put limit of volumes (in all ) to be max 83 dB for earphone
+                打开 SafeMedia 功能，打开 MTK_SAFEMEDIA_SUPPORT 宏控即可
+                M:sagereal/mk/up249_XB52U_AllView/ProjectConfig.mk
+
+            Redmine #75179 : [bug](录音机)录音机文件列表界面录音图标太大
+                修改录音文件列表的高度
+                M:alps/packages/apps/SoundRecorder/res/layout/recording_file_list.xml
+
+            Redmine #74308 : [需求](Video player)The size of screen in video player must be to whole screen
+                修改视频全屏播放
+                M:alps/packages/apps/Gallery2/src/com/mediatek/gallery3d/video/MTKVideoView.java
+                    mSHCallback = new SurfaceHolder.Callback() {
+                        ......
+                        if(w > 0 && h > 0){
+                            if(w > h){
+                                if(mContext instanceof Activity){
+                                    int orientation = ((Activity)mContext).getRequestedOrientation();
+                                    if(orientation != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
+                                        ((Activity)mContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                                    }
+                                }
+                            }
+                        }
+                        ......
+                    }
+
+10月11日：
+            Redmine #77357 : [需求]将移动图标换成客户制作的icon
+                修改图标为客户提供图标
+                A:alps/packages/apps/Launcher3/res/drawable-ldpi/focused_bg_main.png
+                M:alps/packages/apps/Launcher3/res/drawable/focusable_view_bg.xml
+                M:alps/packages/apps/Launcher3/res/layout/all_apps_button.xml
+                M:alps/packages/apps/Launcher3/src/com/android/launcher3/BubbleTextView.java
+                M:alps/packages/apps/Launcher3/src/com/android/launcher3/Hotseat.java
+                M:alps/packages/apps/Launcher3/src/com/android/launcher3/PagedViewIcon.java
+
+            Redmine #77367 : [需求]（Main Menu）将主界面的移动图标默认设置在Main menu图标上 ,当打开main menu ,移动图标默认在Backup and Restore图标上。
+                修改 Launcher 界面默认焦点
+                M:alps/packages/apps/Launcher3/res/values/config.xml
+                M:alps/packages/apps/Launcher3/src/com/android/launcher3/Launcher.java
+
+10月13日：
+            Redmine #77654 : [需求]更改apk ATetris名称为AllTetris
+                修改翻译
+                A:alps/packages/apps/SageRealApp/ATetris/res/values-cs/strings.xml
+                A:alps/packages/apps/SageRealApp/ATetris/res/values-de/strings.xml
+                A:alps/packages/apps/SageRealApp/ATetris/res/values-es-rUS/strings.xml
+                A:alps/packages/apps/SageRealApp/ATetris/res/values-es/strings.xml
+                A:alps/packages/apps/SageRealApp/ATetris/res/values-hu/strings.xml
+                A:alps/packages/apps/SageRealApp/ATetris/res/values-pl/strings.xml
+                A:alps/packages/apps/SageRealApp/ATetris/res/values-ro/strings.xml
+                M:alps/packages/apps/SageRealApp/ATetris/res/values/strings.xml
+                M:alps/packages/apps/SageRealApp/ATetris/src/com/chrislee/tetris/contants/Contants.java
+                M:alps/packages/apps/SageRealApp/ATetris/src/com/chrislee/tetris/db/DBRankHelper.java
+
+10月14日：
+            Redmine #77212 : [bug](#888#)输入#888#显示不全
+                去掉GMS版本号
+                M:packages/apps/Dialer/src/com/android/dialer/dialpad/DialpadFragment.java
+
+            Redmine #77814 : [bug](Video)Video界面点击菜单键选择Select Item，退出Videos界面
+                修改 Videos 报错问题
+                A:alps/mediatek/packages/apps/VideoPlayer/res/drawable-ldpi/dropdown_ic_arrow_normal_holo_dark.png
+                A:alps/mediatek/packages/apps/VideoPlayer/res/drawable-ldpi/ic_hotknot.png
+                A:alps/mediatek/packages/apps/VideoPlayer/res/drawable-ldpi/ic_menu_share_holo_light.png
+                A:alps/mediatek/packages/apps/VideoPlayer/res/drawable-ldpi/ic_menu_trash_holo_light.png
+
+10月17日：
+            Redmine #77197 : [需求](Sound)Pls put limit of volumes (in all ) to be max 83 dB for earphone
+                修改默认警告为10级
+                M:alps/frameworks/base/core/res/res/values/config.xml
+                M:alps/mediatek/frameworks/base/res/res/values/config.xml
+
+            Redmine #67256 : [需求]添加多语言支持及相关输入法
+                添加自定义输入法 SageRealIME, 用 SAGEREAL_IME_SUPPORT 宏控
+                M:alps/build/target/product/common.mk
+                M:alps/frameworks/base/api/current.txt
+                M:alps/frameworks/base/core/java/android/mouse/MouseManager.java
+                M:alps/frameworks/base/core/java/android/os/IMouseService.aidl
+                M:alps/frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
+                M:alps/frameworks/base/services/java/com/android/server/mouse/MouseService.java
+                A:alps/packages/inputmethods/SageRealIME/.classpath
+                A:alps/packages/inputmethods/SageRealIME/.project
+                A:alps/packages/inputmethods/SageRealIME/Android.mk
+                A:alps/packages/inputmethods/SageRealIME/AndroidManifest.xml
+                A:alps/packages/inputmethods/SageRealIME/lint.xml
+                A:alps/packages/inputmethods/SageRealIME/project.properties
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-hdpi/focused_bg.xml
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-hdpi/icon_en_gb.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-hdpi/icon_en_us.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-hdpi/sym_keyboard_delete.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-hdpi/sym_keyboard_done.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-hdpi/sym_keyboard_return.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-hdpi/sym_keyboard_search.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-hdpi/sym_keyboard_shift.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-hdpi/sym_keyboard_space.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-mdpi/icon_en_gb.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-mdpi/icon_en_us.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-mdpi/sym_keyboard_delete.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-mdpi/sym_keyboard_done.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-mdpi/sym_keyboard_return.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-mdpi/sym_keyboard_search.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-mdpi/sym_keyboard_shift.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-mdpi/sym_keyboard_space.png
+                A:alps/packages/inputmethods/SageRealIME/res/layout/input.xml
+                A:alps/packages/inputmethods/SageRealIME/res/values-land/dimens.xml
+                A:alps/packages/inputmethods/SageRealIME/res/values/colors.xml
+                A:alps/packages/inputmethods/SageRealIME/res/values/dimens.xml
+                A:alps/packages/inputmethods/SageRealIME/res/values/strings.xml
+                A:alps/packages/inputmethods/SageRealIME/res/xml/ime_preferences.xml
+                A:alps/packages/inputmethods/SageRealIME/res/xml/method.xml
+                A:alps/packages/inputmethods/SageRealIME/res/xml/qwerty.xml
+                A:alps/packages/inputmethods/SageRealIME/res/xml/symbols.xml
+                A:alps/packages/inputmethods/SageRealIME/res/xml/symbols_shift.xml
+                A:alps/packages/inputmethods/SageRealIME/src/com/android/inputmethodcommon/InputMethodSettingsFragment.java
+                A:alps/packages/inputmethods/SageRealIME/src/com/android/inputmethodcommon/InputMethodSettingsImpl.java
+                A:alps/packages/inputmethods/SageRealIME/src/com/android/inputmethodcommon/InputMethodSettingsInterface.java
+                A:alps/packages/inputmethods/SageRealIME/src/com/sagereal/zq/softkeyboard/CandidateView.java
+                A:alps/packages/inputmethods/SageRealIME/src/com/sagereal/zq/softkeyboard/ImePreferences.java
+                A:alps/packages/inputmethods/SageRealIME/src/com/sagereal/zq/softkeyboard/LanguageResource.java
+                A:alps/packages/inputmethods/SageRealIME/src/com/sagereal/zq/softkeyboard/LatinKeyboard.java
+                A:alps/packages/inputmethods/SageRealIME/src/com/sagereal/zq/softkeyboard/LatinKeyboardView.java
+                A:alps/packages/inputmethods/SageRealIME/src/com/sagereal/zq/softkeyboard/MyCandidateView.java
+                A:alps/packages/inputmethods/SageRealIME/src/com/sagereal/zq/softkeyboard/SoftKeyboard.java
+                M:sagereal/mk/up19_h353_common/ProjectConfig.mk
+                M:sagereal/mk/up249_Aponi/ProjectConfig.mk
+                M:sagereal/mk/up249_XB52U_AllView/ProjectConfig.mk
+                M:sagereal/mk/up249_XB52U_B258/ProjectConfig.mk
+                M:sagereal/mk/up249_XB52U_common/ProjectConfig.mk
+                M:sagereal/mk/up249_XB52U_mobicel/ProjectConfig.mk
+                M:sagereal/mk/up249_m2412_common/ProjectConfig.mk
+                M:sagereal/mk/up249_m2416_common/ProjectConfig.mk
+
+10月18日：
+            Redmine #77021 : [需求]添加鼠标功能
+                进入 Browser/Facebook lite/WhatsApp 默认打开鼠标模式
+                M:alps/frameworks/base/api/current.txt
+                M:alps/frameworks/base/core/java/android/mouse/MouseManager.java
+                M:alps/frameworks/base/core/java/android/os/IMouseService.aidl
+                M:alps/frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
+                M:alps/frameworks/base/services/java/com/android/server/mouse/MouseService.java
+                M:alps/frameworks/base/services/java/com/android/server/wm/WindowManagerService.java
+
+10月19日：
+            Redmine #77357 : [需求]将移动图标换成客户制作的icon
+                修改 Launcher 界面移动图标
+                M:packages/apps/Launcher3/res/drawable-ldpi/focused_bg_main.png
+
+            Redmine #77021 : [需求]添加鼠标功能
+                添加鼠标功能，进入应用之后不能按Power键返回到home界面
+                M:alps/frameworks/base/services/java/com/android/server/wm/WindowManagerService.java
+
+            Redmine #73447 : [需求]待机界面长按#键切换情景模式
+                M:packages/apps/Launcher3/src/com/android/launcher3/Launcher.java
+                待机界面长按 # 键切换情景模式
+
+10月21日：
+            Redmine #75290 : [bug](wifi)高级WLAN下安装证书无法选中
+                修改 DocumentsUI 的焦点问题
+                M:alps/frameworks/base/packages/DocumentsUI/res/layout/fragment_directory.xml
+                M:alps/frameworks/base/packages/DocumentsUI/res/layout/item_doc_list.xml
+                M:alps/frameworks/base/packages/DocumentsUI/res/menu/activity.xml
+                M:alps/frameworks/base/packages/DocumentsUI/src/com/android/documentsui/DirectoryFragment.java
+                M:alps/frameworks/base/packages/DocumentsUI/src/com/android/documentsui/DocumentsActivity.java
+                M:alps/frameworks/base/packages/DocumentsUI/src/com/android/documentsui/RootsFragment.java
+
+            Redmine #78035 : [需求](Call)Sometimes when I input some number for call, the bar appear in middle screen. See sheet attachment
+                修改拨号界面号码框显示问题
+                M:packages/apps/Dialer/src/com/android/dialer/dialpad/DialpadFragment.java
+
+10月22日：
+            Redmine #67913 : [bug](浏览器)没有删除单条或多条历史浏览记录功能
+                进入浏览器历史记录等页面默认关闭鼠标模式
+                M:alps/frameworks/base/services/java/com/android/server/wm/WindowManagerService.java
+
+            Redmine #68191 : [Bug](Whatsapp)应用中部分功能不能使用
+                修改用宏 SAGEREAL_HANDLE_WHATSAPP 控制是否修改 WhatsApp
+                M:alps/frameworks/base/core/java/android/view/View.java
+                M:alps/frameworks/base/core/java/android/view/ViewGroup.java
+                M:alps/frameworks/base/core/java/android/widget/AbsListView.java
+                M:alps/frameworks/base/core/java/android/widget/ImageView.java
+                M:alps/frameworks/base/core/java/android/widget/ListView.java
+                M:alps/frameworks/base/core/java/android/widget/PopupWindow.java
+                M:alps/frameworks/base/core/java/android/widget/RelativeLayout.java
+                M:alps/frameworks/base/core/java/com/android/internal/view/menu/ActionMenu.java
+                M:alps/frameworks/base/core/java/com/android/internal/view/menu/ActionMenuView.java
+                M:alps/frameworks/base/core/java/com/android/internal/view/menu/MenuBuilder.java
+                M:alps/mediatek/build/tools/javaoption.pm
+                M:sagereal/mk/up19_h353_common/ProjectConfig.mk
+                M:sagereal/mk/up249_Aponi/ProjectConfig.mk
+                M:sagereal/mk/up249_XB52U_AllView/ProjectConfig.mk
+                M:sagereal/mk/up249_XB52U_B258/ProjectConfig.mk
+                M:sagereal/mk/up249_XB52U_Entel/ProjectConfig.mk
+                M:sagereal/mk/up249_XB52U_common/ProjectConfig.mk
+                M:sagereal/mk/up249_XB52U_mobicel/ProjectConfig.mk
+                M:sagereal/mk/up249_m2412_common/ProjectConfig.mk
+                M:sagereal/mk/up249_m2416_common/ProjectConfig.mk
+
+            Redmine #76238 : [需求](Call)When I receive a call I cannot reply using defined SMS, the pop-up is not opening
+                修改短信拒接对话框显示闪动的问题，需要把显示对话框的方法写在 onKeyUp 方法中，不要写在 onKeyDown 方法中，否则会闪屏
+                M:packages/apps/InCallUI/src/com/android/incallui/InCallActivity.java
+
+10月24日：
+            Redmine #75290 : [bug](wifi)高级WLAN下安装证书无法选中
+                修改 DocumentsUI 的空指针报错问题
+                M:frameworks/base/packages/DocumentsUI/src/com/android/documentsui/model/DocumentInfo.java
+                M:frameworks/base/packages/DocumentsUI/src/com/android/documentsui/DocumentsActivity.java
+
+            Redmine #67256 : [需求]添加多语言支持及相关输入法
+                修改输入法
+                D:alps/packages/inputmethods/SageRealIME/res/drawable-hdpi/focused_bg.xml
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-ldpi/icon_en_gb.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-ldpi/icon_en_us.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-ldpi/sym_keyboard_delete.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-ldpi/sym_keyboard_done.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-ldpi/sym_keyboard_return.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-ldpi/sym_keyboard_search.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-ldpi/sym_keyboard_shift.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable-ldpi/sym_keyboard_space.png
+                A:alps/packages/inputmethods/SageRealIME/res/drawable/focused_bg.xml
+                M:alps/packages/inputmethods/SageRealIME/src/com/sagereal/zq/softkeyboard/CandidateView.java
+
+10月25日：
+            Redmine #78612 : [bug](时钟)开始计时或倒计时后，退出到待机界面，点击左键，从下拉状态栏选择计时器，无法进入
+                修改倒计时通知栏可以进入
+                M:alps/packages/apps/DeskClock/src/com/android/deskclock/stopwatch/StopwatchService.java
+                    setContentIntent(PendingIntent.getActivity(context, 0, activityIntent, 0))      //Notification设置 contentIntent
+
+            Redmine #78611 : [BUG](通话)概率性出现无法进入通话的问题
+                修改设置联系人头像之后进入拨号界面报错
+                M:packages/apps/Contacts/res/layout/quickcontact_photo_container.xml
+                M:packages/apps/Contacts/src/com/android/contacts/quickcontact/QuickContactActivity.java
+                M:packages/apps/ContactsCommon/src/com/android/contacts/common/list/ContactTileView.java
+
+            Redmine #67820 : [bug](日历)日历中存在的问题
+                日历标题输入字符后自动跳转到下一行
+                M:alps/packages/apps/Calendar/res/layout/edit_event_1.xml
+                    android:inputType="textAutoCorrect|textCapSentences|textMultiLine"      //添加 textMultiLine 即可
+                    final int inputType = field.inputType | InputType.TYPE_TEXT_FLAG_MULTI_LINE;
+
+11月05日：
+            Redmine #67113 : [bug](通话)拨打电话界面调出拨号盘，键盘显示不全且按“*”键和“#”键不响应
+                M:alps/packages/apps/Dialer/src/com/android/dialer/dialpad/DialpadFragment.java
+                在待机界面或主菜单界面点击数字键进入到拨号盘没有声音，再按其它的数字键会有声音
+
+                        android:inputType="none"--输入普通字符
+                        android:inputType="text"--输入普通字符
+                        android:inputType="textCapCharacters"--输入普通字符
+                        android:inputType="textCapWords"--单词首字母大小
+                        android:inputType="textCapSentences"--仅第一个字母大小
+                        android:inputType="textAutoCorrect"--前两个自动完成
+                        android:inputType="textAutoComplete"--前两个自动完成
+                        android:inputType="textMultiLine"--多行输入
+                        android:inputType="textImeMultiLine"--输入法多行（不一定支持）
+                        android:inputType="textNoSuggestions"--不提示
+                        android:inputType="textUri"--URI格式
+                        android:inputType="textEmailAddress"--电子邮件地址格式
+                        android:inputType="textEmailSubject"--邮件主题格式
+                        android:inputType="textShortMessage"--短消息格式
+                        android:inputType="textLongMessage"--长消息格式
+                        android:inputType="textPersonName"--人名格式
+                        android:inputType="textPostalAddress"--邮政格式
+                        android:inputType="textPassword"--密码格式
+                        android:inputType="textVisiblePassword"--密码可见格式
+                        android:inputType="textWebEditText"--作为网页表单的文本格式
+                        android:inputType="textFilter"--文本筛选格式
+                        android:inputType="textPhonetic"--拼音输入格式
+                        android:inputType="number"--数字格式
+                        android:inputType="numberSigned"--有符号数字格式
+                        android:inputType="numberDecimal"--可以带小数点的浮点格式
+                        android:inputType="phone"--拨号键盘
+                        android:inputType="datetime"
+                        android:inputType="date"--日期键盘
+                        android:inputType="time"--时间键盘
+
+10月26日：
+            Redmine #64527 : 修改联系人界面
+                修改联系人界面
+                M:alps/packages/apps/Contacts/src/com/android/contacts/editor/StructuredNameEditorView.java
+                M:alps/packages/apps/Contacts/src/com/android/contacts/editor/TextFieldsEditorView.java
+                M:alps/packages/apps/ContactsCommon/src/com/android/contacts/common/list/PhoneNumberPickerFragment.java
+
+10月27日：
+            Redmine #75243 : [bug](通话)通话过程中添加第二路通话，第一路一直被保持，无法切换
+                修改多路通话切换功能
+                M:alps/packages/apps/InCallUI/res/menu/mtk_incall_menu.xml
+                M:alps/packages/apps/InCallUI/res/values-zh-rCN/strings.xml
+                M:alps/packages/apps/InCallUI/res/values/strings.xml
+                M:alps/packages/apps/InCallUI/src/com/android/incallui/CallCardFragment.java
+                M:alps/packages/apps/InCallUI/src/com/android/incallui/InCallActivity.java
+
+11月01日：
+            Redmine #67576 : [bug](设置)蓝牙耳机配对显示问题
+                在显示耳机对话框的时候不计时，在隐藏耳机对话框的时候再计时
+                M:alps/packages/apps/InCallUI/src/com/android/incallui/CallButtonFragment.java
+                M:alps/packages/apps/InCallUI/src/com/android/incallui/CallCardFragment.java
+                M:alps/packages/apps/InCallUI/src/com/android/incallui/InCallActivity.java
+
+11月09日：
+            Redmine #72372 : [bug](通话)拨打语音信箱号码，对方接听后，测试机显示灰屏
+                拨打语音信箱号码，不显示拨号盘
+                M:alps/packages/apps/InCallUI/src/com/android/incallui/CallButtonPresenter.java
+
+            Redmine #79976 : [需求](Fota)请移植Allview的Fota
+                移植MoMagic的FOTA
+                A:alps/packages/apps/SageRealApp/MoMagic/*
+                A:alps/build/core/GenOtaPackage.sh
+                M:alps/build/core/Makefile
+                M:alps/build/target/product/common.mk
+                M:alps/mediatek/build/tools/javaoption.pm
+                M:alps/mediatek/config/mt6572/init.rc
+                M:alps/packages/apps/Settings/res/xml/wireless_settings.xml
+                M:alps/packages/apps/Settings/src/com/android/settings/WirelessSettings.java
+                M:sagereal/mk/up19_h353_common/ProjectConfig.mk
+
+            Redmine #75249 : [bug](通话)手机无法合并为会议通话----多路通话隐藏Add call
+                多路通话的时候隐藏Add call
+                M:packages/apps/InCallUI/src/com/android/incallui/InCallActivity.java
+
+11月18日：
+            Redmine #79976 : [需求](Fota)请移植Allview的Fota
+                移植MoMagic的fota，目前插SD卡升级成功，不插SD卡升级失败
+                M:alps/build/core/GenOtaPackage.sh
+                M:alps/build/target/product/common.mk
+                M:alps/build/tools/buildinfo.sh
+                M:alps/mediatek/config/sr72_w_lca/partition_table_MT6572.xls
+                U:alps/packages/apps/SageRealApp/MoMagic/GoogleOta.apk --> alps/mediatek/packages/apps/SystemUpdate/SystemUpdate.apk
+                U:alps/packages/apps/SageRealApp/MoMagic/GoogleOtaSysOper.apk --> alps/mediatek/packages/apps/SystemUpdateAssistant/SystemUpdateAssistant.apk
+                D:alps/packages/apps/SageRealApp/MoMagic/Android.mk
+                D:alps/packages/apps/SageRealApp/MoMagic/GoogleOtaBinder
+                D:alps/packages/apps/SageRealApp/MoMagic/MoUpgradeInit.rc
+                M:sagereal/mk/up249_XB52U_AllView/ProjectConfig.mk
+                
+            是否只要修改 address_package_path 这个字符串就可以了？？反编译apk(使用汉化的方法重新打包)？？？
+            return this.mContext.getResources().getString(R.string.address_package_path);
+
+11月22日：
+            Redmine #81069 : [需求](OTA)Please change the icon for update OTA pak form main menu. See attachment
+                修改MoMagic的apk的图标
+                M:alps/mediatek/packages/apps/SystemUpdate/SystemUpdate.apk
+
+            Redmine #81034 : [需求]idle界面长按返回键显示近期任务
+                添加idle界面长按back键显示近期任务
+                A:alps/frameworks/base/packages/SystemUI/res/drawable/btn_background.xml
+                A:alps/frameworks/base/packages/SystemUI/res/drawable/btn_default_focused_holo_dark.9.png
+                A:alps/frameworks/base/packages/SystemUI/res/drawable/button_normal.xml
+                A:alps/frameworks/base/packages/SystemUI/res/drawable/button_pressed.xml
+                A:alps/frameworks/base/packages/SystemUI/res/drawable/button_selector.xml
+                M:alps/frameworks/base/packages/SystemUI/res/layout/status_bar_recent_item.xml
+                M:alps/frameworks/base/packages/SystemUI/res/layout/status_bar_recent_panel.xml
+                M:alps/frameworks/base/packages/SystemUI/res/values/colors.xml
+                M:alps/frameworks/base/packages/SystemUI/res/values/dimens.xml
+                M:alps/frameworks/base/packages/SystemUI/res/values/strings.xml
+                M:alps/frameworks/base/packages/SystemUI/src/com/android/systemui/recent/RecentsPanelView.java
+                M:alps/frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
+            1.没有动画
+            2.添加菜单功能
+            3.按钮效果不太好
+    
+            Redmine #62795 : 移除settings-apps
+                屏蔽 Settings->Storage 中的入口
+                M:alps/packages/apps/Settings/src/com/android/settings/deviceinfo/StorageVolumePreferenceCategory.java
+
+11月23日：
+            Redmine #81225 : [bug](SIM卡管理)进入SIM卡管理卡1图标数字与箭头重叠
+                修改数据连接图标向下移
+                M:packages/apps/Settings/commonui/res/layout/sim_icon.xml
+    
+            Redmine #81232 : [bug](状态栏)手机未插SIM卡开机，No SIM card detected下方有白色的点点
+                修改通知显示不全
+                M:alps/frameworks/base/core/res/res/layout/notification_template_base.xml
+
+            Redmine #81272 : [bug](音乐)播放音乐，锁屏界面音乐图标显示不全
+                修改锁屏界面音乐图标显示不全的问题
+                M:alps/frameworks/base/core/java/android/widget/TextView.java
+                
+            Redmine #81288 : [bug](文件管理器)文件管理器界面显示不美观
+                修改文件管理器界面显示不整齐的问题
+                M:mediatek/packages/apps/FileManager/res/layout/adapter_fileinfos.xml
+
+            Redmine #81301 :  [bug](浏览器)页面有较长网址会两行显示且显示不全
+                修改浏览器网址显示两行的问题
+                M:alps/frameworks/base/core/java/android/widget/TextView.java
+
+11月24日：
+            Redmine #67256 : [需求]添加多语言支持及相关输入法----修改法语资源
+                修改法语资源
+                M:alps/frameworks/base/core/java/android/text/method/MultiTapKeyListener.java
+                M:alps/packages/inputmethods/SageRealIME/src/com/sagereal/zq/softkeyboard/LanguageResource.java
+
+            Redmine #81416 : [bug](短信)锁屏界面显示的未读短信/未接来电的短信图标与主菜单中的图标不一致，建议修改
+                修改锁屏界面未读消息图标
+                A:sagereal/product/up249_XB52U_AllView/alps/frameworks/base/packages/SystemUI/res/drawable-ldpi/mtk_ic_newevent_calendar.png
+                A:sagereal/product/up249_XB52U_AllView/alps/frameworks/base/packages/SystemUI/res/drawable-ldpi/mtk_ic_newevent_email.png
+                A:sagereal/product/up249_XB52U_AllView/alps/frameworks/base/packages/SystemUI/res/drawable-ldpi/mtk_ic_newevent_phone.png
+                A:sagereal/product/up249_XB52U_AllView/alps/frameworks/base/packages/SystemUI/res/drawable-ldpi/mtk_ic_newevent_smsmms.png
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/Mms/res/drawable-ldpi/ic_launcher_phone.png
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/Mms/res/drawable-ldpi/ic_launcher_smsmms.png
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/Mms/res/drawable-ldpi/ic_vcalendar_attach.png
+                A:sagereal/product/up249_XB52U_AllView/alps/packages/apps/Mms/res/drawable-ldpi/ic_vcard_attach.png
+
+            Redmine #81434 : [bug](FM)保存fm录音时显示不全
+                修改保存fm录音字体大小
+                M:alps/mediatek/packages/apps/FMRadio/res/layout-ldrtl/main.xml
+                M:alps/mediatek/packages/apps/FMRadio/res/layout/main.xml
+
+            Redmine #81464 : [bug](短信)第二行添加附件图标显示不全
+                修改Message的SharePanel
+                M:packages/apps/Mms/res/layout/share_common_panel.xml
+                M:packages/apps/Mms/res/layout/share_grid_common_item.xml
+                M:packages/apps/Mms/src/com/mediatek/ipmsg/ui/SharePanel.java
+
+            Redmine #81495 : [bug](文件管理器)文件管理器里APK图标偏大
+                修改文件管理器apk图标为固定大小
+                M:mediatek/packages/apps/FileManager/res/layout/adapter_fileinfos.xml
+
+11月25日：
+            Redmine #67256 : [需求]添加多语言支持及相关输入法----修改输入法可以显示所有字符
+                修改输入法可以显示所有字符
+                M:alps/packages/inputmethods/SageRealIME/src/com/sagereal/zq/softkeyboard/CandidateView.java
+                M:alps/packages/inputmethods/SageRealIME/src/com/sagereal/zq/softkeyboard/SoftKeyboard.java
+
+            Redmine #81294 : [bug](图库)播放视频时点击Stop，不能点击继续播放----修改VideoView不能获取焦点
+                修改VideoView不能获取焦点
+                M:packages/apps/Gallery2/src/com/mediatek/gallery3d/video/MTKVideoView.java
+
+11月28日：
+            Redmine #67113 : [bug](通话)拨打电话界面调出拨号盘，键盘显示不全且按“*”键和“#”键不响应
+                修改在待机界面点击*#键可以响应
+                M:alps/packages/apps/Dialer/src/com/android/dialer/dialpad/DialpadFragment.java
+                M:alps/packages/apps/Launcher3/src/com/android/launcher3/Launcher.java
+
+11月29日：
+            Redmine #81843 : [需求](Keyboard)Your side changed the name of the Android Keyboard but need to be changed, the name cannot be SageReal.
+                去掉输入法中的SageReal字样
+                M:packages/inputmethods/SageRealIME/res/values/strings.xml
+
+            Redmine #81844 : [需求](Imput Method)When I try to imput some password after every time I press OK, the cursor go to next option and I need to came back into password field. Please see movie : https://www.sendspace.com/pro/dl/8ns7uy
+                修改使用传统输入法输入wifi密码
+                M:packages/apps/Settings/src/com/android/settings/wifi/WifiConfigController.java
+                    CheckBox cb_show_password = (CheckBox) mView.findViewById(R.id.show_password);
+                    mPasswordView.setInputType(InputType.TYPE_CLASS_TEXT | (cb_show_password.isChecked() ? InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD : InputType.TYPE_TEXT_VARIATION_PASSWORD));
+
+11月30日：
+            Redmine #67256 : [需求]添加多语言支持及相关输入法----优化输入法(自动输入+取消跳转)
+                优化输入法(自动输入+取消跳转)
+                M:alps/packages/inputmethods/SageRealIME/src/com/sagereal/zq/softkeyboard/SoftKeyboard.java
+
+12月01日：
+            Redmine #67256 : [需求]添加多语言支持及相关输入法----优化输入法(将自动输入时间改为500ms)
+                优化输入法(将自动输入时间改为500ms)
+                M:alps/packages/inputmethods/SageRealIME/src/com/sagereal/zq/softkeyboard/SoftKeyboard.java
+                M:alps/packages/inputmethods/SageRealIME/src/com/sagereal/zq/softkeyboard/CandidateView.java
+
+12月09日：
+            Redmine #68191 : [Bug](Whatsapp)应用中部分功能不能使用
+                修改WhatsApp表情输入问题
+                M:alps/frameworks/base/core/java/android/widget/AbsListView.java
+                M:alps/frameworks/base/core/java/android/widget/ListView.java
+                M:alps/frameworks/base/core/java/android/widget/PopupWindow.java
+
+12月10日：
+            Redmine #82876 : [工厂测试]按键测试中wifi连接不上
+                按键测试中wifi连接不上
+                M:alps/packages/apps/FactoryDevelopX/src/com/example/factorydevelopx/KeyTest.java
+
+12月12日：
+            Redmine #82993 : [工厂反馈]卡1信号跳动2-3格
+                修改3G信号显示
+                M:sagereal/custom/modem/*
+                M:SR72_W_KK_HSPA_MOLY.WR8/custom/modem/common/ps/custom_l4_utility.c
+
+12月13日：
+            Redmine #82991 : [bug](开机)插入国内卡开机或恢复出厂设置，界面提示语中取消显示为中文
+                修改SOS提示语中文翻译
+                M:packages/apps/Settings/res/layout/soswelcom.xml
+                M:packages/apps/Settings/res/values-zh-rCN/strings.xml
+
+12月14日：
+            Redmine #71350 : [bug](Email)收件箱中的问题
+                修改附件问题和高亮框的问题
+                M:alps/packages/apps/Email/UnifiedEmail/src/com/android/mail/browse/SwipeableConversationItemView.java
+                M:alps/packages/apps/Email/UnifiedEmail/res/layout/conversation_message_attachment_bar.xml
+
+12月15日：
+            Redmine #67256 : [需求]添加多语言支持及相关输入法----添加常用符号
+                添加常用符号
+                M:alps/frameworks/base/core/java/android/text/method/MultiTapKeyListener.java
+                M:alps/packages/inputmethods/SageRealIME/src/com/sagereal/zq/softkeyboard/LanguageResource.java
+
+            Redmine #74283 : [需求](Date and time)Factory default time: 01.11.2016
+                修改默认日期，用 default_restore_year default_restore_month default_restore_day 宏控
+                M:sagereal/mk/up249_XB52U_AllView/ProjectConfig.mk
+                M:sagereal/script/clone_mmi.sh
+                M:alps/frameworks/base/services/java/com/android/server/NetworkTimeUpdateService.java
+                M:alps/mediatek/frameworks/base/res/res/values/config.xml
+                M:alps/mediatek/frameworks/base/res/res/values/symbols.xml
+
+12月19日：
+            Redmine #81470 :  [bug](相机)相机设置饱和度、亮度、对比度各选项拍照，照片没有明显变化
+                不支持"饱和度、亮度、对比度"，移除相机设置中的"饱和度、亮度、对比度"
+                M:mediatek/custom/common/hal/imgsensor/gc0312_yuv/config.ftbl.gc0312_yuv.h
+
+            Redmine #83577 : [客户反馈]Pls translate in RO language like in sheet 30
+                修改客户罗马尼亚语翻译
+                M:alps/frameworks/base/packages/Keyguard/res/values-ro/strings.xml
+                M:alps/frameworks/base/packages/SystemUI/res/values-ro/strings.xml
+                M:alps/packages/apps/Settings/res/values-ro/strings.xml
+
+            Redmine #83534 : [bug](FM) fm录音后没有当前的录音时间和日期
+                修改FM录音默认名称
+                M:mediatek/packages/apps/FMRadio/src/com/mediatek/FMRadio/FMRecordDialogFragment.java
+
+            Redmine #83535 : [bug](信息)信息添加附件界面，Capture picture显示不全
+                修改信息capture picture单行跑马灯显示
+                M:packages/apps/Mms/res/layout/share_grid_common_item.xml
+
+12月20日：
+            Redmine #75167 : [bug](浏览器)浏览器中的图片无法下载----添加鼠标长按事件
+                长按enter键可以显示下载图片
+                M:alps/frameworks/base/api/current.txt
+                M:alps/frameworks/base/core/java/android/mouse/MouseManager.java
+                M:alps/frameworks/base/core/java/android/os/IMouseService.aidl
+                M:alps/frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
+                M:alps/frameworks/base/services/java/com/android/server/mouse/MouseService.java
+
+            Redmine #68191 : [Bug](Whatsapp)应用中部分功能不能使用----修改Enter的长按事件
+                修改Enter的长按事件
+                M:alps/frameworks/base/services/java/com/android/server/mouse/MouseService.java
+
+12月21日：
+            Redmine #68191 : [Bug](Whatsapp)应用中部分功能不能使用----修改鼠标是否一直显示
+                修改在 WhatsApp 中鼠标是否一直显示，用 SAGEREAL_MOUSE_ALWAYS 宏控
+                M:alps/frameworks/base/services/java/com/android/server/wm/WindowManagerService.java
+                M:alps/mediatek/build/tools/javaoption.pm
+                M:sagereal/mk/*
+
+12月27日：
+            Redmine #68191 : [Bug](Whatsapp)应用中部分功能不能使用----隐藏More菜单
+                隐藏More菜单
+                M:alps/frameworks/base/core/java/android/app/Activity.java
+
+01月06日：
+            Redmine #84321 : [需求](SOS)添加Google Location相关LIB库和框架
+                添加 GmsCore 和 GoogleFramworkService 来支持 NetworkLocation 网络定位
+                M:alps/vendor/kazam_gms/products/gms.mk
+                M:sagereal/mk/up249_XB52U_AllView/ProjectConfig.mk
+                M:alps/frameworks/base/wifi/java/android/net/wifi/WifiStateMachine.java
+                    https://onlinesso.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ11643
+                    private void setScanResults() {
+                        ...
+                        if (bssid != null) {
+                        String ssid = (wifiSsid != null) ? wifiSsid.toString() : WifiSsid.NONE;
+                        String key = bssid + ssid;
+                        tsf =SystemClock.elapsedRealtimeNanos()/1000;//add this line                     
+                        ScanResult scanResult = mScanResultCache.get(key);
+                        ...
+                    }
+
+01月12日：
+            Redmine #68191 : [Bug](Whatsapp)应用中部分功能不能使用----修改WhatsApp滚动问题
+                优化WhatsApp滚动问题
+                M:alps/frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
+                M:alps/frameworks/base/services/java/com/android/server/mouse/MouseService.java
+
+01月13日：
+            Redmine #85418 : [需求](app)客户需求删除附件apps
+                关闭 MTK_FW_UPGRADE 宏，移除 com.fw.upgrade.sysope 和  com.fw.upgrade 等apk
+                M:sagereal/mk/up249_XB52U_AllView/ProjectConfig.mk
+
+            Redmine #85417 : [需求](Settings/account)hide the google account
+                添加GmsCore之后会在Settings/Add acount下显示Google账户，用 SAGEREAL_REMOVE_GOOGLE_ACCOUNT 宏控是否隐藏
+                M:alps/packages/apps/Settings/src/com/android/settings/accounts/ChooseAccountActivity.java
+
+            Redmine #83577 : [客户反馈]Pls translate in RO language like in sheet 30
+                修改SOS罗马尼亚语翻译
+                M:alps/packages/apps/Settings/res/values-ro-nokeys/strings.xml
+
+01月16日：
+            Redmine #85522 : [bug](FM)手机支持 FM share，FM share状态下播放收音机点击菜单Earphone，收音机任响应speaker
+                添加是否已插入耳机的判断，在拔出耳机的时候让该菜单不可用
+                M:alps/mediatek/packages/apps/FMRadio/src/com/mediatek/FMRadio/FMRadioActivity.java
+
+            Redmine #85506 : [bug](日历)来日程查看后未读日程数字不会消失
+                修改来日程查看通知栏消息后未读日程数字会消失
+                M:packages/apps/Calendar/src/com/android/calendar/alerts/AlertReceiver.java
+                    //
+                    private static PendingIntent createDismissAlarmsIntent(Context context, long eventId,
+                        ...
+                        intent.putExtra(AlertUtils.NOTIFICATION_ID_KEY, notificationId);
+                        //add begin
+                        if (action.equals(DismissAlarmsService.SHOW_ACTION)) {
+                            intent.putExtra(AlertUtils.EVENT_SHOWED, true);
+                        }
+                        //add end
+                        ...
+                    }
+
+01月17日：
+            Redmine #85574 : [bug](蓝牙)接收到其他设备发送的蓝牙文件时，没有提示音
+                添加蓝牙接收文件时候的提示应
+                M:packages/apps/Bluetooth/src/com/android/bluetooth/opp/BluetoothOppNotification.java
+
+            Redmine #85527 : [bug](通话)通话记录界面选择删除，出现两个高亮框
+                修改通话记录界面的ListView selector
+                M:alps/packages/apps/Dialer/res/drawable/bottom_border_background_pressed.xml
+                M:alps/packages/apps/Dialer/res/layout/call_log_fragment.xml
+                M:alps/packages/apps/Dialer/res/layout/mtk_call_log_multiple_delete_custom_action_bar.xml
+                M:alps/packages/apps/Dialer/res/layout/mtk_call_log_multiple_delete_fragment.xml
+                M:alps/packages/apps/Dialer/src/com/mediatek/dialer/activities/CallLogMultipleDeleteActivity.java
+                M:alps/packages/apps/Dialer/src/com/mediatek/dialer/list/DropMenu.java
+                    学习 android:drawSelectorOnTop="true" 的使用方法
+
+01月18日：
+            Redmine #68191 : [Bug](Whatsapp)应用中部分功能不能使用----优化WhatsApp下鼠标长按功能(Conversation界面长按Enter键)
+                优化WhatsApp下鼠标长按功能
+                M:alps/frameworks/base/api/current.txt
+                M:alps/frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
+                M:alps/frameworks/base/services/java/com/android/server/mouse/MouseService.java
+
+01月19日：
+            Redmine66374 : Settings界面点击左右按键可以快捷开关wlan，蓝牙等设置项----修改Wi-Fi hotspot选项的快捷开关
+                Settings->More->Tethering->Wi-Fi hotspot 如何监听 onKeyListener ???
+                M:alps/packages/apps/Settings/src/com/mediatek/wifi/hotspot/HotspotSwitchPreference.java
+                    //Redmine66374 zhangqi modified for Wifi hotspot quick switch 2017/01/19:begin
+                    @Override
+                    public boolean onKey(View v, int keyCode, KeyEvent event) {
+                        if(event.getAction() == KeyEvent.ACTION_UP && (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)){
+                            if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT && isChecked()){
+                                if (!callChangeListener(false)) {
+                                    return false;
+                                }
+                                return true;
+                            }else if(keyCode == KeyEvent.KEYCODE_DPAD_RIGHT && !isChecked()){
+                                if (!callChangeListener(true)) {
+                                    return false;
+                                }
+                                return true;
+                            }
+	                    }
+                        return false;
+                    }
+                    //Redmine66374 zhangqi modified for Wifi hotspot quick switch 2017/01/19:end
+                    
+            Redmine #81288 : Redmine81288:[bug](文件管理器)文件管理器界面显示不美观----添加编辑对话框
+                文件管理器等的菜单问题，添加文件管理器编辑对话框
+                M:alps/mediatek/packages/apps/FileManager/src/com/mediatek/filemanager/FileManagerOperationActivity.java
+
+02月11日：
+            Redmine #86489 : [客户反馈]In a field to input text, when pressing keys, could we have the letters that come out first, and the number after?
+                用 SAGEREAL_IME_NUMBER_FIRST 宏控是否把数字显示在输入法最前面
+                M:alps/frameworks/base/api/current.txt
+                M:alps/frameworks/base/core/java/android/text/method/MultiTapKeyListener.java
+                A:alps/frameworks/base/core/java/android/text/method/WordResource.java
+                D:alps/packages/inputmethods/SageRealIME/src/com/sagereal/zq/softkeyboard/LanguageResource.java
+                M:alps/packages/inputmethods/SageRealIME/src/com/sagereal/zq/softkeyboard/SoftKeyboard.java
+                M:sagereal/mk/up19_h353_common/ProjectConfig.mk
+
+02月13日：
+            Redmine #86490 :[客户反馈]Notification : We should be able to remove them by press on the left direction key , as done in appplication historic
+                使用左右导航键移除通知
+                M:alps/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/BaseStatusBar.java
+                    row.setOnKeyListener(new OnKeyListener() {
+                        @Override
+                        public boolean onKey(View v, int keyCode, KeyEvent event) {
+                            if(event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)){
+                                android.util.Log.e("zhangqi3333", "BaseStatusBar->setOnKeyListener(1)");
+                                if(mPile.canChildBeDismissed(v)){
+                                    mPile.dismissRowAnimated(v);
+                                }
+                                return true;
+                            }
+                            return false;
+                        }
+                    });
+
+02月21日：
+            Redmine #86820 : [需求]修改Settings界面
+                修改Settings界面的UI和Framework的UI
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/list_focused_holo.9.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/switch_bg_disabled_holo_dark.9.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/switch_bg_focused_holo_dark.9.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/switch_bg_focused_holo_light.9.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/switch_bg_holo_dark.9.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/switch_bg_holo_light.9.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/textfield_activated_holo_dark.9.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/textfield_activated_holo_light.9.png
+                M:alps/frameworks/base/core/res/res/values/colors.xml
+                M:alps/mediatek/frameworks/base/res/res/drawable-ldpi/switch_thumb_activated_i_light.9.png
+                M:alps/mediatek/frameworks/base/res/res/drawable-ldpi/switch_thumb_activated_o_light.9.png
+                M:alps/mediatek/frameworks/base/res/res/drawable-ldpi/switch_thumb_disabled_i_light.9.png
+                M:alps/mediatek/frameworks/base/res/res/drawable-ldpi/switch_thumb_disabled_o_light.9.png
+                M:alps/mediatek/frameworks/base/res/res/drawable-ldpi/switch_thumb_pressed_i_light.9.png
+                M:alps/mediatek/frameworks/base/res/res/drawable-ldpi/switch_thumb_pressed_o_light.9.png
+                M:alps/mediatek/frameworks/base/res/res/values/styles.xml
+                M:alps/mediatek/packages/apps/SchedulePowerOnOff/AndroidManifest.xml
+                A:alps/mediatek/packages/apps/SchedulePowerOnOff/res/drawable-ldpi/ab_bottom_transparent_dark_holo.png
+                A:alps/mediatek/packages/apps/SchedulePowerOnOff/res/drawable-ldpi/ic_settings_schpwroff.png
+                A:alps/mediatek/packages/apps/SchedulePowerOnOff/res/drawable-ldpi/ic_settings_schpwron.png
+                A:alps/mediatek/packages/apps/SchedulePowerOnOff/res/drawable/ab_bottom_transparent_dark_holo.png
+                A:alps/mediatek/packages/apps/SchedulePowerOnOff/res/drawable/switch_bg_focused_holo_light.9.png
+                A:alps/mediatek/packages/apps/SchedulePowerOnOff/res/drawable/switch_bg_holo_light.9.png
+                A:alps/mediatek/packages/apps/SchedulePowerOnOff/res/drawable/switch_thumb.xml
+                A:alps/mediatek/packages/apps/SchedulePowerOnOff/res/drawable/switch_thumb_activated_i_light.9.png
+                A:alps/mediatek/packages/apps/SchedulePowerOnOff/res/drawable/switch_thumb_activated_o_light.9.png
+                A:alps/mediatek/packages/apps/SchedulePowerOnOff/res/drawable/switch_thumb_disabled_i_light.9.png
+                A:alps/mediatek/packages/apps/SchedulePowerOnOff/res/drawable/switch_thumb_disabled_o_light.9.png
+                A:alps/mediatek/packages/apps/SchedulePowerOnOff/res/drawable/switch_thumb_pressed_i_light.9.png
+                A:alps/mediatek/packages/apps/SchedulePowerOnOff/res/drawable/switch_thumb_pressed_o_light.9.png
+                A:alps/mediatek/packages/apps/SchedulePowerOnOff/res/drawable/switch_track.xml
+                M:alps/mediatek/packages/apps/SchedulePowerOnOff/res/layout/schpwr_alarm_time.xml
+                A:alps/mediatek/packages/apps/SchedulePowerOnOff/res/mipmap-ldpi/ic_launcher_settings.png
+                M:alps/mediatek/packages/apps/SchedulePowerOnOff/res/values/colors.xml
+                A:alps/mediatek/packages/apps/SchedulePowerOnOff/res/values/themes.xml
+                A:alps/packages/apps/Settings/res/drawable-ldpi/ab_bottom_transparent_dark_holo.png
+                A:alps/packages/apps/Settings/res/drawable-ldpi/btn_check_off.png
+                A:alps/packages/apps/Settings/res/drawable-ldpi/btn_check_on.png
+                A:alps/packages/apps/Settings/res/drawable-ldpi/btn_radio_off.png
+                A:alps/packages/apps/Settings/res/drawable-ldpi/btn_radio_on.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_bt_config.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_menu_add_dark.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_menu_refresh_holo_dark.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_menu_reset_am.png
+                A:alps/packages/apps/Settings/res/drawable-ldpi/ic_settings_add.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_settings_backup.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_settings_battery.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_settings_bluetooth2.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_settings_data_usage.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_settings_date_time.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_settings_display.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_settings_dualsim_am.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_settings_language.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_settings_location.png
+                A:alps/packages/apps/Settings/res/drawable-ldpi/ic_settings_more.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_settings_profiles_am.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_settings_schpwronoff_am.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_settings_security.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_settings_storage.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_settings_wireless.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_wifi_lock_signal_1_dark.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_wifi_lock_signal_2_dark.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_wifi_lock_signal_3_dark.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_wifi_lock_signal_4_dark.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_wifi_signal_1_dark.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_wifi_signal_2_dark.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_wifi_signal_3_dark.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_wifi_signal_4_dark.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_wps_dark.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_wps_light.png
+                A:alps/packages/apps/Settings/res/drawable-ldpi/switch_bg_focused_holo_light.9.png
+                A:alps/packages/apps/Settings/res/drawable-ldpi/switch_bg_holo_light.9.png
+                A:alps/packages/apps/Settings/res/drawable-ldpi/switch_thumb_activated_i_light.9.png
+                A:alps/packages/apps/Settings/res/drawable-ldpi/switch_thumb_activated_o_light.9.png
+                A:alps/packages/apps/Settings/res/drawable-ldpi/switch_thumb_disabled_i_light.9.png
+                A:alps/packages/apps/Settings/res/drawable-ldpi/switch_thumb_disabled_o_light.9.png
+                A:alps/packages/apps/Settings/res/drawable-ldpi/switch_thumb_pressed_i_light.9.png
+                A:alps/packages/apps/Settings/res/drawable-ldpi/switch_thumb_pressed_o_light.9.png
+                A:alps/packages/apps/Settings/res/drawable/btn_check.xml
+                A:alps/packages/apps/Settings/res/drawable/btn_check_off.png
+                A:alps/packages/apps/Settings/res/drawable/btn_check_on.png
+                A:alps/packages/apps/Settings/res/drawable/btn_radio.xml
+                A:alps/packages/apps/Settings/res/drawable/btn_radio_off.png
+                A:alps/packages/apps/Settings/res/drawable/btn_radio_on.png
+                A:alps/packages/apps/Settings/res/drawable/ic_settings_add.png
+                A:alps/packages/apps/Settings/res/drawable/switch_bg_focused_holo_light.9.png
+                A:alps/packages/apps/Settings/res/drawable/switch_bg_holo_light.9.png
+                A:alps/packages/apps/Settings/res/drawable/switch_thumb.xml
+                A:alps/packages/apps/Settings/res/drawable/switch_thumb_activated_i_light.9.png
+                A:alps/packages/apps/Settings/res/drawable/switch_thumb_activated_o_light.9.png
+                A:alps/packages/apps/Settings/res/drawable/switch_thumb_disabled_i_light.9.png
+                A:alps/packages/apps/Settings/res/drawable/switch_thumb_disabled_o_light.9.png
+                A:alps/packages/apps/Settings/res/drawable/switch_thumb_pressed_i_light.9.png
+                A:alps/packages/apps/Settings/res/drawable/switch_thumb_pressed_o_light.9.png
+                A:alps/packages/apps/Settings/res/drawable/switch_track.xml
+                M:alps/packages/apps/Settings/res/layout/app_percentage_item.xml
+                M:alps/packages/apps/Settings/res/layout/preference_header_button_item.xml
+                M:alps/packages/apps/Settings/res/layout/preference_header_item.xml
+                M:alps/packages/apps/Settings/res/layout/preference_header_switch_item.xml
+                M:alps/packages/apps/Settings/res/values/themes.xml
+                M:alps/packages/apps/Settings/res/xml/settings_headers.xml
+                
+02月22日：
+            Redmine #86820 : [需求]修改Settings界面
+                补充修改一些公共UI
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/list_focused_holo.9.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/textfield_search_selected_holo_dark.9.png
+                M:alps/frameworks/base/core/res/res/drawable-ldpi/textfield_search_selected_holo_light.9.png
+                M:alps/packages/apps/Contacts/res/drawable-ldpi/list_focused_holo.9.png
+                M:alps/packages/apps/Contacts/res/layout/item_photo_editor.xml
+                M:alps/packages/apps/Contacts/res/layout/mtk_multichoice_custom_action_bar.xml
+                M:alps/packages/apps/Contacts/res/values/styles.xml
+                A:alps/packages/apps/Contacts/res/drawable/list_focused_holo.9.png
+                A:alps/packages/apps/Contacts/res/drawable/list_longpressed_holo_light.9.png
+                A:alps/packages/apps/Contacts/res/drawable/list_pressed_holo_light.9.png
+                A:alps/packages/apps/Contacts/res/drawable/list_selector_background_transition_holo_light.xml
+                A:alps/packages/apps/Contacts/res/drawable/list_selector_disabled_holo_dark.9.png
+                A:alps/packages/apps/Contacts/res/drawable/list_selector_disabled_holo_light.9.png
+                A:alps/packages/apps/Contacts/res/drawable/list_selector_holo_light.xml
+
+            Redmine #86646 : [客户反馈]UI风格修改----修改Launcher界面图标
+                修改Launcher界面图标
+                M:alps/packages/apps/Launcher3/src/com/android/launcher3/BubbleTextView.java
+                M:alps/packages/apps/Launcher3/src/com/android/launcher3/LauncherApplication.java
+                M:alps/packages/apps/Launcher3/src/com/android/launcher3/PagedViewIcon.java
+                A:alps/packages/apps/Launcher3/src/com/android/launcher3/StatusIcon.java
+
+02月23日：
+            Redmine #86722 : [需求] SW project information
+                修改手机基本信息
+                M:sagereal/mk/up253_m2414_Vodafone/ProjectConfig.mk
+
+            Redmine #86723 : [需求]Network SW settings
+                修改默认网络设置
+                M:sagereal/mk/up253_m2414_Vodafone/ProjectConfig.mk
+                
+            Redmine #87339 : [需求]FOTA集成----按键版
+                集成广升按键版FOTA.apk
+                M:alps/packages/apps/AdupsFotaApp/AdupsFota/noIcon/FWUpgrade.apk
+                M:alps/packages/apps/AdupsFotaApp/AdupsFota/noMenu/FWUpgrade.apk
+                M:alps/packages/apps/AdupsFotaApp/AdupsFota/withIcon/FWUpgrade.apk
+                M:alps/packages/apps/AdupsFotaApp/AdupsFotaReboot/FWUpgradeProvider.apk
+                
+02月24日：
+            Redmine #86733 : [需求]Google Clients ID
+                修改Google Clients ID
+                M:alps/build/target/product/common.mk
+             
+03月02日：
+            Redmine #87711 : [Bug](主界面)插入SIM卡，SIMToolkit在主菜单未显示图标
+                修改SIMToolkit在主菜单上的显示图标
+                M:alps/packages/apps/Launcher3/res/drawable-ldpi/ic_launcher_sim.png
+                M:alps/packages/apps/Launcher3/res/drawable-ldpi/ic_launcher_sim_selected.png
+                M:alps/packages/apps/Launcher3/src/com/android/launcher3/LauncherApplication.java
+    
+03月03日：
+            Redmine #87857 : [Bug](联系人)从拨号盘添加联系人时，在联系人列表界面下方，创建新联系人字体和背景重叠
+                修改添加联系人按钮的字体颜色
+                M:alps/packages/apps/Contacts/res/values/styles.xml
+
+            Redmine #87902 : [bug]（设置）输入PIN码或Password界面字体显示不清晰
+                修改Security->Screen lock->PIN/PASSWORD界面的字体颜色
+                M:alps/packages/apps/Settings/res/drawable/password_field.xml
+                M:alps/packages/apps/Settings/res/layout/choose_lock_password.xml
+
+            Redmine #87808 : [Bug](设置)设置中部分图标与背景色一致，无法清晰显示
+                修改设置下部分界面显示不清楚
+                M:alps/packages/apps/Settings/commonui/src/com/mediatek/gemini/simui/CommonUtils.java
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_bt_cellphone.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_bt_headphones_a2dp.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_bt_headset_hfp.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_bt_imaging.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_bt_keyboard_hid.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_bt_laptop.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_bt_misc_hid.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_bt_network_pan.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_bt_pointing_hid.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_bt_transmit_ftp.png
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_settings_sound.png
+                M:alps/packages/apps/Settings/res/layout/preference_dialog_ringervolume_audioprofile.xml
+                M:alps/packages/apps/Settings/res/values/colors.xml
+                M:alps/packages/apps/Settings/res/values/dimens.xml
+                M:alps/packages/apps/Settings/src/com/android/settings/bluetooth/BluetoothDevicePreference.java
+                M:alps/packages/apps/Settings/src/com/android/settings/bluetooth/BluetoothSettings.java
+                M:alps/packages/apps/Settings/src/com/mediatek/gemini/SimManagement.java
+                A:alps/packages/apps/Settings/res/layout/preference_bluetooth_item.xml
+
+            Redmine #87918 : [Bug](通话)快捷拨号界面号码右侧红色图标显示无实际作用
+                隐藏快速拨号界面的红色删除按钮，修改快速拨号界面的显示主题
+                M:alps/packages/apps/Dialer/AndroidManifest.xml
+                M:alps/packages/apps/Dialer/res/layout/mtk_speed_dial_list_item.xml
+                M:alps/packages/apps/Dialer/res/values/styles.xml
+                A:alps/packages/apps/Dialer/res/drawable-ldpi/ab_bottom_transparent_dark_holo.png
+                A:alps/packages/apps/Dialer/res/drawable/ab_bottom_transparent_dark_holo.png
+
+            Redmine #87922 : [Bug](联系人)联系人编辑界面添加多个联系人号码或邮箱等，右侧“x”图标无法通过光标选中
+                修改添加联系人界面上的叉叉可以被点击
+                M:packages/apps/Contacts/res/layout/edit_delete_button.xml
+
+            Redmine #87948 : [bug](联系人)联系人分享界面信息菜单图标与主菜单显示不一致
+                修改联系人分享界面信息菜单图标
+                M:packages/apps/Contacts/res/drawable-ldpi/mtk_ic_launcher_smsmms.png
+
+03月04日：
+            Redmine #87990 : [反馈] Functional----Screenlock cannot be slide as it is a non-touch screen. Wording to change!
+                replace "Slide" by "Simple lock" and remove "PIN"
+                M:alps/packages/apps/Settings/res/values/strings.xml
+                M:alps/packages/apps/Settings/src/com/android/settings/ChooseLockGeneric.java
+
+            Redmine #87994 : [反馈] Functional----Please remove this pop up after the animation 
+                修改 GoogleLocationService 对话框的显示字符串，把Google变成MobiWire，把Android变成Software，请让客户验证是否可以接受这样的效果
+                M:alps/packages/apps/Settings/res/layout/confirm_lock_password.xml
+
+            Redmine #87958 : [Bug](设置)恢复出厂设置后，主菜单界面多了一个Google setting应用
+                隐藏AllApp中的GoogleSettings图标
+                M:packages/apps/Launcher3/src/com/android/launcher3/AppsCustomizePagedView.java
+                    public void reorderApps() {
+                        ......
+                        //Redmine87958 zhangqi modified to hide GoogleSettings 2017/03/04:begin
+                        for(int i = mApps.size() - 1; i > 0 ; i--){
+                            AppInfo appInfo = mApps.get(i);
+                            if("com.google.android.gms".equalsIgnoreCase(appInfo.getPackageName())){
+                                mApps.remove(appInfo);
+                            }
+                        }
+                        //Redmine87958 zhangqi modified to hide GoogleSettings 2017/03/04:end
+                    }
+
+            Redmine #87993 : [反馈] Functional----No mouse track when in browser, so really not convenient to browser. Need to implement it!
+                修改在浏览器中显示鼠标
+                M:alps/frameworks/base/services/java/com/android/server/wm/WindowManagerService.java
+
+03月06日：
+            Redmine #88010 : [bug](相机)相机设置中的GPS location info设置为off，拍照后查看图片详情，有location项
+                隐藏Camera中的Location菜单
+                M:packages/apps/Camera/src/com/android/camera/SettingChecker.java
+                M:alps/packages/apps/Camera/src/com/android/camera/SettingChecker.java
+
+            Redmine #88097 : [需求] GPS --------by default "off"
+                GPS默认关闭
+                M:/media/passion/zq/UP253_0220/sagereal/mk/up253_m2414_Vodafone/ProjectConfig.mk
+
+03月07日：
+            Redmine #88127 : [需求]移除google location ，仅使用GPS定位
+                关闭BUILD_INFORMAL_GMS，移除GoogleLocationService
+                M:sagereal/mk/up253_m2414_Vodafone/ProjectConfig.mk
+
+            Redmine #87919 : [Bug](联系人)联系人列表界面来回按上下导航键浏览联系人后，高亮选择框消失，无法出现选中联系人
+                去掉联系人列表界面上ActionBar的焦点
+                M:packages/apps/Contacts/src/com/android/contacts/list/DefaultContactBrowseListFragment.java
+                    int id = getResources().getIdentifier("action_bar_container", "id", getActivity().getPackageName());
+                    View action_bar_container = getActivity().getWindow().getDecorView().findViewById(id);
+                    if(action_bar_container instanceof ViewGroup){
+                        ((ViewGroup)action_bar_container).setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+                    }
+
+03月09日：
+            Redmine #86820 : [需求]修改Settings界面----修改 Settings/Backup & reset 的界面
+                修改 Settings/Backup & reset 的界面
+                M:packages/apps/Settings/res/layout/master_clear.xml
+
+            Redmine #86820 : [需求]修改Settings界面----修改Settings/Wifi界面
+                修改 Settings/Wifi 界面
+                M:alps/packages/apps/Settings/src/com/android/settings/wifi/AdvancedWifiSettings.java
+                M:alps/packages/apps/Settings/res/values/themes.xml
+
+03月10日：
+            Redmine #88498 : [需求]Facebook just provided us the 3 applications to preload
+                内置法国需求FaceBookLite
+                M:alps/build/target/product/common.mk
+                M:sagereal/mk/up253_m2414_Vodafone/ProjectConfig.mk
+                A:alps/packages/apps/SageRealApp/FaceBookLiteSFR/Android.mk
+                A:alps/packages/apps/SageRealApp/FaceBookLiteSFR/appmanager.apk
+                A:alps/packages/apps/SageRealApp/FaceBookLiteSFR/appmanager.conf
+                A:alps/packages/apps/SageRealApp/FaceBookLiteSFR/fblite-armv7-v31.apk
+                A:alps/packages/apps/SageRealApp/FaceBookLiteSFR/fblite-stub-19.0.3.apk
+                A:alps/packages/apps/SageRealApp/FaceBookLiteSFR/installer.apk
+
+03月14日：
+            Redmine #88752 : [BUG] Please remove the point in the first screen as shonw in the picture
+                去掉 Launcher 底部的小点点
+                M:alps/packages/apps/Launcher3/src/com/android/launcher3/PageIndicator.java
+
+            Redmine #88750 : [BUG]Screen lock : please set "None" by default
+                修改 def_lockscreen_disabled = true，默认锁屏模式为关闭
+                M:sagereal/mk/up253_m2414_Vodafone/ProjectConfig.mk
+                M:sagereal/script/clone_mmi.sh
+
+            Redmine #88749 : [BUG] When we have a missing call, it is really not intuitive to remove the miss call counter.
+                在进入到Phone的时候移除未接来电通知
+                M:packages/apps/Dialer/src/com/android/dialer/DialtactsActivity.java
+                    CallLogQueryHandlerEx mCallLogQueryHandler = new CallLogQueryHandlerEx(getContentResolver(), null);
+                    mCallLogQueryHandler.markNewCallsAsOld();   //标记为已读
+                    removeMissedCallNotifications();            //移除通知
+                    
+                    //Redmine88749 zhangqi modified to remove missed call notification 2017/03/14:begin
+                    private void removeMissedCallNotifications() {
+                        android.util.Log.e("zhangqi6666", "DialtactsActivity->removeMissedCallNotifications()");
+                        try {
+                            ITelephony telephony = ITelephony.Stub.asInterface(ServiceManager.getService("phone"));
+                            if (telephony != null) {
+                                telephony.cancelMissedCallsNotification();
+                            } else {
+                                android.util.Log.e("zhangqi6666", "Telephony service is null, can't call cancelMissedCallsNotification");
+                            }
+                        } catch (RemoteException e) {
+                            android.util.Log.e("zhangqi6666", "Failed to clear missed calls notification due to remote exception");
+                        }
+                    }
+                    //Redmine88749 zhangqi modified to remove missed call notification 2017/03/14:end
+
+            Redmine #85506 : [bug](日历)来日程查看后未读日程数字不会消失
+                在进入日历之后未读消息马上消失
+                M:packages/apps/Calendar/src/com/android/calendar/AllInOneActivity.java
+                    com.mediatek.calendar.MTKUtils.writeUnreadReminders(this, 0);   //添加这一行代码即可
+
+03月18日：
+            Redmine #87857 : [Bug](联系人)从拨号盘添加联系人时，在联系人列表界面下方，创建新联系人字体和背景重叠
+                修改ActionBar高亮的颜色action_bar_background_highlight
+                M:alps/packages/apps/Contacts/res/values/colors.xml
+
+03月20日：
+            Redmine #89387 : [bug](*906#)*906#中摄像头测试时缺少提示语
+                打开 SAGEREAL_FLASHLIGHT_SUPPORT=yes 即可
+                M:sagereal/mk/up253_m2414_Vodafone/ProjectConfig.mk
+
+            Redmine #89448 : [bug](设置)设置下关于手机中的问题
+                String serial = SystemProperties.get("gsm.serial");
+                SAGEREAL_BUILD_DISPLAY_ID = V02_170317_Sakari_MP
+                M:alps/packages/apps/Settings/src/com/android/settings/deviceinfo/Status.java
+                M:sagereal/mk/up253_m2414_Vodafone/ProjectConfig.mk
+
+            Redmine #89341 : [客户反馈]imput text : can we put the lower case letter, capital letter , number ad special characters?
+                按照客户需求修改输入法的输入顺序
+                M:alps/frameworks/base/core/java/android/text/method/WordResource.java
+
+            Redmine #89455 : [bug](待机界面)待机界面上的未读信息图标位置与主界面上的未读图标位置显示不一致
+                修改桌面上未读消息的位置 workspace_unread_margin_top/workspace_unread_margin_right
+                M:packages/apps/Launcher3/res/values/dimens.xml
+
+            Redmine #89475 : [Bug](图库)查看拍摄照片详情未显示项目名
+                修改照片详情 Model 和 Maker 的名称，用 SAGEREAL_MAKE_MODEL 宏控
+                M:sagereal/mk/up253_m2414_Vodafone/ProjectConfig.mk
+
+            Redmine #89479 : [Bug](Email)进入email标题栏文字颜色与背景色重叠
+                修改Email状态栏风格
+                M:alps/packages/apps/Email/UnifiedEmail/res/values/styles.xml
+                M:alps/packages/apps/Email/UnifiedEmail/res/drawable-ldpi/ab_bottom_transparent_dark_holo.png
+
+            Redmine #89488 : [bug](通话)通话记录界面选择单条通话记录删除，高亮框与通话记录会覆盖，字体看不到
+                修改通话记录界面的高亮
+                M:alps/packages/apps/Contacts/res/layout/photo_selector_view.xml
+                M:alps/packages/apps/ContactsCommon/res/layout/contact_tile_starred.xml
+                M:alps/packages/apps/Dialer/res/layout/mtk_call_log_multiple_delete_fragment.xml
+                M:alps/packages/apps/Dialer/res/values/styles.xml
+                A:alps/packages/apps/Contacts/res/drawable/call_detail_contact_photo_selector.xml
+                A:alps/packages/apps/Contacts/res/drawable/list_focused_holo_a.9.png
+                A:alps/packages/apps/ContactsCommon/res/drawable/call_detail_contact_photo_selector.xml
+                A:alps/packages/apps/ContactsCommon/res/drawable/list_focused_holo_a.9.png
+
+03月21日：
+            Redmine #89485 : [Bug](设置)WIFI热点开启后无法阻止某设备连接热点
+                修改Wifi热点对话框可以block设备
+                M:packages/apps/Settings/src/com/mediatek/wifi/hotspot/TetherWifiSettings.java
+                M:alps/packages/apps/Settings/src/com/mediatek/wifi/hotspot/ButtonPreference.java
+
+            Redmine #89503 : [Bug](Email)Email收件箱界面已回复的邮件箭头与字重叠
+                修改Email收件箱回复图标与文字不重叠
+                M:packages/apps/Email/UnifiedEmail/src/com/android/mail/browse/ConversationItemView.java
+
+            Redmine #89495 : [客户反馈]When we select factory reset 
+                去掉WhatsAppDownloader,并替换最新版的WhatsApp
+                M:alps/build/target/product/common.mk
+                M:alps/packages/apps/SageRealApp/WhatsApp/Android.mk
+                M:alps/packages/apps/SageRealApp/WhatsApp/WhatsApp.apk
+                M:alps/packages/apps/SageRealApp/WhatsApp/lib/libcurve25519.so
+                M:alps/packages/apps/SageRealApp/WhatsApp/lib/libpl_droidsonroids_gif.so
+                A:alps/packages/apps/SageRealApp/WhatsApp/lib/libpl_droidsonroids_gif_surface.so
+                M:alps/packages/apps/SageRealApp/WhatsApp/lib/libresample.so
+                M:alps/packages/apps/SageRealApp/WhatsApp/lib/libvlc.so
+                M:alps/packages/apps/SageRealApp/WhatsApp/lib/libwa_dalvik.so
+                M:alps/packages/apps/SageRealApp/WhatsApp/lib/libwhatsapp.so
+                M:sagereal/mk/up253_m2414_Vodafone/ProjectConfig.mk
+
+            Redmine #89495 : [客户反馈]When we select factory reset
+                修改恢复出场设置的字符串提示，去掉google相关字符串
+                M:alps/packages/apps/Settings/res/values/strings.xml
+
+            Redmine #89553 : [bug](联系人)在联系人详情界面长按号码复制到剪贴板后，在信息文本处无法粘贴
+                1.手机没有粘贴功能，故隐藏
+                2.修改dial with country code对话框显示完全，并可以上下滚动显示
+                M:alps/packages/apps/Contacts/src/com/android/contacts/detail/ContactDetailFragment.java
+                M:alps/packages/apps/ContactsCommon/res/layout/mtk_international_number_prefix_text_button_text_edit_text_text.xml
+                M:alps/packages/services/Telephony/res/layout/mtk_international_number_prefix_text_button_text_edit_text_text.xml
+
+            Redmine #89504 : [bug](通话)测试机来电界面，调出信息界面后，配合机挂断，信息文本不会返回
+                修改挂断电话的时候让信息对话框消失
+                M:packages/apps/InCallUI/src/com/android/incallui/AnswerFragment.java
+                M:packages/apps/InCallUI/src/com/android/incallui/InCallActivity.java
+
+03月22日：
+            Redmine #89585 : [bug](联系人)添加群组界面，键入联系人姓名处经常选不中
+                修改添加群组界面的焦点问题
+                M:alps/packages/apps/Contacts/src/com/android/contacts/group/GroupEditorFragment.java
+
+            Redmine #89661 : [bug](彩信)彩信附件中图标显示问题
+                修改彩信附件图标
+                M:alps/packages/apps/Mms/res/layout/icon_list_item.xml
+                M:alps/packages/apps/Mms/src/com/android/mms/ui/MessageUtils.java
+                M:alps/packages/apps/Mms/res/drawable-ldpi/*
+
+            Redmine #89493 : [客户反馈]in SMS settings / SMS text
+                修改短信编码，只要修改 MmsConfigImpl.java 中的 isEnableSmsEncodingType 的返回值为 true 即可
+                M:alps/packages/apps/Mms/ext/src/com/mediatek/mms/ext/MmsConfigImpl.java
+                M:alps/packages/apps/Mms/res/values-en-rUS/mtk_strings.xml
+                M:alps/packages/apps/Mms/res/values/mtk_strings.xml
+
+            Redmine #89654 : [客户反馈]When we see a video play on browser , we cannot adjust the sounds by "#" and " * " keys 
+                修改播放声音的时候可以通过*#调节音量
+                M:frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
+
+            Redmine #89657 : [客户反馈]In email application, we cannot delete Email account 
+                在 Email/Settings/帐号/ 中添加 Remove account 菜单
+                M:alps/packages/apps/Email/res/values/strings.xml
+                M:alps/packages/apps/Email/res/xml/account_settings_preferences.xml
+                M:alps/packages/apps/Email/src/com/android/email/activity/setup/AccountSettingsFragment.java
+
+            Redmine #89657 : [客户反馈]In email application, we cannot delete Email account 
+                移除SMS Enabled菜单，getListView().addHeaderView(mHeaderView)，用 SAGEREAL_REMOVE_MESSAGE_DEFAULT 宏控
+                M:alps/packages/apps/Mms/src/com/android/mms/ui/SettingListActivity.java
+                M:sagereal/mk/up253_m2414_Vodafone/ProjectConfig.mk
+
+03月23日：
+            Redmine #89567 : [bug](Email)Email中的问题
+                修改Email中的界面显示问题
+                M:alps/packages/apps/Email/UnifiedEmail/res/values/colors.xml
+                M:alps/packages/apps/Email/UnifiedEmail/res/values/styles.xml
+                M:alps/packages/apps/Email/UnifiedEmail/src/com/android/mail/ui/AbstractActivityController.java
+
+            Redmine #89558 : [bug](联系人)联系人详情界面选择用Email分享，进入的不是当前默认的邮箱地址----修改Email附件可以被删除
+                修改Email附件可以被删除
+                M:alps/packages/apps/Email/UnifiedEmail/res/layout/attachment.xml
+                M:alps/packages/apps/Email/res/layout/compose.xml
+
+            Redmine #89930 : [Bug]打电话时没有通话界面
+                通过报错，把 InCallUI 的 ldpi 下添加图片资源添加到 hdpi 中
+                M:alps/packages/apps/InCallUI/res/drawable/bg_message.png
+                M:alps/packages/apps/InCallUI/res/drawable/bg_more.png
+                M:alps/packages/apps/InCallUI/res/drawable/bg_mute.png
+                M:alps/packages/apps/InCallUI/res/drawable/bg_silent.png
+
+03月24日：
+            Redmine #89492 : [客户反馈]Delet key issue----把返回键删除改为#键删除
+                把返回键删除改为#键删除
+                M:alps/frameworks/base/core/java/android/widget/EditText.java
+
+            Redmine #89497 : [客户反馈]in some languages we cannot see all the apk naming exemple in french language
+                修改法语下AllApp的跑马灯效果
+                M:alps/packages/apps/Launcher3/res/values/styles.xml
+                    //https://www.cnblogs.com/ufreedom/p/4248142.html
+                    PagedViewIcon 添加 <item name="android:textIsSelectable">true</item> 属性即可
+                    android:marqueeRepeatLimit=-1 可以用来控制跑马灯无线循环
+                    mScrollUnit = (MARQUEE_PIXELS_PER_SECOND * density) / MARQUEE_RESOLUTION; 可以用来控制跑马灯的速度(TextView.java)
+
+            Redmine #87931 : [Bug](信息)编辑彩信，附件为幻灯片模式时，在预发送界面无法移动光标选中发送按键
+                修改短信界面
+                M:alps/packages/apps/Mms/res/drawable-ldpi/ic_maps_back.png
+                M:alps/packages/apps/Mms/res/drawable-ldpi/ic_maps_next.png
+                M:alps/packages/apps/Mms/res/layout/compose_message_activity.xml
+                M:alps/packages/apps/Mms/res/layout/edit_slide_activity.xml
+                A:alps/packages/apps/Mms/res/drawable/bg_focused_holo.9.png
+                A:alps/packages/apps/Mms/res/drawable/bg_selector.xml
+
+            Redmine #89739 : [bug](文件管理)手机空间存储满，保存文件时提示语错误
+                修改手机空间存储满的时候，保存文件提示为Storage
+                M:alps/mediatek/packages/apps/FMRadio/res/values-en-rGB/strings.xml
+                M:alps/mediatek/packages/apps/FMRadio/res/values-en-rUS/strings.xml
+                M:alps/mediatek/packages/apps/FMRadio/res/values/strings.xml
+                M:alps/packages/apps/Mms/res/values-en-rGB/mtk_strings.xml
+                M:alps/packages/apps/Mms/res/values-en-rUS/mtk_strings.xml
+                M:alps/packages/apps/Mms/res/values/mtk_strings.xml
+
+03月28日：
+            Redmine #90129 : [客户反馈]please remove the android icon as shown in the picutre
+                隐藏下拉状态栏上的图标
+                M:frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java
+
+            Redmine #90142 : [客户反馈]in Email application , on the tap bar , we cannot see the icons , could modify the color in order to make the icon more visible 
+                修改Email状态栏显示不清晰
+                M:packages/apps/Email/UnifiedEmail/res/drawable-ldpi/ic_menu_mark_unread_holo_dark.png
+                M:packages/apps/Email/UnifiedEmail/res/menu/conversation_actions.xml
+                M:packages/apps/Email/UnifiedEmail/res/values/styles.xml
+
+03月29日：
+            Redmine #90137 : [客户反馈]When we are on the home screen, and we select the # key
+                修改长按 # 键输入#，短按 # 键删除
+                M:alps/frameworks/base/core/java/android/widget/EditText.java
+                M:alps/packages/inputmethods/SageRealIME/src/com/sagereal/zq/softkeyboard/SoftKeyboard.java
+
+03月30日：
+            Redmine #88758 : [BUG]New function to change APK on the homescreen
+                在 Settings/Display 下添加 Home screen application 菜单，并实现响应的功能
+                M:alps/packages/apps/Launcher3/AndroidManifest.xml
+                M:alps/packages/apps/Settings/res/values/strings.xml
+                M:alps/packages/apps/Settings/src/com/mediatek/settings/DisplaySettingsExt.java
+                A:alps/packages/apps/Launcher3/res/drawable-ldpi/appwidget_digital_clock_preview.png
+                A:alps/packages/apps/Launcher3/res/drawable-ldpi/ic_add.png
+                A:alps/packages/apps/Launcher3/res/drawable-ldpi/ic_remove.png
+                A:alps/packages/apps/Launcher3/res/drawable/appwidget_digital_clock_preview.png
+                A:alps/packages/apps/Launcher3/res/drawable/ic_add.png
+                A:alps/packages/apps/Launcher3/res/drawable/ic_remove.png
+                A:alps/packages/apps/Launcher3/res/layout/activity_add.xml
+                A:alps/packages/apps/Launcher3/res/layout/activity_edit.xml
+                A:alps/packages/apps/Launcher3/src/com/android/launcher3/EditActivity.java
+                A:alps/packages/apps/Launcher3/src/com/android/launcher3/EditAddActivity.java
+                A:alps/packages/apps/Launcher3/src/com/android/launcher3/FavoriteView.java
+
+            Redmine #90139 : [客户反馈]please the adjustement of the sound on the notification menu as discussed with Guillaume 
+                在下拉状态栏上添加调节音量的功能
+                A:alps/frameworks/base/packages/SystemUI/res/drawable/background_selector.xml
+                A:alps/frameworks/base/packages/SystemUI/res/drawable/list_focused_holo.9.png
+                M:alps/frameworks/base/packages/SystemUI/res/layout/status_bar_expanded.xml
+                M:alps/frameworks/base/packages/SystemUI/res/values/strings.xml
+                M:alps/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBarWindowView.java
+
+            Redmine #90468 : [bug](通话)通话设置界面，字体与背景色显示相近
+                修改ActionBar的颜色
+                M:packages/services/Telephony/res/values/styles.xml
+
+03月31日：
+            Redmine #89652 : [客户反馈]We cannot access to the top bar notification
+                在 idle 界面添加一个按钮，可以下拉状态栏
+                A:alps/packages/apps/Launcher3/res/drawable/arrow_down.xml
+                A:alps/packages/apps/Launcher3/res/drawable/arrow_green.png
+                A:alps/packages/apps/Launcher3/res/drawable/arrow_green_dark.png
+                M:alps/packages/apps/Launcher3/res/layout-port/launcher.xml
+                M:alps/packages/apps/Launcher3/src/com/android/launcher3/Launcher.java
+
+04月01日：
+            Redmine #89819 : [bug](Email)Email中含有附件的问题
+                修改Email附件焦点问题
+                M:alps/packages/apps/Email/UnifiedEmail/res/layout/conversation_message_attachment_tile.xml
+                M:alps/packages/apps/Email/UnifiedEmail/src/com/android/mail/browse/MessageWebView.java
+                M:alps/packages/apps/Email/UnifiedEmail/src/com/android/mail/ui/SecureConversationViewController.java
+                A:alps/packages/apps/Email/res/drawable/background_selector.xml
+                A:alps/packages/apps/Email/res/drawable/list_focused_holo_green.9.png
+
+04月05日：
+            Redmine #90755 : [客户反馈]in settings/language & input/personal dictionary
+                修改Settings/Language/Dictionary下添加按钮的颜色和翻译
+                M:alps/packages/apps/Settings/res/drawable-ldpi/ic_menu_add_light.png
+                M:alps/packages/apps/Settings/res/values/strings.xml
+                M:alps/packages/apps/Settings/res/values/themes.xml
+                M:alps/packages/apps/Settings/src/com/android/settings/UserDictionarySettings.java
+
+            Redmine #90804 : [客户反馈]in downloads apk,when select the file,we cannot see the icon,could modify the color in order to make the icon more visible
+                修改Download下的图标颜色
+                M:alps/frameworks/base/packages/DocumentsUI/res/drawable-ldpi/ic_menu_delete.png
+                M:alps/frameworks/base/packages/DocumentsUI/res/drawable-ldpi/ic_menu_share.png
+                M:alps/frameworks/base/packages/DocumentsUI/res/drawable-ldpi/ic_menu_sortby_am.png
+
+04月07日：
+            Redmine #90750 : [客户反馈]it is not possible to add some characters from default alphabet table default alphabet table (àèéùÇÉ) or even from UCS2 table
+                修改*键的丝印(Δ¡¿£Φ\"¥ΓΛ¤ΩΠΨΣÇøΘΞØÄäÅåÆæàÉéèìÖöòÑñßÜüù§")，并把*键的大小写切换功能去掉
+                M:alps/frameworks/base/core/java/android/text/method/MultiTapKeyListener.java
+                M:alps/frameworks/base/core/java/android/text/method/WordResource.java
+
+04月12日：
+            Redmine #91382 : [需求]WIFI 认证，请添加WPS PIN 选项功能
+                添加 WPS PIN 选项功能
+                M:alps/packages/apps/Settings/src/com/android/settings/wifi/WifiSettings.java
+
+            Redmine #90672 : [bug](存储)存储显示的问题
+                关闭 SAGEREAL_REALROM_SIZE 即可
+                M:sagereal/mk/up249_XB52U_Digicel/ProjectConfig.mk
+
+            Redmine #91018 : [bug](相机)相机菜单显示问题
+                把 id/content 改为 id/content_layout 即可??????????为什么呢？？
+                M:packages/apps/Camera/res/layout/in_line_setting_sublist.xml
+
+            Redmine #91205 : [bug](键盘)任何语言下，长按#键提示语都为英文，请确认
+                移除设置情景模式的Toast
+                M:packages/apps/Launcher3/src/com/android/launcher3/Launcher.java
+
+            Redmine #91169 : [bug](蓝牙)手机接收到蓝牙文件会概率性弹出两次提示语
+                M:packages/apps/Bluetooth/src/com/android/bluetooth/opp/BluetoothOppNotification.java
+                修改蓝牙接收文件的时候点击通知栏，显示接收文件对话框
+
+            Redmine #91198 : [bug](拨号盘)进入拨号盘，输入数字后长按删除键出现的问题
+                修改拨号盘中点击返回键无法触发del功能的问题
+                M:frameworks/base/core/java/android/widget/EditText.java
+
+04月13日：
+            Redmine #91549 : [Bug](工厂测试)*906#最后一页测试按键，*和#键测试显示up和down
+                修改工厂测试中的*#按键测试
+                M:packages/apps/FactoryDevelopX/src/com/example/factorydevelopx/KeyTest.java
+
+            Redmine #91580 : [bug](日历)日历设置界面字体与背景色相近
+                修改Calendar的ActionBar样式
+                M:packages/apps/Calendar/res/values/styles.xml
+                M:packages/apps/Calendar/AndroidManifest.xml
+
+            Redmine #87931 : [Bug](信息)编辑彩信，附件为幻灯片模式时，在预发送界面无法移动光标选中发送按键
+                修改彩信发送按钮的背景
+                M:packages/apps/Mms/res/layout/compose_message_activity.xml
+
+            Redmine #91463 : [bug](设置)设置存储下的一些菜单不能进入操作
+                1.修改 设置/存储 下的一些菜单可以点击
+                2.修改 卸载SD卡/格式化SD卡 功能可以正常使用
+                3.修改 设置/存储/其他 中的菜单可以点击选中
+                M:alps/packages/apps/Settings/src/com/android/settings/deviceinfo/Memory.java
+                M:alps/packages/apps/Settings/src/com/android/settings/deviceinfo/MiscFilesHandler.java
+                M:alps/packages/apps/Settings/src/com/android/settings/deviceinfo/StorageVolumePreferenceCategory.java
+
+            Redmine #91569 : [bug](音乐播放器)音乐播放界面选择上一首或下一首播放高亮框都会高亮到播放列表图标上
+                修改音乐点击下一首之后焦点还是在下一首按钮上
+                M:alps/packages/apps/Music/src/com/android/music/MediaPlaybackActivity.java
+                    //mNextButton.setFocusable(false);
+
+            Redmine #91356 : [bug](Email)Email回复与转发界面显示不美观
+                修改Email转发界面ActionBar上的字体颜色为黑色
+                M:alps/packages/apps/Email/UnifiedEmail/res/layout/compose_mode_display_item.xml
+                M:alps/packages/apps/Email/UnifiedEmail/res/values/styles.xml
+
+            Redmine #91284 : [客户反馈]When Wifi/Data is not available, FB Lite will promote user with the screen below to turn on WiFi/Data. 
+                修改鼠标显示在所有界面之上 mLayoutParams.type = WindowManager.LayoutParams.TYPE_TOP_MOST;
+                M:frameworks/base/services/java/com/android/server/mouse/MouseService.java
+
+04月20日：
+            Redmine #91493 : [bug](联系人)联系人界面显示不美观
+                去掉AllContacts界面的ActionBar
+                M:alps/packages/apps/Dialer/AndroidManifest.xml
+                M:alps/packages/apps/Dialer/res/layout/all_contacts_activity.xml
+                M:alps/packages/apps/Dialer/res/layout/phone_favorite_tile_view.xml
+                M:alps/packages/apps/Dialer/src/com/android/dialer/list/AllContactsActivity.java
+
+            Redmine #91564 : [bug](图库)进入图库界面高亮框会高亮在第一个相册上，此时再按上导航键，高亮框不会在图库界面了
+                图库焦点修改
+                M:packages/apps/Gallery2/src/com/android/gallery3d/app/AlbumSetPage.java
+                M:packages/apps/Gallery2/src/com/android/gallery3d/app/AlbumPage.java
+
+            Redmine #87379 : [Whatsapp] The smiley selection is now with the mouse pad, that is good. But when scrolling down to select a smiley, we get a black screen. We should have all the smiley without black screen
+                修改 WhatsApp 中所有表情都可以被选中
+                M:alps/frameworks/base/core/java/android/widget/AbsListView.java
+                M:alps/frameworks/base/core/java/android/widget/ListView.java
+                M:alps/frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
+
+            Redmine #92020 : [客户反馈]As per Vodafone New Zealand test specification master template, DUT should be able to setup a multi-party calling of at least 5 parties involved.
+                显示合并通话菜单
+                M:packages/apps/InCallUI/src/com/android/incallui/CallButtonFragment.java
+
+04月21日：
+            Redmine #92447 : [BUG]M2414机器无法使用PUK码解PIN码,请安排修改. involved.
+                修改锁屏界面可以解锁PUK和PIN码，原因是点击中间按键的时候解锁过程走了两次，添加一个ACTION_UP来让它只在UP事件的时候才执行解锁步骤
+                M:frameworks/base/packages/Keyguard/src/com/android/keyguard/KeyguardAbsKeyInputView.java
+
+04月22日：
+            Redmine #92698 : [Bug]M2414无法输入*号，经验证浏览器、短信、电话本等编辑界面均无法输入*号
+                修改*键可以输入*
+                M:alps/frameworks/base/core/java/android/text/method/MultiTapKeyListener.java
+                M:alps/frameworks/base/core/java/android/text/method/WordResource.java
+
+04月26日：
+            Redmine #92825 : [Bug](情景模式)情景模式的铃声音量调节与状态栏的铃声音量调节不同步
+                修改状态栏的铃声音量和系统一致
+                M:alps/frameworks/base/packages/SystemUI/res/layout/gemini_status_bar_expanded.xml
+                M:alps/frameworks/base/packages/SystemUI/res/layout/status_bar_expanded.xml
+                M:alps/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBarWindowView.java
+                A:alps/frameworks/base/packages/SystemUI/res/layout/notification_adjust_volume.xml
+                D:sagereal/product/up283_gm2806_common/alps/frameworks/base/packages/SystemUI/res/layout/gemini_status_bar_expanded.xml
+
+04月27日：
+            Redmine #92021 : [客户需求]Network SW settings
+                修改下拉状态栏下面的运营商名称不为全大写
+                M:alps/frameworks/base/packages/SystemUI/res/values/styles.xml
+                    <item name="android:textAllCaps">false</item>
+
+05月03日：
+            Redmine #93162 : [bug](按键)后台播放音乐，设置密码锁后，按红键概率性不能灭屏
+                修改后台播放音乐，设置密码锁，解锁之后，红键功能正常
+                M:frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
+
+05月12日：
+            Redmine #94309 : [客户反馈 87]Vodafone Net2 should be the default APN
+                1.修改默认APN不可编辑，用SAGEREAL_PRESET_APN_EDITABLE宏控
+                2.删除几个默认的apn参数
+                M:alps/packages/apps/Settings/ext/src/com/mediatek/settings/ext/DefaultApnSettingsExt.java
+                M:sagereal/product/up253_m2414_Vodafone/default/apns-conf.xml
+
+
+
+
+
+
+
+
+数组如何删除一个元素？？
+
+
+
+
+
+        Settings->Storage->Erase Phone storage不能用了
+        相机中的添加闪关灯菜单
+闪光灯多次进入的时候会有问题
+        蓝牙列表中显示的图标需要修改为其他颜色
+        情景模式中显示的图标需要修改为其他颜色
+        相机中拍照按钮图片修改
+鼠标模式优化，使用线程，用apk先调试
+EditText中是如何判断使用哪种输入法的？
+游戏优化，使用双缓冲
+如何显示About phone??用 ril 值控？？
+        输入法(阿姆哈拉语)  MultiTapKeyListener----目前无法实现拼词输入法
+        研究联想输入法----需要第三方支持
+EditText光标移到前面不能返回，功能机也是如此
+在 Launcher 界面上的 showAllApp 状态和 overviewMode 状态下点击红键会直接灭屏？？？可以用写数据库的方法
+
+快速设置语言？？
+长按*键切换输入法
+基本移植任务
+主菜单点击数字键进入指定应用
+        文本复制粘贴功能----去掉此功能
+widget添加功能
+如何把 Overflow 按钮移到最右边
+mtklog无法打开，开关按钮获取不到焦点，apk在什么地方？？   alps/mediatek/binary/packages/sr72_w_lca/MTKLogger/MTKLogger.apk
+优化响应速度
+控件中字符串完全居中显示？？？
+        通知栏添加移动删除功能？？
+Launcher图标主题修改
+
+
+        FOTA不插卡升级失败？？广升修改apk之后可以升级
+        鼠标长按，参考power键的长按效果
+        输入法还有点问题，显示不全，返回键，
+        FacebookLite密码框
+        FacebookLite和whatsapp的升级问题
+        输入法输入字符之后为什么会向下移？输入法的问题，已改进输入法
+        浏览器的输入问题，UA？？？优化输入法
+        修改 preference disable 状态的背景
+        拨号盘界面如何直接输入 # 号？？？ tel:#
+        Gallery中的 CropActivity	界面不能裁剪图片？？？模拟TouchEvent？？？隐藏裁剪功能
+        目前软键盘虽然隐藏了，但还是存在，还是需要点击一次back键才可以真正隐藏？？？替换成SageRealIME没问题了
+        解锁功能（默认关闭锁屏功能）长按*键或组合键解锁
+        锁屏功能（短按power键锁屏，去掉常见解锁功能）
+        去掉一些没用的apk（哪些？？？）
+        通过判断包名限制安装apk
+        日历，录音，浏览器，时钟，FM，等模块功能重新开发
+        快捷键功能（情景模式设置，长按#静音模式）
+
+
+        68117[bug](图库)图库中的问题                                                    P1 
+        67913[bug](浏览器)没有删除单条或多条历史浏览记录功能                            P1
+        67344[bug](恢复出厂设置)*#0*#恢复出厂设置，小机器人格式化的图片显示不完整         P1 图片     参考 #25776
+        67933[bug](设置)语言和输入法界面无法选择右侧的设置图标进入                      P1
+        67338[bug](通话)耳机通话进入休眠后按耳机控制键不起作用                          P1  驱动Check 共性问题，不修改
+        66797[bug](通话记录)通话详情界面显示不全                                        P1
+        67440[bug](彩信)收到含有附件的彩信，无法对彩信进行操作                          P1
+		67067[bug](联系人)新建联系人至手机，选择图片后不能上下移动                      P1
+		67230[bug](通话)语音信箱设置后，不能拨打                                        P1
+		67180[bug](通话)设置快速拨号后，长按数字键不会拨出快速拨号的号码                P1
+		67051[bug](拨号盘)拨号盘的问题----长按数字键                                   P1
+		67967[bug](相机)进入相机录像，录像时长旁边有暂停、继续按钮，但无法选中          P1
+		67813[bug](设置)情景模式下添加新模式后，不能进入新模式中进行设置                P1
+		64773[bug](彩信)新建信息界面添加联系人处无法输入邮箱地址                        P1
+		67550[bug](蓝牙)apk文件不能通过蓝牙分享                                         P1
+		68023[bug](通话)通话中按右软键退出，选择拨号盘进入不能切换到通话界面            P1
+		67239[bug](通话)来电界面，无法选择短信回复                                      P1
+		65722[Bug](通话)来电界面有滑动图标，联系人号码显示不全                          P1  宋丽霞
+		67091[bug](通话)通话中不能调节音量                                              P1  用导航键
+		67823[bug](设置)壁纸中选中选择图片进入到最近界面无法选中图片设置为壁纸          P1 同67067
+		67244[bug](联系人)新建联系人至手机，选择从图库中选择照片，进入最近按下导航键和ok键不起作用  P1 同67067
+		65746[Bug](蓝牙)接收到蓝牙文件时，状态栏信息无法下拉进行接收                    P1
+		68144[bug](图库)图库中视频出现的问题                                            P1
+		67836[bug](设置)设置存储位置为手机，截图文件保存在T卡中                         P1
+		65678[Bug](充电)关机状态下充电图标显示始终为低电量                              P1  驱动
+		------------------------------------------
+		67172[bug](通话)拨号盘界面和通话界面有拨号图标                                  P2
+		68158[bug](视频播放器)不支持的视频文件在视频播放器中会显示                      P2
+		67960[bug](设置)辅助功能中一些菜单与实际不符                                    P2  菜单可以先去掉
+		68107[bug](音乐播放器)播放音乐时进入设置情景模式中调节音量，设置铃声，铃声和音乐会同时播放  P2
+		67939[bug](设置)自定义时间和日期选择后，下方的完成不会高亮                      P2
+		67569[bug](设置)蓝牙耳机听音乐和通话声音很卡                                    硬件确认
+		67833[bug](设置)亮度调到最亮时，在灰色界面按按键时屏幕有条纹                    驱动或硬件
+		65754[bug](YGPS)*#0777#工厂模式中YGPS搜不到星                            硬件确认
+		67370[bug](apk)部分第三方APK安装后无法运行                                      Ignore
+		66767[bug](开关机)手机没有重启菜单                                              OK                                            
+		67461[bug](信息)手机在待机界面来短信，输入内容后点击查看，到短信会话界面后输入的信息内容消失了  OK
+		66758[Bug](日期)刷机后开机默认日期是2013-1-1，建议修改成2016年                  OK
+		67494[bug](信息)进入到修改数量界面，长按ok键不能直接修改到短信和彩信限制信息的数量   OK
+		67501[bug](设置)SIM管理下修改SIM卡中的设置背景颜色时无法设置颜色                0701 OK
+		65750[bug](图库)图库中查看缩列图片时，只能上下，左右切换不起作用；查看某张图片无法左右切换到下一张或上一张                   P2
+		66764[bug](紧急拨号)紧急拨号界面 电话图标有锯齿且图标显示较大显示不美观          P2
+		67480[bug](信息)信息设置中勾选振动，来信息时手机不会振动                        P2
+		67952[bug](设置)设置日期格式，待机界面与锁频界面的日期格式与设置的不一致        P2
+		67790[bug](设置)情景模式下选择标准模式进入到音量界面没有高亮框                  P2
+		67153[bug](通话)输入+86+手机号码，呼出语音电话,号码显示不全                     P2
+		67832[bug](录音)录音过程中没有调节音量的功能                                    P2
+		66756[bug](锁屏界面)设置锁屏后，待机界面显示问题                               P2
+		67064[bug](拨号盘)拨号盘中输入号码选择新建联系人后，之前输的号码不会显示        P2   ignore
+        67024[bug](待机界面)待机界面点击数字键进入联系人界面，屏幕上方会闪现一条白线      P2
+        66808[bug](电话本)电话本详情界面显示视频电话的图标，拨打出去是语音电话          P2
+        67337[bug](视频电话)手机没有前摄，建议去除视频通话                              P2
+        67446[bug](彩信)彩信中添加音频文件后，选择播放，播放时不能调节音量大小且播放条和播放标记不在一条线上    P2
+        67562[bug](设置)设置下进入流量使用情况开启数据连接，选择更改流量使用周期，选择日期后，确定选项不会高亮           P2
+        67802[bug](设置)情景模式下勾选拨号键盘触摸音效，进入拨号盘按数字键没有声音，*键和#键有声音并且有振动                        P2
+        67855[bug](设置)设置SIM 锁定与手机防盗功能后，重启手机后界面有键盘显示及时间显示不全  P2
+        67457[bug](信息)信息会话界面，按下键查看信息无高亮框                            P2
+        67206[bug](联系人)联系人放在主屏幕上后，进入后对应的功能不能使用                P2  主屏幕功能先保留，强化测试后再确认是否去掉，隐藏
+        从功能菜单退出时，高亮bar最好能在返回的功能菜单上                     P2
+        67284[bug](联系人)添加联系人至收藏夹，在收藏夹选中联系人后按ok键打不开             P2
+        67487[bug](信息)信息设置中基本设置下勾选显示邮箱地址，在信息编辑界面，输入存在号码和邮件地址的联系人字符，列表界面只会显示联系人号码，而邮箱地址不会显示      P2
+        68122[bug](音乐播放器)音乐播放器中的一些问题                                    P2
+        67307[bug](联系人)添加群组的问题                                                P2
+        67150[bug](通话记录)通话记录的问题                                             P2
+        67066[Bug](联系人)联系人界面高亮框无法移动选中                                   P2
+        67438[bug](彩信)彩信添加附件的问题                                              P2
+        67350[bug](信息)新建信息输入号码时弹出匹配联系人，选择某联系人按ok键不能选中        P2
+        67059[bug](通话)号码归属地显示为中文                                           P2   待客户确认，暂不修改
+        67229[bug](状态栏)状态栏中有一些图标显示小                                      P2  汪洋
+        67820[bug](日历)日历中存在的问题                                                  P2
+        65717[bug](时钟)时钟的问题                                                      P2
+        67382[bug](时钟)计时器中存在的问题                                              P2
+        67793[bug](时钟)计时过程中重启手机，重启后计时器界面显示错误                    P2 UI重新设计
+        67576[bug](设置)蓝牙耳机配对显示问题                                           P2
+
+
+
+
+---------------------------------------------------------------------
+
+        2、对话界面选择CAM进入，选择录像，录像完成后不能预览
+                ----可以预览
+        3、对话界面语音对讲功能，录音开始后无法暂停且界面提示“滑动来取消”的字体
+                ----已经隐藏
+        4、对话界面符号表情打开，当高亮在某个表情上可以左右移动，不能上下移动
+                ----可以上下移动了，不知道怎么改好的？？？
+        a.在登入界面选择国家处有箭头图标，但不能选中
+                ----可以选中
+        b.在设置个人资料界面有设置个人头像框，无法设置头像，在输入名字旁有一个表情图标，进入后无法选中单个
+                ----可以获取焦点
+        c.配合机给测试机来电，按绿键可以接听，按红键无法挂断，界面上的信息图标也不能选中
+                ----可以接听，可以发送消息
+        d.设置中选择头像选择相机拍照后图片不能裁剪（相册中选的图片也不能），更改名字下选择表情不能高亮到某一个上
+                ----裁剪无法实现，如何隐藏？？
+        e.设置下进入账号删除我的帐号后，进入到删除我的账号界面不能编辑
+                ----可以编辑
+        f.设置下选择对话进入--壁纸--选择纯色背景该界面不会高亮，但其实已选择按ok键进入显示壁纸预览界面，界面上有向左滑与向右滑的提示语且下方的“取消”、“设置”无法选中
+                ----取消和设置按钮可以通过点击左软件和右软件实现
+
+        添加几条：
+        1）.WhatsApp通话记录界面选择一条通话记录，左侧的头像不能点击查看，右侧的电话图标不能选择直接拨打电话
+                ----隐藏打电话的图标
+2）.WhatsApp界面选择搜索进入到搜索界面输入字符后不能一个一个的清除，选择右侧“X”时清除字符后，此时按一下下键界面没有高亮框需要按两下 选中第一条记录，且搜索左侧的返回箭头不能选中（在短信对话界面也有返回箭头不能选中）
+        3）.信息对话时添加附件，选择音频文件添加后播放，播放时不能调节音量
+                ----按键冲突，不好修改
+4）.信息对话界面选择信息长按只能选择一条信息操作，不能同时选择多条且选中的信息不会显示高亮
+        5）.信息对话界面长按信息选择第一个图标后，信息会自动复制到信息文本处，此时信息不能直接选择右侧“X”删除
+                ----没有复制粘贴的功能，怎么隐藏？？？？
+        6）.信息对话界面长按信息选择复制后，长按信息文本处，信息不会粘贴
+                ----没有复制粘贴的功能，怎么隐藏？？？？
+        7）.信息对话界面添加附件选择相册，进入图库界面高亮框显示不明显，选择图片后进入到发送界面，界面下的“+”号无法选择添加图片
+                ----可以添加图片
+        8）.信息对话界面添加附件选择添加联系人信息后发送（联系人中添加邮箱信息等），选择该条信息进入界面上有邮箱地址但无法选中
+                ----已经可以选中
+        收到含有联系人的信息，界面上显示有三个菜单（1.联系人2.邀请3.添加联系人）但无法选择其中一个操作
+                ----把这几个菜单都隐藏，放到里面去操作
+        9）.信息对话界面--菜单--查看联系人，界面显示不美观（中间有一块显示空白）且界面上的一些菜单都不能选择操作
+                ----添加鼠标之后可以操作，不美观？？？
+        10）.信息对话界面--菜单--选择多媒体库进入，界面上的文件无法选择打开
+                ----添加鼠标之后可以操作
+        11）.信息对话界面--菜单--壁纸--选择WhatsApp壁纸图库，提示需要下载，点击确定进入到浏览器界面提示开始下载后直接退回到对话界面，此时状态栏没有下载的图标
+                ----隐藏
+        12）.设置下进入账号选择安全性，界面上有“了解更多相关WhatsApp的安全性”无法选择进入到浏览器界面
+                ----隐藏 "了解更多相关WhatsApp的安全性" 链接
+        13）.设置下进入通知选择弹出式通知，设置当屏幕关闭时弹出通知，收到信息后通知框显示不及时（设置其它两种弹出方式通知也不及时）
+                ----系统性能问题，无法修改
+        14）.配合机给测试机来电，界面显示滑动接听与挂断，手机无法实现
+                ----滑动接听没法实现，但可以实现按键接听
+        15）.长按一个对话选中后上方的一些菜单无法选中
+                ----焦点被下面的ActionBar获取了，添加鼠标之后可以操作
+        16）.测试机给配合机去电，配合机挂断，测试机界面显示有“取消、回拨、录制语音信息”信息，但无法操作
+                ----已隐藏
+        17）.对话列表界面选择信息图标进入，选择新建群组不能进入到新建群组添加成员界面，直接退回到对话列表界面
+                ----已修改
+        18）.对话列表界面--菜单--新建群组--界面上的群组头像无法选择添加图片，添加群组成员后和添加广播界面添加联系人，选择右侧的“X“联系人不能删除
+                ----添加鼠标模式之后可以点击删除
+        19）.对话列表界面--菜单--WhatsApp网页版--不能选择进行操作
+                ----OK按键可以点击
+        20）.对话列表界面--菜单--设置--关于和帮助--关于--选择”许可证“进入，界面一直显示灰屏，不能进入
+                ----隐藏(关于和帮助)
+        21）.对话列表界面--菜单--设置--关于和帮助--联系我们--连接后添加页面截图处无法添加图片
+                ----隐藏(关于和帮助)
+22) .com.whatsapp.IdentityVerificationActivity 中的“了解更多”连接无法选中
+国家选择列表的搜索框不能选中??
+        ----隐藏搜索框？？
+        
+        23) .隐藏照片裁剪菜单？？？
+                ----隐藏
+
+
+
+---------------------------------------------------------------------
+M. 手机有两种状态：Windows和安卓？？？
+
+
+        -Cannot take a picture and send it to a contact on whatsapp, it opens the camera but unable to capture a picture.
+        -Cannot attach a file and send from whatsapp, does not give you the option to scroll to the file you want to attach.
+        -if a picture is sent to the device on whatsapp , it is unable to open to view it. it shows that the picture is received, but cannot select it to view the picture bigger.
+        -The Voice recording does not work , unable to capture a voice not and send. I tried to use the # key to select the voice recording but it does not work.
+
+
+
+                             
+        When taking a picture and sending to a whatsapp contact , it cannot open that image on the whatsapp , it can only be opened from the Gallery ---BS
+																				不能通过whatsapp打开图片
+        It doesn’t allow you to also send voice notes ---BS						不能通过whatsapp发送语音消息
+        When send a music file to whatsapp , it can receive but when trying play it takes too long also when trying to stop it.		
+																				whatsapp播放音乐文件
+        It also doesn’t give an option to adjust the volume						调节音量功能
+        Also when clicking on the internet browser the wording is too small.	浏览器字体太小
+
+
+    后面工作计划：
+        2：输入法：英语已经OK；西班牙/葡萄牙/法语/德语/阿姆哈拉语/西瓦希列语  每门一周左右调试时间，         后两门语言放在后面调试P2
+3：Twitter / Intragram 调试                                             两周
+        4：UI /UE 设计                                                        4周
+        5：简单游戏  2个                                       已经完成1个，后面再增加一个
+
+Brightstar客户反馈：
+        whats app版本维护升级问题~                                           P1
+
+3，需要后续版本添加voice search
+4，是否有一些快捷设置可以方便的点一些选项（比如页面浏览时，从最上端跳到最下端，不需要连续按十几步，就可以实现等）
+        5，最好给到终端用户50M的剩余空间~（目前恢复出厂设置还有10MB），如果要满足这个，我们是否有必要提供我们现在预装app相应占得内存，以及剩余空间，供BS选择。
+
+
+
+
+------------已修改------------
+        1、对话界面，点附件添加图片等不能使用——问题存在，添加附件界面的菜单无法选中----已修改
+        2、对话界面选择CAM进入，按OK键不能拍照 ----问题存在，可以拍照，但是不能录像---长按可以录像
+        3、对话界面语音对讲功能不能使用---问题存在---------------------------------#键录制语音
+        1.对话列表界面--菜单--新建群组--群组名称不能添加，故不能创建新群组----已修改
+        11）.信息对话界面--菜单--壁纸--选择WhatsApp壁纸图库，提示需要下载，点击确定进入到浏览器界面提示开始下载后直接退回到对话界面，此时状态栏没有下载的图标——没有“WhatsApp壁纸图库”菜单----已隐藏
+        16）.测试机给配合机去电，配合机挂断，测试机界面显示有“取消、回拨、录制语音信息”信息，但无法操作——“录制语音信息”该功能无法实现----已隐藏
+        a.在登入界面选择国家处有箭头图标，但不能选中---OK
+        b.在设置个人资料界面有设置个人头像框，无法设置头像，在输入名字旁有一个表情图标，进入后无法选中单个箭头图标可以选中，但是列表不能下拉查看更多国家资料界面有设置个人头像框，无法设置头像，在输入名字旁有一个表情图标，进入后无法选中单个---问题存在----已隐藏
+        d.设置中选择头像选择相机拍照后图片不能裁剪（相册中选的图片也不能），更改名字下选择表情不能高亮到某一个上---问题存在----已隐藏
+        2.对话列表界面--菜单--标注信息界面下方文字显示不全，不能下拉----已改小字体
+        13）.设置下进入通知选择弹出式通知，设置当屏幕关闭时弹出通知，收到信息后通知框显示不及时（设置其它两种弹出方式通知也不及时）——无法修改建议屏蔽该菜单----经测试，挺及时的，可能与当时的网络有关
+        f.设置下选择对话进入--壁纸--选择纯色背景，该界面不会高亮，但其实已选择按ok键进入显示壁纸预览界面，界面上有向左滑与向右滑的提示语且下方的“取消”、“设置”无法选中---问题存在，选择纯色背景，该界面不会高亮且不能向下滑动查看更多背景色----已隐藏
+        3）.信息对话时添加附件，选择音频文件添加后播放，播放时不能调节音量---附件中的菜单不能选择，暂不能测试----第三方APK无法修改
+        7）.信息对话界面添加附件选择相册，进入图库界面高亮框显示不明显，选择图片后进入到发送界面，界面下的“+”号无法选择添加图片——附件中的菜单不能选择，暂不能测试----打开鼠标模式之后可以选中
+        8）.信息对话界面添加附件选择添加联系人信息后发送（联系人中添加邮箱信息等），选择该条信息进入界面上有邮箱地址但无法选中——附件中的菜单不能选择，暂不能测试----经测试可以打开
+        4、对话界面符号表情打开，不能选中发送---问题存在，打开表情符号，选中时会整行显示----已修改好，在AbsListView和ListView中一起修改
+        14）.配合机给测试机来电，界面显示滑动接听与挂断，手机无法实现---动画该怎么去掉？clearAnimation()有时候不起作用？？answer_call_slider.addOnLayoutChangeListener
+
+------------还未修改------------
+2） .WhatsApp界面选择搜索进入到搜索界面输入字符后不能一个一个的清除---问题存在？？AutoCompleteTextView 有问题？？
+10）.信息对话界面--菜单--选择多媒体库进入，界面上的文件无法选择打开----滚动不太好操作
+
+如何隐藏《WhatsApp 网页版》菜单？？
+如何隐藏《添加快捷方式》菜单？？ 在 ArrayAdapter.java 中修改？？
+    //zhangqi modified begin
+    String packageName = mContext.getPackageName();
+    android.util.Log.e("zhangqi1111", "AlertController->createListView(1)->packageName->" + packageName);
+    if("com.whatsapp".equalsIgnoreCase(packageName)){
+        ArrayList<CharSequence> itemList = new ArrayList<CharSequence>();
+        for(CharSequence item : mItems){
+            android.util.Log.e("zhangqi1111", "AlertController->createListView(1)->item1->" + item);
+            if(item.toString().equalsIgnoreCase("Add shortcut")){
+                continue;
+            }
+            android.util.Log.e("zhangqi1111", "AlertController->createListView(1)->item2->" + item);
+            itemList.add(item);
+        }
+        mItems = itemList.toArray(new String[]{});
+    }
+    //zhangqi modified end
+拍照界面添加评论不能删除？？
+
+

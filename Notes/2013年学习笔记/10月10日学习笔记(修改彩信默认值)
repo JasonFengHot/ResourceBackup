@@ -1,0 +1,28 @@
+	1.bug12162:The MMS Automatic Retrieval Option in roaming situation is desactivated by default????修改彩信设置里面的默认值？？？
+
+	解决：
+	只要修改packages/apps/mms/res/xml/mmspreferences.xml文件中的
+	<CheckBoxPreference android:layout="?android:attr/preferenceLayoutChild"
+	    android:dependency="pref_key_mms_auto_retrieval"
+	    android:defaultValue="false" 				//只要修改这个默认值就可以了
+	    android:key="pref_key_mms_retrieval_during_roaming"		
+	    android:title="@string/pref_title_mms_retrieval_during_roaming"
+	    android:summary="@string/pref_summary_mms_retrieval_during_roaming" />
+
+2.修改switch中的资源
+############bug12115 zhangqi add for switch resources 2013/10/10:begin################
+$(shell cp $(TOPDIR)mediatek/config/$(PROJECT)/sagereal_copy/switch/switch_bg_disabled_holo_dark.9.png 	$(TOPDIR)frameworks/base/core/res/res/drawable-hdpi/switch_bg_disabled_holo_dark.9.png)
+$(shell cp $(TOPDIR)mediatek/config/$(PROJECT)/sagereal_copy/switch/switch_bg_disabled_holo_light.9.png $(TOPDIR)frameworks/base/core/res/res/drawable-hdpi/switch_bg_disabled_holo_light.9.png)
+$(shell cp $(TOPDIR)mediatek/config/$(PROJECT)/sagereal_copy/switch/switch_bg_focused_holo_dark.9.png	$(TOPDIR)frameworks/base/core/res/res/drawable-hdpi/switch_bg_focused_holo_dark.9.png)
+$(shell cp $(TOPDIR)mediatek/config/$(PROJECT)/sagereal_copy/switch/switch_bg_focused_holo_light.9.png	$(TOPDIR)frameworks/base/core/res/res/drawable-hdpi/switch_bg_focused_holo_light.9.png)
+$(shell cp $(TOPDIR)mediatek/config/$(PROJECT)/sagereal_copy/switch/switch_bg_holo_dark.9.png		$(TOPDIR)frameworks/base/core/res/res/drawable-hdpi/switch_bg_holo_dark.9.png)
+$(shell cp $(TOPDIR)mediatek/config/$(PROJECT)/sagereal_copy/switch/switch_bg_holo_light.9.png		$(TOPDIR)frameworks/base/core/res/res/drawable-hdpi/switch_bg_holo_light.9.png)
+$(shell cp $(TOPDIR)mediatek/config/$(PROJECT)/sagereal_copy/switch/switch_thumb_activated_holo_dark.9.png  $(TOPDIR)frameworks/base/core/res/res/drawable-hdpi/switch_thumb_activated_holo_dark.9.png)
+$(shell cp $(TOPDIR)mediatek/config/$(PROJECT)/sagereal_copy/switch/switch_thumb_activated_holo_light.9.png $(TOPDIR)frameworks/base/core/res/res/drawable-hdpi/switch_thumb_activated_holo_light.9.png)
+$(shell cp $(TOPDIR)mediatek/config/$(PROJECT)/sagereal_copy/switch/switch_thumb_disabled_holo_dark.9.png   $(TOPDIR)frameworks/base/core/res/res/drawable-hdpi/switch_thumb_disabled_holo_dark.9.png)
+$(shell cp $(TOPDIR)mediatek/config/$(PROJECT)/sagereal_copy/switch/switch_thumb_disabled_holo_light.9.png  $(TOPDIR)frameworks/base/core/res/res/drawable-hdpi/switch_thumb_disabled_holo_light.9.png)
+$(shell cp $(TOPDIR)mediatek/config/$(PROJECT)/sagereal_copy/switch/switch_thumb_holo_dark.9.png	$(TOPDIR)frameworks/base/core/res/res/drawable-hdpi/switch_thumb_holo_dark.9.png)
+$(shell cp $(TOPDIR)mediatek/config/$(PROJECT)/sagereal_copy/switch/switch_thumb_holo_light.9.png	$(TOPDIR)frameworks/base/core/res/res/drawable-hdpi/switch_thumb_holo_light.9.png)
+$(shell cp $(TOPDIR)mediatek/config/$(PROJECT)/sagereal_copy/switch/switch_thumb_pressed_holo_dark.9.png    $(TOPDIR)frameworks/base/core/res/res/drawable-hdpi/switch_thumb_pressed_holo_dark.9.png)
+$(shell cp $(TOPDIR)mediatek/config/$(PROJECT)/sagereal_copy/switch/switch_thumb_pressed_holo_light.9.png   $(TOPDIR)frameworks/base/core/res/res/drawable-hdpi/switch_thumb_pressed_holo_light.9.png)
+############bug12115 zhangqi add for switch resources 2013/10/10:end################

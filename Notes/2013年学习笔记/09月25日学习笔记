@@ -1,0 +1,29 @@
+	1.在inflate布局文件view_slidingtab.xml的时候会出现问题？？？binary XML file line #23 : error inflating class
+
+	解决：这是因为图片找不到吗？？？是的，因为p5s是hdpi的，所以需要就用到的资源放到drawable-hdpi和layout-hdpi文件夹中
+
+p5s的GlobalAction还有几个问题
+1.标题的位置问题			解决	
+2.标题的字符串问题			????
+3.飞行模式的图标问题		解决
+4.开关机字符串的国际化问题		????
+5.位置问题			解决
+6.数据连接有问题			????????????????????????
+
+	2.状态栏上的wifi图标和sim卡图标重叠？？？
+
+	解决：
+	system_icon_area
+	frameworks/base/packages/systemui/res/layout/signal_cluster_view.xml
+	<ImageView
+		android:id="@+id/mobile_signal"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:paddingLeft="4dp"
+		android:paddingRight="4dp"/>		//只要添加这两句就可以了
+
+3.如何修改关机时候的震动和灭屏同步？？？？？
+
+	4.在设置界面显示GlobalAction会有问题，飞行模式那一行和情景模式那一行不显示？？？
+
+	解决：只要修改showBeforeProvisioning()的返回值为true就行了吧

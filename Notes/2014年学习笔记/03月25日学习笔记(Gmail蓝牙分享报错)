@@ -1,0 +1,33 @@
+	1.在使用蓝牙分享GMAIL中的图片的时候失败？？？？文件下载不了，文件名也不正常？？？
+
+	解决：
+	在Gmail中分享Image 或 video 分享失败  该如何修改
+	修改mediatek/packages/apps/Bluetooth/profiles/opp/src/com/mediatek/bluetooth/opp/mmi/UriDataUtils.java文件 
+	a. 在private static final String CALENDAR_AUTHORITY = "com.mediatek.calendarimporter";下面添加一行
+		private static final String GMAIL_AUTHORITY = "gmail-ls";
+	b. 在有  CALENDAR_AUTHORITY.equals(authority) 的 条件语句中 加上 || GMAIL_AUTHORITY .equals(authority)即可
+	c. 在getUriData function中
+		result.setName(getPushTempFileName(authority));修改为
+		if (GMAIL_AUTHORITY .equals(authority)) {
+			result.setName(cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))); 
+		} else {
+			result.setName(getPushTempFileName(authority)); 
+		} 
+	d. 修改alps/mediatek/packages/apps/Bluetooth/build/AndroidManifest.tpl (ALPS.JB2.MP 其他版本可自行查找)添加权限 
+		<uses-permission android:name="com.google.android.gm.permission.READ_GMAIL"/>
+		<uses-permission android:name="com.google.android.gm.permission.WRITE_GMAIL"/>
+
+	//在分享失败的时候查看ShareHistory会报空指针异常？？？
+	mediatek/packages/apps/Bluetooth/common/bt40/src/com/mediatek/bluetooth/share/BluetoothShareTabActivity.java
+	将
+	if ((mTask.getState() == BluetoothShareTask.STATE_FAILURE) && (isFileValid || mTask.getData().contains("/data/data/com.mediatek.bluetooth"))) {
+	改为
+	if ((mTask.getState() == BluetoothShareTask.STATE_FAILURE) && (isFileValid || (mTask.getData()!=null && mTask.getData().contains("/data/data/com.mediatek.bluetooth")))) {
+
+	2.在移植未读消息的时候会报类型转换错误？？？
+
+	解决：
+	//在转换类型之前先判断是否是PagedViewIcon类型
+	if(cl.getChildOnPageAt(j) instanceof PagedViewIcon){
+		appIcon = (PagedViewIcon) cl.getChildOnPageAt(j);	
+	}

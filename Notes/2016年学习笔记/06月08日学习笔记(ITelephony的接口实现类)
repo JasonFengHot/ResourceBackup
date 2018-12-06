@@ -1,0 +1,4 @@
+1.ITelephony 的接口实现类是哪个？？
+
+解决：
+packages/services/Telephony/src/com/android/phone/PhoneInterfaceManager.java

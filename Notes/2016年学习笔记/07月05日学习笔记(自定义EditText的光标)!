@@ -1,0 +1,27 @@
+	1.如何自定义EditText的光标？？
+
+	解决：
+	color_cursor.xml
+	<?xml version="1.0" encoding="utf-8"?>
+	<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+		<size android:width="1dp" />
+		<solid android:color="#008000" />
+	</shape>
+
+	<EditText android:textCursorDrawable="@drawable/color_cursor" />
+
+		2.如何隐藏输入法键盘？？
+
+		解决：
+		Redmine67256 : [需求]添加多语言支持及相关输入法----隐藏输入法键盘
+		Submitter:
+			zhangqi
+		Checker:
+			jiangcunbin
+		Files:
+			M:alps/frameworks/base/core/java/android/widget/EditText.java
+		Comment:
+			隐藏输入法键盘
+			setShowSoftInputOnFocus(false);
+		Date:
+			2016/07/05

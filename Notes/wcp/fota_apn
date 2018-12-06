@@ -1,0 +1,36 @@
+[标题]
+    [FOTA]更新APN列表OTA升级后开机即生效
+
+[问题描述]
+    更新APN列表OTA升级后需要恢复出厂设置APN更新才有效， 客户需要做升级后开机即生效。 
+
+[解决方案]
+MTK解决方案 FAQ12633 : 
+因为，OTA升级更新的是三个区域，boot , recovery, system,
+APN属于DATA域，OTA升级不会涉及到， 所以必须reset之后才会更新有效。
+所以需要修改 alps\build\tools\releasetools\ota_from_target_files 这个脚本，在
+script.DeleteFiles([i[1] for i in to_create])
+script.MakeSymlinks(to_create)
+之后添加以下命令：
+script.Mount("/data")
+script.DeleteFiles(["/data/data/com.android.providers.telephony/databases/telephony.db", "/data/data/com.android.providers.telephony/shared_prefs/load-apn.xml"])
+这样做的目的是在升级之后，开机再重新把apns-conf.xml里的apn信息写入db ， 达到更新的目的。
+
+但此方法并不适用于广升FOTA，但原理类似，就是删除系统中/data区下apn的数据库，重新开机的时候如果没有检测到apn的数据库，就会重新读取apn-conf.xml文件，并将其加载到数据库中。
+1.修改 ota_from_target_files 脚本如下
+script.Mount("/system")
++script.Mount("/data")
+script.UnpackPackageDir("recovery", "/system")
+
+device_specific.FullOTA_InstallEnd()
++  script.AppendExtra('delete("/data/data/com.android.providers.telephony/databases/telephony.db");')
++  script.AppendExtra('delete("/data/data/com.android.providers.telephony/shared_prefs/load-apn.xml");')
+
+if OPTIONS.extra_script is not None:
+    script.AppendExtra(OPTIONS.extra_script)
+    
+2.在使用广升做差分包的工具里面替换脚本为修改后的脚本
+
+但此方法只适用于KK及以下的版本，并不适用于KK以上的版本，如L，M，N，O，因为KK以上的版本对/data区的数据的保护更加严格
+
+KK以上的版本在ONLINE上找到一个可能可行的解决方案，[FAQ19780]，如果后续出现这样的问题，可以试一下。

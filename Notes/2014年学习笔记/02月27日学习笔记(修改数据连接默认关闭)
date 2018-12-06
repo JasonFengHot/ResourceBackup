@@ -1,0 +1,53 @@
+1.如何获取数据连接信号的类型？？？
+
+	2.如何修改数据连接默认开关？？？？
+
+	解决：
+	如何修改单卡和双卡工程的默认数据连接开关
+	对于单卡和双卡工程，统一通过lib调用TelephonyExt.isDefaultDataOn()确认是否默认打开或关闭， lib与运营商定制有关，如联通的默认的数据连接开关设置可参考：TelephonyExtOP02。
+	单卡项目:
+	适用版本GB,GB2,ICS,ICS2,JB
+	其数据连接都是由\alps\mediatek\config\工程名\ProjectConfig.mk下的MTK_DEFAULT_DATA_OFF = no这个值来控制的
+	有MTK_DEFAULT_DATA_OFF=yes即默认关闭,设置成false就是默认打开
+
+	双卡项目:
+	Android V2.3(GB,GB2):
+	1.check一下PhoneProxy.java文件，看其中是否有一个变量mGPRSOn可以通过这个变量来控制数据开关的行为。
+	该值默认是false的，也就是默认GPRS是Off的，如果把它设为true，就会变成：如果插一张卡就设置为那张卡，如果是两张卡默认为卡槽1中的卡
+
+	Android V4.0(ICS,ICS2):
+	需要两个地方进行修改：
+	1.check一下PhoneProxy.java文件，看其中是否有一个变量mGPRSOn可以通过这个变量来控制数据开关的行为。
+	该值默认是false的，也就是默认GPRS是Off的，如果把它设为true，就会变成：如果插一张卡就设置为那张卡，如果是两张卡默认为卡槽1中的卡
+	2.请将framework\base\core\java\android\provider\settings.java文件中MOBILE_DATA_DEFAULT这个变量的值修改成1，然后再编译测试此功能
+
+	Android V4.1(JB)
+	也需要两个步骤:
+	1.将mGPRSOn设置成true:
+	1）如果是当前无论是哪个项目都需要将数据连接打开的话，直接将PhoneProxy.java文件的下面这段代码去掉：
+	    {
+		try{
+		    mTelephonyExt = MediatekClassFactory.createInstance(ITelephonyExt.class);
+		} catch (Exception e){
+		    e.printStackTrace();
+		}
+		if (mTelephonyExt != null) {
+		    if (mTelephonyExt.isDefaultDataOn())
+		        mGPRSOn = true;
+		    if (mTelephonyExt.isAutoSwitchDataToEnabledSim())
+		        mAutoSwitchDataToEnabledSim = true;
+		} else {
+		    loge("PhoneProxy(): mTelephonyExt is null!!!");
+		}
+	    }，然后将private boolean mGPRSOn = false;改成true即可
+	2）如果是针对不同的运营商项目有不同的定制需求的话，需要将mediatek\operator\OP**\frameworks\java\com\mediatek\op\telephony下TelephonyExtOP**.java中加上下面这个方法：
+	    public boolean isDefaultDataOn() {
+		return true;
+	    }
+
+	2.请将framework\base\core\java\android\provider\settings.java文件中MOBILE_DATA_DEFAULT这个变量的值修改成1，然后再编译测试此功能当前例举的所有版本中
+	//直接将
+
+3.SystemProperties.get(),SystemProperties.set()是从哪个文件中读取的？？？
+
+4.

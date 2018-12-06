@@ -1,0 +1,23 @@
+1.mContext.sendBroadcastAsUser(intent, UserHandle.ALL);//这里是发送什么样的广播？？？
+
+2.修改添加系统资源的时候找不到符号资源id？？？
+
+解决：
+a.在frameworks/base/core/res/res/drawable-mdpi下添加图片：ic_lock_power_reboot.png symbols.xml下必须声明：<java-symbol type="drawable" name="ic_lock_power_reboot" /> 
+b.在/frameworks/base/core/res/res/values/strings.xml下添加字符串：<string name="reboot_confirm">Your phone will reboot.</string> 
+symbols.xml下必须声明：<java-symbol type="string" name="reboot_confirm" /> 
+#############并且还需要先编译frameworks/base/才行
+
+3.对话框的这个参数有什么用？？？mDialog.getWindow().getDecorView().setSystemUiVisibility(View.STATUS_BAR_DISABLE_EXPAND);
+
+4.显示不了Dialog????不能直接在GlobalAction中调用显示自定义的dialog？？？？只能通过将View实现Action并添加到List<Action>中才可以
+
+5.根据R.attr.alertDialogTheme获取Theme主题的id????
+
+解决：
+private static int getDialogTheme(Context context) 
+{
+    TypedValue outValue = new TypedValue();
+    context.getTheme().resolveAttribute(com.android.internal.R.attr.alertDialogTheme,outValue, true);
+    return outValue.resourceId;
+}

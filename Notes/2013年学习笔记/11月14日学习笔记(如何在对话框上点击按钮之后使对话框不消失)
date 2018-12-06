@@ -1,0 +1,33 @@
+	1.如何在对话框上点击按钮之后使对话框不消失？？？
+
+	解决：使用反射，将DialogInterface的实现类AlertDialog的父类Dialog中的mShowing的值改为false就行了
+
+        2.翻译问题？？
+
+        GlobalActions.java							法语					阿拉伯语
+
+        R.string.global_title			Power Control			option Shutdown				خيار الاغلاق
+        R.string.global_no_sim1			no sim card in slot1		pas de carte sim dans slot1		لا توجد بطاقة SIM في 
+        R.string.global_no_sim2			no sim card in slot2		pas de carte sim dans slot2		لا توجد بطاقة SIM في
+        R.string.global_air_on			airplane mode is on		le mode avion est sur			وضع الطائرة على
+        R.string.global_air_off			airplane mode is off		mode avion est désactivé		وضع الطائرة هو خارج
+        R.string.global_sim1_on_sim2_on		sim1 on,sim2 on			sim1 sur, sim2 sur			SIM1 على، SIM2 على
+        R.string.global_sim1_on_sim2_off	sim1 on,sim2 off		sim1 sur, sim2 off			SIM2 على، قبالة SIM1
+        R.string.global_sim1_off_sim2_on	sim1 off,sim2 on		sim1 off, sim2 sur			SIM1 على، قبالة SIM2
+        R.string.global_sim1_off_sim2_off	sim1 off,sim2 off		sim1 off, sim2 off			SIM1 قبالة، SIM2 قبالة
+        R.string.global_tip_poweroff		slide to shutdown		glisser à l'arrêt			تنزلق إلى الاغلاق
+        R.string.global_tip_restart		slide to restart		glisser pour redémarrer			تنزلق إلى إعادة تشغيل
+
+3.在GlobalActions.java中有一个判断是否插卡的地方还有点问题？？？
+
+	4.闹铃的问题？？？
+
+	在灭屏的时候点击按键不会snooze掉？？？？？？？？？？？？？？？
+	在点击Power键的时候也有问题，发送系统广播com.android.deskclock.ALARM_SNOOZE
+	在AlarmKlaxon.java中会接受到，并且调用如下方法
+	Alarms.snooze(context, mCurrentAlarm);//在这个方法中会出现空指针异常？？？？？？？？不用系统的广播，使用自己自定义的广播就可以了
+在关机的时候重新不能点击按键没有响应？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
+
+	    5.在l3的滑动关机之后，还是会弹出关机确认对话框？？？？
+
+	    解决：只要重新编译push下frameworks/base/services/java/com/android/server/power/ShutdownThread.java就行了

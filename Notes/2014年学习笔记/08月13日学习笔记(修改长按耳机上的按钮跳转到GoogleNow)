@@ -1,0 +1,4 @@
+1.将耳机上的按钮功能修改为跳转到GoogleNow????
+
+解决：
+interceptKeyBeforeQueueing

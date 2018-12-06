@@ -1,0 +1,19 @@
+	1.根据SDK版本号判断使用哪个类中的方法？？？
+
+	解决：
+	class MethodInLowSdk{
+		public static void aMethod();
+	}
+	class MethodInHighSdk{
+		public static void aMethod();
+	}
+
+	void callAMethodByVersion(){
+		if(android.os.Build.VERSION.SDK_INT > low_sdk){
+			MethodInHighSdk.aMethod();
+		}else{
+			MethodInLowSdk.aMethod();
+		}
+	}
+
+2.

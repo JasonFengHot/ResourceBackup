@@ -1,0 +1,43 @@
+	1.将CheckboxPreference中的Checkbox的选框改得明显一点？？？
+
+	解决：
+	直接修改系统CheckBox的图片就行了
+	修改以下图片
+	/home/zq/zq/trunk/frameworks/base/core/res/res/drawable-hdpi/btn_check_off_holo_dark.png
+	/home/zq/zq/trunk/frameworks/base/core/res/res/drawable-mdpi/btn_check_off_holo_dark.png
+	/home/zq/zq/trunk/frameworks/base/core/res/res/drawable-xhdpi/btn_check_off_holo_dark.png
+	貌似这样是不可以的，因为会替换系统的图片导致cts测试通不过
+后来直接修改了theme不知道能不能过？？？？？
+
+2.修改关机按钮的对话框GlobalAction???
+
+在PhoneWindowManager.java中的 mPowerLongPress线程中有一个
+case LONG_PRESS_POWER_GLOBAL_ACTIONS:
+	showGlobalActionsDialog();
+	break;
+上面的PowerOff按钮，Reboot按钮,Airplane mode按钮在SinglePressAction？？？？？？这个SinglePressAction怎么才能换成SagerealSlidingTab？？？？？
+下面的静音选项在SilentModeTriStateAction
+
+	3.枚举类型的学习？？
+
+	解决：
+	enum State 
+	{
+		Off(false), TurningOn(true), TurningOff(true), On(false);	//这里的false和true就是传入到构造函数里面的参数
+		private final boolean inTransition;
+		State(boolean intermediate) 
+		{
+			inTransition = intermediate;
+		}
+		public boolean inTransition() 
+		{
+			return inTransition;
+		}
+	}
+
+4.GlobalActions中的关机按钮设置了TranslateAnimation之后就点击不到该按钮了？？？
+
+解决：布局变回来了，按钮没有变回来，而且布局会发生错乱
+只要将setFillAfter(false);就可以了
+
+5.如何获取对话框的宽度？？？

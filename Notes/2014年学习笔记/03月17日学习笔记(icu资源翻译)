@@ -1,0 +1,57 @@
+1.如何编译icu资源？？？？
+
+解决：
+其他ICU资源:
+	一些ICU字串，如日期、语言、时区、国家等的翻译在External/icu4c/data/下各个子目录下，常见如：
+	lang：各个语言的翻译。
+	locale：月份、星期、时间格式等日期相关。
+	zone：时区命名
+	region：地区、国家名称
+
+如果修改了ICU资源，必须重新编译ICU资源，在Remake工程，否则不会起效果。具体编译方法可以参考：FAQ04011
+//参考     https://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ04011   《如何编译ICU资源》
+a.$mkdir external/icu4c/icuBuild
+b.$cd external/icu4c/icuBuild
+c.$.././runConfigureICU Linux
+d.修改 external/icu4c/data/locales/  下对应语言的.txt文件中的翻译  
+d.make -j2							//生成external/icu4c/icuBuild/data/out/tmp/icudt48l.dat文件
+e.回到根目录 adb push external/icu4c/icuBuild/data/out/tmp/icudt48l.dat system/usr/icu（测试的时候使用）
+f.$source build/envsetup.sh
+g.$export ANDROID_BUILD_TOP=/home/zq/zq/tecno_noGMS_h5_0313/
+h.cd external/icu4c/stubdata/  
+i.修改icudt48l-default.txt文件在am.res所在位置添加上om.res和ti.res  执行./icu_dat_generator.py	//这个命令会根据external/icu4c/stubdata/icudt48l-*.dat 重新生成external/icu4c/stubdata/icudt48l-default.dat文件
+j../mk n重新编译即可
+
+//push 了 icudt48l.dat 之后开不了机？？？抓log可以看出Couldn't find ICU yesterday/today/tomorrow for om_ET
+只要在om.txt文件中添加如下代码即可
+fields{
+	day{
+	    dn{"Day"}
+	    relative{
+		"-1"{"Yesterday"}
+		"0"{"Today"}
+		"1"{"Tomorrow"}
+	    }
+	}
+	...
+}
+修改了om.txt文件的Qib（Tue）为Kib之后Launcher报错？？？？
+
+有的时候会报如下错误？？？
+01-01 02:05:27.371: E/ActivityManager(541): Activity Manager Crash
+01-01 02:05:27.371: E/ActivityManager(541): java.lang.IndexOutOfBoundsException: Invalid index 1, size is 0
+01-01 02:05:27.371: E/ActivityManager(541): 	at java.util.ArrayList.throwIndexOutOfBoundsException(ArrayList.java:251)
+01-01 02:05:27.371: E/ActivityManager(541): 	at java.util.ArrayList.add(ArrayList.java:143)
+01-01 02:05:27.371: E/ActivityManager(541): 	at com.android.server.wm.WindowManagerService.addAppToken(WindowManagerService.java:4117)
+01-01 02:05:27.371: E/ActivityManager(541): 	at com.android.server.am.ActivityStack.startActivityLocked(ActivityStack.java:2216)
+01-01 02:05:27.371: E/ActivityManager(541): 	at com.android.server.am.ActivityStack.startActivityUncheckedLocked(ActivityStack.java:3439)
+01-01 02:05:27.371: E/ActivityManager(541): 	at com.android.server.am.ActivityStack.startActivityLocked(ActivityStack.java:2969)
+01-01 02:05:27.371: E/ActivityManager(541): 	at com.android.server.am.ActivityStack.startActivityMayWait(ActivityStack.java:3601)
+01-01 02:05:27.371: E/ActivityManager(541): 	at com.android.server.am.ActivityManagerService.startActivityAsUser(ActivityManagerService.java:2774)
+01-01 02:05:27.371: E/ActivityManager(541): 	at android.app.ActivityManagerNative.onTransact(ActivityManagerNative.java:157)
+01-01 02:05:27.371: E/ActivityManager(541): 	at com.android.server.am.ActivityManagerService.onTransact(ActivityManagerService.java:1887)
+01-01 02:05:27.371: E/ActivityManager(541): 	at android.os.Binder.execTransact(Binder.java:351)
+01-01 02:05:27.371: E/ActivityManager(541): 	at dalvik.system.NativeStart.run(Native Method)
+
+重新编译了之后 am 正常，om 不正常?????
+在修改了external/icu4c/stubdata/icudt48l-default.txt文件之后就正常了

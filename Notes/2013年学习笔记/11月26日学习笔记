@@ -1,0 +1,17 @@
+	1.Bug1108 [需求](客户需求)delete from sw from settings menu possibility to see phone serial number
+
+	解决：
+	只要在下面两个java文件中的onCreate()方法中移除对应的preference就行了，removePreferenceFromScreen(KEY_SERIAL_NUMBER);
+	/home/zq/zq/trunk_m380/packages/apps/Settings/src/com/android/settings/deviceinfo/Status.java
+	/home/zq/zq/trunk_m380/packages/apps/Settings/src/com/android/settings/deviceinfo/StatusGemini.java
+
+	    2.Bug1110 [需求](客户需求)Delete movie studio menu????
+
+	    解决：
+	    只要将对应工程的ProjectConfig.mk文件中 MTK_ENABLE_VIDEO_EDITOR=no
+
+	3.UP06 Thomson的运营商的名称显示不全？？？
+
+	解决：
+	上次改错地方了，应该将keyguard_sim_pin_puk_view.xml文件中的SIMCardName(TextView)中的android:maxWidth="100dip"去掉而不是
+	/mediatek/frameworks/base/res/res/layout-hdpi/keyguard_screen_sim_pin_portrait_gemini.xml文件

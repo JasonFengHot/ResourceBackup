@@ -1,0 +1,64 @@
+1.Redmine #42693 : [需求]Auto-rotate screen: Checked
+
+解决：
+if (!RotationPolicy.isRotationSupported(getActivity()) || RotationPolicy.isRotationLockToggleSupported(getActivity())) {
+    mDisplaySettingsExt.removePreference(mAccelerometer);
+}
+驱动还没配好
+
+	2.修改默认的两个闹钟震动打开？？？
+
+	解决：
+	packages/apps/DeskClock/src/com/android/deskclock/provider/ClockDatabaseHelper.java
+
+	// This creates a default alarm at 8:30 for every Mon,Tue,Wed,Thu,Fri
+	private static final String DEFAULT_ALARM_1 = "(8, 30, 31, 0, 1, '', NULL, 0);";	//把这里的第五位改为 1 即可
+
+	// This creates a default alarm at 9:30 for every Sat,Sun
+	private static final String DEFAULT_ALARM_2 = "(9, 00, 96, 0, 1, '', NULL, 0);";	//把这里的第五位改为 1 即可
+
+		3. Redmine42710 修改文件夹名称显示完全？？
+
+		解决：
+		M:mediatek/config/sagereal_copy/packages/apps/Launcher3/res/layout/folder_icon.xml
+		<com.android.launcher3.FolderIcon
+			xmlns:android="http://schemas.android.com/apk/res/android"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical"
+			android:focusable="true"
+			android:background="@drawable/focusable_view_bg">
+			<ImageView
+				android:id="@+id/preview_background"
+				android:layout_gravity="center_horizontal"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:antialias="true"
+				android:src="@drawable/portal_ring_inner_holo"/>
+			<!--Redmine42710 zhangqi modified for folder name 2015/11/27:begin-->
+			<com.android.launcher3.BubbleTextView
+				style="@style/WorkspaceIcon"
+				android:id="@+id/folder_icon_name" 
+				android:layout_marginTop="-4dp"/>							//加上这句话就好了
+			<!--Redmine42710 zhangqi modified for folder name 2015/11/27:end-->
+		</com.android.launcher3.FolderIcon>
+		
+	4.修改显示 USB Storage 功能？？？
+	
+	解决：
+	在 ro.sys.usb.storage.type=mtp,mass_storage  //这里添加上 mass_storage 就可以了
+	
+		5.如何在下拉状态栏中显示(Auto-rotate screen)选项？？
+
+		解决：
+		//frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/QuickSettings.java
+		//jiangcunbin modify for delete the rotate function by redmine 34159 begin
+		if (mContext.getResources().getBoolean(R.bool.quick_settings_show_rotation_lock)) {
+		    parent.addView(rotationLockTile);
+			rotationLockTile.setVisibility(View.GONE);		//这里把它给隐藏了
+		} else {
+		    parent.addView(autoRotateTile);
+			autoRotateTile.setVisibility(View.GONE);		//这里把它给隐藏了
+		}
+		//jiangcunbin modify for delete the rotate function by redmine 34159 end
+

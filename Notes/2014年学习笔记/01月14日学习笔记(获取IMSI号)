@@ -1,0 +1,102 @@
+	1.如何获取卡的imsi号？？？
+
+	解决：
+	//强哥的方法
+	TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+	String mIMSI = tm.getSubscriberIdGemini(PhoneConstants.GEMINI_SIM_1);
+	//MTK的方法
+	import com.android.internal.telephony.Phone;
+	import com.android.internal.telephony.PhoneFactory;
+	import com.android.internal.telephony.RIL;
+	private static final int EVENT_GET_IMSI_DONE = 1;
+	Phone phone = PhoneFactory.getDefaultPhone();
+	phone.mCM.getIMSI(obtainMessage(EVENT_GET_IMSI_DONE));
+	public void handleMessage(Message msg) {
+		switch (msg.what){
+			case EVENT_GET_IMSI_DONE:
+				isRecordLoadResponse = true;
+				ar = (AsyncResult)msg.obj;
+				if (ar.exception != null) {
+					Log.e(LOG_TAG, "Exception querying IMSI, Exception:" + ar.exception);
+					break;
+				}
+				imsi = (String) ar.result;
+				Log.d(LOG_TAG, "IMSI: " + imsi.substring(0, 6) + "xxxxxxx");
+				break;
+			default:
+				break;
+		}
+	}
+
+	2.获取卡名？？？？
+
+	解决：
+	//Bug2466 zhangqi modified for default apn 2014/01/13:begin
+	String displayName = "";
+	if (FeatureOption.MTK_GEMINI_SUPPORT) {
+		mSimId = getIntent().getIntExtra("simId", SIM_CARD_UNDEFINED);
+	} else {
+		mSimId = SIM_CARD_SINGLE;
+	}
+	SIMInfo siminfo = SIMInfo.getSIMInfoBySlot(this, mSimId);
+	if(siminfo!=null){
+		displayName = siminfo.mDisplayName;
+	}
+	if (displayName!=null && displayName.trim().equalsIgnoreCase("Giffgaff") && "payandgo.o2.co.uk".equalsIgnoreCase(apn)) {
+	    pref.setChecked();
+	    keySetChecked = true;
+	}
+	if (displayName!=null && displayName.trim().equalsIgnoreCase("Giffgaff 02") && "wap.o2.co.uk".equalsIgnoreCase(apn)) {
+	    pref.setChecked();
+	    keySetChecked = true;
+	}
+	//Bug2466 zhangqi modified for default apn 2014/01/13:end
+
+	3.修改手写识别的画笔的颜色？？？？
+
+	解决：
+	//写的时候的颜色
+	//frameworks/base/core/java/android/gesture/GestureOverlayView.java中在初始化mCertainGestureColor的时候将 mCertainGestureColor 的值修改为1ea5de
+	//列表中手势图片的颜色
+	packages/apps/tecno_ue_contacts/src/com/android/contacts/activities/GestureFeaturesSetting.java中的内部类GesturesLoadTask的onPreExecute()方法中添加如下代码即可
+	mPathColor = android.graphics.Color.parseColor("#1ea5de");
+
+	4.修改手势列表的背景颜色？？？
+
+	解决：
+	packages/apps/tecno_ue_contacts/res/layout/gesture_settings.xml文件中将 android:background="@drawable/gesture_setting_background" 都修改为 android:background="#fafaf7" 就行了
+	packages/apps/tecno_ue_contacts/res/layout-hdpi/gesture_list_item.xml中将 android:background="#FFE8EFF0" 改为 android:background="#fafaf7" 就行了
+
+	5.第一次插卡弹出apn对话框？？？
+
+	解决：
+	方法a:在Launcher.java中的dataDialog的onDismissListener()中调用showApnDialog()
+	//单卡的时候跳转到ApnSettings
+	Intent intent = new Intent();
+	intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.ApnSettings"));
+	intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	startActivity(intent);
+
+	//双卡的时候跳转到MultipleSimActivity
+	Intent intent = new Intent();
+	intent.setComponent(new ComponentName("com.android.phone", "com.mediatek.settings.MultipleSimActivity"));		//这里注意前面的包名，应该写manifest.xml中的报名，而不是Activity中的包名
+	intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	startActivity(intent);
+
+	方法b:在Launcher.java中的dataDialog的onDismissListener()中调用showApnDialog()
+	private void showApnDialog(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(Launcher.this);
+		builder.setTitle("APN Config");
+		builder.setMessage("The default APN Config maybe incorrect, whether reselect?");
+		builder.setPositiveButton("yes",new DialogInterface.OnClickListener(){
+			@Override
+			public void onClick(DialogInterface dialog,int which){
+				Intent intent = new Intent();
+				intent.setClassName("com.android.phone", "com.android.phone.MobileNetworkSettings");
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(intent);
+			}
+		});
+		builder.setNegativeButton("no",null);
+		builder.create().show();
+	}

@@ -1,0 +1,5 @@
+    1.如何判断是否支持VOLTE？？
+
+    解决：
+    在如下文件中搜索 107(sfr)
+    ALPS-MP-N0.MP1-V1.0.2_SR6737T_65_N_modem/custom/service/nvram/custom_nvram_int_config.c

@@ -1,0 +1,24 @@
+	1.在添加APN对话框的时候会出现问题？？？？
+
+	解决：
+	//在显示数据连接对话框的时候要显示APN对话框
+	只要在Launcher.java上needShowDialog()的onDismissListener()显示APN对话框就行了
+	//在SIM发生改变的时候要显示APN对话框
+	只要在KeyguardUpdateMonitor.java中的mSimCardChangedDialog的onDismissListener()事件中显示APN对话框即可，但需要注意给对话框添加一个属性
+	mSimCardChangedDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_DIALOG);	//将对话框设置为系统对话框
+
+	2.72平台共性问题：在关闭飞行模式之后蓝牙打不开的bug???
+
+	解决：
+	frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/toolbar/QuickSettingsConnectionModel.java
+	mBluetoothTileView.setOnClickListener(new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			String toggleableRadio = Settings.Global.getString(mContext.getContentResolver(),Settings.Global.AIRPLANE_MODE_TOGGLEABLE_RADIOS);
+			boolean isAirplaneToggleable = toggleableRadio == null ? false : toggleableRadio.contains(Settings.Global.RADIO_BLUETOOTH);
+			boolean isAirplaneModeOn = Settings.Global.getInt(mContext.getContentResolver(),Settings.Global.AIRPLANE_MODE_ON,0) == 1;
+			if(!isAirplaneModeOn || isAirplaneToggleable){
+				mBluetoothStateTracker.toggleState(mContext);
+			}
+		}
+	});

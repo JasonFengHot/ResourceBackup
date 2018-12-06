@@ -1,0 +1,9 @@
+	1.PackageManager 的 setComponentEnabledSetting() 的强大作用????
+
+	解决:
+	static final ComponentName DISABLED_ACTIVITY_COMPONENTNAME = new ComponentName("com.android.launcher", "com.android.launcher2.ThemeChooser");
+	mPackageManager.setComponentEnabledSetting(DISABLED_ACTIVITY_COMPONENTNAME, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, 0);		//启用ThemeChooser
+	mPackageManager.setComponentEnabledSetting(DISABLED_ACTIVITY_COMPONENTNAME, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 0);	//禁用ThemeChooser
+	上面的代码只要运行一次之后就永久生效，不管是否重启，由于一开始TECNO_THEME_SUPPORT的宏没有打开，导致运行了一次禁用 ThemeChooser 的代码，把ThemeChooser永远禁用了，需要再运行一次启用ThemeChooser的代码才能把应用给显示出来
+
+2.

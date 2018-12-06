@@ -1,0 +1,49 @@
+1.MMS中的VCard的选择问题？？？
+
+解决：
+private Uri getLookupUriForEmail(String type, long[] contactsIds) {
+    Cursor cursor = null;
+    Uri uri = null;
+    if (type.equals("Single_Contact")) {
+        uri = Uri.withAppendedPath(Contacts.CONTENT_URI, Long.toString(contactsIds[0]));
+        cursor = getActivity().getContentResolver().query(uri, LOOKUPPROJECT, null, null, null);
+        if (cursor != null && cursor.moveToNext()) {
+            uri = Uri.withAppendedPath(Contacts.CONTENT_VCARD_URI, cursor.getString(0));
+        }
+    } else if (type.equals("Multi_Contact")) {
+        StringBuilder sb = new StringBuilder("");
+        for (long contactId : contactsIds) {
+            if (contactId == contactsIds[contactsIds.length - 1]) {
+                sb.append(contactId);
+            } else {
+                sb.append(contactId + ",");
+            }
+        }
+        String selection = Contacts._ID + " in (" + sb.toString() + ")";
+        cursor = getActivity().getContentResolver().query(Contacts.CONTENT_URI, LOOKUPPROJECT, selection, null, null);
+        if (cursor == null) {
+            return null;
+        }
+        if (!cursor.moveToFirst()) {
+            return null;
+        }
+        StringBuilder uriListBuilder = new StringBuilder();
+        int index = 0;
+        for (; !cursor.isAfterLast(); cursor.moveToNext()) {
+            if (index != 0) {
+                uriListBuilder.append(':');
+            }
+            uriListBuilder.append(cursor.getString(0));
+            index++;
+        }
+        uri = Uri.withAppendedPath(Contacts.CONTENT_MULTI_VCARD_URI, Uri.encode(uriListBuilder.toString()));
+    }
+    if (cursor != null) {
+        cursor.close();
+    }
+    return uri;
+}
+
+2.*#*#4636#*#*可以获取一些详细信息？？？
+
+3.

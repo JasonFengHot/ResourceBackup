@@ -1,0 +1,31 @@
+1.修改相机默认值的时候还需要修改CameraSettings.java文件中的？？？
+
+解决：
+public static void initialCameraPictureSize(Context context, Parameters parameters) 
+{
+	/// M: here we find the full screen picture size for default, not first one in arrays.xml
+	List<String> supportedRatios = buildPreviewRatios(context, parameters);
+	String ratioString = null;
+	if (supportedRatios != null && supportedRatios.size() > 0) 
+	{
+	    SharedPreferences.Editor editor = ComboPreferences.get(context).edit();
+		/*bug10287 liangshuang modify default preview size 2013-8-30 begin */
+	    //ratioString = supportedRatios.get(supportedSizes.size() - 1);
+	    ratioString = supportedRatios.get(0);
+		/*bug10287 liangshuang modify default preview size 2013-8-30 end */
+	    editor.putString(KEY_PICTURE_RATIO, ratioString);
+	    editor.apply();
+	}
+	List<String> supportedSizes = buildSupportedPictureSize(context, parameters, ratioString);
+	if (supportedSizes != null && supportedSizes.size() > 0) 
+	{
+	    String findPictureSize = supportedSizes.get(supportedSizes.size() - 1);
+	    SharedPreferences.Editor editor = ComboPreferences.get(context).edit();
+	    editor.putString(KEY_PICTURE_SIZE, findPictureSize);
+	    editor.apply();
+	    Point ps = SettingUtils.getSize(findPictureSize);
+	    parameters.setPictureSize(ps.x, ps.y);
+	}
+}
+
+不好意思，上次拷贝文件写错了

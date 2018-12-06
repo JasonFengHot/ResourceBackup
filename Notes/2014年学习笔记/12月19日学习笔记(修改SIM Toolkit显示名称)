@@ -1,0 +1,68 @@
+1.修改《Sim Toolkit》的显示名称？？？
+
+解决：
+//frameworks/opt/telephony/src/java/com/android/internal/telephony/cat/CommandParamsFactory.java
+CatLog.d(this, "add AlphaId: " + menu.title);
+android.os.SystemProperties.set("gsm.zhangqi.stkmenu", menu.title);        //添加这一行代码将 menu.title 保存到 build.prop 文件中，注意这里需要将键值修改为 gsm 开头，参照system/core/init/property_service.c文件
+
+//frameworks/base/core/java/android/app/ApplicationPackageManager.java
+if(packageName.equalsIgnoreCase("com.android.stk")) {
+    String tmptext = android.os.SystemProperties.get("gsm.sim.operator.alpha");
+    String numeric = android.os.SystemProperties.get("gsm.sim.operator.numeric");
+    if(numeric != null && numeric.equalsIgnoreCase("28405") && tmptext != null && !tmptext.isEmpty() ){
+        text = android.os.SystemProperties.get("gsm.zhangqi.stkmenu");            //添加一个判断
+        if(text == null || text.toString().isEmpty()){
+            if(tmptext.toLowerCase().contains("telenor")){
+                text = "Telenor";
+            }else if(tmptext.toLowerCase().contains("globul")){
+                text = "My Globul";
+            }
+        }
+    }
+}
+
+//mediatek/packages/apps/Stk1/src/com/android/stk/StkMenuInstance.java
+String alpha = android.os.SystemProperties.get("gsm.sim.operator.alpha");
+String numeric = android.os.SystemProperties.get("gsm.sim.operator.numeric");
+String title = android.os.SystemProperties.get("gsm.zhangqi.stkmenu");            //添加一个判断
+if(title == null || title.isEmpty()){
+    if(numeric != null && numeric.equalsIgnoreCase("28405") && alpha != null && !alpha.isEmpty() ){
+        if(alpha.toLowerCase().contains("telenor")){
+            textView.setText("Telenor");
+        }else if(alpha.toLowerCase().contains("globul")){
+            textView.setText("My Globul");
+        }
+    }
+}
+
+
+[gsm.sim.operator.imsi]: [284050050210018]
+[gsm.sim.operator.alpha]: [Telenor BG]
+[gsm.sim.operator.numeric]: [28405]
+[gsm.sim.operator.iso-country]: [bg]
+[gsm.sim.operator.default-name]: [Telenor BG]
+
+[gsm.sim.operator.imsi]: [284050050725087]
+[gsm.sim.operator.alpha]: [Telenor BG]
+[gsm.sim.operator.numeric]: [28405]
+[gsm.sim.operator.iso-country]: [bg]
+[gsm.sim.operator.default-name]: [Telenor BG]
+
+[gsm.sim.operator.imsi]: [284050170702360]
+[gsm.sim.operator.alpha]: [BG GLOBUL]
+[gsm.sim.operator.numeric]: [28405]
+[gsm.sim.operator.iso-country]: [bg]
+[gsm.sim.operator.default-name]: []
+
+[gsm.sim.operator.imsi]: [284050170702377]
+[gsm.sim.operator.alpha]: [BG GLOBUL]
+[gsm.sim.operator.numeric]: [28405]
+[gsm.sim.operator.iso-country]: [bg]
+[gsm.sim.operator.default-name]: [Telenor BG]
+
+[gsm.sim.operator.imsi]: [284050050210018]
+[gsm.sim.operator.alpha]: [Telenor BG]
+[gsm.sim.operator.numeric]: [28405]
+[gsm.sim.operator.iso-country]: [bg]
+[gsm.sim.operator.default-name]: [Telenor BG]
+

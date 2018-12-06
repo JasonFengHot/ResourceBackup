@@ -1,0 +1,49 @@
+1.如何获取运行商的名称？？？
+
+解决：
+String operatorName = SystemProperties.get("gsm.sim.operator.alpha");
+[gsm.operator.alpha]: [CMCC]
+
+[gsm.3gswitch]: [1]
+[gsm.baseband.capability]: [55]
+[gsm.cs.network.type]: [2]
+[gsm.current.phone-type]: [1]
+[gsm.defaultpdpcontext.active]: [false]
+[gsm.enbr.rat]: [1]
+[gsm.gcf.testmode]: [0]
+[gsm.network.type]: [EDGE]
+[gsm.operator.alpha]: [CMCC]
+[gsm.operator.iso-country]: [cn]
+[gsm.operator.isroaming]: [false]
+[gsm.operator.numeric]: [46000]
+[gsm.phone.created]: [true]
+[gsm.poweron.cfu.query.0]: [0]
+[gsm.project.baseband]: [SAGETEL72_CWET_KK_HSPA_HW(DEFAULT)]
+[gsm.ril.eboot]: [-1]
+[gsm.ril.uicctype]: [USIM]
+[gsm.roaming.indicator.needed.2]: [false]
+[gsm.roaming.indicator.needed]: [false]
+[gsm.serial]: [Factory Need Write SN]
+[gsm.sim.operator.alpha]: [CMCC]
+[gsm.sim.operator.default-name]: [CMCC]
+[gsm.sim.operator.imsi]: [460025684816067]
+[gsm.sim.operator.iso-country]: [cn]
+[gsm.sim.operator.numeric]: [46002]
+[gsm.sim.retry.pin1]: [3]
+[gsm.sim.retry.pin2]: [3]
+[gsm.sim.retry.puk1]: [10]
+[gsm.sim.retry.puk2]: [10]
+[gsm.sim.ril.phbready]: [false]
+[gsm.sim.ril.testsim]: [0]
+[gsm.sim.state]: [READY]
+[gsm.siminfo.ready]: [true]
+[gsm.version.baseband]: [MOLY.WR8.W1315.MD.WG.MP.V43.P1, 2014/06/18 14:18]
+[gsm.version.ril-impl]: [mtk gemini ril 1.0]
+
+2.修改下拉状态栏上的运营商名称？？？
+
+解决：
+//frameworks\base\packages\systemui\src\com\android\systemui\statusbar\phone\PhoneStatusBar.java
+mCarrierLabel.setText(SIMHelper.getNetworkName(context, intent));
+
+3.

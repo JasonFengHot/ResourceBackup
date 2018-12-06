@@ -1,0 +1,174 @@
+1.如何在Camera上新添加一个菜单？？
+
+CameraStorage 	getFilePath return /storage/sdcard0/DCIM/Camera
+
+
+//需要修改以下文件
+camera_preferences.xml
+CameraPreference.java
+SettingChecker.java
+CameraSettings.java
+SettingListLayou.java
+mtk_strings.xml
+arrays_camera.xml
+
+Insert an SD card before using the camera.			//这个问题插入SD卡之后就能解决了
+
+packages/apps/Camera/src/com/android/camera/manager/ThumbnailManager.java
+public void onClick(View v){
+	if (getContext().isFullScreen() && getContext().isCameraIdle() && mThumbnail != null) {
+		if (getContext().getFileSaver() != null) {
+		    getContext().getFileSaver().waitDone();
+		}
+		getContext().gotoGallery();					//com.android.camera.Camera.gotoGallery();
+	}
+}
+
+packages/apps/Camera/src/com/android/camera/Camera.java
+public void gotoGallery() {
+    mAppBridge.switchWithCaptureAnimation(1);
+}
+
+private void switchWithCaptureAnimation(int offset) {
+    if (mServer != null) {
+        if (mServer.switchWithCaptureAnimation(offset)) {
+            mFullScreen = false; 
+        }
+    }
+}
+
+public boolean switchWithCaptureAnimation(int offset) {
+    if(1 == offset && !mPhotoView.isFirstBoxReady()) {
+        return false;
+    }
+    return mPhotoView.switchWithCaptureAnimation(offset);
+}
+
+public boolean switchWithCaptureAnimation(int offset) {
+    GLRoot root = getGLRoot();
+    if(root == null) return false;
+    root.lockRenderThread();
+    try {
+        return switchWithCaptureAnimationLocked(offset);
+    } finally {
+        root.unlockRenderThread();
+    }
+}
+
+private boolean switchWithCaptureAnimationLocked(int offset) {
+    if (mHolding != 0) return true;
+    if (offset == 1) {
+        if (mNextBound <= 0) return false;
+        if (!mFilmMode) mListener.onActionBarAllowed(false);
+        switchToNextImage();
+        mPositionController.startCaptureAnimationSlide(-1);
+    } else if (offset == -1) {
+        if (mPrevBound >= 0) return false;
+        if (mFilmMode) setFilmMode(false);
+        if (mModel.getCurrentIndex() > SCREEN_NAIL_MAX) {
+            switchToFirstImage();						//这里
+            mPositionController.skipToFinalPosition();
+            return true;
+        }
+        switchToFirstImage();
+        mPositionController.startCaptureAnimationSlide(1);
+    } else {
+        return false;
+    }
+    mHolding |= HOLD_CAPTURE_ANIMATION;
+    Message m = mHandler.obtainMessage(MSG_CAPTURE_ANIMATION_DONE, offset, 0);
+    mHandler.sendMessageDelayed(m, PositionController.CAPTURE_ANIMATION_TIME);
+    return true;
+}
+
+private void switchToFirstImage() {
+    mModel.moveTo(0);
+}
+
+PhotoDataAdapter pda = new PhotoDataAdapter(
+                    mActivity, mPhotoView, mMediaSet, itemPath, mCurrentIndex,
+                    mAppBridge == null ? -1 : 0,
+                    mAppBridge == null ? false : mAppBridge.isPanorama(),
+                    mAppBridge == null ? false : mAppBridge.isStaticCamera());
+
+
+mData[dataIndex] = info.items.get(i - info.contentStart);
+
+
+
+SD card
+01-06 22:23:49.981: V/ThumbnailManager(1881): onClick() mThumbnail=Thumbnail(mUri=content://media/external/images/media/353, mFromFile=false, mBitmap=android.graphics.Bitmap@425b43e8) really=true
+01-06 22:23:50.044: V/ThumbnailManager(1881): updateThumbnailView() mThumbnailView=com.android.camera.ui.RotateImageView{41e18710 V.ED..C. ........ 0,0-78,78 #7f0b013b app:id/thumbnail}, mThumbnail=Thumbnail(mUri=content://media/external/images/media/353, mFromFile=false, mBitmap=android.graphics.Bitmap@425b43e8), isShowing=true
+01-06 22:23:50.050: V/ThumbnailManager(1881): updateThumbnailView() 0
+01-06 22:23:50.050: V/ThumbnailManager(1881): handleMessage({ what=2 when=-1ms target=Handler (com.android.camera.manager.ThumbnailManager$WorkerHandler) {41f656c0} })
+01-06 22:23:50.124: V/ThumbnailManager(1881): handleMessage() mThumbnail=Thumbnail(mUri=content://media/external/images/media/353, mFromFile=false, mBitmap=android.graphics.Bitmap@425b43e8), valid=true
+01-06 22:23:50.124: V/ThumbnailManager(1881): handleMessage() diff=16777, mRefreshInterval=0
+
+
+Phone
+01-06 22:24:41.352: V/ThumbnailManager(1881): onClick() mThumbnail=Thumbnail(mUri=content://media/external/file/267, mFromFile=true, mBitmap=android.graphics.Bitmap@41f317b8) really=true
+01-06 22:24:41.429: V/ThumbnailManager(1881): updateThumbnailView() mThumbnailView=com.android.camera.ui.RotateImageView{42510a90 V.ED..C. ........ 0,0-78,78 #7f0b013b app:id/thumbnail}, mThumbnail=Thumbnail(mUri=content://media/external/file/267, mFromFile=true, mBitmap=android.graphics.Bitmap@41f317b8), isShowing=true
+01-06 22:24:41.435: V/ThumbnailManager(1881): updateThumbnailView() 0
+01-06 22:24:41.437: V/ThumbnailManager(1881): handleMessage({ what=2 when=-1ms target=Handler (com.android.camera.manager.ThumbnailManager$WorkerHandler) {4288f1f0} })
+01-06 22:24:41.575: V/ThumbnailManager(1881): handleMessage() mThumbnail=Thumbnail(mUri=content://media/external/file/267, mFromFile=true, mBitmap=android.graphics.Bitmap@41f317b8), valid=true
+01-06 22:24:41.575: V/ThumbnailManager(1881): handleMessage() diff=1389047081437, mRefreshInterval=0
+
+
+
+
+
+
+
+
+
+01-07 03:10:53.978: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:10:53.978: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:10:53.978: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:10:54.013: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:10:54.017: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:10:54.017: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:10:54.046: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:10:54.048: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:10:54.049: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:10:54.076: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:10:54.077: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:10:54.077: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:10:54.108: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:10:54.109: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:10:54.110: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:10:54.135: V/Gallery2/StateManager(1967): startStateForResult class com.android.gallery3d.app.AlbumPage, 1
+01-07 03:10:54.136: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:10:54.139: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:10:54.140: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:10:54.151: I/Gallery2/AlbumPage(1967): initializeData:mMtkInclusion=30
+01-07 03:10:54.155: D/Gallery2/AlbumPage(1967): onSyncDone: Camera result=0
+01-07 03:10:54.158: I/Gallery2/GLRootView(1967): layout content pane 480x762 (compensation 0)
+01-07 03:10:54.264: D/Gallery2/AlbumPage(1967): onLoadingFinished: item count=10
+01-07 03:10:54.265: D/Gallery2/SelectionManager(1967): onSourceContentChanged, new total=10
+
+
+01-07 03:11:18.912: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:11:18.915: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:11:18.915: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:11:18.948: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:11:18.951: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:11:18.951: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:11:18.981: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:11:18.984: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:11:18.984: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:11:19.014: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:11:19.016: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:11:19.016: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:11:19.047: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:11:19.048: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:11:19.049: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:11:19.065: V/Gallery2/StateManager(1967): startStateForResult class com.android.gallery3d.app.AlbumPage, 1
+01-07 03:11:19.066: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:11:19.067: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:11:19.068: V/Gallery2/MtkUtils(1967): getMtkDefaultPath() return /storage/sdcard0
+01-07 03:11:19.077: I/Gallery2/AlbumPage(1967): initializeData:mMtkInclusion=30
+01-07 03:11:19.100: D/Gallery2/AlbumPage(1967): onSyncDone: Camera result=0
+01-07 03:11:19.103: I/Gallery2/GLRootView(1967): layout content pane 480x762 (compensation 0)
+01-07 03:11:19.179: D/Gallery2/AlbumPage(1967): onLoadingFinished: item count=19
+01-07 03:11:19.180: D/Gallery2/SelectionManager(1967): onSourceContentChanged, new total=19
+

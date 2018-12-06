@@ -1,0 +1,1 @@
+jarsigner -verify -verbose -certs ${your_apk}>log.txt

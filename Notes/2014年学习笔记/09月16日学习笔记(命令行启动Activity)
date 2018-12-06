@@ -1,0 +1,6 @@
+	1.如何在命令行启动activity?????
+
+	解决：
+	adb shell am start -n com.google.android.setupwizard/com.google.android.setupwizard.WalledGardenActivity
+
+2.

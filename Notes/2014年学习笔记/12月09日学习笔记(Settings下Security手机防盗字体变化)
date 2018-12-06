@@ -1,0 +1,12 @@
+	1.Bug24367 [bug](设置)手机设置安全选项中手机防盗选项概率性字体变化 ??
+
+	解决：
+	//packages/apps/Settings/src/com/android/settings/SecuritySettings.java
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		Log.d(TAG, "onConfigurationChanged");
+		super.onConfigurationChanged(newConfig);
+		this.getListView().clearScrapViewsIfNeeded();	//把这句话去掉
+	}
+
+2.

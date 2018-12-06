@@ -1,0 +1,494 @@
+	1.Launcher界面和主菜单界面可以循环显示????
+
+	解决：
+	//packages/apps/Launcher3/ext/src/com/mediatek/launcher3/ext/DefaultWorkspaceExt.java
+	@Override
+	public boolean supportAppListCycleSliding() {
+		return true;		//把这个地方改为 true 就行了
+	}
+
+2.改了上面 Launcher 界面循环显示之后会出现点击 Home 键会乱跳？？？
+
+	3.隐藏ActionBar????
+
+	解决：
+	final ActionBar actionBar = getActionBar();
+	actionBar.hide();
+
+	4.点击壁纸之后隐藏《设置壁纸》按钮？？
+
+	解决：
+	//alps/packages/apps/Launcher3/WallpaperPicker/src/com/android/launcher3/WallpaperPickerActivity.java
+	mWallpaperStrip.setVisibility(View.INVISIBLE);
+	findViewById(R.id.btn_set).setVisibility(View.INVISIBLE);
+
+	mWallpaperStrip.setVisibility(View.VISIBLE);
+	findViewById(R.id.btn_set).setVisibility(View.VISIBLE);
+
+	5.将 widget 列表的背景改为透明？？？
+
+	解决：
+	//packages/apps/Launcher3/src/com/android/launcher3/AppsCustomizePagedView.java
+	private void setupPage(PagedViewGridLayout layout) {
+		int widthSpec = MeasureSpec.makeMeasureSpec(mContentWidth, MeasureSpec.AT_MOST);
+		int heightSpec = MeasureSpec.makeMeasureSpec(mContentHeight, MeasureSpec.AT_MOST);
+		Drawable bg = getContext().getResources().getDrawable(R.drawable.quantum_panel_dark);	//这个就是那个背景图片
+		if (bg != null) {
+		    bg.setAlpha(mPageBackgroundsVisible ? 255 : 0);
+		    //layout.setBackground(bg);						//在这里设置	GridLayout 的背景图片
+		}
+		layout.measure(widthSpec, heightSpec);
+	}
+	
+	//packages/apps/Launcher3/src/com/android/launcher3/Launcher.java
+	//revealView.setBackground(res.getDrawable(R.drawable.quantum_panel_dark));					//去掉这个背景，这里有两个地方需要修改
+	
+	//packages/apps/Launcher3/res/layout/apps_customize_widget.xml
+	将 R.id.left_border 和 R.id.right_border
+
+	6.去掉 workspace 背景透明效果？？？
+
+	解决：
+	//packages/apps/Launcher3/res/values/config.xml
+	<integer name="config_workspaceScrimAlpha">0</integer>	
+
+	7.修改 widget 列表透明显示？？？
+
+	解决：
+
+8.修改 widget 列表中的 widget 居中显示？？？？
+
+	9.ERROR: 9-patch image packages/apps/Settings/res/drawable-hdpi/titlebar_left_selected.9.png malformed.???
+
+	解决：
+	必须将 9.png 的图片的左上边框同时绘制上去
+
+	10.TextView的字体颜色如何根据控件的状态而改变？？？
+
+	解决：
+	//packages/apps/Settings/res/drawable/buttun_text_color.xml
+	<selector xmlns:android="http://schemas.android.com/apk/res/android">
+		<item android:state_selected="true" android:color="#ffffffff" />
+		<item android:state_selected="false" android:color="#ff07C2F8" />
+	</selector>
+	
+	//packages/apps/Settings/res/layout/buttonbar.xml
+	android:textColor="@drawable/buttun_text_color"
+
+	11.如何设置 TextView 的字体？？？
+
+	解决:
+	holder.title.setTypeface(android.graphics.Typeface.createFromAsset(getContext().getAssets(), "fonts/tiny.ttf"));
+	//上面会报 Font asset not found fonts/tiny.ttf 的异常？？？
+	在 Settings/Android.mk 文件中有，LOCAL_ASSET_DIR:= $(LOCAL_PATH)/no_clearmotion_assets
+	需要将 tiny.ttf 字体文件添加到 Settings/no_clearmotion_assets 目录下
+//字体文件加载较慢？？？？
+
+12.如何设置 Switcher 的按钮效果？？？
+
+	13.将Launcher界面上的图标稍微改小一点？？？
+	
+	解决：汉岭大哥已实现
+
+14.添加 Settings 中 TabWidget 的渐变切换效果，类似微信？？？可能需要自己重新自定义一个 View 来实现
+
+	15.在 Launcher 菜单中添加设置按钮？？？
+
+	解决：
+    if (hasSettings()) {
+        settingsButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                if (!mWorkspace.isSwitchingState()) {
+                    onClickSettingsButton(arg0);
+                }
+            }
+        });
+        settingsButton.setOnTouchListener(getHapticFeedbackTouchListener());
+    } else {
+        settingsButton.setVisibility(View.GONE);
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)widgetButton.getLayoutParams();
+        lp.gravity = Gravity.END | Gravity.TOP;
+        widgetButton.requestLayout();
+    }
+    
+    protected void onClickSettingsButton(View v) {
+        if (LOGD) Log.d(TAG, "onClickSettingsButton");
+        //zhangqi modified to show settings in launcher menu 2015/06/05:begin
+        Intent settings = new Intent(android.provider.Settings.ACTION_SETTINGS);
+        settings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        startActivitySafely(null, settings, "startSettings");
+        //zhangqi modified to show settings in launcher menu 2015/06/05:end
+    }
+
+	16.修改《常用设置》的背景为纯白色？？？
+
+	解决：
+	//packages/apps/Settings/src/com/android/settings/GeneralSettings.java
+	onCreate()
+	super.getListView().setBackgroundColor(android.graphics.Color.WHITE);
+
+17.添加《壁纸》左右滑动切换效果？？？
+
+18.文件夹背景磨砂效果？？？
+
+解决：
+//磨砂效果
+private void blur(Bitmap overlay, View view) {
+	RenderScript rs = RenderScript.create(mContext);
+	Allocation overlayAlloc = Allocation.createFromBitmap(rs, overlay);
+	ScriptIntrinsicBlur blur = ScriptIntrinsicBlur.create(rs, overlayAlloc.getElement());
+	blur.setInput(overlayAlloc);
+	blur.setRadius(20.f);					//磨砂效果的模糊程度，数值越大越模糊
+	blur.forEach(overlayAlloc);
+	overlayAlloc.copyTo(overlay);
+	view.setBackground(new BitmapDrawable(getResources(), overlay));
+	rs.destroy();
+}
+//在打开Folder的时候添加磨砂效果？？？？先用一张假的截图试一下
+
+	19.Recorder 声波效果？？？
+
+	解决：潘浩达已实现，到时候研究一下
+
+20.桌面壁纸为什么会变模糊？？？可能在设置了之后会被压缩
+
+	21.如何去掉 Settings 中 TabWidget 下面的横线？？？
+
+	解决：
+	//packages/apps/Settings/src/com/android/settings/GeneralSettings.java
+	((android.widget.FrameLayout) findViewById(android.R.id.content)).setForeground(null);
+
+	//packages/apps/Settings/src/com/android/settings/SettingsActivity.java
+	if (mContent.getParent() != null && mContent.getParent() instanceof android.widget.FrameLayout){
+		((android.widget.FrameLayout) mContent.getParent()).setForeground(null);
+	}
+	或
+	((android.widget.FrameLayout) findViewById(android.R.id.content)).setForeground(null);
+
+	22.如何将 TextView 的字体改细一点？？？
+
+	解决：
+	只需要添加 android:fontFamily="sans-serif-thin" 这个属性就可以了
+	具体的属性的值在 frameworks/base/data/fonts/fonts.xml
+	<alias name="sans-serif-thin" to="sans-serif" weight="100" />
+中文字体没有改变？？？中文的字体文件是哪个？？？
+
+	23.如何将 RecentsApp 改为横向的？？？
+
+	解决：
+	recents.RecentsActivity 中的效果实在太复杂，不会修改
+	只能替换为
+	recent.RecentsActivity
+	具体实现参考《问题31》
+
+	24.系统的字体在哪里替换？？？
+
+	解决：
+	系统的字体文件都在 frameworks/base/data/fonts/ 目录下面
+
+25.系统的 Switch 是怎么做的？？
+
+	26.反编译的时候 "Could not decode arsc file ？？？
+
+	解决：
+	换一个新的 apktool.jar 包就可以了
+
+	27.日历添加《第几周》的功能？？？
+
+	解决：陈林已实现
+
+28.《常用设置》中每一个选项没有点击效果？？？
+
+29.点击《常用设置》中的《账户》报错（概率性）？？
+
+java.lang.NullPointerException: Attempt to invoke interface method 'android.view.MenuItem android.view.MenuItem.setVisible(boolean)' on a null object reference
+	at com.android.settings.accounts.AccountSettings.onPrepareOptionsMenu(AccountSettings.java:149)
+	at android.app.Fragment.performPrepareOptionsMenu(Fragment.java:2163)
+	at android.app.FragmentManagerImpl.dispatchPrepareOptionsMenu(FragmentManager.java:2000)
+	at android.app.Activity.onPreparePanel(Activity.java:2897)
+	at com.android.internal.policy.impl.PhoneWindow.preparePanel(PhoneWindow.java:615)
+	at com.android.internal.policy.impl.PhoneWindow.doInvalidatePanelMenu(PhoneWindow.java:979)
+	at com.android.internal.policy.impl.PhoneWindow$1.run(PhoneWindow.java:290)
+	at android.os.Handler.handleCallback(Handler.java:815)
+	at android.os.Handler.dispatchMessage(Handler.java:104)
+	at android.os.Looper.loop(Looper.java:194)
+	at android.app.ActivityThread.main(ActivityThread.java:5624)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:372)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:959)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:754)
+	
+	31.如何将 recents.RecentsActivity 换成 recent.RecentsActivity ？？？？
+
+	解决：
+	//frameworks/base/packages/SystemUI/src/com/android/systemui/recents/AlternateRecentsComponent.java
+	将
+	public final static String sRecentsActivity = "com.android.systemui.recents.RecentsActivity";
+	改为
+	public final static String sRecentsActivity = "com.android.systemui.recent.RecentsActivity";
+
+	32.Recents 近期任务如何显示整个Activity的缩略图？？？
+
+	解决：
+	//frameworks/base/core/res/res/values/dimens.xml
+	<dimen name="thumbnail_width">192dp</dimen>
+	<dimen name="thumbnail_height">320dp</dimen>
+
+	//frameworks/base/packages/SystemUI/res/values/dimens.xml
+	<dimen name="status_bar_recents_thumbnail_width">162dp</dimen>
+	<dimen name="status_bar_recents_thumbnail_height">270dp</dimen>
+
+	33.Recents 近期任务竖屏将 RecentsVerticalScrollView 改为 RecentsHorizontalScrollView 之后不能左右滑动？？？
+
+	解决：
+	参考 MT6572 上的 SystemUI 下的 SwipeHelper 中的 onTouchEvent()方法即可
+	
+	34.Recents 近期任务一键清理按钮的功能和动画效果如何实现？？？
+
+	解决：
+
+35.Launcher 上的应用图标改为用主题的方式替换？？？
+
+	36.Recents 近期任务中没有任务的时候，不显示“没有近期任务”的视图？？？
+
+	解决：
+	在 RecentsActivity.java 中修改即可
+
+	37.Recents 近期任务中横屏界面报错？？？
+
+	01-06 21:35:31.231: E/AndroidRuntime(1056): FATAL EXCEPTION: main
+	01-06 21:35:31.231: E/AndroidRuntime(1056): Process: com.android.systemui, PID: 1056
+	01-06 21:35:31.231: E/AndroidRuntime(1056): java.lang.RuntimeException: Unable to start activity ComponentInfo{com.android.systemui/com.android.systemui.recent.RecentsActivity}: java.lang.NullPointerException: Attempt to invoke virtual method 'void android.view.View.setOnClickListener(android.view.View$OnClickListener)' on a null object reference
+	01-06 21:35:31.231: E/AndroidRuntime(1056): 	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:2521)
+	01-06 21:35:31.231: E/AndroidRuntime(1056): 	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:2595)
+	01-06 21:35:31.231: E/AndroidRuntime(1056): 	at android.app.ActivityThread.handleRelaunchActivity(ActivityThread.java:4203)
+	01-06 21:35:31.231: E/AndroidRuntime(1056): 	at android.app.ActivityThread.access$900(ActivityThread.java:178)
+	01-06 21:35:31.231: E/AndroidRuntime(1056): 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1476)
+	01-06 21:35:31.231: E/AndroidRuntime(1056): 	at android.os.Handler.dispatchMessage(Handler.java:111)
+	01-06 21:35:31.231: E/AndroidRuntime(1056): 	at android.os.Looper.loop(Looper.java:194)
+	01-06 21:35:31.231: E/AndroidRuntime(1056): 	at android.app.ActivityThread.main(ActivityThread.java:5624)
+	01-06 21:35:31.231: E/AndroidRuntime(1056): 	at java.lang.reflect.Method.invoke(Native Method)
+	01-06 21:35:31.231: E/AndroidRuntime(1056): 	at java.lang.reflect.Method.invoke(Method.java:372)
+	01-06 21:35:31.231: E/AndroidRuntime(1056): 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:959)
+	01-06 21:35:31.231: E/AndroidRuntime(1056): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:754)
+	01-06 21:35:31.231: E/AndroidRuntime(1056): Caused by: java.lang.NullPointerException: Attempt to invoke virtual method 'void android.view.View.setOnClickListener(android.view.View$OnClickListener)' on a null object reference
+
+	解决：
+	横屏界面中没有 btn_clean 按钮，在 frameworks/base/packages/SystemUI/res/layout-land/status_bar_recent_panel.xml 中添加一个 R.id.btn_clean 的 Button 按钮即可
+
+	38.修改 Launcher 桌面上的文件夹字体颜色？？？？
+
+	解决：
+	修改文件夹名称编辑框的字体颜色
+	//alps/packages/apps/Launcher3/res/layout/user_folder.xml
+	R.id.folder_name
+	android:textColorHint="#ffffff"
+
+	修改文件夹中应用名称的字体颜色
+	//alps/packages/apps/Launcher3/res/layout/folder_application.xml
+	<com.android.launcher3.BubbleTextView 
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		style="@style/WorkspaceIcon.Folder"
+		android:textColor="#ffffffff"				//自己添加的字体颜色
+		android:focusable="true" />
+
+	39.将桌面壁纸改为整张的???
+
+	解决：
+	https://onlinesso.mediatek.com/Pages/FAQ.aspx?list=SW&FAQID=FAQ10958
+	a.请在 WallpaperCropActivity.java 的 getDefaultWallpaperSize() 方法中，请找到如下代码：
+	if (isScreenLarge(res)) {
+		defaultWidth = (int) (maxDim * wallpaperTravelToScreenWidthRatio(maxDim, minDim));
+		defaultHeight = maxDim;
+	} else {
+		defaultWidth = Math.max((int) (minDim * WALLPAPER_SCREENS_SPAN), maxDim);
+		defaultHeight = maxDim;
+	}
+	请先确认代码走哪个分支（这与手机分辨率有关），然后把 defaultWidth 和 defaultHeight 改为屏幕宽高。修改方法如下（以else分支示例）：
+	Point realSize = new Point();
+	windowManager.getDefaultDisplay().getRealSize(realSize);
+	if (isScreenLarge(res)) {
+		defaultWidth = (int) (maxDim * wallpaperTravelToScreenWidthRatio(maxDim, minDim));
+		defaultHeight = maxDim;
+	} else {
+		defaultWidth = realSize.x;
+		defaultHeight = realSize.y;
+	}
+
+	b. 请找到 WallpaperManagerService.java 的 loadSettingLocked() 方法，去掉如下代码：
+	if (wallpaper.width < baseSize) {
+		wallpaper.width = baseSize;
+	}
+
+40.编译 push 了 framework-res.apk 之后 Calendar 和 Browser 会报错？？
+
+	41.添加 workspace 应用名称的阴影效果？？？
+
+	解决：
+	//alps/packages/apps/Launcher3/res/values/styles.xml
+	<style name="WorkspaceIcon.AppsCustomize">
+		<item name="android:background">@null</item>
+		<item name="android:textColor">@color/quantum_panel_text_color</item>
+		<item name="android:drawablePadding">@dimen/dynamic_grid_icon_drawable_padding</item>
+		<item name="android:shadowRadius">0</item>
+		<!--zhangqi modified from "false" to "true" 2015/06/16:begin-->
+		<item name="customShadows">true</item>							//把这个地方修改为true就可以了
+		<!--zhangqi modified from "false" to "true" 2015/06/16:end-->
+	</style>
+
+	43.Settings 修改 General 中每一行的高度，使他充满整个屏幕？？？
+
+	解决：
+	//packages/apps/Settings/res/layout/preference_header_item.xml
+	//packages/apps/Settings/res/layout/preference_header_switch_item.xml
+	修改这两个文件中的 R.id.title 的 android:layout_height 高度就可以了
+
+	44.Settings 添加 General 中 Airplane , Wi-Fi , Bluetooth 的功能？？？
+
+	解决：
+	Airplane功能已添加
+Wifi
+Bluetooth
+
+	45.去掉Launcher界面上下两边的黑色渐变效果？？？？
+
+	解决：
+	//packages/apps/Launcher3/res/layout-port/launcher.xml
+	去掉 R.id.launcher 控件的 android:background 属性
+
+	//packages/apps/Launcher3/src/com/android/launcher3/Launcher.java
+	private void setWorkspaceBackground(boolean workspace) {
+		//mLauncherView.setBackground(workspace ? mWorkspaceBackgroundDrawable : null);		//把这句话注释掉就可以了
+	}
+	
+	这两个地方必须同时修改才有效果
+
+	46.widget 的缩略图，编译，push，重启了之后都没有效果？？？只有恢复出厂设置之后才有效果？？？
+
+	解决：
+	adb shell 进入 /data/data/com.android.launcher3/cache/ 目录之后有
+	widgetpreviews.db
+	widgetpreviews.db-journal
+	这样两个文件缓存数据库文件，需要将这两个文件删除之后，重启之后才会生效
+
+	47.如何去掉 widget 缩略图后面的阴影？？？
+
+	解决：
+	首先按照《问题46》删除缓存数据库
+	//packages/apps/Launcher3/src/com/android/launcher3/WidgetPreviewLoader.java
+	private Bitmap generateShortcutPreview(ResolveInfo info, int maxWidth, int maxHeight, Bitmap preview) {
+		...
+		//c.drawBitmap(tempBitmap, 0, 0, p);		//把这句代码注释掉就可以了
+		...
+	}
+
+	48.修改 Apps 列表界面上应用名称的字体？？？
+
+	解决：
+	在 packages/apps/Launcher3/res/layout/apps_customize_application.xml 文件中添加 android:fontFamily="sans-serif-light" 即可
+但是为什么修改字体颜色不行呢 android:textColor="#00ff00" 这个属性没有用？？？？？
+
+49.修改 Settings 下的二级三级菜单的字体？？？
+
+解决：
+在
+
+	50.将 ApkPush 消息推送功能放到 Launcher上面 或 下拉菜单栏上面？？？
+
+	解决：
+	//Launcher 上已实现
+	Intent intent = new Intent();
+	intent.setClassName("com.android.settings", "com.android.settings.Settings$NotificationAppListActivity");
+	intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	startActivity(intent);
+
+//SystemUI 上正在添加
+
+51.将 Recents 改为和类似图库的浏览效果？？？
+
+	52.Apps 列表字体阴影效果改浅一点？？？
+
+	解决：
+	//alps/packages/apps/launcher3/src/com/android/launcher3/BubbleTextView.java
+	private static final float SHADOW_LARGE_RADIUS = 1.0f;		//zhangqi modified for app label shadow
+	private static final float SHADOW_Y_OFFSET = 1.0f;			//zhangqi modified for app label shadow
+
+53.BubbleTextView 绘制图标的地方？？？
+
+54.颜色渐变效果如何实现？？？？
+
+55.ViewPagerIndicator的水滴效果如何实现？？？
+
+	56.Paint字体设置？？？
+
+	解决：
+	Paint mPaint = new Paint();
+	mPaint.setType(Typeface.create("sans-serif-light", Typeface.NORMAL));
+
+	57.Settings 中的 switch 开关修改成稍微小一点？？？
+
+	解决：
+	android:scaleX="0.7"
+	android:scaleY="0.7"
+
+58.系统默认字体在什么地方设置？？？
+
+59.Battery 下面 lollipop (System UI)的图片在什么地方？？？
+
+60.如何获取屏幕分辨率？？？HWVGA？？？
+
+61.修改默认字体粗细？？？
+
+62.修改Settings下二三级菜单的字体粗细？？？
+
+alps/frameworks/base/core/res/res/layout/preference_information_material.xml
+alps/frameworks/base/core/res/res/layout/preference_material.xml
+
+63. android:tint="@color/dialpad_icon_tint" 这个属性是什么意思？？？有什么用？？？
+
+64.修改通话记录的头像图标？？
+
+解决：
+public LetterTileDrawable(final Resources res) {
+    mPaint = new Paint();
+    mPaint.setFilterBitmap(true);
+    mPaint.setDither(true);
+    if (sColors == null) {
+        sColors = res.obtainTypedArray(R.array.letter_tile_colors);
+        sDefaultColor = res.getColor(R.color.letter_tile_default_color);
+        sTileFontColor = res.getColor(R.color.letter_tile_font_color);
+        sLetterToTileRatio = res.getFraction(R.dimen.letter_to_tile_ratio, 1, 1);
+        DEFAULT_PERSON_AVATAR = BitmapFactory.decodeResource(res, R.drawable.ic_person_white);
+        DEFAULT_BUSINESS_AVATAR = BitmapFactory.decodeResource(res, R.drawable.ic_business_white_120dp);
+        DEFAULT_VOICEMAIL_AVATAR = BitmapFactory.decodeResource(res, R.drawable.ic_voicemail_avatar);
+        DEFAULT_CONFERENCE_CALL_AVATAR = BitmapFactory.decodeResource(res, R.drawable.ic_group_white_24dp);
+        sPaint.setTypeface(Typeface.create(res.getString(R.string.letter_tile_letter_font_family), Typeface.NORMAL));
+        sPaint.setTextAlign(Align.CENTER);
+        sPaint.setAntiAlias(true);
+    }
+}
+
+private void drawLetterTile(final Canvas canvas) {
+    sPaint.setColor(pickColor(mIdentifier));
+    sPaint.setAlpha(mPaint.getAlpha());
+    final Rect bounds = getBounds();
+    final int minDimension = Math.min(bounds.width(), bounds.height());
+    if (mIsCircle) {
+        canvas.drawCircle(bounds.centerX(), bounds.centerY(), minDimension / 2, sPaint);					//画头像的圆形背景
+    } else {
+        canvas.drawRect(bounds, sPaint);																	//画头像的矩形背景
+    }
+    if (mDisplayName != null && isEnglishLetter(mDisplayName.charAt(0))) {
+        sFirstChar[0] = Character.toUpperCase(mDisplayName.charAt(0));
+        sPaint.setTextSize(mScale * sLetterToTileRatio * minDimension);
+        sPaint.getTextBounds(sFirstChar, 0, 1, sRect);
+        sPaint.setColor(sTileFontColor);
+        canvas.drawText(sFirstChar, 0, 1, bounds.centerX(), bounds.centerY() + mOffset * bounds.height() + sRect.height() / 2, sPaint);		//画头像上的字
+    } else {
+        final Bitmap bitmap = getBitmapForContactType(mContactType);
+        drawBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), canvas);
+    }
+}
+
+65.

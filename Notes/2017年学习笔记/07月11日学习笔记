@@ -1,0 +1,4 @@
+    1.在某些ListView界面点击按键的时候会显示搜索框？？
+
+    解决：
+    listView.setTextFilterEnabled(false);

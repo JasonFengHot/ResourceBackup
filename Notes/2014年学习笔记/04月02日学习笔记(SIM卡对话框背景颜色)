@@ -1,0 +1,63 @@
+	1.在集合的时候，返回集合的只读内容？？？
+
+	解决：
+	public class ShopCart{
+		private List carts;
+		public void add(Object item){
+			if(carts == null){
+				carts = new ArrayList();
+			}
+			carts.add(item);
+		}
+		public void remove(Object item){
+			if(carts!=null && carts.contains(item)){
+				carts.remove(item);
+			}
+		}
+		public List getCarts(){
+			return Collections.unmodifiableList(carts);	//返回只读列表
+		}
+	}
+	//这里就不能通过getCarts().add(item);添加元素了
+
+	2.优化Factory模式？？？
+
+	解决：
+	public class CreditFactory{
+		private static Credit baseCredit = new Credit();
+		public static Credit getNewCredit(){
+			return (Credit)baseCredit.clone();	//在这里使用clone()方法创建对象，这样可以不用调用Credit的构造函数链
+		}
+	}
+
+	3.HashMap的遍历优化？？？
+
+	解决：
+	Map<String,String[]> paramMap = new HashMap<String,String[]>();
+	//第一种：性能较差
+	Set<String> keys = paramMap.keySet();
+	for(String key:keys){
+		String[] values = paramMap.get(key);
+	}
+	//第二种：性能较好
+	for(Entry<String,String[]> entry : paramMap.entrySet()){
+		String key = entry.getKey();			//取key
+		String[] values = entry.getValue();		//取value
+	}
+
+4.学习Android上脚本语言的使用？？？ASE??
+
+5.状态机机制的学习？？？
+
+	6.选择SIM卡对话框的背景颜色不统一？？？？
+
+	解决：
+	对话框背景为白色
+	com.android.contacts.activities.DialtactsActivity		packages/apps/contacts/src/com/android/contacts/activities/DialtactsActivity.java
+	android:theme="@style/DialtactsTheme"
+	<style name="DialtactsTheme" parent="android:Theme.Holo.Light">									//这里的parent和下面的俄parent不同导致的
+
+	对话框背景为黑色
+	com.android.phone.OutgoingCallBroadcast					packages/apps/phone/src/com/android/phone/OutgoingCallBroadcaster.java
+	android:theme="@style/OutgoingCallBroadcasterTheme"
+	<style name="OutgoingCallBroadcasterTheme" parent="@android:style/Theme.Holo.NoActionBar">

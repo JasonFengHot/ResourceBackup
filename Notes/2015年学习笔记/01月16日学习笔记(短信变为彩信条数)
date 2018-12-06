@@ -1,0 +1,6 @@
+	1.短信变为彩信？？？？
+
+	解决：
+	packages/apps/Mms/res/xml/mms_config.xml
+	<!-- Maximum number of SMS message segments in a long text message before converting the SMS message to an MMS message. -->
+	<int name="smsToMmsTextThreshold">7</int>

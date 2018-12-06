@@ -1,0 +1,51 @@
+1.Bug4134 [Bug](LCD背光)背光亮度设置后，待机界面快捷图标不会随之变化
+
+private static void updateButtons(RemoteViews views, Context context) {
+	if (getBrightnessMode(context)) {										//自动调节模式
+		views.setContentDescription(R.id.btn_brightness,context.getString(R.string.gadget_brightness_template,context.getString(R.string.gadget_brightness_state_auto))); 
+		views.setImageViewResource(R.id.img_brightness,R.drawable.ic_appwidget_settings_brightness_auto_holo);	//上面的图标
+		views.setImageViewResource(R.id.ind_brightness,R.drawable.appwidget_settings_ind_on_r_holo);		//下面的横杠
+	} else {
+		final int brightness = getBrightness(context);
+		final PowerManager pm = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
+		final int full = (int)(pm.getMaximumScreenBrightnessSetting() * FULL_BRIGHTNESS_THRESHOLD);
+		final int half = (int)(pm.getMaximumScreenBrightnessSetting() * HALF_BRIGHTNESS_THRESHOLD);
+		if (brightness > full) {
+			views.setContentDescription(R.id.btn_brightness,context.getString(R.string.gadget_brightness_template,context.getString(R.string.gadget_brightness_state_full)));
+			views.setImageViewResource(R.id.img_brightness,R.drawable.ic_appwidget_settings_brightness_full_holo);
+		} else if (brightness > half) {
+			views.setContentDescription(R.id.btn_brightness,context.getString(R.string.gadget_brightness_template,context.getString(R.string.gadget_brightness_state_half)));
+			views.setImageViewResource(R.id.img_brightness,R.drawable.ic_appwidget_settings_brightness_half_holo);
+		} else {
+			views.setContentDescription(R.id.btn_brightness,context.getString(R.string.gadget_brightness_template,context.getString(R.string.gadget_brightness_state_off)));
+			views.setImageViewResource(R.id.img_brightness, R.drawable.ic_appwidget_settings_brightness_off_holo);
+		}
+		if (brightness > half) {
+			views.setImageViewResource(R.id.ind_brightness,R.drawable.appwidget_settings_ind_on_r_holo);
+		} else {
+			views.setImageViewResource(R.id.ind_brightness,R.drawable.appwidget_settings_ind_off_r_holo);
+		}
+	}
+}
+
+private static boolean getBrightnessMode(Context context) {
+	try {
+		return Settings.System.getInt(context.getContentResolver(),Settings.System.SCREEN_BRIGHTNESS_MODE) == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return false;
+}
+
+BrightnessPreference.java文件中有
+public BrightnessPreference(Context context, AttributeSet attrs) {
+    super(context, attrs);
+    PowerManager pm = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
+    mScreenBrightnessMinimum = pm.getMinimumScreenBrightnessSetting();
+    mScreenBrightnessMaximum = pm.getMaximumScreenBrightnessSetting();
+    mAutomaticAvailable = context.getResources().getBoolean(com.android.internal.R.bool.config_automatic_brightness_available);
+    SensorManager mgr = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
+    mAutomaticAvailable = mgr.getDefaultSensor(Sensor.TYPE_LIGHT) != null;
+    setDialogLayoutResource(R.layout.preference_dialog_brightness);
+    setDialogIcon(R.drawable.ic_settings_display);
+}

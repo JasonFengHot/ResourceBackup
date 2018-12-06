@@ -1,0 +1,107 @@
+1.Redmine56765 [bug](游戏)玩游戏时来短信接收不到 log分析？？
+
+解决：
+用 LogView 打开报错的log
+java.lang.RuntimeException: Unable to create application com.android.mms.MmsApp: java.lang.RuntimeException: Init failed
+	at android.app.ActivityThread.handleBindApplication(ActivityThread.java:4544)
+	at android.app.ActivityThread.access$1500(ActivityThread.java:151)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1381)
+	at android.os.Handler.dispatchMessage(Handler.java:110)
+	at android.os.Looper.loop(Looper.java:193)
+	at android.app.ActivityThread.main(ActivityThread.java:5299)
+	at java.lang.reflect.Method.invokeNative(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:515)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:825)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:641)
+	at dalvik.system.NativeStart.main(Native Method)
+Caused by: java.lang.RuntimeException: Init failed
+	at android.media.ToneGenerator.native_setup(Native Method)
+	at android.media.ToneGenerator.<init>(ToneGenerator.java:740)
+	at com.android.mms.transaction.MessagingNotification.init(MessagingNotification.java:293)
+	at com.android.mms.MmsApp.onCreate(MmsApp.java:150)
+	at android.app.Instrumentation.callApplicationOnCreate(Instrumentation.java:1007)
+	at android.app.ActivityThread.handleBindApplication(ActivityThread.java:4541)
+	... 10 more
+	
+从 kernel log 中可以看出 com.android.mms 进程被 kill 掉了
+<4>[   46.598495] (1)[1713:ndroid.exchange]Killing 'com.android.mms' (1276), oom_score_adj 1000 (oom_adj 17),
+
+2.如何让APK常驻内存？？？
+
+解决：
+FAQ02683
+[Description]
+如何将一个app 设置为常住app, 不被low memory kill 关闭
+
+[Keyword]
+app 持久 persistent
+
+[Solution]
+1. 将app 的manifest.xml 中的 application 中添加属性 android:persistent="true"
+2. 对这个APP 使用platform 的签名
+3. 放置在system/app 下面
+注: 一个app 被设置为 persistent 后，将很难被low memory kill 杀掉(oom_adj=-12)，请在设置之前仔细确认是否必须，否则将浪费掉memory。
+一个 app 的 oom_adj 可以在 /proc/<processId>/oom_adj 中查看
+
+FAQ14814
+[DESCRIPTION]
+AMS 有一套完整的算法来调整进程的 ADJ. 比如当进程退出使用后, AMS 会将该进程的 ADJ 提高. 从而使得 Memory 不足时 Low Memory Killer 可以有依据杀死进程. 
+但在产品层面, 总有一些进程是产品特别关心的. 对于这些进程, 不希望 ADJ 调整太高, 避免被 LMK 杀死. 可以有几种方法实现该需求. 比如:
+1. 将进程设置为 Persistent. 使进程持续占据 Memory 不被杀死
+2. 调整 ADJ 的最大许可值. 在 Memory 不是特别紧张时, 可以保证该进程不被杀死. 而当 Memory 特别紧张时, 又可以被 LMK 杀死, 从而释放出 Memory 给前台进程使用.
+这里介绍方法 2.
+
+[SOLUTION]
+首先需要加入 Patch ALPS01995207.
+然后修改 /vendor/mediatek/proprietary/frameworks/base/packages/FwkPlugin/src/com/mediatek/op/amsplus/DefaultCustomizedOomExt.java 中的函数 getCustomizedAdj(String processName). 如果传入的是需要重新定义 ADJ 的进程, 则返回期望的 ADJ.
+需要注意的是, 这个修改对 AMS 的策略会产生影响. 必然会影响到其他进程. 所以请一定斟酌放入 getCustomizedAdj 中的进程, 以及期望的 ADJ.
+如果需要 Check 修改结果, 需要打开 AMS 的 DEBUG_OOM_ADJ 开关. 当该进程的 ADJ 按照 getCustomizedAdj 的返回结果重新设定时, 会打印如下 trace:
+getCustomized(XXXX) with adj = Y cur = Z
+其中 Y 表示 getCustomized 给出的 ADJ, Z 表示 AMS 计算出的 ADJ.
+
+Ams调用setOomAdj设置某进程的adj值，
+通过jni接口写到oom_adj文件里，
+这个文件是在base.c里注册的文件，里面有个oom_adjust_write方法
+该方法将这个值赋给task->signal->oom_score_adj
+	
+3.系统中一些添加了 android:persistent 的应用：
+
+AndroidManifest.xml (frameworks\base\core\res):                 android:persistent="true"
+AndroidManifest.xml (frameworks\base\packages\fakeoemfeatures):        android:persistent="true"
+AndroidManifest.xml (frameworks\base\packages\keyguard):        android:persistent="true"
+AndroidManifest.xml (frameworks\base\packages\systemui):        android:persistent="true"
+AndroidManifest.xml (packages\apps\email):	    android:persistent="true"
+AndroidManifest.xml (packages\apps\nfc):                 android:persistent="true"
+AndroidManifest.xml (packages\experimental\exampleimsframework):                 android:persistent="true"
+AndroidManifest.xml (packages\services\telephony):                 android:persistent="true"
+AndroidManifest.xml (vendor\dolby\ds\apps\ds1):		android:persistent="true"
+AndroidManifest.xml (vendor\dolby\ds\apps\ds2):		android:persistent="true"
+AndroidManifest.xml (vendor\mediatek\proprietary\operator\op01\packages\apps\usbchecker):        android:persistent="true"
+AndroidManifest.xml (vendor\mediatek\proprietary\packages\apps\bluetooth\profiles\avrcp):                android:persistent="true"
+AndroidManifest.xml (vendor\mediatek\proprietary\packages\apps\bluetooth\profiles\bip):                android:persistent="true"
+AndroidManifest.xml (vendor\mediatek\proprietary\packages\apps\bluetooth\profiles\bpp):                android:persistent="true"
+AndroidManifest.xml (vendor\mediatek\proprietary\packages\apps\bluetooth\profiles\dun):                android:persistent="true"
+AndroidManifest.xml (vendor\mediatek\proprietary\packages\apps\bluetooth\profiles\ftp):                android:persistent="true"
+AndroidManifest.xml (vendor\mediatek\proprietary\packages\apps\bluetooth\profiles\hid):                android:persistent="true"
+AndroidManifest.xml (vendor\mediatek\proprietary\packages\apps\bluetooth\profiles\map):                android:persistent="true"
+AndroidManifest.xml (vendor\mediatek\proprietary\packages\apps\bluetooth\profiles\opp):        android:persistent="true" >
+AndroidManifest.xml (vendor\mediatek\proprietary\packages\apps\bluetooth\profiles\pan):                android:persistent="true"
+AndroidManifest.xml (vendor\mediatek\proprietary\packages\apps\bluetooth\profiles\pbap):                android:persistent="true"
+AndroidManifest.xml (vendor\mediatek\proprietary\packages\apps\bluetooth\profiles\simap):                android:persistent="true"
+AndroidManifest.xml (vendor\mediatek\proprietary\packages\apps\dongle):        android:persistent="true" 
+AndroidManifest.xml (vendor\mediatek\proprietary\packages\apps\dongle\bin):        android:persistent="true" 
+AndroidManifest.xml (vendor\mediatek\proprietary\packages\apps\gba):                 android:persistent="true"
+AndroidManifest.xml (vendor\mediatek\proprietary\packages\apps\multiwindowservice):        android:persistent="true" >
+AndroidManifest.xml (vendor\mediatek\proprietary\packages\apps\nlpservice):        android:persistent="true"
+AndroidManifest.xml (vendor\mediatek\proprietary\packages\apps\regionalphonemanager):        android:persistent="true">
+AndroidManifest.xml (vendor\mediatek\proprietary\packages\apps\voicecommand):        android:persistent="true"
+AndroidManifest.xml (vendor\mediatek\proprietary\packages\apps\voiceextension):        android:persistent="true"
+AndroidManifest.xml (vendor\mediatek\proprietary\packages\services\ims):                 android:persistent="true">
+AndroidManifest.xml (vendor\mediatek\proprietary\packages\services\wifioffload):                 android:persistent="true">
+
+
+4.提高 Service 优先级的方法
+提高进程优先级 startForeground(1, new Notification()); 
+降低进程优先级 stopForeground(true); 
+onStart() 方法中进行提高优先级操作，然后在onStop()方法中进行降低优先级操作
+这个方法可以将对应AP的ADJ临时提高到2。

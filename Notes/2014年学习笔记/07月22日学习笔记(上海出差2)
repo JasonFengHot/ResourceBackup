@@ -1,0 +1,103 @@
+	1.修改锁屏界面上字体的颜色和字体的大小？？？
+
+	解决：
+	"Enter password" 字符串所在文件 frameworks/base/packages/keyguard/res/layout/keyguard_message_area.xml 中的 textSize = "20sp"
+
+	2.锁屏界面上显示两个机主信息？？？
+
+	解决：
+	KeyguardStatusView		上的	KeyguardMessageArea		上面的机主信息		keyguard_status_view_face_palm
+	KeyguardPasswordView	上的	KeyguardMessageArea		下面的机主信息		如何让这个 KeyguardMessageArea 不显示？？？
+	在KeyguardMessageArea.java中有
+	statusStr = concat(ownerInfo, getCurrentMessage());
+	setTextMediatek(statusStr);
+	setText(statusStr);
+	现修改为
+	statusStr = concat(getOwnerInfo(), getCurrentMessage());
+	if(getParent() instanceof KeyguardAbsKeyInputView){			//这里如果判断父控件为 KeyguardAbsKeyInputView 则不显示 getOwnerInfo() 的信息
+		statusStr = concat("", getCurrentMessage());
+	}
+
+3.FileManager 上的 hotknot 功能如何添加？？？
+
+4.Bug12343葡萄牙语下，输入Email账号和密码界面，手动设置和下一步不在一个水平线，而且，手动设置的字体被切？？
+
+解决：
+在 AccountSetupBasics.java 中有 R.layout.account_setup_basics
+将两个按钮控件的字体大小改为16sp应该就可以了
+
+	5.如何屏蔽Launcher上widget列表中的一个widget???
+
+	解决：
+	在AppsCustomizePagedView.java文件中的 onPackagesUpdated()方法里面添加如下代码即可
+	//Bug12180 zhangqi add to hide "Play - My Library" 2014/07/22:begin
+	}else if(widget.provider.getClassName().equals("com.google.android.finsky.widget.consumption.NowPlayingWidgetProvider")){
+	//Bug12180 zhangqi add to hide "Play - My Library" 2014/07/22:end
+
+6.wifi直连报错的问题？？？xml错误？？？
+
+解决：
+//packages/apps/settings/src/com/android/settings/wifi/p2p/WifiP2pSettings.java
+handlePeersChanged()方法中有
+mPeersGroup.addPreference(new WifiP2pPeer(getActivity(), peer));	会跳转到   WifiP2pPeer.java
+加载		preference_widget_wifi_signal.xml
+// preference_widget_wifi_signal.xml
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/signal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="?attr/wifi_signal"					//这里会识别不了，报错？？？
+    android:contentDescription="@null" />
+
+//wifi_signal_dark.xml
+<selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:settings="http://schemas.android.com/apk/res/com.android.settings">
+    <item settings:state_encrypted="true" android:drawable="@drawable/wifi_signal_lock_dark" />
+    <item settings:state_encrypted="false" android:drawable="@drawable/wifi_signal_open_dark" />
+</selector>
+
+	//wifi_signal_lock_dark.xml
+	<level-list xmlns:android="http://schemas.android.com/apk/res/android">
+		<item android:maxLevel="0" android:drawable="@drawable/ic_wifi_lock_signal_1_dark" />
+		<item android:maxLevel="1" android:drawable="@drawable/ic_wifi_lock_signal_2_dark" />
+		<item android:maxLevel="2" android:drawable="@drawable/ic_wifi_lock_signal_3_dark" />
+		<item android:maxLevel="3" android:drawable="@drawable/ic_wifi_lock_signal_4_dark" />
+	</level-list>
+
+	//wifi_signal_open_dark.xml
+	<level-list xmlns:android="http://schemas.android.com/apk/res/android">
+		<item android:maxLevel="0" android:drawable="@drawable/ic_wifi_signal_1_dark" />
+		<item android:maxLevel="1" android:drawable="@drawable/ic_wifi_signal_2_dark" />
+		<item android:maxLevel="2" android:drawable="@drawable/ic_wifi_signal_3_dark" />
+		<item android:maxLevel="3" android:drawable="@drawable/ic_wifi_signal_4_dark" />
+	</level-list>
+
+
+//wifi_signal_light.xml
+<selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:settings="http://schemas.android.com/apk/res/com.android.settings">
+    <item settings:state_encrypted="true" android:drawable="@drawable/wifi_signal_new_light" />			//这里变成了 	wifi_signal_new_light
+    <item settings:state_encrypted="false" android:drawable="@drawable/wifi_signal_open_light" />		
+</selector>
+
+	//wifi_signal_new_light.xml
+	<level-list xmlns:android="http://schemas.android.com/apk/res/android">
+		<item android:maxLevel="0" android:drawable="@drawable/ic_wifi_lock_signal_1" />
+		<item android:maxLevel="1" android:drawable="@drawable/ic_wifi_lock_signal_2" />
+		<item android:maxLevel="2" android:drawable="@drawable/ic_wifi_lock_signal_3" />
+		<item android:maxLevel="3" android:drawable="@drawable/ic_wifi_lock_signal_4" />
+	</level-list>
+
+	//wifi_signal_open_light.xml
+	<level-list xmlns:android="http://schemas.android.com/apk/res/android">
+		<item android:maxLevel="0" android:drawable="@drawable/ic_wifi_signal_1_light" />
+		<item android:maxLevel="1" android:drawable="@drawable/ic_wifi_signal_2_light" />
+		<item android:maxLevel="2" android:drawable="@drawable/ic_wifi_signal_3_light" />
+		<item android:maxLevel="3" android:drawable="@drawable/ic_wifi_signal_4_light" />
+	</level-list>
+
+
+android:src="@drawable/wifi_signal_new_light"		//这个没有问题
+android:src="@drawable/wifi_signal_open_light"		//这个没有问题
+
+
+
+

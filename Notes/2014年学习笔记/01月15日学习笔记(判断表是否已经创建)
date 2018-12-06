@@ -1,0 +1,20 @@
+	1.如何判断sqlite数据库是否已经创建？？？
+
+	解决：
+	Cursor cursor = database.query("tb_apn",new String[]{"carrier","mcc","mnc"});
+	if(cursor!=null && cursor.getCount()>0){
+	}
+
+	2.Cursor cursor = database.rawQuery("select count(*) from tb_apn;", new String[] {});      rawQuery()方法怎么用？？？
+
+	解决：
+	Cursor cursor = database.rawQuery("select count(*) from contacts;", null);
+	cursor.moveToFirst();				//这里必须要加上这句话，否则会报错
+	int count = cursor.getInt(0);
+
+	3.如何解析assets文件夹下的xml文件????
+
+	解决：
+	SAXParserFactory.newInstance().newSAXParser().parse(getResources().getAssets().open("apns-conf.xml"), apnHandler);// 从assets文件中加载
+
+4.

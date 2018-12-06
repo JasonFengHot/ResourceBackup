@@ -1,0 +1,64 @@
+	1.如何查看TCP/IP缓冲大小？？？
+
+	解决：
+	查看alps\mediatek\config\xxx(工程名)\Init.rc文件中，找到如下定义
+	# Define TCP buffer sizes for various networks
+	#   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
+	setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208
+	setprop net.tcp.buffersize.wifi    4095,87380,110208,4096,16384,110208
+	setprop net.tcp.buffersize.umts    4094,87380,110208,4096,16384,110208
+	setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
+	setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
+
+	2.修改Camera的保存路径
+	在packages/apps/gallery2/src/com/android/gallery3d/app/PhotoPage.java文件中有
+		private void switchToGrid() {
+			if (mActivity.getStateManager().hasStateClass(AlbumPage.class)) {
+				onUpPressed();
+			} else {
+				if (mOriginalSetPathString == null) return;
+				Bundle data = new Bundle(getData());
+	//zhangqi add begin
+				if(fromCamera){
+					mOriginalSetPathString = "/local/all/" + com.android.camera.Storage.getBucketId();	//把这个路径改成这样就可以了，但是这样改不知道会有什么问题？？？
+				}
+	//zhangqi add end
+				data.putString(AlbumPage.KEY_MEDIA_PATH, mOriginalSetPathString);						//是不是这个路径有问题？？？
+				data.putString(AlbumPage.KEY_PARENT_MEDIA_PATH, mActivity.getDataManager().getTopSetPath(DataManager.INCLUDE_ALL));
+				boolean inAlbum = mActivity.getStateManager().hasStateClass(AlbumPage.class);
+				data.putBoolean(AlbumPage.KEY_SHOW_CLUSTER_MENU, !inAlbum && mAppBridge == null);
+				data.putBoolean(PhotoPage.KEY_APP_BRIDGE, mAppBridge != null);
+				mActivity.getTransitionStore().put(KEY_RETURN_INDEX_HINT, mAppBridge != null ? mCurrentIndex - 1 : mCurrentIndex);
+				if (mHasCameraScreennailOrPlaceholder && mAppBridge != null) {
+				    mActivity.getStateManager().startState(AlbumPage.class, data);
+				} else {
+				    mActivity.getStateManager().switchState(this, AlbumPage.class, data);
+				}
+			}
+		}
+
+		在onCreate()方法中有
+		public void onCreate(Bundle data, Bundle restoreState) {								//这个Activity是从哪里跳转过来的？？？
+			mSetPathString = data.getString(KEY_MEDIA_SET_PATH);
+			mOriginalSetPathString = mSetPathString;											//这个方法也只有在第一次进入Camera的时候才会调用
+	//zhangqi add begin
+			fromCamera = data.getBoolean("fromCamera",false);
+	//zhangqi add end
+		}
+
+	在packages/apps/Camera/src/com/android/camera/ActivityBase.java文件中有
+	protected void createCameraScreenNail(boolean getPictures) {
+		...
+		String path = getPictures ? Storage.getCameraScreenNailPath() : "/local/all/0";			//这个方法只有在第一次进入Camera的时候会调用
+	//zhangqi add begin
+		data.putBoolean("fromCamera",true);														//在这里添加一个标志位fromCamera
+	//zhangqi add end
+		...
+	}
+
+
+	sdcard:		1216519567
+
+	phone:		1509922574
+
+

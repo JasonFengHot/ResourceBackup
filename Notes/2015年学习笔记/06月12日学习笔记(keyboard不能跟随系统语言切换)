@@ -1,0 +1,7 @@
+	1.[Bug](输入法)keyboard不能跟随系统语言切换 ????
+
+	解决：
+	ProjectConfig.mk
+	DEFAULT_LATIN_IME_LANGUAGES=en-US fr ru			#去掉 fr ru 即可
+
+2.

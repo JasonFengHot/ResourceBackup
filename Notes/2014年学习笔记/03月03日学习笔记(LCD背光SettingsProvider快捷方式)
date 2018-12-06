@@ -1,0 +1,15 @@
+	1.共性Bug：背光亮度设置后，待机界面快捷图标不会随之变化？？？Bug4215和Bug4134
+
+	解决：
+	//在packages/apps/Settings/src/com/android/settings/BrightnessPreference.java的onDialogClosed()方法中修改,发送自定义的广播
+	getContext().sendBroadcast(new Intent("action.update_brightness"));
+
+	//packages/apps/Settings/src/com/android/settings/widget/SettingsAppWidgetProvider.java的onReceiver()方法中添加条件判断
+	else if("action.update_brightness".equals(action)){
+	}
+
+	//在packages/apps/Settings/AndroidManifest.xml文件中添加
+	<receiver android:name=".widget.SettingsAppWidgetProvider"
+		<action android:name="action.update_brightness"/>	
+
+2.

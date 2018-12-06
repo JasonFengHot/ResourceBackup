@@ -1,0 +1,14 @@
+	1.获取解析网络图片并显示？
+
+	解决：
+	Drawable.createFromStream((InputStream) new URL("http://www.google.com/" + url).getContent(),"test");
+
+	2.生成分享列表？？？？
+
+	解决：
+	Intent intent = new Intent(Intent.ACTION_SEND);
+	intent.setType(Contacts.CONTENT_VCARD_TYPE);
+	Intent newIntent = Intent.createChooser(intent,"share via");
+	startActivity(newIntent);
+
+3.

@@ -1,0 +1,9 @@
+    1. adb shell kill杀进程的脚本？？？
+
+    解决：
+    #!/bin/bash
+
+    PID=`adb shell ps | grep $1 | awk '{print $2}'`
+    echo "adb shell kill $1 : $PID"
+    result=`adb shell kill $PID`
+    echo "$result"

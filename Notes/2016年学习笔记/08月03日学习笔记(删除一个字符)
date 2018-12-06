@@ -1,0 +1,1 @@
+mDigits.getText().delete(currentPosition - 1, currentPosition);

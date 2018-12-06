@@ -1,0 +1,31 @@
+	1.在遍历ArrayList<ApplicationInfo> apps的时候报ConcurrentModificationException异常？？？
+
+	解决：
+	在调用apps.remove(appInfo);的时候apps.size()会异常，遍历失败
+	使用如下方法即可
+	int size = apps.size();
+	for(int i=size-1;i>0;i--){							//注意这里是递减的
+		ApplicationInfo appInfo = apps.get(i);
+		if("com.gameloft.android.GloftGF2H".equalsIgnoreCase(appInfo.getPackageName())){
+			apps.remove(appInfo);
+		}else if("com.gameloft.android.GloftT3RF".equalsIgnoreCase(appInfo.getPackageName())){
+			apps.remove(appInfo);
+		}else if("com.gameloft.android.GloftKLMF".equalsIgnoreCase(appInfo.getPackageName())){
+			apps.remove(appInfo);
+		}else if("com.gameloft.android.GloftWZMR".equalsIgnoreCase(appInfo.getPackageName())){
+			apps.remove(appInfo);
+		}else if("com.gameloft.android.GloftLCEF".equalsIgnoreCase(appInfo.getPackageName())){
+			apps.remove(appInfo);
+		}
+	}
+
+	2.如何预置一个自己写的apk??
+
+	解决：
+	在packages/apps/下添加GameLoftManager的完整代码
+	修改packages/apps/GameLoftManager下的Android.mk		别忘了修改里面的混淆文件指向，否则编不过
+	build/target/product/common.mk
+	添加宏控
+	还应该修改Launcher.java文件将预置的游戏apk隐藏才可以
+
+3.

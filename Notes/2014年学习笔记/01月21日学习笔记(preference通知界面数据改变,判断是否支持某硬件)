@@ -1,0 +1,54 @@
+	1.修改Email和机主信息重合的bug????
+
+	解决：
+	//方案1：将Email和Gmail的widget改小
+	修改
+	packages/apps/Email/res/layout/widget.xml	中的	android:layout_marginBottom="15dp"
+	或修改
+	packages/apps/Email/res/values/dimensions.xml	中的	<dimen name="widget_margin_bottom">0dip</dimen>
+
+	//方案2：将显示机主信息的TextView向下移
+	KeyguardMessageArea.java(extends TextView)
+	/mediatek/config/up09_infinix_x405/sagereal_copy/lockscreen/keyguard_selector_view.xml	中的
+	<include layout="@layout/keyguard_message_area"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content" 
+		android:layout_marginTop="-28dp"		//修改这里就行了
+	/>
+
+	2.在修改Preference上的内容之后，不会立刻刷新？？？
+
+	解决：
+	只要在设置好内容之后调用notifyChanged()就行了
+
+3.android:layout_gravity="fill"会有什么效果？？？
+
+	4.获取屏幕密度？？？
+
+	解决：
+	DisplayMetrics metric = new DisplayMetrics();
+	getWindowManager().getDefaultDisplay().getMetrics(metric);
+	int density Dpi = metric.densityDpi;	//屏幕dpi
+
+	5.判断是否支持某硬件？？？？
+
+	解决：
+	getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH);
+
+	6.同时支持两个文件名不同的布局？？？？
+
+	解决：
+	res/layout/main.xml
+	res/layout/main_twopanes.xml
+
+	res/values-xlarge/layout.xml
+	<resources>
+		<item name="main" type="layout">@layout/main_twopanes</item>	//这里就可以直接使用@layout/main来获取main_twopanes.xml的布局了
+	</resources>
+
+	res/values-sw600dp/layout.xml
+	<resources>
+		<item name="main" type="layout">@layout/main_twopanes</item>	//这里就可以直接使用@layout/main来获取main_twopanes.xml的布局了
+	</resources>
+
+7.

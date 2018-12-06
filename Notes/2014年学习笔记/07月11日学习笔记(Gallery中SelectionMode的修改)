@@ -1,0 +1,10 @@
+1.Gallery Selection Mode 的修改心得？
+
+解决：
+拷贝ActionModeHandler.java到ActionModeHandlerN.java
+将AlbumPage.java中使用ActionModeHandler的地方都替换成ActionModeHandlerN.java
+将ActionModeHandlerN.java中的startActionMode()方法里面的内容都注释掉
+将用到 mActionMode 和 mSelectionMenu 的地方都注释掉，防止报空指针异常
+在AlbumPage.java中的onCreateActionBar()方法中调用 mActionModeHandler.createMenu() 方法创建菜单
+在AlbumPage.java中的onItemSelected()的default分支下添加mActionModeHandler.selectItem() 方法处理菜单点击事件
+相应的需要在ActionModeHandlerN.java中添加createMenu()方法和selectItem()方法来处理

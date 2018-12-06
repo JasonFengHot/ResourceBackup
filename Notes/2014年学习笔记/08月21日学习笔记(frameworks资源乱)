@@ -1,0 +1,9 @@
+1.frameworks下面的资源文件乱掉之后，需要编译哪些模块？？
+
+解决：
+首先应该将 out/target/common/obj/APPS/framework-res_intermediates 文件夹彻底删除
+再重新编译push ./mk -t mm frameworks/base/core/res/res
+再重新编译push ./mk -t mm frameworks/base
+再重新编译push ./mk -t mm frameworks/base/policy
+
+2.

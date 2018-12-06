@@ -1,0 +1,36 @@
+	1.Bug4873,在分享界面显示Hangout为"send to"????
+
+	解决：
+	搜索resolver_grid
+	在ResolverActivity.java中有
+	private final void bindView(View view, DisplayResolveInfo info) {
+		TextView text = (TextView)view.findViewById(com.android.internal.R.id.text1);		//在分享界面显示的名称
+		TextView text2 = (TextView)view.findViewById(com.android.internal.R.id.text2);
+		ImageView icon = (ImageView)view.findViewById(R.id.icon);
+		text.setText(info.displayLabel);		//这里设置显示的send to
+		//在这里将判断是否是Hangouts就可以了
+		if(info.ri.activityInfo.name.equalsIgnoreCase("com.google.android.apps.babel.phone.ShareIntentActivity")){
+			String appLabel = text.getContext().getPackageManager().getApplicationLabel(info.ri.activityInfo.applicationInfo).toString();	//获取环聊应用的名称
+			text.setText(appLabel);			//这里设置为应用的名称
+		}
+		if (mShowExtended) {
+			text2.setVisibility(View.VISIBLE);
+			text2.setText(info.extendedInfo);
+		} else {
+			text2.setVisibility(View.GONE);
+		}
+		if (info.displayIcon == null) {
+			info.displayIcon = loadIconForResolveInfo(info.ri);
+		}
+		icon.setImageDrawable(info.displayIcon);
+	}
+
+	2.监听拨号键盘上的输入？？？
+
+	解决：
+	在DialpadFragment.java文件中有
+	private void keyPressed(int keyCode) {
+		...
+		mDigits.onKeyDown(keyCode, new KeyEvent(KeyEvent.ACTION_DOWN, keyCode));		//模拟按键的输入
+		...
+	}

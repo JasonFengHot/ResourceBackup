@@ -1,0 +1,89 @@
+	1.如何修改默认音量？？？
+
+	解决：
+	只要修改framework/base/media/android/java/media/AudioManager.java中的   DEFAULT_STREAM_VOLUME   数组中的值就行了
+
+2.第一次点击GlobalAction上的3G按钮的时候会显示3g is off????
+
+3.在打开飞行模式的时候会出现问题，数据连接和3G也会同时打开，在飞行模式的状态发生改变的时候，需要同时改变数据连接和3G的状态？？？？
+
+*#0*#直接进入恢复出厂设置的功能
+//显示
+MasterClear.java中有
+private void showFinalConfirmation() 
+{
+	Preference preference = new Preference(getActivity());
+	preference.setFragment(MasterClearConfirm.class.getName());
+	preference.setTitle(R.string.master_clear_confirm_title);
+	preference.getExtras().putBoolean(ERASE_EXTERNAL_EXTRA, mExternalStorage.isChecked());
+	((PreferenceActivity) getActivity()).onPreferenceStartFragment(null, preference);	//这个方法在别的地方不能使用
+}
+
+packages/apps/phone/src/com/android/phone/SpecialCharSequenceMgr.java			//这个在什么地方会用到？？？
+static private boolean handleIMEIDisplay(final Context context,String input) {
+	if (input.equals(MMI_IMEI_DISPLAY)) {
+		showDeviceIdPanel(context);
+		return true;
+	}
+	//Bug12522 zhangqi modified for *#0*# 2013/10/22:begin
+	if(input.equals("*#0*#")){
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
+		final android.widget.CheckBox checkBox = new android.widget.CheckBox(context);
+		checkBox.setText("是否要格式化SD卡");
+		builder.setTitle("确定要恢复出厂设置吗？");
+		builder.setView(checkBox);
+		builder.setPositiveButton("确定", new android.content.DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(android.content.DialogInterface dialog, int which) {
+				boolean mEraseSdCard = checkBox.isChecked();
+				if (mEraseSdCard) {
+					android.content.Intent intent = new android.content.Intent("com.android.internal.os.storage.FORMAT_AND_FACTORY_RESET");
+					intent.setComponent(new android.content.ComponentName("android","com.android.internal.os.storage.ExternalStorageFormatter"));
+					context.startService(intent);
+				} else {
+					context.sendBroadcast(new android.content.Intent("android.intent.action.MASTER_CLEAR"));
+				}
+			}
+		});
+		builder.setNegativeButton("取消", null);
+		builder.create().show();
+		return true;
+	}
+	//Bug12522 zhangqi modified for *#0*# 2013/10/22:end
+	return false;
+}
+
+
+packages/apps/contacts/src/com/android/contacts/SpecialCharSequenceMgr.java		//单卡
+packages/apps/contacts/src/com/mediatek/contacts/SpecialCharSequenceMgrProxy.java	//双卡
+
+还需要在Phone和Contacts的AndroidManifest.xml文件中添加恢复出厂设置的权限
+	<!--Bug12522 zhangqi modified for *#0*# 2013/10/22:begin-->
+    <uses-permission android:name="android.permission.MASTER_CLEAR" />     
+	<!--Bug12522 zhangqi modified for *#0*# 2013/10/22:end-->
+
+//Erase everything的点击功能			恢复出厂设置的功能
+if (mEraseSdCard) {				清空SD卡上的数据
+	Intent intent = new Intent(ExternalStorageFormatter.FORMAT_AND_FACTORY_RESET);
+	intent.setComponent(ExternalStorageFormatter.COMPONENT_NAME);
+	getActivity().startService(intent);
+} else {
+	getActivity().sendBroadcast(new Intent("android.intent.action.MASTER_CLEAR"));	//这里需要添加一个权限<uses-permission android:name="android.permission.MASTER_CLEAR" />
+}
+
+按照*906#添加*909#的功能跳转到工厂测试的最后一步		在这里跳转到packages/apps/factorydevelop/src/com/example/factorydevelop/keyTest.java
+packages/apps/contacts/src/com/android/contacts/dialpad/DialpadFragment.java		//这里是对输入*906#的处理
+
+
+packages/apps/tecno_ue_contacts/src/com/android/contacts/dialpad/DialpadFragment.java	//这里也是对*906#的处理
+工厂测试的软件	packages/apps/FactoryDevelop/
+Calibrate的功能在有两个地方
+packages/apps/settings/src/com/android/settings/PSensorCalibrate.java
+
+		//结束进程
+		//Bug12523 zhangqi add to stop factorytest 2013/10/24:begin
+		android.app.ActivityManager am = (android.app.ActivityManager)getSystemService(android.content.Context.ACTIVITY_SERVICE);
+		am.forceStopPackage("com.example.factorydevelop");
+		am.forceStopPackage("com.example.factorydevelopx");
+		//Bug12523 zhangqi add to stop factorytest 2013/10/24:end
+mediatek/packages/apps/engineermode/src/com/mediatek/engineermode/PSensorCalibrate.java		//这个地方只要在Tecno上需要添加修改

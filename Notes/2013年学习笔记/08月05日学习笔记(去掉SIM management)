@@ -1,0 +1,23 @@
+	1.去掉SIM management？？？
+
+	解决：直接用MTK_GEMINI_SUPPORT控制，true时为双卡，不需要去掉
+	只要修改packages/apps/setttings/src/com/android/settings/Settings.java文件中的
+	else if(id == R.id.sim_settings)
+	{
+		if (mIsWifiOnly || ！FeatureOption.MTK_GEMINI_SUPPORT) //在这里添加一个判断就行了
+		{
+			target.remove(i);
+		}
+	}
+	/home/zq/zq/operator/packages/apps/Settings/src/com/android/settings/Settings.java
+	
+	    2.DeskClock.apk中的城市名称大小写的问题？？？
+
+	    解决：
+	    custgen.mk文件中的拷贝文件目录中的大小写弄错拉
+	    并且在高分辨率sw600中也使用了拷贝文件
+
+	3.字体大小的问题？？？
+
+	解决：
+	只要将ProjectConfig.mk文件中的SAGEREAL_REMOVE_FONTSIZE_MENU设置为no，并且在Setting/display/font size 改为small就可以了

@@ -1,0 +1,4 @@
+    1.KK上面数据链接默认打开？
+
+    解决：
+    MTK_DEFAULT_DATA_OFF = no

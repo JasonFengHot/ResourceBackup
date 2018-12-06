@@ -1,0 +1,158 @@
+1.custom.conf 文件中的 wlan.SSID = MEO_SmartA68 这样的数据保存再什么地方？？？？FOTA升级？？？
+
+解决：
+//frameworks/base/wifi/java/android/net/wifi/WifiApConfigStore.java
+private static final String AP_CONFIG_FILE = Environment.getDataDirectory() + "/misc/wifi/softap.conf";		//保存到 softap.conf 文件中
+
+//保存
+private void writeApConfiguration(final WifiConfiguration config) {
+    DataOutputStream out = null;
+    try {
+        out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(AP_CONFIG_FILE)));
+        out.writeInt(AP_CONFIG_FILE_VERSION);
+        out.writeUTF(config.SSID);
+        int authType = config.getAuthType();
+        out.writeInt(authType);
+        if (authType != KeyMgmt.NONE) {
+            out.writeUTF(config.preSharedKey);
+        }
+        out.writeInt(config.channel);
+        out.writeInt(config.channelWidth);
+    } catch (IOException e) {
+        Log.e(TAG, "Error writing hotspot configuration" + e);
+    } finally {
+        if (out != null) {
+            try {
+                out.close();
+            } catch (IOException e) {}
+        }
+    }
+}
+//读取
+void loadApConfiguration() {
+    DataInputStream in = null;
+    try {
+        WifiConfiguration config = new WifiConfiguration();
+        in = new DataInputStream(new BufferedInputStream(new FileInputStream(AP_CONFIG_FILE)));
+        int version = in.readInt();
+        if (version != 1) {
+            Log.e(TAG, "Bad version on hotspot configuration file, set defaults");
+            setDefaultApConfiguration();
+            return;
+        }
+        config.SSID = in.readUTF();
+        int authType = in.readInt();
+        config.allowedKeyManagement.set(authType);
+        if (authType != KeyMgmt.NONE) {
+            config.preSharedKey = in.readUTF();
+        }
+        config.channel = in.readInt();
+        config.channelWidth = in.readInt();
+        mWifiApConfig = config;
+    } catch (IOException ignore) {
+        setDefaultApConfiguration();
+    } finally {
+        if (in != null) {
+            try {
+                in.close();
+            } catch (IOException e) {
+            }
+        }
+    }
+}
+
+	2.给所有画面增加一层水印的效果（WaterMark）???
+
+	解决：
+	a.新建一个名为setup.conf的文件,写入以下内容:B79A939390%20					//这个文件是怎么起作用的？？？？这个字符串就是hello,从 createWatermarkInTransaction() 这个代码中可以看出
+	然后把这个conf文件push到手机的system/etc目录下
+	 
+	b.以加水印字串“hello world,this is my mark”为例
+	修改 : WaterMark.java(frameworks/base/services/java/com/android/server/wm)文件,
+	注释掉WaterMark构造函数中的这一句:
+	mText = builder.toString();
+	加上这一句:
+	mText = "xxx"  ,  xxx表示你想要加为水印的字符串
+
+	c.重新编译生成services.jar文件并push到手机的system/framework下, reboot手机.
+
+	//frameworks/base/services/java/com/android/server/wm/WindowManagerService.java
+    void createWatermarkInTransaction() {
+        if (mWatermark != null) {
+            return;
+        }
+        File file = new File("/system/etc/setup.conf");			//读取setup.conf文件
+        FileInputStream in = null;
+        DataInputStream ind = null;
+        try {
+            in = new FileInputStream(file);
+            ind = new DataInputStream(in);
+            String line = ind.readLine();
+            if (line != null) {
+                String[] toks = line.split("%");
+                if (toks != null && toks.length > 0) {
+                    mWatermark = new Watermark(getDefaultDisplayContentLocked().getDisplay(), mRealDisplayMetrics, mFxSession, toks);
+                }
+            }
+        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
+        } finally {
+            if (ind != null) {
+                try {
+                    ind.close();
+                } catch (IOException e) {
+                }
+            } else if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+    }
+
+3.camera 照片详情修改？？？
+
+解决：
+jb:
+mediatek/custom/mt6572/hal/camera/camera/camera_custom_if.cpp
+	#ifdef EN_CUSTOM_EXIF_INFO					//注意在这个文件的上面还要打开这个宏
+		#if defined(UP16_SFR_H502S)
+			#define CUSTOM_EXIF_STRING_MAKE  "MOBIWIRE"
+			#define CUSTOM_EXIF_STRING_MODEL "STARTRAIL5"
+			#define CUSTOM_EXIF_STRING_SOFTWARE "custom software"
+		#elif defined(UP16_MEO)
+			#define CUSTOM_EXIF_STRING_MAKE  "MEO"
+			#define CUSTOM_EXIF_STRING_MODEL "Smart A68"
+			#define CUSTOM_EXIF_STRING_SOFTWARE "  "
+		#else
+			#define CUSTOM_EXIF_STRING_MAKE  "custom make"
+			#define CUSTOM_EXIF_STRING_MODEL "custom model"
+			#define CUSTOM_EXIF_STRING_SOFTWARE "custom software"
+		#endif
+在 ProjectConfig.mk 文件中添加 AUTO_ADD_GLOBAL_DEFINE_BY_VALUE= .......SAGEREAL_PRODUCTION		//特别注意这里
+在 ProjectConfig.mk 文件中添加 SAGEREAL_PRODUCTION=UP16_MEO
+
+kk:
+mediatek/custom/common/hal/inc/camera_custom_exif.h				//修改这个文件不起作用？？
+mediatek/custom/up16_h502s_meo/hal/inc/camera_custom_exif.h		//直接修改这个文件中的maker和model就可以了
+
+4.使用photos进行设置壁纸的时候报错？？？
+
+解决：
+Log如下
+01-01 00:59:16.072: E/AndroidRuntime(2737): java.lang.RuntimeException: Unable to resume activity {com.google.android.apps.plus/com.google.android.apps.photos.phone.SetWallpaperActivity}: java.lang.IllegalArgumentException: Cannot use passed URI to set wallpaper; check that the type returned by ContentProvider matches image/*
+
+参考FAQ：https://onlinesso.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ11616
+出现这个问题，是当前项目未使用默认Launcher，并且所使用的Launcher没有完全兼容Android设置墙纸功能导致。
+具体是系统在做对应query的时候查找不到对应的Activity，这部分逻辑可以查看WallpaperManager.java的getCropAndSetWallpaperIntent()函数
+frameworks/base/packages/WallpaperCropper具有同样的功能，MTK初始并未将WallpaperCropper编进系统，所以有2种方法可以解决这个问题：
+1.在使用的Launcher里自带上类似WallpaperCropActivity的功能；
+2.将WallpaperCropper编译到img里，具体修改为：
+在
+build/target/product/&pojectName.mk
+中的
+PRODUCT_PACKAGES := \
+后添加此应用的申明：
+WallpaperCropper
+然后重build系统即可

@@ -1,0 +1,25 @@
+1.去掉照相机中的人脸美化功能？？？
+
+解决：
+参照[FAQ07407] MT6572平台人脸美化拍照卡死
+[DESCRIPTION]
+进入相机，选择人脸美化，点击拍照键进行拍照，发生相机卡死或直接退出Camera
+[SOLUTION]
+目前MT6572平台不Support 人脸美化（FB）拍照模式，应该是由贵司同仁自行在Feature Table添加FB的拍照模式导致，请将FB的capture mode删掉即可。
+如对Feature Table相关配置有疑问，请参阅：FAQ07681 如何配置MT6572 camera的Feature Table。
+
+//mediatek/custom/up06_h27c_telenor/hal/imgsensor/ov5645_mipi_yuv/config.ftbl.ov5645_mipi_yuv.h
+MtkCameraParameters::CAPTURE_MODE_FACE_BEAUTY,//17843 4 options in the camrea app muqi 2014-09-25		//只要把这一行给注释掉就可以了
+
+2.Tecno_Wallpaper报错？？？？
+
+Log:
+java.lang.IndexOutOfBoundsException: Invalid index 0, size is 0
+	at java.util.ArrayList.throwIndexOutOfBoundsException(ArrayList.java:255)
+	at java.util.ArrayList.get(ArrayList.java:308)
+	at com.wenke.wenkewallpager.fragment.OnlineViewPagerFragment.onCreateView(OnlineViewPagerFragment.java:155)		//这里报错？？
+
+java.lang.IndexOutOfBoundsException: Invalid index 0, size is 0
+	at java.util.ArrayList.throwIndexOutOfBoundsException(ArrayList.java:255)
+	at java.util.ArrayList.get(ArrayList.java:308)
+	at com.wenke.wenkewallpager.fragment.OnlineViewPagerFragment.onCreateView(OnlineViewPagerFragment.java:292)		//这里报错？？

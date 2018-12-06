@@ -1,0 +1,17 @@
+	1.如何发送自定义通知Notification？？？
+
+	解决：
+	private void notes(int color) {
+		Notification notification = new Notification(R.drawable.ic_launcher, null, 0);
+		Intent intent = new Intent();
+		intent.setComponent(new ComponentName("com.sagereal.flashlight", "com.sagereal.flashlight.FlashLightActivity"));
+		notification.setLatestEventInfo(mContext, "hello world", "content", PendingIntent.getActivity(mContext, 1, intent, PendingIntent.FLAG_ONE_SHOT));	//必须有这个，否则会报错
+		notification.defaults = Notification.DEFAULT_SOUND;		//这些flags应该在 setLatestEventInfo() 方法之后，否则不其作用
+		notification.flags |= Notification.FLAG_SHOW_LIGHTS;
+		notification.ledOnMS = 1000;
+		notification.ledOffMS = 1000;
+		notification.ledARGB = color;
+		notificationManager.notify(1, notification);
+	}
+
+2.

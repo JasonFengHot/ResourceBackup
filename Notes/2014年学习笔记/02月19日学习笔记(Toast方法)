@@ -1,0 +1,161 @@
+	1.如何显示Toast?????
+
+	解决：
+	private Toast mToast;
+	private void showToast(String msg){
+		if(mToast == null){
+			mToast = Toast.makeText(mContext,"",2000);
+		}
+		mToast.setText(msg);
+		mToast.show();
+	}
+
+	2.如何实时判断数据连接是否已连接？？
+
+	解决：
+	ConnectivityManager cm = (ConnectivityManager) mSingleLineContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+	if (!cm.getMobileDataEnabled()) {
+		phoneMgr.enableDataConnectivity();
+	} else {
+		phoneMgr.disableDataConnectivity();
+	}
+
+3.修改通话记录的bug？？？？
+
+这里查询的provider是CallLogProvider.java中的
+
+	4.如何使用rawQuery查询记录条数？？？
+
+	解决：
+	Cursor c = db.rawQuery("select count(_id) from calls where type in (3,4) AND new=1", null);
+	int count = c.getInt(0);
+
+5.使用SQLiteQueryBuilder查询数据库？？？
+
+解决：
+//查询条件
+String mstableCallsJoinData = Tables.CALLS + " LEFT JOIN " (SELECT * FROM " +  Views.DATA + " WHERE " + Data._ID + " IN (SELECT " +  Calls.DATA_ID + " FROM " + Tables.CALLS + ")) AS " + Views.DATA + " ON(" + Tables.CALLS + "." + Calls.DATA_ID + " = " + Views.DATA + "." + Data._ID + ")";
+HashMap<String, String> sCallsJoinDataViewProjectionMap = new HashMap<String, String>();			//映射关系表
+sCallsJoinDataViewProjectionMap.put(Calls._ID, Tables.CALLS + "._id as " + Calls._ID);
+sCallsJoinDataViewProjectionMap.put(Calls.NUMBER, Calls.NUMBER);
+sCallsJoinDataViewProjectionMap.put(Calls.DATE, Calls.DATE);
+sCallsJoinDataViewProjectionMap.put(Calls.DURATION, Calls.DURATION);
+sCallsJoinDataViewProjectionMap.put(Calls.TYPE, Calls.TYPE);
+sCallsJoinDataViewProjectionMap.put(Calls.VOICEMAIL_URI, Calls.VOICEMAIL_URI);
+sCallsJoinDataViewProjectionMap.put(Calls.COUNTRY_ISO, Calls.COUNTRY_ISO);
+sCallsJoinDataViewProjectionMap.put(Calls.GEOCODED_LOCATION, Calls.GEOCODED_LOCATION);
+sCallsJoinDataViewProjectionMap.put(Calls.IS_READ, Calls.IS_READ);
+sCallsJoinDataViewProjectionMap.put(Calls.SIM_ID, Calls.SIM_ID);
+sCallsJoinDataViewProjectionMap.put(Calls.VTCALL, Calls.VTCALL);
+sCallsJoinDataViewProjectionMap.put(Calls.RAW_CONTACT_ID, Tables.CALLS + "." + Calls.RAW_CONTACT_ID + " AS " + Calls.RAW_CONTACT_ID);
+sCallsJoinDataViewProjectionMap.put(Calls.DATA_ID, Calls.DATA_ID);
+sCallsJoinDataViewProjectionMap.put(Contacts.DISPLAY_NAME, Views.DATA + "." + Contacts.DISPLAY_NAME + " AS " + Contacts.DISPLAY_NAME);
+sCallsJoinDataViewProjectionMap.put(CALL_NUMBER_TYPE_ID,Views.DATA + "." + Data.DATA2 + " AS " + CALL_NUMBER_TYPE_ID);
+sCallsJoinDataViewProjectionMap.put(CALL_NUMBER_TYPE,Views.DATA + "." + Data.DATA3 + " AS " + CALL_NUMBER_TYPE);
+sCallsJoinDataViewProjectionMap.put(Data.PHOTO_ID, Views.DATA + "." + Data.PHOTO_ID + " AS " + Data.PHOTO_ID);
+sCallsJoinDataViewProjectionMap.put(RawContacts.INDICATE_PHONE_SIM, RawContacts.INDICATE_PHONE_SIM);
+sCallsJoinDataViewProjectionMap.put(RawContacts.IS_SDN_CONTACT, RawContacts.IS_SDN_CONTACT);  // add by MTK
+sCallsJoinDataViewProjectionMap.put(RawContacts.CONTACT_ID, RawContacts.CONTACT_ID);
+sCallsJoinDataViewProjectionMap.put(Contacts.LOOKUP_KEY, Views.DATA + "." + Contacts.LOOKUP_KEY + " AS " + Contacts.LOOKUP_KEY);
+sCallsJoinDataViewProjectionMap.put(Data.PHOTO_URI, Views.DATA + "." + Data.PHOTO_URI + " AS " + Data.PHOTO_URI);
+sCallsJoinDataViewProjectionMap.put(Calls.IP_PREFIX, Calls.IP_PREFIX);
+
+SQLiteQueryBuilder qb = new SQLiteQueryBuilder();			
+qb.setTables(mstableCallsJoinData);
+qb.setProjectionMap(sCallsJoinDataViewProjectionMap);
+qb.setStrict(true);
+
+SelectionBuilder selectionBuilder = new SelectionBuilder(selection);						//这里的selection为查询条件
+selectionBuilder.addClause(getEqualityClause(Tables.CALLS + "." +Calls._ID,parseCallIdFromUri(uri)));
+Cursor c = qb.query(db, projection, selectionBuilder.build(), selectionArgs, groupBy, null, sortOrder, limitClause);
+c.setNotificationUri(getContext().getContentResolver(), CallLog.CONTENT_URI);					//这句话有什么用？？？
+
+
+select * from calls group by number order by date;
+
+
+
+
+
+在CallDetailActivity.java中有
+private void updateData(final Uri... callUris) {
+	class UpdateContactDetailsTask extends AsyncTask<Void, Void, PhoneCallDetails[]> {
+		public PhoneCallDetails[] doInBackground(Void... params) {
+			final int numCalls = callUris.length;
+			PhoneCallDetails[] details = new PhoneCallDetails[numCalls];
+			try {
+				for (int index = 0; index < numCalls; ++index) {
+					details[index] = getPhoneCallDetailsForUri(callUris[index]);		//这里调用下面的这个方法，这里的callUris来自上面的参数
+				}
+				return details;
+			} catch (IllegalArgumentException e) {
+				return null;
+			}
+		}
+	}
+}
+private PhoneCallDetails getPhoneCallDetailsForUri(Uri callUri) {
+        Cursor callCursor = getContentResolver().query(callUri, CallLogQuery.PROJECTION_CALLS_JOIN_DATAVIEW, null, null, null);
+}
+
+
+在
+public void onResume() {
+	super.onResume();
+	updateData(getCallLogEntryUris());			//这里调用上面的updateData()方法
+	mHasSms = PhoneCapabilityTester.isSmsIntentRegistered(getApplicationContext());
+	SetIndicatorUtils.getInstance().showIndicator(true, this);
+}
+
+private Handler mHandler = new Handler() {
+	public void handleMessage(Message msg) {
+	    switch (msg.what) {
+		case SIM_INFO_UPDATE_MESSAGE:
+		    updateData(getCallLogEntryUris());		//在这里也调用上面的updateData()方法，方法的参数来自下面的getCallLogEntryUris()方法
+		    break;
+		default:
+		    break;
+	    }
+	}
+};
+
+private Uri[] getCallLogEntryUris() {
+	Uri uri = getIntent().getData();			//这里的intent中包含的数据
+	if (uri != null) {
+	    Uri queryUri = Uri.parse("content://call_log/callsjoindataview");
+	    long id = ContentUris.parseId(uri);
+	    uri = ContentUris.withAppendedId(queryUri, id);
+	    if (VvmUtils.isVvmEnabled()) {
+		uri = VvmUtils.buildVvmAllowedUri(uri);
+	    }
+	    return new Uri[]{ uri };
+	}
+	long[] ids = getIntent().getLongArrayExtra(EXTRA_CALL_LOG_IDS);
+	Uri[] uris = new Uri[ids.length];
+	for (int index = 0; index < ids.length; ++index) {
+	    Uri queryUri = Uri.parse("content://call_log/callsjoindataview");
+	    uris[index] = ContentUris.withAppendedId(queryUri, ids[index]);
+	    if (VvmUtils.isVvmEnabled()) {
+		uris[index] = VvmUtils.buildVvmAllowedUri(uris[index]);
+	    }
+	}
+	return uris;
+}
+
+Cursor cursor = adapter.getCursor();					//这里的
+
+if (groupSize > 1) {
+	long[] ids = new long[groupSize];
+	for (int index = 0; index < groupSize; ++index) {
+		ids[index] = cursor.getLong(CallLogQuery.ID);		//ids数据来自cursor
+		cursor.moveToNext();
+	}
+	intent.putExtra(CallDetailActivity.EXTRA_CALL_LOG_IDS, ids);	//在这里设置数据？？
+} else {
+	intent.setData(ContentUris.withAppendedId(Calls.CONTENT_URI_WITH_VOICEMAIL, id));
+}
+intent.putExtra("TAGID", tagId);
+
+
+final ContactInfo contactInfo = getContactInfo(c);        
+itemView.setTag(IntentProvider.getCallDetailIntentProvider(this, c.getPosition(), c.getLong(CallLogQuery.ID), count));

@@ -1,0 +1,348 @@
+1.为什么在SagerealSldingTab.java中去掉了tab.setBackgroundResource()之后就显示不了dialog了呢？？？
+
+	3.去掉text.setBackgroundResource(barId);的时候显示background也还是会出错？？？
+
+	解决:
+	只要将text.setBackgroundResource(android.graphics.Color.parseColor("#00000000"));//将textView的背景设置为透明的就行了
+
+	4.[bug11502 id 20](文件管理器)文件管理器中不能对文件进行复制粘贴剪切操作？？？
+
+	解决：
+	a.使用HierarchyViewer找到mediatek/packages/apps/filemanager/src/com/mediatek/filemanager/FileManagerOperationActivity.java
+	b.找到该工程的资源文件，找到对应的图片名称为fm_paste.png				//其实找到这里也就够了，应该只要替换drawable-mdip中的图片就可以了
+	c.找到使用fm_paste图片的地方为actionbar_fm_paste.xml
+	d.再找到使用actionbar_fm_paste.xml的地方为navigation_view_menu.xml,
+	e.再找到使用navigation_view_menu.xml的地方为FileManagerOperationActivity.java
+
+5.定时关闭屏幕的Service在什么地方？？？
+
+	6.滑动关机或重启按钮的时候会在左边出现黑色的TextView????
+
+	不解决：这个东西不太好控制，放弃了，还是使用自己写的NewSlidingTab比较好
+
+	7.关机重启按钮滑动了之后不会马上回到自己的位置？？？
+
+	解决：布局的问题，在布局文件中有android:layout_marginLeft = "20dp" 和 android:layout_marginRight = "20dp"
+	这里使用的是原先的SagerealSlidingTab,这个东西是有问题的，不太好控制
+
+	8.如何在原来的SagerealSlidingTab中显示关机重启时要提示的字符串？？？？
+
+	不解决：这个东西不太好控制，放弃了，还是使用自己写的NewSlidingTab比较好
+
+9.飞行模式的时候还是会有点问题？？？？必须要先切换到sim卡一次之后才能正常切换飞行模式
+
+	11.在NewSlidingTab中滑动关机重启按钮会出现卡顿的现象？？？
+
+	解决：
+	停顿问题解决了，只要在onTouchEvent()事件上加上对ACTION_CANCEL的处理就可以了
+	但还是有点卡的现象，而且还特别难滑动
+
+	12.去掉关机的时候的Dialog????
+
+	可以在frameworks/base/services/java/com/android/server/power/ShutdownThread.java中看看sConfirmDialog
+	解决：看《问题18》
+
+	13.修改w16中的亮度调节的默认值？？？？
+
+	解决：
+	brightnessMode = Settings.System.getInt(cr,Settings.System.SCREEN_BRIGHTNESS_MODE);
+	然后根据SCREEN_BRIGHTNESS_MODE在DatabaseHelper.java中找到loadBooleanSetting(stmt, Settings.System.SCREEN_BRIGHTNESS_MODE,R.bool.def_screen_brightness_automatic_mode);
+	然后根据def_screen_brightness_automatic_mode，找到在defaults.xml文件中有默认值
+	只要在defaults.xml文件中修改默认值def_screen_brightness_automatic_mode=false就可以了
+
+	14.在锁屏界面显示GlobalDialog的时候会显示不全？？？
+
+	解决：
+	因为在TextAction()中有
+	public boolean showDuringKeyguard(){
+		return true;				//只要在这里返回true就会在锁屏界面显示标题栏，否则不会显示
+	}
+	public boolean showBeforeProvisioning(){
+		return true;
+	}
+
+	15.Airplane的资源对不上？？？？
+
+	解决：因为在代码中SingleLineAction 的构造函数中使用了 R.drawable.ic_lock_airplane_mode_off资源
+
+16.如何更好地让tv_hint居中显示？？？
+
+	17.如何去掉关机重启时显示的Dialog对话框，直接关机或重启？？？？
+
+	解决：看《问题18》
+
+	18.WindowManagerFuncs这个类在什么地方？？？？
+
+	解决：
+	这个类是WindowManagerPolicy的内部类
+	实现这个接口的地方为WindowManagerService，这里又调用了ShutdownThread.shutdown()和ShutdownThread.reboot()方法
+	这个类中实现shutdown()和reboot()的功能如下
+
+	((PowerManager)context.getSystemService(Context.POWER_SERVICE)).reboot(1);			//这里的1和0分别代表什么意思？？？
+	public static void shutdown(final Context context, boolean confirm) {
+		mReboot = false;
+		mRebootSafeMode = false;
+		if (mSpew) {
+		    StackTraceElement[] stack = new Throwable().getStackTrace();    
+		}
+		createPreShutdownApi(context);
+		if (SystemProperties.getBoolean("ro.monkey", false)) {
+		    return;
+		}
+		shutdownInner(context, confirm);
+	}
+	public static void reboot(final Context context, String reason, boolean confirm) {
+		mReboot = true;
+		mRebootSafeMode = false;
+		mRebootFlag=true;
+		mRebootReason = reason;
+		Log.d(TAG, "reboot");
+		shutdownInner(context, confirm);
+	}
+	这里的关机和重启功能都是调用了shutdownInner()方法，只要修改shutdownInner()方法中的逻辑就可以了
+	将创建对话框和显示对话框的代码全都注释掉，直接调用关机的代码beginShutdownSequence(context);
+
+19.这里不使用拷贝文件会不会出现找不到资源id的问题？？？？
+直接加上
+framework/base/core/res/res/drawable/xxxx		这里有8个需要添加的文件
+
+framework/base/core/res/res/drawable-mdpi/xxxx		这里有17个需要添加的文件
+	
+framework/base/core/res/res/layout/xxxx			这里有2个需要添加的文件
+	/home/zq/zq/tecno4/frameworks/base/core/res/res/layout/view_slidingtab.xml
+	/home/zq/zq/tecno4/frameworks/base/core/res/res/layout/layout_slidingtab.xml
+
+直接修改
+framework/base/core/res/res/values/strings.xml
+mediatek/config/$(PROJECT)/sagereal_copy/up11_GlobalActions.java
+mediatek/config/$(PROJECT)/sagereal_copy/lockscreen/symbols.xml
+
+需要拷贝的文件
+framework/base/policy/src/com/android/internal/policy/impl/NewSlidingTab.java
+framework/base/services/java/com/android/server/power/ShutdownThread.java
+
+########################bug11460 zhangqi add for globalAction 2013/09/06:begin ################
+$(shell cp $(TOPDIR)mediatek/config/$(PROJECT)/sagereal_copy/globalAction/NewSlidingTab.java			$(TOPDIR)frameworks/base/policy/src/com/android/internal/policy/impl/NewSlidingTab.java)
+$(shell cp $(TOPDIR)mediatek/config/$(PROJECT)/sagereal_copy/globalAction/ShutdownThread.java			$(TOPDIR)frameworks/base/services/java/com/android/server/power/ShutdownThread.java)
+$(shell cp $(TOPDIR)mediatek/config/$(PROJECT)/sagereal_copy/globalAction/layout/global_actions_silde_button.xml	$(TOPDIR)frameworks/base/core/res/res/layout/global_actions_silde_button.xml)
+$(shell cp $(TOPDIR)mediatek/config/$(PROJECT)/sagereal_copy/globalAction/layout/global_actions_silent_mode.xml		$(TOPDIR)frameworks/base/core/res/res/layout/global_actions_silent_mode.xml)
+$(shell cp $(TOPDIR)mediatek/config/$(PROJECT)/sagereal_copy/globalAction/layout/global_actions_single_line.xml		$(TOPDIR)frameworks/base/core/res/res/layout/global_actions_single_line.xml)
+########################bug11460 zhangqi add for globalAction 2013/09/06:end   ################
+
+
+<!--zhangqi add for GlobalDialog begin 2013/08/26-->
+<java-symbol type="layout" name = "view_slidingtab"/>
+<java-symbol type="layout" name = "layout_slidingtab"/>
+
+<java-symbol type="id" name = "slidingTab"/>
+<java-symbol type="id" name = "tv_tip"/>
+<java-symbol type="id" name = "btn_power_off"/>
+<java-symbol type="id" name = "btn_restart"/>
+<java-symbol type="drawable" name = "global_dialog_bg"/>
+<java-symbol type="drawable" name = "ic_lock_airplane_mode_of"/>
+<java-symbol type="drawable" name = "ic_lock_airplane_mode_on"/>
+<java-symbol type="drawable" name = "ic_lock_mode_silent_off"/>
+<java-symbol type="drawable" name = "ic_lock_mode_silent_on"/>
+<java-symbol type="drawable" name = "ic_lock_mode_vibrate_off"/>
+<java-symbol type="drawable" name = "ic_lock_mode_vibrate_on"/>
+<java-symbol type="drawable" name = "ic_wifi_off"/>
+<java-symbol type="drawable" name = "ic_wifi_on"/>
+<java-symbol type="drawable" name = "ic_dataconnect_off"/>
+<java-symbol type="drawable" name = "ic_dataconnect_on"/>
+<java-symbol type="drawable" name = "ic_lock_standard_mode_off"/>
+<java-symbol type="drawable" name = "ic_lock_standard_mode_on"/>
+<java-symbol type="drawable" name = "power_off_down"/>
+<java-symbol type="drawable" name = "power_off_normal"/>
+<java-symbol type="drawable" name = "restart_down"/>
+<java-symbol type="drawable" name = "restart_normal"/>
+
+<java-symbol type="drawable" name = "btn_power_off"/>
+<java-symbol type="drawable" name = "btn_restart"/>
+<java-symbol type="drawable" name = "cb_silent"/>
+<java-symbol type="drawable" name = "cb_standard"/>
+<java-symbol type="drawable" name = "cb_vibrate"/>
+
+<java-symbol type="drawable" name = "iv_wifi"/>
+
+<java-symbol type="string" name = "global_dialog_title"/>
+<!--zhangqi add for GlobalDialog end 2013/08/26-->
+
+/tecno/frameworks/base/core/res/res/drawable-mdpi/ic_dataconnect_on.png
+/tecno/frameworks/base/core/res/res/drawable-mdpi/restart_normal.png
+/tecno/frameworks/base/core/res/res/layout/layout_slidingtab.xml
+/tecno/frameworks/base/core/res/res/drawable-mdpi/power_off_normal.png
+/tecno/mediatek/build/custgen.mk
+/tecno/frameworks/base/core/res/res/drawable-mdpi/ic_lock_airplane_mode_of.png
+/tecno/mediatek/config/up11_tecno_m3s/sagereal_copy/globalAction/layout/global_actions_single_line.xml
+/tecno/frameworks/base/core/res/res/drawable/btn_restart.xml
+/tecno/frameworks/base/core/res/res/drawable/btn_power_off.xml
+/tecno/frameworks/base/core/res/res/drawable-mdpi/ic_lock_airplane_mode_on.png
+/tecno/frameworks/base/core/res/res/drawable-mdpi/ic_lock_mode_silent_off.png
+/tecno/mediatek/config/up11_tecno_m3s/sagereal_copy/globalAction/layout
+/tecno/frameworks/base/core/res/res/drawable-mdpi/ic_lock_mode_silent_on.png
+/tecno/mediatek/config/up11_tecno_m3s/sagereal_copy/globalAction/layout/global_actions_silent_mode.xml
+/tecno/frameworks/base/core/res/res/drawable/cb_vibrate.xml
+/tecno/mediatek/config/up11_tecno_m3s/sagereal_copy/lockscreen/symbols.xml
+/tecno/frameworks/base/core/res/res/drawable-mdpi/global_dialog_bg.png
+/tecno/frameworks/base/core/res/res/drawable-mdpi/ic_dataconnect_off.png
+/tecno/frameworks/base/core/res/res/drawable/cb_standard.xml
+/tecno/frameworks/base/core/res/res/layout/view_slidingtab.xml
+/tecno/frameworks/base/core/res/res/drawable-mdpi/ic_wifi_off.png
+/tecno/mediatek/config/up11_tecno_m3s/sagereal_copy/globalAction
+/tecno/frameworks/base/core/res/res/drawable-mdpi/ic_wifi_on.png
+/tecno/frameworks/base/core/res/res/drawable-mdpi/restart_down.png
+/tecno/mediatek/config/up11_tecno_m3s/sagereal_copy/globalAction/layout/global_actions_silde_button.xml
+/tecno/mediatek/config/up11_tecno_m3s/sagereal_copy/up11_GlobalActions.java
+/tecno/frameworks/base/core/res/res/drawable-mdpi/ic_lock_mode_vibrate_off.png
+/tecno/frameworks/base/core/res/res/drawable-mdpi/power_off_down.png
+/tecno/mediatek/config/up11_tecno_m3s/sagereal_copy/globalAction/NewSlidingTab.java
+/tecno/frameworks/base/core/res/res/drawable-mdpi/ic_lock_mode_vibrate_on.png
+/tecno/frameworks/base/core/res/res/drawable-mdpi/ic_lock_standard_mode_off.png
+/tecno/frameworks/base/core/res/res/drawable/iv_wifi.xml
+/tecno/frameworks/base/core/res/res/drawable-mdpi/ic_lock_standard_mode_on.png
+/tecno/mediatek/config/up11_tecno_m3s/sagereal_copy/globalAction/ShutdownThread.java
+/tecno/frameworks/base/core/res/res/drawable/cb_silent.xml
+
+	quick_settings_container
+	SettingsPanelView.java
+	20.如何改变wifi的连接状态？？？
+
+	解决：
+		//注册广播接收器
+	registerReceiver(mWifiStateReceiver, new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION));
+		//广播
+	private final BroadcastReceiver mWifiStateReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			int currentState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
+			if (EMWifi.sIsInitialed && currentState != WifiManager.WIFI_STATE_ENABLED && currentState != WifiManager.WIFI_STATE_ENABLING) {
+				EMWifi.sIsInitialed = false;
+				EMWifi.setNormalMode();
+				EMWifi.unInitial();
+			}
+		}
+	};
+	
+
+
+	21.如何改变dataconnect数据连接的状态？？？？
+
+	解决：
+	//方法1（使用API）
+	cm.setMobileDataEnabled(true);？？？？？？为什么这个方法在Api中找不到
+	BroadcastReceiver mReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if (ACTION_WIFI_STATE_CHANGED.equals(action)) {
+				NetworkInfo info = (NetworkInfo) intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+				if (info == null) {
+					finish();
+					return;
+				}
+				if (info.getState().equals(NetworkInfo.State.CONNECTED)) {
+					if (mIsLastDataOn) {
+						onUserPositive();
+						finish();
+					}
+				}
+			} else if (ACTION_SS_STATE_CHANGED.equals(action)) {
+				if (Settings.System.getInt(context.getContentResolver(),Settings.System.AIRPLANE_MODE_ON, 0) != 0) {
+					finish();
+				}
+			}
+		}
+	};
+	//方法2（反射）可行
+	private void switchDataConnect() {
+		TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		int dataState = telephonyManager.getDataState();
+		//
+		Class telephonyManagerClass = TelephonyManager.class;
+		try {
+			Method mGetITelephony = telephonyManagerClass.getDeclaredMethod("getITelephony");
+			mGetITelephony.setAccessible(true);
+			Object iTelephonyStub = mGetITelephony.invoke(telephonyManager);
+			Class iTelephonyClass = Class.forName(iTelephonyStub.getClass().getName());
+			Method mDataConnect = null;
+			if (dataState == TelephonyManager.DATA_CONNECTED) {
+				//
+				System.out.println("DataEnable");
+				mDataConnect = iTelephonyClass.getDeclaredMethod("disableDataConnectivity");
+			} else {
+				//
+				System.out.println("DataDisable");
+				mDataConnect = iTelephonyClass.getDeclaredMethod("enableDataConnectivity");
+			}
+			mDataConnect.setAccessible(false);
+			mDataConnect.invoke(iTelephonyStub);// 这里有问题？？？？这里应该是iTelephonyStub而不是ITelephonyClass
+			//并且在修改数据连接状态的时候需要android.permission.MODIFY_PHONE_STATE的权限，但该权限已经改为系统权限，普通的应用程序不能使用该权限
+			//所以该方法只能在系统中使用
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	//方法3（AIDL）
+	ITelephony phoneMgr = ITelephony.Stub.asInterface(ServiceManager.getService(Context.TELEPHONY_SERVICE));
+	try {
+		if (flag) {
+			phoneMgr.enableDataConnectivity();		//这里在状态改变了之后如何监听？？？？？
+		} else {
+			phoneMgr.disableDataConnectivity();
+		}
+	} catch (RemoteException e) {
+		System.err.println("Mobile data operation failed: " + e);
+	}
+
+	
+
+22.在修改wifi状态的时候会出现问题？？？
+Unable to change interface settings
+Cannot open "/system/etc/wifi/wpa_supplicant.conf": No such file or directory
+
+23.在打开关闭飞行模式的时候会出现问题了？？？？
+
+	24.wifi的图标改变问题？？？
+
+	解决：ImageView		wifi.setImageResource(R.drawable.ic_wifi_on);而不是wifi.setBackgroundResource();
+	在改变了wifi状态之后不会直接改变wifi状态的图标
+
+	25.数据连接的状态如何改变？？？？
+
+	解决：同问题21
+
+26.为什么在创建GlobalDialog的时候会接收到4个广播呢？？？而且只有在刚进入的时候会改变wifi的状态图标？？？
+
+	27.如何在SingleLineAction中注销BroadcastReceiver？？？？
+
+	解决：
+	给SingleLineAction添加一个onDestroyed()方法，在dialog.onDismiss()的时候调用singleLineAction.onDestroyed()方法就行了
+
+28.如何监听PhoneState的变化？？？？
+
+29.为什么使用TelephonyManager监听PhoneStateListener的状态变化的时候会出现问题？？？
+telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+telephonyManager.listen(new PhoneStateListener() {
+	@Override
+	public void onDataConnectionStateChanged(int state, int networkType) {
+		super.onDataConnectionStateChanged(state, networkType);
+	}
+	@Override
+	public void onDataConnectionStateChanged(int state) {
+		super.onDataConnectionStateChanged(state);
+	}
+}, PhoneStateListener.LISTEN_DATA_CONNECTION_STATE);
+
+//使用以下代码的时候会出现切换不了的问题
+int wifiApState = wifiManager.getWifiApState();
+if ((wifiApState == WifiManager.WIFI_AP_STATE_ENABLING) || (wifiApState == WifiManager.WIFI_AP_STATE_ENABLED)) {
+	wifiManager.setWifiApEnabled(null, false);
+}else if((wifiApState == WifiManager.WIFI_AP_STATE_DISABLING) || (wifiApState == WifiManager.WIFI_AP_STATE_DISABLED)){
+	wifiManager.setWifiApEnabled(null, true);
+}
+
+	30.最后一个问题，就是airplane,wifi,data接收到通知后立即改变状态图标？？？或让GlobalDialog马上消失？？？？
+
+	解决：
+	可以让GlobalDialog在点击了之后马上消失，有个问题点击事件onClick原来是return;应该改为break;
+

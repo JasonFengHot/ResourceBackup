@@ -1,0 +1,10 @@
+	1.将Browser浏览器的默认下载路径从MyFavourite改为Download????
+
+	解决：
+	只需要将packages/apps/Browser/ext/src/com/mediatek/browser/ext/BrowserDownloadEx.java
+	public String getDefaultDownloadFolder() {
+		Xlog.i(TAG, "Enter: " + "getDefaultDownloadFolder()" + " --default implement");
+		return "/Download";				//只需要将这里的MyFavourite改为Download就可以了
+	}	
+
+2.

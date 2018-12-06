@@ -1,0 +1,364 @@
+去掉一些apk，讨论一下哪些apk可以移除
+    移除 webview.apk      好像去掉之后浏览器进不去了
+        alps/external/chromium-webview/Android.mk
+    移除 LatinIME.apk
+        alps/packages/inputmethods/LatinIME/Android.mk
+    移除 QuickSearchBox.apk
+        alps/packages/apps/QuickSearchBox/Android.mk
+        alps/vendor/mediatek/proprietary/packages/apps/QuickSearchBox/Android.mk
+    移除 Anti-Theft
+        MTK_PRIVACY_PROTECTION_LOCK
+
+修改分区表，从system区分一点到data区和fat区
+
+关闭特效
+    修改developer options下的默认值
+        Redmine71974
+
+修改SupportFeatures
+    A) PackageManager.FEATURE_TOUCHSCREEN
+    B) Configuration.touchscreen
+    C) Configuration.keyboard
+
+修改尽量把最少的dpi资源编译进去，有利于减小apk的大小
+
+去掉开机向导
+    默认就没有
+
+修改信号格数优化
+    Redmine82993:[工厂反馈]卡1信号跳动2-3格
+
+移植默认时间，并用脚本控制
+    Redmine74283:[需求](Date and time)Factory default time
+
+移植锁网功能
+    Redmine84700:[需求]锁网
+
+移植 FlashLight，使用宏控，默认关闭
+
+移植版本号显示
+
+去掉一些无法实现或没必要的功能？
+    移除视频通话(通话界面和联系人界面)
+    Redmine89553:移除复制粘贴的功能
+
+移植T9输入法和SageRealIME输入法
+    Redmine92698:[Bug]M2414无法输入*号，经验证浏览器、短信、电话本等编辑界面均无法输入*号
+    Redmine67256:[需求]添加多语言支持及相关输入法----Facebook密码框不显示字符
+    Redmine98506:slow down the speed of the scrolling through the letter/number
+
+移植鼠标功能
+    在 Browser/WhatsApp/FaceBook/Email 等应用中自动打开鼠标
+
+隐藏 Android/Google 相关信息
+    Redmine85417:[需求](Settings/account)hide the google account
+    Redmine102044:[客户需求]modify "android is upgrading"----修改OTA升级完成之后开机显示的 Android is upgrading 改为 Software is upgrading
+
+情景模式下长按方向键调节音量键乱跳
+
+在工程模式下添加 developer options，在设置下隐藏 developer options 和 Builde number 显示 developer options 菜单的入口
+    Redmine102433:[客户反馈]In Settings/About phone/Build number----移除Developer Options
+
+修改浏览器的UA和UAProfile，让它可以正常浏览网页
+
+修改默认字体大小
+
+ActionBar菜单相关
+    隐藏ActionBar上的More按钮，修改通过菜单键显示菜单
+    隐藏所有界面上ActionBar的返回箭头
+    修改所有的ActionBar不能获取焦点
+
+Power键的功能
+    修改灭屏的时候短按power键无效
+    通话或来电或去电时，按power键挂断
+    Launcher idle界面和whatsapp通话界面按power键灭屏
+    其他界面按power键返回到idle界面
+
+Redmine65892:添加power键+#键截屏功能
+    Redmine67836:[bug](设置)设置存储位置为手机，截图文件保存在T卡中----去掉截屏通知栏上的分享按钮
+    Redmine62809:power键短按----通话界面不能截屏
+    Redmine75198:[bug](文件管理器)截图的图片在文件管理器里时间分钟未显示
+
+Redmine77021:[需求]添加鼠标功能
+    Redmine75167:[bug](浏览器)浏览器中的图片无法下载----添加鼠标长按事件
+    Redmine93063:[Bug](浏览器)进入浏览器按左侧menu，鼠标模式同时也有高亮条框
+
+Redmine62810:power键长按----添加重启功能
+
+去掉渐变色，修改 Activity 渐变色背景为纯色背景
+
+[Bug](情景模式)设置里面开启触摸震动或不开启时，拨号盘按键只有*#键可以有震动，且不能关闭
+
+移植FOTA
+    这个值 SAGEREAL_PRODUCT_DEVICE = sr72_w_lca 不可以修改，否则fota升级不上去
+    联系广升提供新的apk可以支持不插SD卡升级，并且可以支持按键操作，而且还需要可以过gms认证
+    必要的时候还需要让广升修改翻译
+    把fota功能移到Settings-more中
+    隐藏feedback,exit菜单
+
+不允许安装第三方apk，不允许用户创建快捷方式
+    Redmine62797:第三方apk无法安装----不允许adb安装
+
+Redmine65678:[Bug](充电)关机状态下充电图标显示始终为低电量
+
+移植CE功能，打开 MTK_SAFEMEDIA_SUPPORT，修改安全提示音量10级
+    没有这个宏
+
+-----------------------------修改应用界面和功能-----------------------------
+修改 WhatsApp 可以正常使用
+    Redmine68191:[Bug](Whatsapp)应用中部分功能不能使用
+    隐藏一些无法实现的功能
+
+修改Launcher界面
+    去掉Launcher向导
+		alps/packages/apps/Launcher3/src/com/android/launcher3/Launcher.java
+		    //showFirstRunCling();
+    修改 idle 界面默认焦点
+    修改 allapp 界面默认焦点
+    移除Launcher界面上的SearchBar
+    移除Launcher界面上添加widget的入口，不允许用户自行添加修改widget
+    调整桌面布局3*4
+    hotseat改为3个
+    修改idle界面点击menu键显示下拉通知栏的功能,使用左右导航键移除通知
+    修改idle界面点击数字按钮拨号的功能，有没有更好的解决办法？
+    Redmine63038:添加桌面时钟小部件
+    Redmine97130:[工厂反馈]概率性桌面文件丢失？添加保护
+    Redmine88752:[BUG]Please remove the point in the first screen as shown in the picture
+    Redmine63038:添加桌面时钟小部件
+    Redmine88758:[BUG]New function to change APK on the homescreen----添加修改桌面布局的功能
+
+修改拨号盘界面
+    Redmine65684:[Bug](拨号盘)拨号中按*键和#键时，按键音会一直响
+    Redmine67247:[Bug](拨号)拨号输入框建议去除删除图标，同时增加光标显示
+    Redmine92922:[BUG]无法使用暗码＋PUK码（**05*PUK码*新PIN码*新PIN码#）的方式更改PIN码问题
+    Redmine65682:[bug](*#0*#)输入*#0*#不能恢复出厂设置
+    Redmine71500:[bug](拨号盘)*#06#无法查看IMEI码----添加*#06#查看IMEI码的功能，需要考虑单双卡
+        Redmine85282:(IMEI)输入*#06#，未显示出手机IMEI码(双卡)
+    Redmine62796:*#*#3646633#*#* 改为 *#0777#
+    Redmine72423:[基本移植任务]移植#888#
+    Redmine68180:[bug](工厂模式)不能进入工厂模式测试----参照72KK_SFP移植
+        a.移除EngineerMode下的 touchscreen 测试，用 SAGEREAL_TOUCHSCREEN_SUPPORT 宏控，默认关闭
+        b.移除EngineerMode下的 sensor 测试，用 SAGEREAL_SENSORTEST_SUPPORT 宏控，默认关闭
+        Redmine82876:[工厂测试]按键测试中wifi连接不上
+    拨号盘的问题----长按快速拨号
+    Redmine77209:[bug](SIM卡)待机界面点击任一个数字，弹出图片点按左右导航键无响应----双卡项目拨号的时候会显示选择SIM卡的对话框，无法获取焦点
+    隐藏Phone上的拨号盘，包括锁屏界面上紧急拨号的拨号盘，PIN码等的键盘
+    Redmine78035:[需求](Call)Sometimes when I input some number for call, the bar appear in middle screen.
+
+修改通话界面
+    Redmine94755:[客户反馈]4.3 - Multi-Party Calling
+        Redmine92020:modified for conference manage
+    Redmine78611:[BUG](通话)概率性出现无法进入通话的问题
+    Redmine89504:[bug](通话)测试机来电界面，调出信息界面后，配合机挂断，信息文本不会返回
+    Redmine95143:[bug](紧急号码)拨打紧急号码时添加通话，不会跳出拨号盘界面，输入一个数字会响应2个数字
+    通话记录界面选择一条通话记录点击绿键直接拨号
+
+修改联系人界面
+    Redmine98582:[bug](联系人)联系人中无法添加账户
+    Redmine99554:[bug]联系人列表中已隐藏Account菜单，但是添加联系人的时候依然有Add new account菜单，请与联系人列表保持一致，去除该菜单
+    Redmine98468:去掉IP拨号功能
+        Redmine100271:[BUG](联系人)新建一联系人，查看该联系人，详情界面仍有IP拨号，请去除
+        Redmine100585:remove ip call in call details
+    Redmine101218:[客户反馈 49]We cannot add contact in +61****** format. User cannot add '+' as prefix
+    移除把联系人添加到桌面的功能
+    联系人界面选择联系人高亮之后点击绿键直接拨号
+
+修改计算器界面
+
+修改短信界面
+    (信息)进入到修改数量界面，长按ok键不能直接修改到短信和彩信限制信息的数量
+    收到含有附件的彩信，无法对彩信进行操作
+    信息列表界面，选择搜索不能进入到搜索界面
+    新建信息输入号码时弹出匹配联系人，选择某联系人按ok键不能选中
+    [bug](信息)同时收到多条短信，弹出界面在第一页显示往左的箭头，最后一页显示往右的箭头，点击并不会进入其它信息页面
+    收到含有附件的彩信，无法对彩信进行操作
+    修改短信快速回复功能
+    Redmine76238:[需求](Call)When I receive a call I cannot reply using defined SMS, the pop-up is not opening
+    Redmine89493:[客户反馈]in SMS settings / SMS text----添加短信编码菜单
+    Redmine93060:[Bug](信息)新建信息输入联系人后按返回键不响应
+
+修改浏览器界面
+    Redmine75167:[bug](浏览器)浏览器中的图片无法下载
+
+修改相机界面
+    去掉相机向导
+    添加相机保护
+    Redmine81470:[bug](相机)相机设置饱和度、亮度、对比度各选项拍照，照片没有明显变化，移除饱和度、亮度、对比度菜单项
+    Redmine90372:modified for CUSTOM_EXIF_INFO
+    Redmine91018:[bug](相机)相机菜单显示问题
+
+修改图库界面
+    移除裁剪图片的功能
+    Redmine68117:图库中播放视频时不能快进与后退
+
+修改设置界面
+    Redmine89448:[bug](设置)设置下关于手机中的问题
+    Redmine74855:[需求](Profile)Pls add option to set mp3 for ringtone from intern memory or sd card----添加more ringtone选项
+    Redmine93497:[bug](设置)*906#里的序列号和版本号显示与设置关于手机下的不一致(双卡情况下)
+    Redmine97742:Comment:(设置)设置情境模式预览音量能后台播放，且播放的时候来电，播放铃声和来电铃声能同时播放
+    默认不锁屏，去掉Slide/Pattern锁屏菜单，添加按键锁屏/解锁的功能
+    Redmine78999:[需求](Unlock)When I choose Slide option for unlock the screen,
+        <bool name="def_lockscreen_disabled">true</bool>
+    Redmine67501:[bug](设置)SIM管理下修改SIM卡中的设置背景颜色时无法设置颜色
+    Redmine62795:移除Settings/Apps----屏蔽Storage的入口
+    移除Settings/Security/DeviceAdmin
+    移除Settings/Add Account
+    移除Settings/About phone下的部分信息
+    移除Settings/Accessibility功能菜单
+    移除Settings/Print菜单
+    移除Settings/Display下锁定屏幕通知菜单
+    移除Settings/Display下机主信息
+    移除自动转屏AutoRotate(设置下，添加自动转屏的保护)
+    Redmine98582:移除添加账户功能
+    Redmine98505:移除Settings/Security/Make passwords visible菜单
+    Redmine67836:[bug](设置)设置存储位置为手机，截图文件保存在T卡中----去掉截屏通知栏上的分享按钮
+    Redmine79785:[bug](设置)Pico TTS设置中不能进入
+    修改Switch开关可以通过左右按键和 enter 打开/关闭
+
+修改时钟界面
+    Redmine76016:[bug](时钟)关机闹钟时间到时响应，界面显示异常，并且无法关闭
+    Redmine79763:[bug](时钟)计时器和倒计时界面无分隔符
+    Redmine79737:[bug](时钟)时钟设置中有Volume buttons的设置，建议去除
+
+修改音乐播放器界面
+    Redmine79781:[bug](音乐)设置歌曲为手机铃声，卡1不会成功设置
+    去掉快速搜索功能
+
+修改FM界面
+    Redmine85522:[bug](FM)手机支持 FM share，FM share状态下播放收音机点击菜单Earphone，收音机任响应speaker
+    Redmine83534:[bug](FM)fm录音后没有当前的录音时间和日期
+
+修改录音机界面
+    Redmine65735:[bug](录音)录音完成后在文件管理中显示的是视频文件
+
+修改Email界面
+    Redmine67070:[bug](Email)输入Email地址时按手机上的按键不起作用
+    Redmine99616:[bug](Email)Email列表无法删除邮件
+    Redmine98567:移除Email中的VIP菜单
+
+修改日历界面
+
+修改锁屏界面
+    Redmine89592:修改灭屏界面按左软键后直接进入Settings的bug
+    Redmine71246:[bug](设置)设置屏幕锁后，锁屏时拨打紧急电话界面有拨号盘显示
+    Redmine92447:[BUG]M2414机器无法使用PUK码解PIN码，请安排修改
+    Redmine67952:(设置)设置日期格式，待机界面与锁频界面的日期格式与设置的不一致
+
+修改Todo界面
+
+修改文件管理器界面
+
+修改DocumentsUI界面
+    Redmine93235:[客户需求]Smart FP WhatsApp downloader Specific develloment to do----修改重复下载WhatsApp的问题
+
+修改Videos界面
+    添加Videos用来支持视频播放
+
+修改通话记录界面
+
+修改日期和时间显示对话框
+
+修改定时开关机界面
+    Redmine67424:[需求]定时开关机界面修改
+    
+修改recovery界面
+    Redmine76261:[需求](Sw)When I make factory reset I can see the Android Robot not framed on the screen. Please try to solve it, see attachment
+    Redmine70736:[需求]移植FOTA------修改recovery字体大小
+
+蓝牙
+    Redmine67550:[bug](蓝牙)apk文件不能通过蓝牙分享
+    Redmine71599:receive flac and ogg files
+    Redmine94149:modify for can not accept calendar vcs file
+    Redmine70376:[Bug](T1反馈)蓝牙地址为：00:00:46:65:72:01，全部一样
+    收到蓝牙消息之后，弹出对话框
+
+移植一键清理和近期任务的功能
+    Redmine81034:[需求]idle界面长按返回键显示近期任务(修改不允许修改屏幕的方向)
+    Redmine86490:[客户反馈]Notification : We should be able to remove them by press on the left direction key , as done in appplication historic
+
+移植未读消息功能
+    Redmine85506:[bug](日历)来日程查看后未读日程数字不会消失
+    Redmine89455:[bug](待机界面)待机界面上的未读信息图标位置与主界面上的未读图标位置显示不一致
+    Redmine88749:[BUG] When we have a missing call, it is really not intuitive to remove the miss call counter.
+
+Redmine79195:[需求](说明书)用户操作说明书APK开发
+
+
+-----------------------------其他基本任务移植-----------------------------
+为了测试CTS，请移植并打开MTK_SIGNATURE_CUSTOMIZATION，保证可以编译通过
+ 
+申请hotknot软件包（默认关闭）
+ 
+申请BIP相关的patch
+
+移植HD Voice功能（默认关闭）
+
+移植接通震动提醒
+
+移植翻转静音
+
+默认时间为24小时制
+
+默认音量改为倒数第二格
+
+整理关机充电宏
+
+    打开MTK_SPECIAL_FACTORY_RESET
+
+Camera设置默认改为4：3预览
+
+移植保护：开机后发现Home和Menu功能不正常
+
+移植保护：默认时间异常为121000
+
+移植保护：情景模式来电铃声为空
+ 
+文件浏览APK显示其缩略图
+ 
+hiding roaming icon
+ 
+移植电话号码匹配长度
+ 
+修改内核版本显示
+ 
+移植开关机铃声和动画
+ 
+新建一份软件释放批处理
+ 
+内置默认IMEI和Bar Code
+ 
+请移植默认时区
+ 
+去掉通话录音菜单（默认关闭）
+
+拍照录像必须有声音（默认关闭）
+
+    关掉定制宏OPTR_SPEC_SEG_DEF
+        默认NONE
+
+    关掉号码归属地宏MTK_PHONE_NUMBER_GEODESCRIPTION
+        没有这个宏
+
+    关掉IPO宏MTK_IPO_SUPPORT
+        默认已关闭
+
+    隐藏工程模式里的关键信息（比如修改 IMEI），关掉宏MTK_CDS_EM_SUPPORT
+        默认已关闭
+
+移植SFR特殊的FD feature
+
+移植：下载DRM的音频文件，使用google play music无法播放，原生音乐app可播放
+
+修改关于手机->状态->序列号
+
+横屏打电话，屏幕不灭？
+
+开二合一（否则Google认证有问题）
+
+通话时修改时间的异常显示问题
+
+Cam图标消失
+
+紧急拨号界面,电话图标有明显锯齿的问题
+
+照片为空时，预览界面向左划至照片查看界面，界面下方有条黑线

@@ -1,0 +1,46 @@
+手机第一次刷机或者恢复出厂设置， 如果手机插入中国的SIM卡，那么等待手机正常启动进入launcher之后，在手机launcher上是找不到Azamon music这个图标的，而从settings->apps->all当中查看，会发现Azamon music这个apk是存在的。。。
+而如果在不差卡的情况下，或者插入国外的卡，那么这个Azamon music就会在launcher上正常显示。。。
+
+以上情况是在4.4 KK版本上发生的。。在中型v970（4.1.2的android版本）也是如此。。。并且在中兴v970上，还有一个不同是，手机语言为汉语，本来apk已经消失了。但是语言设置为英语，然后重启，这个apk又出现了。。
+
+另外，手机上点击进入Azamon music这个apk。从相关的设置说明叶面是可以看到一些说明，说apk只支持en，fr，es，de，日语等几种语言，当然，不包括汉语。（原话忘记了，页面上也可能说，该apk只能在这几种语言下使用）。
+
+
+
+
+
+
+
+
+
+Dear MTK:
+    手机第一次刷机或者恢复出厂设置， 如果手机插入中国的SIM卡，那么等待手机正常启动进入launcher之后，在手机launcher上是找不到Azamon music这个图标的，而从settings->apps->all当中查看，会发现Azamon music这个apk是存在的。。。
+而如果在不插卡的情况下，或者插入国外的卡，那么这个Azamon music就会在launcher上正常显示。。。
+
+    以上情况是在4.4 KK版本上发生的。。在中型v970（4.1.2的android版本）也是如此。。。并且在中兴v970上，还有一个不同是，手机语言为汉语，本来apk已经消失了。但是语言设置为英语，然后重启，这个apk又出现了。。
+
+    另外，手机上点击进入Azamon music这个apk。从相关的设置说明叶面是可以看到一些说明，说apk只支持en，fr，es，de，日语等几种语言，当然，不包括汉语。
+
+    针对这个现象，我们这边对Amazon_Music应用进行反编译之后看到在 com.amazon.mp3.service.ComponentCheckService 类中有
+boolean bool2 = this.mRegion.isDetectedLocaleSupported();//这句代码就是检测国家编码
+setComponentEnabled(LauncherActivity.class, bool2); //这句代码会将该应用给禁用掉
+根据上面这个判断条件，从 mRegion 中可以看到支持的国家有
+LOCALE_TO_REGION_MAP.put(LOCALE_EN_US, "en_US");
+LOCALE_TO_REGION_MAP.put(LOCALE_EN_UK, "en_UK");
+LOCALE_TO_REGION_MAP.put(LOCALE_FR_FR, "fr_FR");
+LOCALE_TO_REGION_MAP.put(LOCALE_DE_DE, "de_DE");
+LOCALE_TO_REGION_MAP.put(LOCALE_DE_AT, "de_DE");
+LOCALE_TO_REGION_MAP.put(LOCALE_DE_CH, "de_DE");
+LOCALE_TO_REGION_MAP.put(LOCALE_CS_CZ, "en_US");
+LOCALE_TO_REGION_MAP.put(LOCALE_JA_JP, "ja_JP");
+LOCALE_TO_REGION_MAP.put(LOCALE_ES_ES, "es_ES");
+LOCALE_TO_REGION_MAP.put(LOCALE_CA_ES, "es_ES");
+LOCALE_TO_REGION_MAP.put(LOCALE_IT_IT, "it_IT");
+
+在 Amazon_MP3/res/raw/local_config 配置文件中也有支持的国家编码
+"cirrus_supported_locales": "en_US,fr_FR,de_DE,en_UK,es_ES,it_IT",
+"cirrus_supported_locales_v2": "en_US,fr_FR,de_DE,en_UK,es_ES,it_IT,ja_JP",
+
+这两个地方确实都不包含中国，但我现在想不明白的是为什么JB上不会消失，KK上会消失？
+
+    期待您的答复，谢谢！

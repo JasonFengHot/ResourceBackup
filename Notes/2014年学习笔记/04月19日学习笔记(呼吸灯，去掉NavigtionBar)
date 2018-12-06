@@ -1,0 +1,54 @@
+    1.如何去掉Navigation Bar???
+
+    解决：
+    默认Navigation Bar的控制在 alps/frameworks/base/core/res/res/values/config.xml文件中<bool name=“config_showNavigationBar”>true</bool>
+    注：参考https://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ04788
+
+2.呼吸灯的实现？？？
+
+解决：
+private void showNotification(){
+    if(mNotificationManager == null){
+        mNotificationManager = (NotificationManager)getSystemService(Activity.NOTIFICATION_SERVICE);
+    }
+    mNotificationManager.cancel(NOTIFICATION_ID);
+    Notification notice = new Notification();
+    notice.ledARGB = 0xff00ff00;
+    notice.ledOnMS = 1;
+    notice.ledOffMS = 0;
+    notice.flags |= Notification.FLAG_SHOW_LIGHTS;
+    Intent intent = new Intent();
+    PendingIntent des = PendingIntent.getActivity(this,NOTIFICATION_REQUEST_CODE,intent,PendingIntent.FLAG_CANCEL_CURRENT);
+    notice.setLatestEventInfo(this,null,null,des);
+    mNotificationManager.notify(NOTIFICATION_ID,notice);
+}
+
+private void scheduleAlarm(){
+    if(mAlarmManager == null){
+        mAlarmManager = (AlarmMaanger)getSystemService(Activity.ALARM_SERVICE);
+    }
+    Intent intent = new Intent(INTENT_ACTION_SCHEDULE);
+    PendingIntent clock = PendingIntent.getBroadcast(this,NOTIFICATION_REQUEST_CODE,intent,PendingIntent.FLAG_CANCEL_CURRENT);
+    mAlarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,SystemClock.elapsedRealtime(),NOTIFICATION_ALARM_LENGTH,clock);
+    Intent cancelIntent = new Intent(INTENT_ACTION_CANCEL);
+    PendingIntent cancel = PendingIntent.getBroadcast(this,NOTIFICATION_REQUEST_CODE,cancelIntent,PendingIntent.FLAG_CANCEL_CURRENT);
+    mAlarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,SystemClock.elapsedRealtime() + NOTIFICATION_LED_ONMS,NOTIFICATION_ALARM_LENGTH,cancel);
+}
+
+private void startReceiver(){
+    if(mReceiver == null){
+        mReceiver = new BroadcastReceiver(){
+            public void onReceive(Context context,Intent intent){
+                if(intent.getAction().equals(INTENT_ACTION_SCHEDULE)){
+                    showNotification();
+                }else if(intent.getAction().equals(INTENT_ACTION_CANCEL)){
+                    mNotificationManager.cancelAll();
+                }
+            }
+        };
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(INTENT_ACTION_SCHEDULE);        //在什么时候发送这两个广播？？？？
+        intentFilter.addAction(INTENT_ACTION_CANCEL);
+        registerReceiver(mReceiver,intentFilter);
+    }
+}

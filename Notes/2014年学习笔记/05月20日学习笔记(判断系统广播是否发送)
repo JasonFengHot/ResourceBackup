@@ -1,0 +1,36 @@
+	1.Bug6822 修改默认值？？？
+		a:GPS and AGPS should be ON by default and EPO and autodownload should be ON
+		b:Bluetooth should be OFF by default
+		c:Data connections should be ON by default
+		d:add a screen to turn off 'data connection' on startup wizard or after startup wizard.
+
+	解决：
+	a:
+	GPS:			<string name="def_location_providers_allowed" translatable="false">gps,network</string>
+	AGPS:			<bool name="assisted_gps_enabled">true</bool>
+	EPO:				$(shell cp $(TOPDIR)mediatek/config/$(PROJECT)/sagereal_copy/epo_conf.xml		$(TOPDIR)mediatek/frameworks/base/epo/etc/epo_conf.xml)
+	autodownload:	
+	bluetooth:		<bool name="def_bluetooth_on">false</bool>
+	data:
+
+	data connection dialog:
+
+	//
+	mMobileTileView.setEnabled(mMobileStateTracker.isClickable());
+	public boolean isClickable() {
+		boolean isSimOneInserted = true;
+		if (PluginFactory.getStatusBarPlugin(mContext).supportDataConnectInTheFront()) {
+		    isSimOneInserted = SIMHelper.isSimInserted(PhoneConstants.GEMINI_SIM_1);
+		}
+		return (isSimOneInserted && mHasSim && !isAllRadioOff() && !mIsMmsOngoing && super.isClickable());
+	}
+
+	2.判断系统是否发送了相关的广播？？？
+
+	解决：
+	Intent intent = registerReceiver(null,new IntentFilter(Intent.ACTIONxxxx));
+	if(intent!=null){
+		//系统发送了该广播
+	}
+
+3.

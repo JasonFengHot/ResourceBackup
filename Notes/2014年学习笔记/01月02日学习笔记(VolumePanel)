@@ -1,0 +1,46 @@
+	1.音量控制面板的翻译问题？？？
+
+	解决：
+	-----------------------------------英语-----------------------------------
+	<string name="volume_music">Media volume</string>							//需要翻译
+	<string name="volume_alarm">Alarm volume</string>
+	<string name="volume_icon_description_media">Media volume</string>
+	-----------------------------------法语-----------------------------------
+	<string name="volume_music" msgid="5421651157138628171">"Volume"</string>
+	<string name="volume_alarm" msgid="1985191616042689100">"Volume"</string>
+	<string name="volume_icon_description_media" msgid="4217311719665194215">"Volume"</string>
+	需要翻译以下两个字符串
+	Media volume
+	Ringer volume
+
+	2.跳转到某个Activity????
+
+	解决：
+	private void gotoModel(String targetClass,Bundle extrasData){
+		Intent intent = new Intent();
+		intent.setClassName(ROOT_APP_PATH,targetClass);
+		if(extrasData != null){
+			intent.putExtras(extrasData);
+		}
+		startActivity(intent);
+	}
+
+	3.判断是否有网络连接？？？
+
+	解决：
+	public static boolean isNetworkAvailable(Context context){
+		ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo info = cm.getActiveNetworkInfo();
+		return (info != null && info.isConnected());
+	}
+
+	4.预先缩放图片到指定大小？？？？
+
+	解决：
+	Bitmap.createScaledBitmap(originalImage,view.getWidth(),view.getHeight(),true);
+
+	5.信号跳变的分析？？？？
+
+	解决：
+	如电话中沟通的，如果是想从log里面看modem上报的信号强度，可以在radio log里面搜 : +ECSQ:，然后看第一个参数的值，如果是99为无效，其他值是越小表示信号强度越弱；
+	如电话中沟通，由于这个问题已经给贵司解答，因此我将关闭此CR；

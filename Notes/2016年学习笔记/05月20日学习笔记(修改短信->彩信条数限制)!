@@ -1,0 +1,8 @@
+	1.修改 短信->彩信 条数限制??
+
+	解决：
+	packages/apps/Mms/res/xml/mms_config.xml
+
+	<!--Redmine58773 zhangqi modified for SmsToMms 2016/05/20:begin-->
+	<int name="smsToMmsTextThreshold">8</int>
+	<!--Redmine58773 zhangqi modified for SmsToMms 2016/05/20:end-->

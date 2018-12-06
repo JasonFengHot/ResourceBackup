@@ -1,0 +1,28 @@
+	1.如何读取充电电压和充电电流？？？？
+
+	解决：
+	只要读取
+	/sys/class/power_supply/battery/BatteryAverageCurrent		//充电电流
+	/sys/class/power_supply/battery/ChargeVoltage			//充电电压
+	读取的方法
+	cat /sys/class/power_supply/battery/BatteryAverageCurrent	//读取充电电流
+	cat /sys/class/power_supply/battery/CargeVoltage		//读取充电电压
+	写的方法
+	echo 255 > /sys/class/leds/lcd-backlight/brightness		//写屏幕亮度
+
+	2.对资源的id的分配也可以使用下面的方法？？？
+
+	解决：
+	<resources>
+	    <item name="LinerLayout_Satellate" type="id"></item>
+	</resources>
+	这样就可以在使用资源的时候，直接使用@id，而不用@+id了
+
+	3.如何将音量控制面板改为按返回键消失？？？
+
+	解决：
+	只要去掉frameworks/base/core/java/android/view/VolumePanel.java文件中去掉mDialog对话框的flag就行了
+	window.addFlags(LayoutParams.FLAG_NOT_FOCUSABLE | LayoutParams.FLAG_NOT_TOUCH_MODAL | LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
+	但是这样只有按返回键的时候会起作用，按home键的时候不会起作用
+
+4.

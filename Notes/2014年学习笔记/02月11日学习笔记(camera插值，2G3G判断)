@@ -1,0 +1,76 @@
+	1.如何修改camera差值？？？？
+
+	解决：
+	在ProjectConfig.mk文件中找到	CUSTOM_HAL_SUB_IMGSENSOR=gc0308_yuv gc0328_yuv
+	再根据后面的两个配置文件在		mediatek/custom/common/hal/imgsensor/	目录下找对应的配置文件
+
+	http://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ05993
+
+	mediatek\custom\<project name>\hal\imgsensor\<sensor name>\config.ftbl.<sensor name>.h	没有
+	mediatek\custom\<mt658x>\hal\imgsensor\<sensor name>\config.ftbl.<sensor name>.h		没有
+	mediatek\custom\common\hal\imgsensor\<sensor name>\config.ftbl.<sensor name>.h			没有，有cfg.ftbl.gc0329_yuv.h
+	mediatek\custom\<project name>\hal\imgsensor\src\config.ftbl.common_yuv.h				没有
+	mediatek\custom\<mt658x>\hal\imgsensor\src\config.ftbl.common_yuv.h						没有
+	mediatek\custom\common\hal\imgsensor\src\config.ftbl.common_yuv.h						有，改这个文件就ok了
+
+2.如何判断是3G还是2G？？？
+
+解决：
+mPhone = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+mPhone.listen(mPhoneStateListener,PhoneStateListener.LISTEN_SERVICE_STATE | PhoneStateListener.LISTEN_SIGNAL_STRENGTHS | PhoneStateListener.LISTEN_CALL_STATE | PhoneStateListener.LISTEN_DATA_CONNECTION_STATE | PhoneStateListener.LISTEN_DATA_ACTIVITY);
+PhoneStateListener phoneStateListener = new PhoneStateListener(){
+	@Override
+	public void onDataConnectionStateChanged(int state, int networkType) {
+		super.onDataConnectionStateChanged(state, networkType);
+		mDataNetType = networkType;
+	}
+};
+switch (mDataNetType) {
+	case TelephonyManager.NETWORK_TYPE_UNKNOWN:
+	case TelephonyManager.NETWORK_TYPE_EDGE:
+	case TelephonyManager.NETWORK_TYPE_UMTS:
+	case TelephonyManager.NETWORK_TYPE_HSDPA:
+	case TelephonyManager.NETWORK_TYPE_HSUPA:
+	case TelephonyManager.NETWORK_TYPE_HSPA:
+	case TelephonyManager.NETWORK_TYPE_HSPAP:
+	case TelephonyManager.NETWORK_TYPE_CDMA:
+	case TelephonyManager.NETWORK_TYPE_1xRTT:
+	case TelephonyManager.NETWORK_TYPE_EVDO_0:
+	case TelephonyManager.NETWORK_TYPE_EVDO_A:
+	case TelephonyManager.NETWORK_TYPE_EVDO_B:
+	case TelephonyManager.NETWORK_TYPE_EHRPD:
+	case TelephonyManager.NETWORK_TYPE_LTE:
+	default:
+}
+/** Network type is unknown */
+public static final int NETWORK_TYPE_UNKNOWN = 0;
+/** Current network is GPRS */
+public static final int NETWORK_TYPE_GPRS = 1;
+/** Current network is EDGE */
+public static final int NETWORK_TYPE_EDGE = 2;
+/** Current network is UMTS */
+public static final int NETWORK_TYPE_UMTS = 3;
+/** Current network is CDMA: Either IS95A or IS95B*/
+public static final int NETWORK_TYPE_CDMA = 4;
+/** Current network is EVDO revision 0*/
+public static final int NETWORK_TYPE_EVDO_0 = 5;
+/** Current network is EVDO revision A*/
+public static final int NETWORK_TYPE_EVDO_A = 6;
+/** Current network is 1xRTT*/
+public static final int NETWORK_TYPE_1xRTT = 7;
+/** Current network is HSDPA */
+public static final int NETWORK_TYPE_HSDPA = 8;
+/** Current network is HSUPA */
+public static final int NETWORK_TYPE_HSUPA = 9;
+/** Current network is HSPA */
+public static final int NETWORK_TYPE_HSPA = 10;
+/** Current network is iDen */
+public static final int NETWORK_TYPE_IDEN = 11;
+/** Current network is EVDO revision B*/
+public static final int NETWORK_TYPE_EVDO_B = 12;
+/** Current network is LTE */
+public static final int NETWORK_TYPE_LTE = 13;
+/** Current network is eHRPD */
+public static final int NETWORK_TYPE_EHRPD = 14;
+/** Current network is HSPA+ */
+public static final int NETWORK_TYPE_HSPAP = 15;

@@ -1,0 +1,116 @@
+1.数据连接无法下载更新ota包的问题？？？
+
+//下载按钮的点击事件？？？
+if(sButtonStatus==ButtonStatus.Button_None){
+	if(sLatestVerTextView!=null && sLatestVerTextView.getVisibility()==View.VISIBLE){
+		sLatestVerTextView.setVisibility(View.GONE);
+	}
+	requeryPackages();
+}else if(sButtonStatus==ButtonStatus.Button_Download){
+	if (!Util.isSdcardAvailable(mContext)) {
+        Toast.makeText(mContext, getString(R.string.sdcard_crash_or_unmount), Toast.LENGTH_LONG).show();
+        return;
+    }
+ 	if (!(mDownloadInfo.getNetWorkState()==0)){
+        if(!Util.isNetWorkAvailable(mContext, NETTYPE_WIFI)){
+			showDialog(DIALOG_WARN_DATA_COST);							//显示更新提示框
+		}else{
+		 	downloadPkg();
+		}
+    } else {
+        downloadPkg();
+    }
+}else if(sButtonStatus==ButtonStatus.Button_Cancel){
+	cancelDownloadPkg();
+}else if(sButtonStatus==ButtonStatus.Button_Upgrade){
+	Settings.System.putInt(mContext.getContentResolver(), "mota_first", 1);
+	int value = Settings.System.getInt(mContext.getContentResolver(), "mota_first", 0);
+	installPackage(OTA_PKG_PATH, mDownloadInfo.getVerNum());
+}
+
+
+private boolean downloadPkg() {
+    if (mDownloadInfo.getDLSessionStatus() == DownloadInfo.STATE_NEWVERSION_READY) {
+        Util.deleteFile(Util.getPackageFileName(MainEntry.this));
+    }
+    if (!Util.isSdcardAvailable(this)) {
+        Toast.makeText(this, getString(R.string.sdcard_crash_or_unmount), Toast.LENGTH_LONG).show();
+        return true;
+    }
+    long lPkgSize = Util.getFileSize(Util.getPackageFileName(this));
+    long lSizeNeeded = Util.getExtraSpaceNeeded(this, (long) (mDownloadInfo.getUpdateImageSize() * (Util.DECOMPRESS_RATIO + 1) - lPkgSize));
+    if (lSizeNeeded == -1) {
+        Toast.makeText(this, getString(R.string.unmount_sdcard), Toast.LENGTH_LONG).show();
+        return true;
+    } else if (lSizeNeeded > 0) {
+        Toast.makeText(this, getString(R.string.insufficient_space_content_tecno, Formatter.formatFileSize(getApplicationContext(), lSizeNeeded)), Toast.LENGTH_LONG).show();
+        return true;
+    }
+    if (mService == null) {
+        Intent serviceIntent = new Intent(this, SystemUpdateService.class);
+        bindService(serviceIntent, mConnection, Context.BIND_AUTO_CREATE);
+    } else {
+        showUILayout(DownloadInfo.STATE_DOWNLOADING);
+        mService.startDlPkg();
+    }
+    return true;
+}
+
+HTTP_RESPONSE_NETWORK_ERROR = 1201;													//这个网络错误
+
+
+String strNetWorkType = mDownloadInfo.getIfWifiDLOnly() ? NETTYPE_WIFI : "";		//这里貌似默认为true,
+if (!Util.isNetWorkAvailable(mContext, strNetWorkType)) {
+    mErrorCode = HTTP_RESPONSE_NETWORK_ERROR;
+}
+
+boolean getIfWifiDLOnly() {
+    boolean wifiOnly = mPreference.getBoolean(WIFI_DOWNLOAD_ONLY, true);
+    Xlog.i(TAG, "getIfWifiDLOnly, get result = " + wifiOnly);
+    return wifiOnly;
+}
+
+
+
+================================================================================================
+
+
+2.升级下载进度条不更新的问题？？？？？
+
+private void showUILayout(int state) {
+    case DownloadInfo.STATE_DOWNLOADING:
+		showDlInterface();
+		break;
+}
+//显示下载进度条
+private void showDlInterface() {
+    setContentView(R.layout.ota_package_download);
+    removeWarning();
+    updateRatio();
+}
+
+//更新进度条
+private void updateRatio() {
+    sDlRatioProgressBar.setProgress(ratio);
+}
+
+
+
+void showDownloadingNotificaton(String version, int currentProgress, boolean isOngoing) {		//这个会一直调用
+    Xlog.i(TAG, "showDownloadingNotificaton with ongoing " + isOngoing);
+    mNotificationType = NOTIFY_DOWNLOADING;
+    String contentTitle = mNotificationContext.getString(R.string.app_name);
+    setNotificationProgress(R.drawable.stat_download_downloading, contentTitle, currentProgress, isOngoing, false);
+	sendBroadcast(new Intent("update_progress"));			//发送 update_progress 的广播
+}
+
+解决：
+在MainEntry.java文件中注册 接收 update_progress 广播
+接收到广播之后先显示
+} else if("update_progress".equals(action)){				//接收 update_progress 的广播
+	if(null != sUpdateInfoLayout && sUpdateInfoLayout.getVisibility() != View.VISIBLE){
+		showDlInterface();									//如果进度条不显示，先显示下载进度条
+	}else{
+		updateRatio();										//更新升级进度条的进度
+	}
+}

@@ -1,0 +1,42 @@
+	1.can't instantiate class .... no empty constructor??????如何从外面跳转到内部类的Activity
+
+	解决：
+	在注册Activity的时候使用
+	<activity android:name=".SecondActivity$TestActivity" ></activity>
+	public class SecondActivity extends Activity{
+		public void onCreate(Bundle savedInstanceState){
+			super.onCreate(savedInstanceState);
+			setContentView(R.layout.activity_second);
+		}
+		public static class TestActivity extends Activity{		//这里必须是public static的,否则访问出错
+			public void onCreate(Bundle savedInstanceState){
+				super.onCreate(savedInstanceState);
+				setContentView(R.layout.activity_test);
+			}
+		}
+	}
+
+    在跳转到内部类的Activity的时候使用
+    Intent intent = new Intent();
+    intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.Settings.SoundSettingsActivity"));
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    startActivity(intent);
+    使用以上的代码跳转到Activity的时候应该在manifest.xml中注册Activity,不大可行
+    替代的解决方法为在Settings/AndroidManifest.xml文件中的Settings$SoundSettingsActivity中添加一个自定义的<action android:name="android.settings.SOUND_ONLY" />
+    然后在跳转的时候使用Action跳转
+    Intent intent = new Intent("android.settings.SOUND_ONLY");	//这样可以解决跳转的时候会出现两个选项的问题
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    startActivity(intent);						//但是，这样还是不能跳转到设置音量的对话框？？？
+    但在X55上测试的时候，将Settings.apk push 到手机上之后，Settings就不见了，不知道为什么??????????????????????????????????
+
+
+3.关于通话过程死机的bug????
+
+麻烦请提供与您上传的log所对应的BIN档案 同一次编译生成的symbols文件（请注意是symbols路径,且要同一次编译生成），
+out/target/product/$(project)/symbols/system/lib 路径下的libutils.so, libc.so 
+out/target/product/$(project)/symbols/system/bin 路径下的bootanimation 
+
+4.在GlobalActions中的refresh()方法中调用mAdapter.notifyDataSetChanged();这里会出现线程异常？？？这个方法是在子线程中的吗？？？
+
+	5.在处理系统的bug（如GlobalActions）的时候可以使用logcat查看log,这样就算重启了之后也可以看到exception！！！！！！！！
+

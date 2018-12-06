@@ -1,0 +1,50 @@
+1.给GlobalActions的global_actions_silent_mode.xml替换背景素材图片的时候，就进不了系统了？？？
+
+	2.为什么在编framework-res的时候没有把新添加的资源添加进去？？？
+
+	解决：编译了framework-res之后还必须重新编译android.policy.jar,但是为什么在编译了之后，打开out/target/product/up11_tecno_m3s/system/framework/framework-res.apk文件里面只有drawable-mdpi没有drawable-hdpi
+
+	3.android:minHeight="?android:attr/listPreferredItemHeight"系统使用的attr资源在什么地方？？？
+
+	解决：
+	声明在attrs.xml文件中
+	具体的值在themes.xml文件中
+
+4.如何去掉关机和重启按钮的背景？？？？
+
+解决：这里可以尝试一下，直接在SagerealSlidingTab中将背景图片给gone掉，或invisible掉，也可能处理不掉，因为背景可能是在ViewGroup中
+这里可以将tab的图片直接换成,target,text
+
+5.如何调整飞行模式和SlidingTab之间的距离？？？？
+
+	6.飞行模式功能的业务逻辑该如何处理？？？
+
+	解决：直接使用原来的就可以了，不需要替换成自己写的,只要注意一下状态的变化就可以了
+
+7.找不到控件的ID的时候检查一下是否import了R文件？？？
+
+	8.使用了新的NewSlidingTab之后会出现滑不动的现象？？
+
+	解决：在onTouchEvent()事件处理中将ACTION_CANCEL和ACTION_UP放在一起就可以了
+
+	9.在新的NewSlidingTab上显示AlertDialog会出现问题？？？
+
+	解决：不要使用自己写的AlertDialog，因为人家的识GlobalDialog，会出现问题的。直接使用mWindowFunc调用shutdown()和reboot()方法就可以了
+
+	10.横屏时候的坐标有问题？？？？
+
+	解决：
+	在onTouchEvent()方法中判断一下横竖屏就可以了
+	getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE/ORIENTATION_PORTRAIT
+
+	11.CheckBox(Airplane)点击不了?????
+
+	解决：可能是因为background被改了的缘故
+
+12.在mAirplaneState = buttonOn ? ToggleAction.State.TurningOn : ToggleAction.State.TurningOff; 中如何使用？？？？
+
+	13.AirplaneMode打开了之后没法关闭？？？
+
+	解决：也不是没法关闭，只是关闭飞行模式需要时间，不能在关闭的过程中再打开飞行模式
+
+14.如何获取对话框的左边距？？？？

@@ -1,0 +1,9 @@
+1.在点击Power键亮屏的时候，下面的按键灯也跟着亮？？？
+
+解决：
+private static final int BUTTON_WAKE_LOCA_TIME = 5000;
+PowerManager.WakeLock mButtonWakelock;
+mButtonWakelock = mPowerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK|PowerManager.ACQUIRE_CAUSES_WAKEUP,"button backlight");		//初始化
+mButtonWakelock.acquire(BUTTON_WAKE_LOCA_TIME);		//调用方法
+
+2.

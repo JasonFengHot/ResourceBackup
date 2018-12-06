@@ -1,0 +1,15 @@
+    1.修改KAZAM中的Settings中的选择铃声的功能？？？
+
+    解决：
+    //packages/apps/Settings/ext/src/com/mediatek/settings/ext/DefaultAudioProfileExt.java
+    public void setRingtonePickerParams(Intent intent) {
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_MORE_RINGTONES, true);    //把这个改为true就可以显示 《More Ringtones ...》 选项了
+        mHasMoreRingtone = true;
+    }
+    //mediatek/packages/apps/FileManager/AndroidManifest.xml
+    去掉 FileManagerSelectRingtone 的 intent-filter
+
+    2.修改daydream为默认关闭？？？
+
+    解决：
+    修改frameworks/base/core/res/res/values/config.xml中的 config_dreamsEnabledByDefault 为false就行了

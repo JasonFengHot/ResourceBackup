@@ -1,0 +1,12 @@
+	1.如何在 frameworks/base/policy 包下使用mediatek包下的类如:AudioProfileManager.java ？？？？
+
+	解决：
+	只要在 frameworks/base/policy/Android.mk 文件中添加
+	LOCAL_JAVA_LIBRARIES += mediatek-framework
+
+	2.在GlobalActionDialog中添加outdoor选项？？？？
+
+	解决：
+	在 GlobalAction.java 添加 AudioProfileManager 控制 情景模式的变化
+	在 global_actions_silent_mode.xml 文件中添加一个 R.id.option4 的View
+	在 symbols.xml 中添加 <java-symbol type="id" name="option4" />

@@ -1,0 +1,17 @@
+	1.打电话界面上显示跳变的问题？？？
+
+	R.id.name			//这个会跳变
+	R.id.phoneNumber	//这个会跳变
+	R.id.simincoming	
+	R.id.wave_icon	
+	R.id.photo			//这个会跳变
+
+	解决：
+	在InCallTouchUi.java文件的realseWakelock()方法的最前面添加如下代码即可：
+	//Bug1973 zhangqi modified 2014/04/15:begin
+	incomingnumber = "";
+	incomingname = "";
+	bd1 = null;
+	//Bug1973 zhangqi modified 2014/04/15:end
+
+2.

@@ -1,0 +1,85 @@
+	1.Bug #10417 [bug](G-sensor)G-sensor校准界面的图标显示问题？？？？
+
+	解决：只要修改operator/packages/apps/Settings/res/layout/gsensor.xml中
+	<ImageView
+	    android:id="@+id/img_bubble_v"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentRight="true"
+	    android:layout_marginRight="50dip"				//只要修改这里就可以了
+	    android:layout_alignBottom="@+id/img_blk_lines_btm"
+	    android:src="@drawable/bubble_v" />
+
+	/operator/mediatek/config/up06_bouygues_auriga/sagereal_copy/gsensor_copy.xml
+	/operator/mediatek/build/custgen.mk
+
+	    2.[需求]修改手机型号、蓝牙名称、USB端口名称等？？？？
+
+	    手机型号如何修改？？？
+
+	    解决：在build/target/product/*.mk文件中修改PRODUCT_MODEL  := ONIDA i666就可以了
+
+	    蓝牙名称如何修改？？？
+
+	    解决：只要修改/mediatek/config/up22_id_lca/custom.conf文件中的
+	    bluetooth.HostName = ONIDA i777
+
+	    USB端口名称如何修改？
+
+	    解决：
+	    kernel/drivers/usb/gadget/android.c
+	    #define PRODUCT_STRING "Trooper 5.5"
+
+            3.*#07#的问题？？？
+
+            解决：
+            SpecialCharSequenceMgr.javahandleIMEIDisplay()方法添加方法handleSARDisplay()
+            static private boolean handleIMEIDisplay(Context context,String input){
+	            if(input.equals(MMI_IMEI_DISPLAY)){
+		            showDeviceIdPanel(context);
+		            return true;
+	            }
+	            return false;
+            }
+
+            static boolean handleChars(Context context,String input,Activity pukInputActivity){
+	            String dialString = PhoneNumberUtils.stripSeparators(input);
+	            if(handleIMEIDisplay(context,dialString)||
+		            handlePinEntry(context,dialString,pukInputActvity)||
+		            handleAndEntry(context,dialString)||
+		            handleSecretCode(context,dialString)){
+		            return true;
+	            }
+	            return false;
+            }
+
+    4.SystemProperties.get()读取的是哪个文件中的内容？？？
+
+    解决：这个是通过JNI调用c文件中的方法
+    SystemProperties是在什么地方加载System.loadLibrary("链接库");//？？？？
+    这些c文件在什么地方？？？？？
+
+	    5.[bug](时钟)闹钟界面世界时钟Cities列表中城市名显示全为大写(Tecno反馈????
+
+	    解决：
+	    修改operator/packages/apps/DeskClock/res/values
+	    <style name="city_name">
+		    <item name="android:textSize">@dimen/city_name_font_size</item>
+		    <item name="android:textAllCaps">false</item>				//将这里的true改为false就行了
+		    <item name="android:fontFamily">sans-serif-condensed</item>
+		    <item name="android:textStyle">bold</item>
+	    </style>
+
+	6.MODEM编译的学习？？？
+
+	解决：
+	modem的下载
+	svn co svn://172.16.78.128/Modem_MT6572_WET_JB3_WG
+	根据/mediatek/custom/common/modem/下的modem文件夹编译相应的modem
+	进入到modem下的trunk目录下./make.sh "SAGETEL72_WET_JB3_HSPA.mak" new
+	编译完成后会在modem/Modem_.../trunk/build下生成一个SAGETEL72_WET...的目录
+
+	    7.adb shell getprop ro.product.model???
+
+	    解决：
+	    可以查看system/build.prop

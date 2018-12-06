@@ -1,0 +1,12 @@
+1.分区失败？？？？
+
+解决：
+在82KK上面貌似需要使用拷贝
+在分区失败了之后，不需要./mk n 或./mk r 而且就算./mk r了之后分区也还是不会重新创建的，需要new才会重新创建
+而只需要./mk ptgen就可以了，然后就会生成scatter
+分区成功与否也只需要看 	out/target/product/qp16_h504_ac5m_ptgen.log			//只需要看这个文件中是否生成了对应的分区就可以了
+如：
+START=0x5800000,		Partition=TEST,		SIZE=65536,	DL_=0, 	Partition_Index=5,	REGION =USER,RESERVE = 0		//Test分区
+也可以查看生成的		out/target/product/qp16_h504_ac5m/MT6582_Android_scatter.txt
+
+2.

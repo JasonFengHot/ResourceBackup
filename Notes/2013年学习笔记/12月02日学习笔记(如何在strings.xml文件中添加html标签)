@@ -1,0 +1,23 @@
+	1.修改widget显示不全的问题？？？
+
+	解决：
+	Title: [Bug](widgets)widgets 界面部分插件超出了背景框
+	Submitter：
+	    zhangqi      
+	checker:
+	    rongweidi         
+	Bug：
+	    Bug1214
+	File:
+	    A:/packages/apps/Launcher2/res/layout-port/apps_customize_widget.xml
+	Comment:
+	    只要在layout-port中添加一个widget的布局文件apps_customize_widget.xml，并去掉布局文件中widget_preview的android:scaleType="matrix"，然后微调paddingTop即可
+	Date:
+	    2013/12/02
+
+	2.如何在strings.xml文件中添加html标签？？？
+
+	解决：
+	只要在html字符串前面添加<![CDATA[	，后面添加]]>就可以了
+	如下：
+	<string name="accelerate_label2"><![CDATA[水平放置时，X,Y,Z轴的理论标准值为0,0,10，并且X,Y,Z的数值范围为：-10~10(误差2)，<b><i>不可超过此标准</i></b> <font color="red">请不要剧烈抖动手机，加速器受震之后xyz轴数值会瞬间变大，导致测试失败。如果测试失败，请按Home键重新测试！</font>]]></string>

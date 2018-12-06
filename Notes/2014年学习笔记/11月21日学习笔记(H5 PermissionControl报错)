@@ -1,0 +1,32 @@
+	1.PermissionControl报错？？？
+
+	01-01 18:32:22.389: E/AndroidRuntime(7466): java.lang.IllegalArgumentException: permissionName: nullpermissionList :[Permission {android.permission.INTERNET, 0, 1}, Permission {android.permission.CAMERA, 0, 1}, Permission {android.permission.READ_PHONE_STATE, 0, 1}, Permission {android.permission.READ_CONTACTS, 0, 1}, Permission {android.permission.SEND_SMS, 0, 1}, Permission {android.permission.RECORD_AUDIO, 0, 1}, Permission {android.permission.WRITE_CONTACTS, 0, 1}, Permission {android.permission.ACCESS_FINE_LOCATION, 0, 1}]
+	01-01 18:32:22.389: E/AndroidRuntime(7466): 	at android.os.Parcel.readException(Parcel.java:1469)
+	01-01 18:32:22.389: E/AndroidRuntime(7466): 	at android.os.Parcel.readException(Parcel.java:1419)
+	01-01 18:32:22.389: E/AndroidRuntime(7466): 	at com.mediatek.common.mom.IMobileManagerService$Stub$Proxy.setPermissionRecords(IMobileManagerService.java:749)
+	01-01 18:32:22.389: E/AndroidRuntime(7466): 	at com.mediatek.mom.MobileManager.setPermissionRecords(SourceFile:145)
+	01-01 18:32:22.389: E/AndroidRuntime(7466): 	at com.mediatek.security.service.PermControlService.registerMoMS(PermControlService.java:199)
+	01-01 18:32:22.389: E/AndroidRuntime(7466): 	at com.mediatek.security.service.PermControlService.handleAppLaunch(PermControlService.java:233)
+	01-01 18:32:22.389: E/AndroidRuntime(7466): 	at com.mediatek.security.service.PermControlService.onHandleIntent(PermControlService.java:217)
+	01-01 18:32:22.389: E/AndroidRuntime(7466): 	at com.mediatek.security.service.AsyncService$ServiceHandler.handleMessage(AsyncService.java:32)
+	01-01 18:32:22.389: E/AndroidRuntime(7466): 	at android.os.Handler.dispatchMessage(Handler.java:110)
+	01-01 18:32:22.389: E/AndroidRuntime(7466): 	at android.os.Looper.loop(Looper.java:193)
+	01-01 18:32:22.389: E/AndroidRuntime(7466): 	at android.os.HandlerThread.run(HandlerThread.java:61)
+
+	解决：
+	修改 PermissionControl 的翻译数组不匹配引起的
+
+2.01-01 20:11:59.117: V/ActivityManager(684): Broadcast: Intent { act=com.android.internal.telephony.cdma.intent.action.TTY_ENABLED_CHANGE flg=0x10 (has extras) } ordered=false userid=-1 callerApp=ProcessRecord{423b4800 907:com.android.phone/1001}
+
+Bug23358 : [bug](埃及场测反馈)导入附件中的阿拉伯语翻译
+Submitter： 
+    zhangqi
+File: 
+    M:string.xml
+Comment:
+    按照Excel表1修改阿拉伯语下的翻译
+    《Flick Shoot》《Suberb landscape》《Sign in》《Cloud Print》这4条在第三方apk中，无法修改
+    按照Excel表2修改阿拉伯语下的翻译
+    《Google location reporting》《Auto retrieve MMS》《Roaming auto-retrieve》这3条在第三方apk中，无法修改
+Date: 
+    2014/11/21

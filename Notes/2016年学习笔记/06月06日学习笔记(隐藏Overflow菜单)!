@@ -1,0 +1,12 @@
+	1.隐藏 Overflow 菜单？？
+
+	解决：
+	frameworks/base/core/java/android/view/ViewConfiguration.java
+	public boolean hasPermanentMenuKey() {
+		// return sHasPermanentMenuKey;
+		if(com.mediatek.common.featureoption.FeatureOption.SAGEREAL_REMOVE_SETTING_MENU){
+			return sHasPermanentMenuKey;
+		}else{
+			return false; //add menu key
+		}
+	}

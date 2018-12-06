@@ -1,0 +1,45 @@
+1.
+
+var gaugeGreenGradientData = [[0,"rgba(255,255,255,1)"], [1,"rgba(0,204,102,1)"]];
+var gaugeFgColor = ["rgba(0,176,64,1)", "rgba(0,102,204,1)"];
+
+var setRoaming = function(isRoaming) {
+	if (isRoaming) {
+		gaugeGreenGradientData[1][1] = gaugeFgColor[0];
+		offerLabelColor = gaugeFgColor[0];
+	} else {
+		gaugeGreenGradientData[1][1] = gaugeFgColor[1];
+		offerLabelColor = gaugeFgColor[1];
+	}
+}
+
+var greenZoneGradient = ctx.createRadialGradient(globalAxisX, globalAxisY, bgRadius/2, globalAxisX, globalAxisY, bgRadius);
+for (var i=0 ; i<gaugeGreenGradientData.length ; i++) {
+	greenZoneGradient.addColorStop(gaugeGreenGradientData[i][0], gaugeGreenGradientData[i][1]);
+}
+
+2.获取IMEI码？？？
+
+解决：
+final int phoneType = telephonyManager.getPhoneType();
+final int titleId = (phoneType == TelephonyManager.PHONE_TYPE_GSM) ? R.string.imei : R.string.meid;
+int[] slotIds = getSlotIds();
+String imei_invalid = context.getResources().getString(R.string.imei_invalid);
+List<String> imeis = new ArrayList<String>();
+for (int slotId : slotIds) {
+    String imei = telephonyManager.getDeviceId(slotId);
+    imeis.add(TextUtils.isEmpty(imei) ? imei_invalid : imei);
+}
+if (DialerFeatureOptions.isSigleImeiEnabled()) {
+    AlertDialog alert = new AlertDialog.Builder(context).setTitle(titleId)
+            .setMessage(imeis.get(0))
+            .setPositiveButton(android.R.string.ok, null)
+            .setCancelable(false)
+            .show();
+} else {
+    AlertDialog alert = new AlertDialog.Builder(context).setTitle(titleId)
+            .setItems(imeis.toArray(new String[imeis.size()]), null)
+            .setPositiveButton(android.R.string.ok, null)
+            .setCancelable(false)
+            .show();
+}

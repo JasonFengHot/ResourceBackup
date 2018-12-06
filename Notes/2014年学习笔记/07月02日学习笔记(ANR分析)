@@ -1,0 +1,41 @@
+1.还是要修改 Bug10587
+
+https://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ11645
+
+update raw_contacts set is_sdn_contact = 2 where _id = 1;
+
+
+
+query process pond for dialer search: content://com.android.contacts/data/phones/filter/Zq%20%3C*611%3E%2C%20?limit=15
+
+
+insert into phone_lookup(data_id,raw_contact_id,normalized_number,min_match) values(17,9,644,446);
+
+select count(*) as contact_size from visible_contacts;
+
+
+在 queryLocal() 方法中有 PHONES_FILTER
+
+
+
+
+
+
+
+
+
+01-01 17:05:50.389: I/ContactEditorFragment(1800): 	{ IdColumn=_id, FromTemplate=false, _id=-34, data1=*6789, mimetype=vnd.android.cursor.item/phone_v2, data2=2, }
+01-01 17:05:50.493: I/RawContactModifier(1800): trimEmpty touched , entry.toString:true , { IdColumn=_id, FromTemplate=false, _id=-34, data1=*6789, data2=2, mimetype=vnd.android.cursor.item/phone_v2, }
+01-01 17:05:50.527: D/PhoneNumberUtils(860): [extractNetworkPortionAlt] phoneNumber: 6789
+01-01 17:05:50.530: D/DataRowHandlerForPhoneNumberEx(860): [insert] number:*6789 || numberForDialerSearch: *6789
+01-01 17:05:51.186: I/ContactDetailFragment(1800): fromValues(),tempData = *6789
+01-01 17:05:51.188: I/ContactDetailFragment(1800): return entry.data = *6789
+01-01 17:05:51.200: I/ContactDetailFragment(1800): hasPhoneEntry number : *6789
+
+
+Dear MTK:
+    在使用手机的时候经常出现 system 无相应的情况。我参考贵司的文档《Application_Not_Responding(ANR)_Analyze》尝试着分析了一下Log，分析结果如下：
+    从 aee_exp 文件中可以看出在 16:06:14 左右系统崩溃ANR，进程号为500。
+    从 main_log 文件中可以看出在 ANR in system，Reason: keyDispatchingTimedOut，cpu的使用率也达到了100%，但还是不知道是什么原因导致 keyDispatchingTimedOut。
+    从 /data/anr/ 目录下的 mtk_traces.txt 和 traces.txt 文件也分析不出原因。
+    还请麻烦贵司帮忙分析一下，谢谢！

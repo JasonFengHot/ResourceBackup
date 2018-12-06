@@ -1,0 +1,35 @@
+	1.Bug2138 从gallery中选择图片的时候，如果应用的名称相同，会在ChooserActivity中的resolver_grid的item的上面显示完整的包名？？
+
+	解决：
+	经过自己写的activity测试确实如此
+	最后在  frameworks/base/core/java/com/android/internal/app/ResolverActivity.java  文件中找到一个GridView控件，再找到GridView的adapter(ResolveListAdapter)中的getView()方法，在getView()方法中有bindView()方法，
+	private final void bindView(View view, DisplayResolveInfo info) {
+		TextView text = (TextView)view.findViewById(com.android.internal.R.id.text1);
+		TextView text2 = (TextView)view.findViewById(com.android.internal.R.id.text2);
+		ImageView icon = (ImageView)view.findViewById(R.id.icon);
+		text.setText(info.displayLabel);
+		if (mShowExtended) {
+			text2.setVisibility(View.VISIBLE);		//只要将这里的View.VISIBLE改为View.GONE就可以了
+			text2.setText(info.extendedInfo);
+		} else {
+			text2.setVisibility(View.GONE);			//这个TextView就是用来显示图片上面的文字的
+		}
+		if (info.displayIcon == null) {
+			info.displayIcon = loadIconForResolveInfo(info.ri);
+		}
+		icon.setImageDrawable(info.displayIcon);
+	}
+
+	2.Bug1973 在打电话界面的时候，会出现先闪一下前一个拨号号码，再显示当前号码？？？
+
+	解决：
+	添加一个变量mShowIncomingCallControls（这个变量在updateState方法中赋值）来判断是否显示浮动窗体
+	只要在广播接收器BroadcastReceiver 的onReceiver()方法中判断是拨进还是拨出，拨出就不显示，拨进就设置显示的值并显示
+	if(mShowIncomingCallControls){
+		incoming_name.setText(incomingname == null?incomingnumber:incomingname);
+		incoming_name.setVisibility(View.VISIBLE);
+		incoming_number.setText(incomingnumber == null?"":incomingnumber);
+		incoming_number.setVisibility(View.VISIBLE);
+	}
+
+3.

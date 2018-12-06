@@ -1,0 +1,38 @@
+1.通过命令发送按键事件和触摸事件的实现代码？
+
+解决：
+private void sendKeyCode(int paramInt1, int paramInt2)
+  {
+    long l = SystemClock.uptimeMillis();
+    KeyEvent localKeyEvent = new KeyEvent(l, l, paramInt2, paramInt1, 0);
+    try {
+      IWindowManager.Stub.asInterface(ServiceManager.getService("window")).injectKeyEvent(localKeyEvent, true);
+      return;
+    } catch (RemoteException localRemoteException) {
+    }
+  }
+
+  private void sendTouchKeyEvent(int paramInt, boolean paramBoolean1, boolean paramBoolean2)
+  {
+    if (paramBoolean2);
+    try
+    {
+      this.mIWM.injectKeyEvent(new KeyEvent(this.now, SystemClock.uptimeMillis(), 1, paramInt, 0), paramBoolean1);
+      return;
+      this.now = SystemClock.uptimeMillis();
+      this.mIWM.injectKeyEvent(new KeyEvent(this.now, this.now, 0, paramInt, 0), paramBoolean1);
+    } catch (RemoteException localRemoteException) {
+    }
+  }
+
+  private void sendTouchKeyEvent(int paramInt1, boolean paramBoolean1, boolean paramBoolean2, int paramInt2)
+  {
+    if (paramBoolean2);
+    try {
+      this.mIWM.injectKeyEvent(new KeyEvent(0L, 0L, 1, paramInt1, paramInt2), paramBoolean1);
+      return;
+      this.mIWM.injectKeyEvent(new KeyEvent(this.now, 1100L + this.now, 0, paramInt1, paramInt2, 0, 0, 0, this.flag), paramBoolean1);
+    } catch (RemoteException localRemoteException) {
+      Log.i("input", localRemoteException.toString());
+    }
+  }

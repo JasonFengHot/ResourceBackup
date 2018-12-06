@@ -1,0 +1,5 @@
+	1.如何预置voicemail-conf.xml文件？？？？
+
+	解决：
+	对于JB及JB2以后的版本，还需要在build\target\product\common.mk中，添加语句
+	PRODUCT_COPY_FILES += mediate/frameworks/base/telephony/etc/voicemail-conf.xml:system/etc/voicemail-conf.xml

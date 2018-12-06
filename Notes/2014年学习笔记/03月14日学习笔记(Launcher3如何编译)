@@ -1,0 +1,54 @@
+	1.82kk平台上的Launcher3该如何编译？？？
+
+	解决：
+    ./mk -t mm external/protobuf;./mk -t mm packages/apps/Launchers
+	./mk -t mma packages/apps/Launchers
+
+2.如何将拍照信息添加到ContentProvider数据库保存？？？
+
+ImageManager.java
+public static Uri addImage(ContentResolver cr, String title, long dateTaken,Location location, String directory, String filename,Bitmap source, byte[] jpegData, int[] degree) {
+        OutputStream outputStream = null;
+        String filePath = directory + "/" + filename;
+        try {
+            File dir = new File(directory);
+            if (!dir.exists()) dir.mkdirs();
+            File file = new File(directory, filename);
+            outputStream = new FileOutputStream(file);
+            if (source != null) {
+                source.compress(CompressFormat.JPEG, 75, outputStream);
+                degree[0] = 0;
+            } else {
+                outputStream.write(jpegData);
+                degree[0] = getExifOrientation(filePath);
+            }
+        } catch (FileNotFoundException ex) {
+            return null;
+        } catch (IOException ex) {
+            return null;
+        } finally {
+            Util.closeSilently(outputStream);
+        }
+        ContentValues values = new ContentValues(7);
+        values.put(Images.Media.TITLE, title);					//上面的参数
+        values.put(Images.Media.DISPLAY_NAME, filename);			//上面的参数
+        values.put(Images.Media.DATE_TAKEN, dateTaken);				//上面的参数
+        values.put(Images.Media.MIME_TYPE, "image/jpeg");
+        values.put(Images.Media.ORIENTATION, degree[0]);			//上面的参数
+        values.put(Images.Media.DATA, filePath);				//directory(上面的参数) + "/" + filename;
+        if (location != null) {
+            values.put(Images.Media.LATITUDE, location.getLatitude());		//上面的参数
+            values.put(Images.Media.LONGITUDE, location.getLongitude());	//上面的参数
+        }
+        return cr.insert(STORAGE_URI, values);					/这里的uri是什么？？？
+}
+
+//在CropImage中有
+private void saveOutput(Bitmap croppedImage) {}	//在这个方法里面调用ImageManager.addImage()方法保存照片信息到数据库
+//在CropImage中有
+private void onSaveClicked() {}			//在这个方法里面调用saveOutput()方法
+findViewById(R.id.save).setOnClickListener(new View.OnClickListener() {				//这个按钮在什么地方？？？？
+	public void onClick(View v) {
+		onSaveClicked();		//在这里调用上面的方法
+	}
+});

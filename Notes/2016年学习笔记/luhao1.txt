@@ -1,0 +1,89 @@
+问题原因：
+客户发现H556-SFR的手机在切换2G/3G/4G网络模式时，重新搜索时间会很慢，故要求进行优化。
+
+目前的优化主要有两个方面，一是申请MTK释放的专门用来解决此类问题的modem patch，第二是在飞行模式时打开modem。
+
+一.patch申请相关信息：
+可以查看eService：ALPS02139324  或者查看Bug34757
+
+1.在Modem中的/custom/modem/common/ps/custom_nwsel_config.c文件中，有两处地方定义了两个search abort timer value值，可客制化相应搜索时长。
+理论上该值越小，相应搜网速度会越快，但是据MTK说过小会影响网络稳定性，所以一般我们会采用MTK默认释放值。目前82_90LTE平台中该默认值为：
+
+const kal_uint32 NWSEL_PLMN_SEARCH_ABORT_4G_TIMER_PERIOD = 12*KAL_TICKS_1_SEC;
+const kal_uint32 NWSEL_PLMN_SEARCH_ABORT_3G_TIMER_PERIOD = 9*KAL_TICKS_1_SEC;
+
+/*8th Byte  PLMN_SEARCH_ABORT_3G_TIMER_PERIOD*/
+#if (defined(__OP01__)) && (!defined(__SGLTE__))
+    0x14,
+#else
+    0x09,
+#endif
+   /*9th Byte  PLMN_SEARCH_ABORT_4G_TIMER_PERIOD*/
+#if (defined(__OP01__)) && (!defined(__SGLTE__))
+    0x12,
+#else
+    0x0c,
+#endif
+OP01指的是移动运营商，SGLTE指的是4G通话的一种方案，我们一般用的就是以下三种方案。
+    CSFB方案：缺点，通话时不能同时上网，除非有WIFI。
+
+　　为什么通话时不能同时上网呢?因为通话时，手机信号会从4G信号会落到2G信号，而2G信号不是能同时支持语音和数据业务。为什么要回落到2G网络呢?因为当初规划4G的时候，没有采用2G，3G的解决方案，而是采用了第三种，但是第三种的普及时机还不成熟。
+
+　　优点：省电，幅射小(相对第二种方案)
+
+　　SGLTE方案：
+
+　　缺点，耗电，幅射大。大家发现采用这种方案的手机是有两组信号的，一组是4G信号，一组是2G信号。
+
+　　为什么会有两组信号?因为里面有两组射频芯片，一组为4G芯片，一组为2G芯片，耗电的同时，幅射也大。
+
+　　优点，可以同时通话和上网，因为通话用的是2G芯片，上网是通过4G芯片。
+
+　　VOLTE方案：这个方案才是4G语音技术的未来趋势，这个方案才是4G语音解决的终极方案，第一种和第二种都只是过渡而已。
+
+　　为什么要采用以上两种方案过渡呢?由于目前的4G网络覆盖率还很低，如果采用这种方案，在没有4G网格的时候，你连电话都没法打，所以不能使用VOLTE方案，VOLTE方案的语音是通过数据业务是承载的。所以，目前也没有任务一款上市的手机支持这种方案。
+
+　　VoLTE技术带给4G用户最直接的感受就是接通等待时间更短，以及更高质量、更自然的音视频通话效果。VoLTE与2G、3G语音通话有着本质的不同。VoLTE是架构在4G网络上全IP条件下的端到端语音方案。VoLTE相较2G、3G语音通话，语音质量能提高40%左右，因为它采用高分辨率编解码技术。VoLTE为用户带来更低的接入时延(拨号后的等待时间)，比3G降50%，大概在2秒左右，而2G时代在6-7秒。此外，2G、3G下的掉线率时有发生，但VoLTE的掉线率接近于零。
+
+2.在Modem中的/custom/modem/common/ps/custom_nwsel_config.c文件中，直接打开4G，3G，会优先找4G，然后找3G，所以我们发现找到4G的时间会更快，当我们如果不直接打开，会去读值，这样就干扰手机找到4G的时间。
+
+//#if defined(__PREFER_SEARCH_3G__)
+    0x01 |
+//#endif
+
+//#if defined(__PREFER_SEARCH_4G__)
+    0x02 |  
+
+二.飞行模式时不关闭modem。
+目前我们的手机出于省电的目的，在开启飞行模式时，会关闭modem。这本是一个合理的设计，不过由于SFR在测试网络切换时，会先进入飞行模式，再切换周围网络信号环境
+进行测试，这样每次测试时手机都会先开启modem，再行进搜网过程，无形中减慢了搜网的速度。所以在目前的SFR项目中有网络搜索时长限制需求时，我们会在开启飞行模式时
+仍保持modem的开启状态。开启时搜网速度会加快越5s左右。
+
+修改方法：
+修改相应ProjectConfig.mk文件中 MTK_FLIGHT_MODE_POWER_OFF_MD=no
+
+
+打开modem宏后，验证修改是否成功：
+简单方法是打开飞行模式，再关闭飞行模式并计时，当状态栏出现信号图标时停止计时，对比前后时长。
+通常用简单的测试方法：
+1.  4G情况下：开启飞行模式，再关掉飞行模式，出现信号，关掉宏MTK_FLIGHT_MODE_POWER_OFF_MD后只需要2秒左右，不关掉的则需要8秒左右
+2.  2G和3G的情况：2G和3G需要8秒左右，不关掉则需要17秒左右
+
+怎么在log中判断这个宏是否关闭？
+我们可以通过mtklog去判断，只要关闭Modem再启动Modem，那么modem log就会重新生成一个文件夹，所以如果一份AP log在flight mode开关后重新生成了一份Modem log，也就是1份AP log对应这2份Modem log
+文件夹，这就是因为打开了Option所致
+如果打开了feature option打开， AP在flight mode进入的时候会下EPOF来关闭Modem，然后使用EFUN0/1来启动Modem, 而如果feature option关闭，AP在flight mode进入的时候会下EFUN0来关闭Modem RF，再使用EFUN1来打开Modem RF，这是log中的差别。
+
+CMU测试验证（以2G到3G网络切换为例）：
+1.手机插入测试白卡
+2.将CMU网络调至2G模式，待手机搜索到2G信号。
+3.打开手机飞行模式。
+4.将CMU网络调至3G模式。
+5.关闭飞行模式并计时，待手机搜索到相应3G信号并显示在状态栏时，停止计时，此时时长即为搜索网络所用时长。
+
+
+附SFR 网络切换要求：
+4G---4G:       5s
+2G---3G:       30s
+3G---2G:       30s
+3G---4G:       10s

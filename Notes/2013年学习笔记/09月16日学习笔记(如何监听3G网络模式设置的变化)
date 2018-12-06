@@ -1,0 +1,87 @@
+1.关机的时候的震动和灭屏同步？？？
+
+	2.2G和3G网络之间的切换？？？？？
+
+	解决：这里的2g->3g是不是只需要在Network Mode的 WCDMA only 和 GSM only之间切换就行了？？？？？？？？？？
+
+3.状态栏上面的wifi和飞行模式重叠？？？是不是需要连接上wifi才会在状态栏上显示wifi的图标？？
+
+	4.GlobalDialog的死机问题？？？？
+
+	解决：
+	有可能是在更新mSingleLineAction上的图标的状态的时候，mSingleLineAction被回收了，出现了NullPointerException，
+	并且在refresh()方法中也有一个	sim1_icon.setSelected(wifi_on);		//这里也需要对sim1_icon进行非空判断
+
+09-18 08:30:19.865  1601  1617 W System.err: java.lang.NullPointerException
+09-18 08:30:19.868  1601  1617 W System.err: 	at android.app.KeyguardManager$1.onKeyguardExitResult(KeyguardManager.java:208)
+09-18 08:30:19.868  1601  1617 W System.err: 	at android.view.IOnKeyguardExitResult$Stub.onTransact(IOnKeyguardExitResult.java:51)
+09-18 08:30:19.868  1601  1617 W System.err: 	at android.os.Binder.execTransact(Binder.java:351)
+09-18 08:30:19.868  1601  1617 W System.err: 	at dalvik.system.NativeStart.run(Native Method)
+
+	5.在网络连接完成了之后提示wifi连接成功或数据连接成功????
+
+	解决：监听ContentObserver或注册广播监听BroadcastReceiver就可以了，发生了变化之后使用Toast提示就行了
+	这里还有个问题就是，这个在每次打开之后都会先提示一遍
+
+6.开关机对话框中的《wifi》和《数据连接》----->《数据连接》和《3G》？？？？
+
+packages/apps/Phone/src/com/android/phone/MobileNetworkSettings.java
+
+packages/apps/Phone/res/values/strings.xml/preferred_network_mode_choices		这是一个数组，列出所有可选的network mode
+
+packages/apps/Phone/res/values/mtk_array.xml/gsm_umts_network_preferences_choices	这个貌似更符合条件
+
+packages/apps/Phone/res/values/strings.xml/preferred_network_mode_title			"Network Mode"
+					   gsm_umts_network_preferences_dialogtitle	"Network Mode"	这个才是选择Network Mode的对话框的标题
+
+mediatek/packages/apps/engineermode/src/com/mediatek/engineermode/digitalstandard/NetworkModeSettings.java
+
+int NETWORK_MODE_WCDMA_PREF     = 0; /* GSM/WCDMA (WCDMA preferred) */
+int NETWORK_MODE_GSM_ONLY       = 1; /* GSM only */
+int NETWORK_MODE_WCDMA_ONLY     = 2; /* WCDMA only */
+int NETWORK_MODE_GSM_UMTS       = 3; /* GSM/WCDMA (auto mode, according to PRL) AVAILABLE Application Settings menu*/
+int NETWORK_MODE_CDMA           = 4; /* CDMA and EvDo (auto mode, according to PRL) AVAILABLE Application Settings menu*/
+int NETWORK_MODE_CDMA_NO_EVDO   = 5; /* CDMA only */
+int NETWORK_MODE_EVDO_NO_CDMA   = 6; /* EvDo only */
+int NETWORK_MODE_GLOBAL         = 7; /* GSM/WCDMA, CDMA, and EvDo (auto mode, according to PRL) AVAILABLE Application Settings menu*/
+int NETWORK_MODE_LTE_CDMA_EVDO  = 8; /* LTE, CDMA and EvDo */
+int NETWORK_MODE_LTE_GSM_WCDMA  = 9; /* LTE, GSM/WCDMA */
+int NETWORK_MODE_LTE_CMDA_EVDO_GSM_WCDMA = 10; /* LTE, CDMA, EvDo, GSM/WCDMA */
+int NETWORK_MODE_LTE_ONLY       = 11; /* LTE Only mode. */
+int NETWORK_MODE_GEMINI         = 12; /* Gemini Phone */
+
+在初始化3G图标的时候，先检测一下Settings.Global.PREFERRED_NETWORK_MODE的值是否为2，如果为2就点亮该图标，如果不是2就熄灭该图标
+
+int oldNetworkMode = android.provider.Settings.Global.getInt(getContentResolver(),Settings.Global.PREFERRED_NETWORK_MODE, 0);	//这里的默认值为 NETWORK_MODE_WCDMA_PREF = 0
+int newNetworkMode = 2;
+if(oldNetworkMode == 2){
+	newNetworkMode = 1;	//从3g到2g，点亮图标
+}else if(oldNetworkMode == 1){
+	newNetworkMode = 2;
+}else{
+	newNetworkMode = 1;
+}
+Settings.Global.putInt(getContentResolver(), Settings.Global.PREFERRED_NETWORK_MODE, newNetworkMode);	//保存新的network mode
+Intent intent = new Intent(Utils.NETWORK_MODE_CHANGE_BROADCAST, null);
+intent.putExtra(Utils.OLD_NETWORK_MODE, oldNetworkMode);
+intent.putExtra(Utils.NETWORK_MODE_CHANGE_BROADCAST, newNetworkMode);
+intent.putExtra(PhoneConstants.GEMINI_SIM_ID_KEY, PhoneConstants.GEMINI_SIM_1);		//这里的
+sendBroadcast(intent);		//这里会发送一个网络模式改变的广播,在什么地方接收这个广播？？？？
+
+	7.如何监听3G网络模式设置的变化？？？
+
+	解决：
+	//对Settings.Global.PREFERRED_NETWORK_MODE这个设置注册监听变化
+	mContext.getContentResolver().registerContentObserver(Settings.Global.getUriFor(Settings.Global.PREFERRED_NETWORK_MODE), true,new ContentObserver(new Handler()) {
+		@Override
+		public void onChange(boolean selfChange) {
+			//在3G设置发生了改变之后进行的操作
+			int networkMode = Settings.Global.getInt(getContentResolver(),Settings.Global.PREFERED_NETWORK_MODE);
+			if(networkMode == 1){
+				Toast.makeText(mContext,"3G is on").show();
+			}else{
+				Toast.makeText(mContext,"3G is off").show();
+			}
+
+		}
+	});

@@ -1,0 +1,8 @@
+	1.[bug](设置)点击设置中的显示，程序意外停止？？？？去掉Accessibility中的large text？？？？
+
+	解决：
+	去掉package/apps/settings/res/xml/accessibility_settings.xml中的
+	<CheckBoxPreference
+	android:key="toggle_large_text_preference"
+	android:title="@string/accessibility_toggle_large_text_preference_title"
+	android:persistent="false"/>

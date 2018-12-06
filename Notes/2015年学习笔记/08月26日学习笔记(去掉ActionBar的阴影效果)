@@ -1,0 +1,28 @@
+	1.如何修改Contacts上ActionBar的风格？？？
+
+	解决：
+	<style name="ContactsActionBarStyle" parent="@android:style/Widget.Material.ActionBar">
+		<item name="android:background">@color/actionbar_background_color</item>
+		<item name="android:titleTextStyle">@style/ContactsActionBarTitleText</item>
+		<item name="android:backgroundStacked">@color/actionbar_background_color</item>
+		<item name="android:icon">@android:color/transparent</item>
+		<!-- <item name="android:homeAsUpIndicator">@drawable/ic_actionbar_back</item> -->		//修改actionbar的返回按钮
+	</style>
+
+	2.去掉ActionBar的阴影效果？？？
+
+	解决：
+	<item name="android:elevation">0dp</item>
+	
+3.Import/Export中的图标在什么地方？？
+
+解决：
+packages/apps/ContactsCommon/res_ext/drawable-hdpi/mtk_contact_phone_storage.png
+packages/apps/ContactsCommon/res_ext/drawable-hdpi/mtk_contact_sd_card_icon.png
+//
+SIM卡的图标在什么地方？？？
+
+4.修改联系人群组编辑页面的 ActionBar 上的布局？？
+
+解决：
+

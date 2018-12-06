@@ -1,0 +1,183 @@
+问题1.USB选择PTP功能时，如何同时显示内置、外置SD卡内容？？？
+
+解决：
+一、highlight
+Android中，PTP只支援Primary Storage...
+You could refer to the comments of MtpService.java file
+// In PTP mode we support only primary storage
+ 
+二、如需修改，请自行参考如下修改：
+\alps\frameworks\base\core\java\android\os\Environment.java
+1.
+public static String DIRECTORY_SD2_PICTURES = "Pictures2";    //add. for PTP two disk.
+public static String DIRECTORY_SD2_DCIM = "DCIM2";    //add. for PTP two disk.
+ 
+
+\alps\packages\providers\MediaProvider\src\com\android\providers\media\MtpService.java
+2.
+ //add for two PTP disk. start.
+ private static final String[] PTP_DIRECTORIES_SD2 = new String[] {
+        Environment.DIRECTORY_SD2_DCIM,
+        Environment.DIRECTORY_SD2_PICTURES,
+    };
+ //add for two PTP disk. end.
+ 
+3.
+    private void addStorageDevicesLocked() {
+        /*if (mPtpMode) {
+            // In PTP mode we support only primary storage
+            final StorageVolume primary = StorageManager.getPrimaryVolume(mVolumes);
+            final String path = primary.getPath();
+            if (path != null) {
+                String state = mStorageManager.getVolumeState(path);
+                if (Environment.MEDIA_MOUNTED.equals(state)) {
+                    addStorageLocked(mVolumeMap.get(path));
+                }
+            }
+        } else  cancelled. for PTP two disk. */{
+            for (StorageVolume volume : mVolumeMap.values()) {
+                addStorageLocked(volume);
+            }
+        }
+    }
+ 
+4.
+JB\KK版本
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        synchronized (mBinder) {
+            updateDisabledStateLocked();
+   isUsbConfigured = (intent == null ? false
+    :intent.getBooleanExtra(UsbManager.USB_CONFIGURED, false));
+            mPtpMode = (intent == null ? false
+                    : intent.getBooleanExtra(UsbManager.USB_FUNCTION_PTP, false));
+            String[] subdirs = null;
+            if (mPtpMode) {
+                int count = PTP_DIRECTORIES.length;
+    //add by dayu
+    int count2 = PTP_DIRECTORIES_SD2.length;
+                subdirs = new String[count+count2];
+                for (int i = 0; i < count; i++) {
+                    File file =
+                            Environment.getExternalStoragePublicDirectory(PTP_DIRECTORIES[i]);
+                    // make sure this directory exists
+                    file.mkdirs();
+                    subdirs[i] = file.getPath();
+                }
+                String secondary_storage = null;
+                if (mVolumes != null)
+              for (StorageVolume volume : mVolumes)
+               if(!volume.isPrimary()) {
+                secondary_storage = volume.getPath();
+                Log.d(TAG, "secondary_storage="+secondary_storage);
+     break;
+               }
+                for (int i = count; i < count+count2; i++) {
+                    File file = new File(secondary_storage,PTP_DIRECTORIES_SD2[i-count]);
+                    Log.d(TAG, "filePath="+file.getPath());
+                    // make sure this directory exists
+                    file.mkdirs();
+                    subdirs[i] = file.getPath();
+                }
+            }
+   /*Fix ALPS00444854
+        MtpService process is killed by VOLD when user plug out SD card(USB will disconnect)
+     ActivityManager: Scheduling restart of crashed service com.android.providers.media/.MtpService in 5000ms
+        before new a Mtpserver, it need to check if USB is already connected and configure
+        to avoid open mtp driver twice
+        if MTP can transfer via WIFI, BT ...., must fix this
+   */
+   if(isUsbConfigured){
+            final StorageVolume primary = StorageManager.getPrimaryVolume(mVolumes);
+            mDatabase = new MtpDatabase(this, MediaProvider.EXTERNAL_VOLUME,
+                    primary.getPath(), subdirs);
+            manageServiceLocked();
+   }
+        }
+        return START_STICKY;
+    }
+ 
+L版本
+基本同上面，只是有两处修改需要注意，请参考语句标注：
+import android.net.Uri; //wqtao.add.
+
+@Override
+public int onStartCommand(Intent intent, int flags, int startId) {
+synchronized (mBinder) {
+updateDisabledStateLocked();
+mIsUsbConfigured = (intent == null ? false : intent.getBooleanExtra(UsbManager.USB_CONFIGURED, false));
+mPtpMode = (intent == null ? false : intent.getBooleanExtra(UsbManager.USB_FUNCTION_PTP, false));
+String[] subdirs = null;
+if (mPtpMode) {
+int count = PTP_DIRECTORIES.length;
+int count2 = PTP_DIRECTORIES_SD2.length; //add.
+subdirs = new String[count+count2];
+for (int i = 0; i < count; i++) { 
+File file = Environment.getExternalStoragePublicDirectory(PTP_DIRECTORIES[i]);
+// make sure this directory exists
+file.mkdirs();
+subdirs[i] = file.getPath();
+}
+
+//add start.
+String secondary_storage=null;
+if(mVolumes!=null){
+for(StorageVolume volume:mVolumes)
+if(!volume.isPrimary()){
+secondary_storage=volume.getPath();
+Log.e(TAG, "secondary_storage="+secondary_storage);
+break;
+}
+for (int i = count; i < count+count2; i++) {
+File file = new File(secondary_storage, PTP_DIRECTORIES_SD2[i-count]);
+Log.e(TAG, "filePath="+file.getPath());
+if(file.mkdirs())    //修改此行
+sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));    //增加此行
+subdirs[i]=file.getPath();
+}
+}
+//add end.
+}
+/*Fix ALPS00444854
+MtpService process is killed by VOLD when user plug out SD card(USB will disconnect)
+ActivityManager: Scheduling restart of crashed service com.android.providers.media/.MtpService in 5000ms
+before new a Mtpserver, it need to check if USB is already connected and configure
+to avoid open mtp driver twice
+if MTP can transfer via WIFI, BT ...., must fix this
+*/
+if (mIsUsbConfigured) {
+final StorageVolume primary = StorageManager.getPrimaryVolume(mVolumes);
+if (mDatabase != null) {
+mDatabase.setServer(null);
+}
+mDatabase = new MtpDatabase(this, MediaProvider.EXTERNAL_VOLUME, primary.getPath(), subdirs);
+manageServiceLocked();
+}
+}
+
+return START_STICKY;
+} 
+ 
+5.
+    private void volumeMountedLocked(String path) {
+        // Add for update Storage
+        StorageVolume[] volumes = mStorageManager.getVolumeList();
+        mVolumes = volumes;
+        // Add for update Storage
+        for (int i = 0; i < mVolumes.length; i++) {
+            StorageVolume volume = mVolumes[i];
+            if (volume.getPath().equals(path)) {
+                mVolumeMap.put(path, volume);
+                if (!mMtpDisabled) {
+                    // In PTP mode we support only primary storage
+                    /*if (volume.isPrimary() || !mPtpMode)   cancelled. for PTP two disk. */{
+                        addStorageLocked(volume);
+                    }
+                }
+                break;
+            }
+        }
+    }
+ 
+三、请先./mk [Your ProjectName] update-api，再remake。
+

@@ -1,0 +1,4 @@
+1.Bug25079 [bug](照相机)横屏播放摄像后，横屏时按返回键返回到预览界面，界面图标显示乱???
+
+解决：
+将 packages/apps/Camera/src/com/android/camera/manager/ViewManager.java 中的 checkConfiguration() 方法中的 reInflate(); 方法去掉

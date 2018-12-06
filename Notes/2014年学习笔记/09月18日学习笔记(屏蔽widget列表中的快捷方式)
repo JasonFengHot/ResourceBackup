@@ -1,0 +1,27 @@
+	1.如何在widget列表页面屏蔽某个shortcut快捷方式？？？
+
+	解决：
+	在AppsCustomizePagedView.java文件中有onPackagesUpdated()方法中有
+	//上面的判断是屏蔽
+	// just add shortcuts
+	if(o instanceof ResolveInfo){
+		ResolveInfo resolveInfo = (ResolveInfo)o;
+		if(resolveInfo.activityInfo != null){
+			String labelName = resolveInfo.loadLabel(mContext.getPackageManager()).toString();
+			String activityName = resolveInfo.activityInfo.name;
+			if(activityName != null){
+				Log.e("test","name:    " + activityName +  "     labelName:" + (labelName == null ? "" : labelName));
+				if(activityName.equals("com.google.android.music.PlaylistShortcutActivity")){			//屏蔽 Google 的 Music playlist 快捷方式
+					continue;
+				}else if(activityName.equals("com.google.android.apps.chrome.ShortcutActivity")){		//屏蔽 Chrome 的 bookmark 快捷方式
+					continue;
+				}
+			}
+		}
+	}
+	mWidgets.add(o);
+
+	2.获取某个不知道类名的Object的类名？？？
+
+	解决：
+	btn_apn.getClass().getName();

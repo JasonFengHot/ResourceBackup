@@ -1,0 +1,17 @@
+	1.在测试 CtsVerifier 前置摄像头的时候会有较大偏差？？？
+
+	解决：
+	M:mediatek/custom/up26_h506_st6/hal/imgsensor/src/cfg_setting_imgsensor.cpp
+	getSensorViewAngle(){
+		static SensorViewAngle_T const inst = {
+		    MainSensorHorFOV  : 54,   
+		    MainSensorVerFOV  : 49,    
+		    SubSensorHorFOV  : 49,   	//zhangqi modified for CtsVerifier from 62 to 49 2015/07/15
+		    SubSensorVerFOV  : 40,
+		    Main2SensorHorFOV  : 0,   	//not support
+		    Main2SensorVerFOV  : 0,
+		};
+		return inst;
+	}
+
+2.

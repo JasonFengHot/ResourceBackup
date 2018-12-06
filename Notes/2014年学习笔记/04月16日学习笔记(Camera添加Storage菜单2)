@@ -1,0 +1,19 @@
+1.添加Phone/SD card菜单需要拷贝的文件？？？
+
+解决：
+packages/apps/Camera/res/values/arrays.xml											//$(PROJECT)/sagereal_copy/arrays_camera.xml
+packages/apps/Camera/res/values/mtk_strings.xml										//$(PROJECT)/sagereal_copy/Camera/mtk_strings.xml
+packages/apps/Camera/res/xml/camera_preferences.xml									//$(PROJECT)/sagereal_copy/camera_preferences.xml
+
+packages/apps/Camera/src/com/android/camera/CameraSettings.java						//$(PROJECT)/sagereal_copy/camera/CameraSettings.java
+packages/apps/Camera/src/com/android/camera/Camera.java								//$(PROJECT)/sagereal_copy/packages/apps/Camera/src/com/android/camera/Camera.java
+packages/apps/Camera/src/com/android/camera/ActivityBase.java						//没有，需要拷贝上传
+packages/apps/Camera/src/com/android/camera/Storage.java							//没有，需要拷贝上传
+packages/apps/Camera/src/com/android/camera/SettingChecker.java						//没有，需要拷贝上传
+
+packages/apps/Gallery2/src/com/android/gallery3d/app/PhotoPage.java					//没有，需要拷贝上传
+packages/apps/Gallery2/src/com/android/gallery3d/app/SinglePhotoDataAdapter.java	//没有，需要拷贝上传
+packages/apps/Gallery2/src/com/android/gallery3d/app/PhotoDataAdapter.java			//没有，需要拷贝上传
+packages/apps/Gallery2/src/com/android/gallery3d/app/AppBridge.java					//没有，需要拷贝上传
+
+2.

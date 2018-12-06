@@ -1,0 +1,77 @@
+1.修改Wifi热点的Switch开关的显示效果？？？
+
+//关闭wifi热点
+10-23 11:06:24.529: E/zhangqi(2083): WIFI_AP_STATE_CHANGED_ACTION
+10-23 11:06:24.539: E/zhangqi(2083): ACTION_TETHER_STATE_CHANGED
+10-23 11:06:24.555: E/zhangqi(2083): ACTION_TETHER_STATE_CHANGED
+10-23 11:06:25.248: E/zhangqi(2083): WIFI_AP_STATE_CHANGED_ACTION
+
+//打开wifi热点
+10-23 11:07:09.712: E/zhangqi(2083): WIFI_AP_STATE_CHANGED_ACTION
+10-23 11:07:11.673: E/zhangqi(2083): ACTION_TETHER_STATE_CHANGED
+10-23 11:07:11.783: E/zhangqi(2083): ACTION_TETHER_STATE_CHANGED
+10-23 11:07:11.887: E/zhangqi(2083): ACTION_TETHER_STATE_CHANGED
+10-23 11:07:12.027: E/zhangqi(2083): WIFI_AP_STATE_CHANGED_ACTION
+10-23 11:07:14.106: E/zhangqi(2083): ACTION_TETHER_STATE_CHANGED
+10-23 11:07:14.142: E/zhangqi(2083): ACTION_TETHER_STATE_CHANGED
+
+2.截屏保存路径修改？？？？
+
+解决：
+//frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
+private final Runnable mScreenshotRunnable = new Runnable() {
+    @Override
+    public void run() {
+        takeScreenshot();
+    }
+};
+private void takeScreenshot() {
+	...
+	ComponentName cn = new ComponentName("com.android.systemui","com.android.systemui.screenshot.TakeScreenshotService");
+	...
+}
+//frameworks/base/packages/SystemUI/src/com/android/systemui/ScreenShot/TakeScreenshotService.java
+private Handler mHandler = new Handler() {
+    @Override
+    public void handleMessage(Message msg) {
+        switch (msg.what) {
+            case 1:
+                final Messenger callback = msg.replyTo;
+                if (mScreenshot == null) {
+                    mScreenshot = new GlobalScreenshot(TakeScreenshotService.this);
+                }
+                mScreenshot.takeScreenshot(new Runnable() {
+                    @Override public void run() {
+                        Message reply = Message.obtain(null, 1);
+                        try {
+                            callback.send(reply);
+                        } catch (RemoteException e) {
+                        }
+                    }
+                }, msg.arg1 > 0, msg.arg2 > 0);
+        }
+    }
+};
+
+//frameworks/base/packages/SystemUI/src/com/android/systemui/screenshot/GlobalScreenshot.java
+void takeScreenshot(Runnable finisher, boolean statusBarVisible, boolean navBarVisible) {
+	
+}
+
+class SaveImageInBackgroundTask{
+	protected SaveImageInBackgroundData doInBackground(SaveImageInBackgroundData... params) {
+		
+		values.put(MediaStore.Images.ImageColumns.DATA, mImageFilePath);				//这个是文件保存路径吗？？
+		...
+		OutputStream out = resolver.openOutputStream(uri);
+		boolean bCompressOK = image.compress(Bitmap.CompressFormat.PNG, 100, out);		//将图片压缩到out中
+		...
+	}
+}
+
+mScreenshotDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), SCREENSHOTS_DIR_NAME);		//需要修改这个地方
+mImageFilePath = new File(mScreenshotDir, mImageFileName).getAbsolutePath();
+
+//将上面那句话修改为下面这句话
+mScreenshotDir = new File(com.mediatek.storage.StorageManagerEx.getDefaultPath() + '/' + Environment.DIRECTORY_PICTURES , SCREENSHOTS_DIR_NAME);
+貌似还需要在SystemUI的AndroidManifest.xml文件中添加一个权限<uses-permission android:name = "android.permission.WRITE_MEDIA_STORAGE" />

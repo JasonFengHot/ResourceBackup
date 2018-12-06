@@ -1,0 +1,11 @@
+1.研究dispatchTouchEvent()和onTouchEvent()方法？？？
+
+2.
+AudioProfileManager mAudioProfileManager = (AudioProfileManager) mContext.getSystemService(Context.AUDIOPROFILE_SERVICE);
+if(mAudioProfileManager != null){
+	mAudioProfileManager.listenAudioProfie(mAudioProfileListener, AudioProfileListener.LISTEN_AUDIOPROFILE_CHANGEG);
+}
+
+3.如何获取和设置媒体音量？？？？
+
+

@@ -1,0 +1,6 @@
+	1.如何生成JNI的头文件？？？
+
+	解决：
+	zq@zq-desktop:~/workspace/WebViewTest/bin/classes$ javah -jni com.sagereal.zq.webview.HelloJni
+
+2.

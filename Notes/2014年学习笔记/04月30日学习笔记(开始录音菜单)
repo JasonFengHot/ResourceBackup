@@ -1,0 +1,38 @@
+	1.在通话界面中用宏控制"开始录音"菜单的显示??
+
+	解决：
+	在InCallActivity.java中有
+	public boolean onPrepareOptionsMenu(Menu menu) {				//这个方法在什么时候会调用？？？
+		InCallUtils.setAllMenuVisible(menu, false);					//这里会先隐藏所有菜单
+		if (InCallPresenter.getInstance().getInCallState() == InCallState.INCOMING) {
+		    mAnswerFragment.setupIncomingMenuItems(menu);
+		} else {
+		    mCallButtonFragment.setupMenuItems(menu);				//这里会调用方法初始化"开始录音"菜单
+		}
+		return true;
+	}
+	在CallButtonFragment.java中有
+	public void setupMenuItems(Menu menu) {
+		if (getPresenter().isVTCall()) {
+		    setupVTMenuItems(menu);
+		} else {
+		    setupVoiceMenuItems(menu);								//这里会调用下面的方法
+		    ExtensionManager.getInstance().getInCallUIExtension().setupMenuItems(menu, getPresenter().getCall());
+		}
+	}
+	private void setupVoiceMenuItems(Menu menu) {
+		...
+		final MenuItem recordMenu = menu.findItem(R.id.menu_voice_record);
+		recordMenu.setVisible(InCallMenuState.sCanRecording);
+		if (InCallMenuState.sCanRecording) {
+		    if (!InCallPresenter.getInstance().isRecording()) {
+		        recordMenu.setTitle(R.string.start_record);
+		    } else {
+		        recordMenu.setTitle(R.string.stop_record);
+		    }
+		}
+		recordMenu.setEnabled(InCallMenuState.sCanRecording);
+		...
+	}
+
+2.

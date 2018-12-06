@@ -1,0 +1,62 @@
+	1.[bug11010]去掉PowerControl widget控制面板上的亮度的自动调节模式？？？？
+
+	解决：
+	a.先根据PowerControl字符串找到gadget_title在Strings.xml中的字符串,但在代码中没有使用该字符串,偶然在SettingsAppWidgetProvider的AndroidManifest.xml文件中的<receiver android:name=".widget.SettingsAppWidgetProvider">中找到使用过的痕迹
+	b.在Strings.xml中还有类似的gadget_state_on字符串，根据该gadget_state_on在SettingsAppWidgetProvider.java中被使用过
+	c.然后在该AppWidgetProvider文件中找使用过的布局文件R.layout.widget
+	d.在该布局文件中找到<LinearLayout android:id="@+id/btn_brightness"/>调节亮度所对应的控件布局
+	e.根据该id在SettingsAppWidgetProvider.java文件中找到使用过的痕迹
+	f.在buildUpdate()方法中有对该空间的处理 views.setOnClickPendingIntent(R.id.btn_brightness,getLaunchPendingIntent(context,BUTTON_BRIGHTNESS));
+	g.getLaunchPendingIntent()方法中给SettingsAppWidgetProvider自己发送了一个广播
+	h.在SettingsAppWidgetProvider.java的onReceive()方法中有toggleBrightness(context)对亮度进行调节
+	具体修改代码如下，这里可能还会有问题，就是在第一次如果是
+	//zhangqi modified for birghtness begin 2013/08/29
+	if(FeatureOption.WITHOUT_PSENSOR_TIMEOUT){						//这个表示没有光感
+		if(brightnessMode == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC){
+			brightnessMode = Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL;
+		}
+		// Rotate MINIMUM -> MANUAL -> MAXIMUM
+		if (brightness < pm.getDefaultScreenBrightnessSetting()) {
+			Log.d(TAG, "toggleBrightness(),MINIMUM -> MANUAL");
+			brightness = pm.getDefaultScreenBrightnessSetting();
+	        } else if (brightness < pm.getMaximumScreenBrightnessSetting()) {
+			brightness = pm.getMaximumScreenBrightnessSetting();
+	        } else {
+			Log.d(TAG, "toggleBrightness(),MAXIMUM -> MINIMUM");
+			brightness = pm.getMinimumScreenBrightnessSetting();
+	        }	
+	} else {										//这个表示有光感
+		// Rotate AUTO -> MINIMUM -> DEFAULT -> MAXIMUM
+                // Technically, not a toggle...
+		if (brightnessMode == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) {
+	            brightness = pm.getMinimumScreenBrightnessSetting();
+	            brightnessMode = Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL;
+	        } else{
+			if (brightness < pm.getDefaultScreenBrightnessSetting()) {
+			    brightness = pm.getDefaultScreenBrightnessSetting();
+			} else if (brightness < pm.getMaximumScreenBrightnessSetting()) {
+			    brightness = pm.getMaximumScreenBrightnessSetting();
+			} else {
+			    Log.d(TAG, "toggleBrightness(),MAXIMUM -> AUTO");
+			    brightnessMode = Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
+			    brightness = pm.getMinimumScreenBrightnessSetting();
+			}
+		}
+	}
+	//zhangqi modified for birghtness  end  2013/08/29
+
+2.bug10706修改home和menu按键的显示问题？？？
+
+解决：
+a.先用Hierarchy查看Recent的Activity为framework/base/packages/SystemUI/src/com/android/systemui/recent/RecentsActivity.java
+b.找到从哪里可以跳转到该RecentsActivity,从framework/base/packages/SystemUI/AndroidManifest.xml文件可知可以从<action android:name="com.android.systemui.TOGGLE_RECENTS"/>这个Action跳转
+c.然后根据该Action找到跳转到RecentsActivity的地方为BaseStatusBar.java
+d.在toggleRecentsActivity()方法中有Intent根据Action跳转到
+e.找到调用toggleRecentsActivity()方法的地方，结果在H(Handler)中的一个msg中MSG_TOGGLE_RECENTS_PANEL中找到了
+f.根据该MSG_TOGGLE_RECENTS_PANEL找到使用的该msg的地方toggleRecentApps()
+g.结果发现该toggleRecentApps()是回调的，在CommandQueue.Callbacks接口中声明了该方法
+h.在CommandQueue.java中找到 case MSG_TOGGLE_RECENT_APPS: mCallbacks.toggleRecentApps();
+i.在IStatusBar.Stub的toggleRecentApps()方法中调用了发送了一条message到H，然后调用了CommandQueue.Callback的onToggleApps()方法
+j.......................................
+
+3.mContext.sendBroadcastAsUser(intent, new UserHandle(UserHandle.USER_CURRENT));有什么用？？？

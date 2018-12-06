@@ -1,0 +1,67 @@
+	1.Bug12901 如何去掉Wifi可用的提示音？？？
+
+	解决：
+	//WifiNotificationController.java中有
+	if (mNotification == null) {
+		mNotification = new Notification();
+		mNotification.when = 0;
+		mNotification.icon = ICON_NETWORKS_AVAILABLE;
+		mNotification.flags = Notification.FLAG_AUTO_CANCEL;
+		Intent intent = new Intent(WifiManager.ACTION_PICK_WIFI_NETWORK);
+		intent.putExtra(WifiManager.EXTRA_TRIGGERED_BY_NOTIFICATION, true);                
+		mNotification.contentIntent = TaskStackBuilder.create(mContext).addNextIntentWithParentStack(intent).getPendingIntent(0, 0, null, UserHandle.CURRENT);
+	}
+	CharSequence title = mContext.getResources().getQuantityText(com.android.internal.R.plurals.wifi_available, numNetworks);
+	CharSequence details = mContext.getResources().getQuantityText(com.android.internal.R.plurals.wifi_available_detailed, numNetworks);
+	mNotification.tickerText = title;
+	mNotification.setLatestEventInfo(mContext, title, details, mNotification.contentIntent);
+	mNotificationRepeatTime = System.currentTimeMillis() + NOTIFICATION_REPEAT_DELAY_MS;
+
+	//在这里可以控制Wifi可用的提示音
+	if (!mNotificationShown) {
+		mNotification.sound = RingtoneManager.getActualDefaultRingtoneUri(mContext, RingtoneManager.TYPE_NOTIFICATION);
+	} else {
+		mNotification.sound = null;
+	}
+
+	2.Bug12899 mms->Settings->Notifications->
+
+	解决：
+	<CheckBoxPreference 
+		android:layout="?android:attr/preferenceLayoutChild"
+		android:defaultValue="true" 						//这里就是那个默认值
+		android:key="pref_key_popup_notification"
+		android:dependency="pref_key_enable_notifications" 
+		android:title="@string/pref_popup_notification"
+		android:summary="@string/pref_summary_popup_notification" />
+
+	3.修改 wifi-direct name 的显示名称 和 wifi热点的显示名称？？？
+
+	解决：
+	//wifi热点名称:		
+	custom.conf
+	//wifi-direct名称:	
+	WifiP2pService.java		//读取数据库中的Settings.Global.WIFI_P2P_DEVICE_NAME
+	defaults.xml			//添加wifi-direct显示名称
+	DatabaseHelper.java		//加载defaults.xml中的值到数据库Settings.Global.WIFI_P2P_DEVICE_NAME
+
+	4.修改 wifi 可用连接数提示的复数显示？？？
+
+	解决：
+	将frameworks/base/services/java/com/android/server/connectivity/Tethering.java 中的复数改为单数
+
+	5.阿拉伯语下Settings中的有些图片不一致？？？
+
+	解决：
+	在drawable-ldrtl-hdpi下面的ic_settings_applications.png ic_settings_display.png ic_settings_language.png 这三张图片和别的图片不一致
+
+	6.如何去掉 Accented English 这种语言？？？
+
+	解决：
+	//frameworks/base/core/java/com/android/internal/app/LocalePicker.java
+	//method:constructAdapter()
+	localeList.add("zz_ZZ"); //去掉这句代码就可以了，参考https://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ11536
+
+7.
+
+svn co svn://172.16.78.132:3691/MT6582_6592_LWT_KK1/trunk/frameworks/base/core/java/android/widget/

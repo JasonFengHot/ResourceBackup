@@ -1,0 +1,36 @@
+1.Bug11787 消息界面上菜单太靠左边？？？
+
+//packages/apps/Mms/res/menu/conversation_list_menu.xml
+修改list_item_menu_layout.xml 上的title的paddingLeft="20dp"		//这样改会把所有的菜单都往右偏？？？
+//people_options.xml(联系人的菜单) 在PeopleActivity.java中使用
+
+<item name="listPreferredItemPaddingLeft">30dip</item> 
+<item name="listPreferredItemPaddingRight">30dip</item> 
+<item name="listPreferredItemPaddingStart">30dip</item> 
+<item name="listPreferredItemPaddingEnd">30dip</item>
+
+	2.Bug11954 Launcher上的 Music playlist 快捷方式每次都播放第一首歌？？？
+
+	解决：
+	//PlaylistBrowserActivity.java
+	MusicUtils.playAll(PlaylistBrowserActivity.this, list, 0);		//这里的0就是代表第一首，这里如何获取上次播放的位置？？？
+	//只要将这里的 0 改为 mService.getQueuePosition() 即可，如下
+	MusicUtils.playAll(PlaylistBrowserActivity.this, list, mService.getQueuePosition()); //再添加上RemoteException的异常处理就可以了
+
+	3.修改 ManageSimMessages 界面上隐藏 avatar 头像图标？？？
+
+	解决：
+	//MessageListItem.java
+	public void hideAvatar(){
+		mAvatar.setVisibility(View.GONE);
+	}
+
+	//在 MessageListAdapter 的 bindView() 方法中判断是否为 ManageSimMessages
+	if(context instanceof ManageSimMessages){
+		mli.hideAvatar();
+	}
+
+	4.修改下拉列表界面上的"Timer"
+
+	解决：
+	直接跳转到DeskClock的第三个tab(Timer)

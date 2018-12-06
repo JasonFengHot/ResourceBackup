@@ -1,0 +1,13 @@
+	1.如何判断是否装载了SD卡？？？
+
+	解决：
+	StorageManager storageManager = (StorageManager)mContext.getSystemService(Context.STORAGE_SERVICE);
+	String volumeState = storageManager.getVolumeState("/storage/sdcard1");		//SD卡路径
+	if(volumeState.equalsIgnoreCase("mounted")){
+	
+	}
+
+	2.如何获取系统中设置的默认存储路径？？？
+
+	解决：
+	SystemProperties.get("persist.sys.sd.defaultpath");

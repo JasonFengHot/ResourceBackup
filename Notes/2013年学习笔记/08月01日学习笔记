@@ -1,0 +1,18 @@
+	2.Update Internet settings according to attachment.????
+
+	解决：找到apn.xml文件对照着修改就可以了
+
+	3.有的手机找不到Developer Options???
+
+	解决：在*#*#3646633#*#*里面的telephony的最下面就能找到
+
+	4.如何刷机？？？
+
+	解决：
+	先安装2k_xp_com驱动，再安装Android_Gadget_CDC_driver驱动
+	然后打开刷机工具，先firmware,再插上数据线就可以了
+
+	5.如何在ubuntuo和xp虚拟机之间共享剪切板？？？
+
+	解决：
+	选择设备/共享粘帖板/双向

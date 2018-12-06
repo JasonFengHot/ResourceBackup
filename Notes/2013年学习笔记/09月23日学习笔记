@@ -1,0 +1,70 @@
+	1.修改默认铃声？？？
+
+	解决：
+	只要修改build/target/product/core.mk文件中的
+	PRODUCT_PROPERTY_OVERRIDES := \
+		ro.config.notification_sound=Tinkerbell.ogg \
+		ro.config.alarm_alert=Carbon.ogg \
+		ro.config.ringtone=Big_Easy.ogg 
+	就可以了
+
+2.如何修改MTP功能在PC端盘符名称显示？？？？？
+
+在framework/base/media/java/android/mtp/MtpDatabase.java中有
+在getDeviceProperty()方法中有
+deviceName = SystemProperties.get("ro.product.name");
+
+在build/tools/buildinfo.sh文件中有
+if [ -n "$SAGEREAL_PRODUCT_NAME" ] ; then
+	echo "ro.product.name=$SAGEREAL_PRODUCT_NAME"	//这个东西在什么地方？？？	这个貌似需要自己在ProjectConfig.mk文件中修改
+else
+	echo "ro.product.name=$PRODUCT_NAME"		
+
+在build/target/product/up22_id_lca.mk文件中有
+PRODUCT_NAME   := $(TARGET_PRODUCT)			//这个TARGET_PRODUCT在什么地方？？？
+
+3.如何修改pc端設備管理器中"Android Phone"目錄下的設備名？？？？
+
+解决：
+在pc端的adb驱动的development/host/windows/usb/android_winusb.inf文件中修改：CompositeAdbInterface = "Android Composite ADB Interface" 的字符串，即對應到設備名。
+
+	4.修改照相机的默认设置《0延迟》和《录像质量》？？？？
+
+	解决：
+	只要修改packages/app/Camera/res/values/mtk_strings.xml中的
+	<string name="pref_camera_zsd_default" translatable="false">on</string>			//这里貌似只是修改默认值，不是让zsd显示？？？？那这里该如何显示zsd呢？？？？
+	<string name="pref_video_record_quality_default" translatable="false">11</string>	//这个值在下面的arrays.xml文件中可以查看
+		如何让zsd设置菜单显示？？？
+		解决：
+		在CameraSettings.java文件中
+		//removePreference(group, KEY_CAMERA_ZSD, SettingChecker.ROW_SETTING_ZSD);		//在这里添加removePreference()不会起作用
+		if (FeatureSwitcher.isLcaRAM()) {
+			removePreference(group, KEY_CAMERA_ZSD, SettingChecker.ROW_SETTING_ZSD);
+		} else if (zsd != null) {
+			filterUnsupportedOptions(group, zsd, mParameters.getSupportedZSDMode(),SettingChecker.ROW_SETTING_ZSD);
+		}
+		removePreference(group, KEY_CAMERA_ZSD, SettingChecker.ROW_SETTING_ZSD);		//只有在后面加removePreference()才会起作用
+
+	在packages/apps/Camera/res/values/arrays.xml中有
+	<!-- Camera Preferences Video Quality entries -->
+	<string-array name="pref_video_quality_entries" translatable="false">
+		<item>@string/pref_video_quality_entry_low</item>
+		<item>@string/pref_video_quality_entry_medium</item>
+		<item>@string/pref_video_quality_entry_high</item>
+		<item>@string/pref_video_quality_entry_fine</item>
+		<item>@string/pref_video_quality_entry_1080p</item>
+	</string-array>
+	<string-array name="pref_video_quality_entryvalues" translatable="false">
+		<!-- The integer value of CamcorderProfile.QUALITY_MTK_LOW -->
+		<item>8</item>
+		<!-- The integer value of CamcorderProfile.QUALITY_MTK_MEDIUM -->
+		<item>9</item>
+		<!-- The integer value of CamcorderProfile.QUALITY_MTK_HIGH -->		
+		<item>10</item>									//这里的10就代表high
+		<!-- The integer value of CamcorderProfile.QUALITY_MTK_FINE -->
+		<item>11</item>									//这里的11就代表fine
+		<!-- The integer value of CamcorderProfile.QUALITY_MTK_1080P -->
+		<item>18</item>
+	</string-array>
+
+5.

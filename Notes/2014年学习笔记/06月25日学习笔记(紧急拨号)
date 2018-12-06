@@ -1,0 +1,55 @@
+1.怎么从 622 变成 *622 ????
+
+recipients_editor
+tag:Mms/compose
+content://com.android.contacts/phone_lookup/622
+public static String getValidNumber(String numberOrEmail) {}
+
+可以参考：https://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ11645
+
+	2.如何添加紧急拨号？？？
+
+	解决：
+	A:mediatek/config/up22_ddm_ac4e/sagereal_copy/mediatek/frameworks/base/op/java/com/mediatek/op/telephony/PhoneNumberExt.java
+	M:frameworks/base/telephony/java/android/telephony/PhoneNumberUtils.java
+	添加紧急拨号123
+
+	在插卡的情况下拨打某些紧急号码不显示 Emergency Number
+	解决：
+	mediatek/frameworks/base/op/java/com/mediatek/op/telephony/PhoneNumberExt.java		修改这个文件中的 isCustomizedEmergencyNumber()方法就行了
+	注意需要编译	mediatek/frameworks/base	而不是编译	mediatek/frameworks/base/op
+
+3.去掉Mms中的右下角的时间标签？？？
+
+解决：
+那个字符串是 values-es/mtk_strings.xml 文件中的 time_now
+packages/apps/mms/src/com/android/mms/ui/MessageUtils.java 文件中有
+public static String formatTimeStampStringExtend(Context context, long when) {
+    Time then = new Time();
+    then.set(when);
+    Time now = new Time();
+    now.setToNow();
+    int format_flags = DateUtils.FORMAT_NO_NOON_MIDNIGHT | DateUtils.FORMAT_ABBREV_ALL | DateUtils.FORMAT_CAP_AMPM;
+    if (then.year != now.year) {
+        format_flags |= DateUtils.FORMAT_SHOW_YEAR | DateUtils.FORMAT_SHOW_DATE;
+    } else if (then.yearDay != now.yearDay) {
+        if ((now.yearDay - then.yearDay) == 1) {
+            return context.getString(R.string.str_ipmsg_yesterday);
+        } else {
+            format_flags |= DateUtils.FORMAT_SHOW_DATE;
+        }
+    } else if ((now.toMillis(false) - then.toMillis(false)) < 60000) {
+        return context.getString(R.string.time_now);					//在这里使用那个字符串？？？
+    } else {
+        format_flags |= DateUtils.FORMAT_SHOW_TIME;
+    }
+    return DateUtils.formatDateTime(context, when, format_flags);
+}
+
+在 packages/apps/mms/src/com/android/mms/ui/ConversationListItem.java 中调用上面的 formatTimeStampStringExtend() 函数
+if (ConversationList.sConversationListOption == ConversationList.OPTION_CONVERSATION_LIST_IMPORTANT &&
+    !conversation.hasUnreadMessages()) {
+    mDateView.setText(MessageUtils.formatTimeStampStringExtend(context, conversation.getImpDate()));		//这里的第二个参数就是when
+} else {
+    mDateView.setText(MessageUtils.formatTimeStampStringExtend(context, conversation.getDate()));			//这里的第二个参数就是when
+}

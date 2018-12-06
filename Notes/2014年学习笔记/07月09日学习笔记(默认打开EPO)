@@ -1,0 +1,13 @@
+	1.默认打开EPO？？？
+
+	解决：
+	默认打开EPO,AGPS功能，以减少GPS定位时间，提高用户体验
+	alps\mediatek\frameworks\base\agps\etc\agps_profiles_conf.xml
+	<agps_conf_para
+		agps_enable="no"  ==> 改成"yes"
+		disable_after_reboot="no" ==> 保持"no"
+	alps\mediatek\frameworks\base\epo\etc\epo_conf.xml
+	<epo_conf_para
+		epo_enable="no"  ==> 改成"yes"
+		auto_enable="no"  ==> 改成"yes”
+

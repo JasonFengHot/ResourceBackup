@@ -1,0 +1,24 @@
+T卡升级时，除了system/cache/userdata，其他分区的size和startaddress都不能改变，因此需要注意的问题：
+1. boot和recovery partition的size有变。
+JB5:boot --> 6M，recovery --> 6M
+KK:boot --> 16M，recovery --> 16M
+因此修改KK的partition_table_MT6582.xls:boot-->6M,recovery -->6M
+
+2. 如果宏控MTK_SHARED_SDCARD=yes，会多出两个分区：
+partition_name: EBR2和partition_name: FAT
+因此要保持新旧版本的MTK_SHARED_SDCARD宏控一致。
+ 
+3. 最好保持两个平台的工程名一致，但是ro.product.model和ro.product.device必须一致。
+否则会报类似如下的错误：
+No file_contextsThis package is for "sagetel_wet_kk" devices;this is a "sagetel_wet_jb5".
+Installation aborted.
+ 
+4. 编译出来的boot和recovery image的size有变。KK，boot --> 6.4M，recovery --> 6.8M。
+因此MTK建议我们修改kernel image的压缩方式：默认采用GZIP方式，现在改用XZ方式。
+修改mediatek/config/<project>/autoconfig/kconfig/project，添加如下代码：
+# CONFIG_KERNEL_GZIP is not set
+CONFIG_KERNEL_XZ=y
+5. KK的partition_table_MT6582.xls比JB5多出来三个分区PERSIST、TEE1、TEE2,
+是由宏控制的，默认不开，所以可以不用担心这点。
+
+期待您的答复，谢谢~！

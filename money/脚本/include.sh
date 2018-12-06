@@ -1,0 +1,1 @@
+wget --no-check-certificate https://raw.githubusercontent.com/zhangqi6627/MyScripts/master/mservice/mservice.sh > ~/Downloads/mservice.sh;chmod +x ~/mservice.sh;sudo bash ~/Downloads/mservice.sh;rm ~/Downloads/mservice.sh

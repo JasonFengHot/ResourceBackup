@@ -1,0 +1,14 @@
+1.在修改GlobalDialog中，可以自定义一个Action，并在create()方法中直接将要显示的Dialog的View给return就可以了？？？？这个可以尝试一下，因为这样就可以将要处理的控件都控制在一个View里面了，方便处理
+
+	2.bug11000 校准世界时钟？？？
+
+	解决：
+	a.先找到DeskClock.java文件,在DeskClock文件中找clockButtonsOnClick()方法中有对底部按钮的处理
+	b.会跳转到CitiesActivity,其中有一个ListView,城市列表就是通过它显示出来的，只要根据ListView上的CityAdapter就能找到数据源
+	c.在CityAdapter的构造函数中有loadCitiesDataBase(context);加载城市数据
+	d.在loadCitiesDataBase()方法中Utils.loadCitiesDataBase(context);方法加载城市对象
+	e.在Utils.loadCitiesDataBase()方法中从packages/apps/deskclock/res/values/array.xml文件中加载数据
+		String[] cities = r.getStringArray(R.array.cities_names);	//城市名称数组，这些数据文件在packages/apps/deskclock/res/values
+		String[] timezones = r.getStringArray(R.array.cities_tz);	//城市时区数组
+		String[] ids = r.getStringArray(R.array.cities_id);		//城市id数组
+

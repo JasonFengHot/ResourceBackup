@@ -1,0 +1,117 @@
+1.在拨打电话之后清空digits(EditText)???
+
+在packages/apps/phone/res/layout/emergency_dialer.xml文件中有@+id/digits
+在packages/apps/phone/src/com/android/phone/EmergencyDialer.java中使用emergency_dialer.xml
+
+case R.id.dialButton: {
+	mHaptic.vibrate();
+	placeCall();		//调用下面的方法
+	return;
+}
+
+private void placeCall() {
+	mLastNumber = mDigits.getText().toString();
+	if (PhoneNumberUtils.isEmergencyNumber(mLastNumber)) {		//紧急拨号
+		if (mLastNumber == null || !TextUtils.isGraphic(mLastNumber)) {
+			playTone(ToneGenerator.TONE_PROP_NACK);
+			return;
+		}
+		Intent intent = new Intent(Intent.ACTION_CALL_EMERGENCY);
+		intent.setData(Uri.fromParts(Constants.SCHEME_TEL, mLastNumber, null));
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(intent);
+		finish();						
+									//这里需不需要将digits清空？？？？？？mDigits.getText().clear();
+	} else {							//正常拨号
+		mDigits.getText().delete(0, mDigits.getText().length());
+		showDialog(BAD_EMERGENCY_NUMBER_DIALOG);
+	}
+}
+
+在packages/apps/tecno_ue_contacts/src/com/android/contacts/dialpad/DialpadFragment.java
+case R.id.dialButton: {
+	if (mNeedCheckSetting) {
+		mHaptic.checkSystemSetting();
+		mNeedCheckSetting = false;
+	}
+	mHaptic.vibrate();  // Vibrate here too, just like we do for the regular keys
+	Profiler.trace(Profiler.DialpadFragmentEnterClick);
+	dialButtonPressed();						//调用下面的方法
+	Profiler.trace(Profiler.DialpadFragmentLeaveClick);
+	return;
+} 
+public void dialButtonPressed() {
+	dialButtonPressedInner(mDigits.getText().toString(), Constants.DIAL_NUMBER_INTENT_NORMAL);
+}
+
+protected void dialButtonPressedInner(String number, int type) {
+	if (TextUtils.isEmpty(number)) {
+            handleDialButtonClickWithEmptyDigits();
+        } else {
+            if (number != null && !TextUtils.isEmpty(mProhibitedPhoneNumberRegexp) && number.matches(mProhibitedPhoneNumberRegexp) && (SystemProperties.getInt("persist.radio.otaspdial", 0) != 1)) {
+                if (getActivity() != null) {
+                    DialogFragment dialogFragment = ErrorDialogFragment.newInstance(R.string.dialog_phone_call_prohibited_message);
+                    dialogFragment.show(getFragmentManager(), "phone_prohibited_dialog");
+                }
+                mDigits.getText().clear();
+            } else {
+                final Intent intent = ContactsUtils.getCallIntent(number,((getActivity() instanceof DialtactsActivity||(getActivity() instanceof PeopleActivity))?CALL_ORIGIN_DIALTACTS: null), type);
+                mCallOptionHandler.doCallOptionHandle(intent);
+                mClearDigitsOnStop = true;
+                if (mDigits.getText().length() > 0) {
+                    mDigits.setText(EMPTY_NUMBER);
+                }
+									//这里需要将digits清空码？？？？？？mDigits.getText().clear();
+            }
+	}
+}
+
+
+
+2.3G视频通话界面外放按钮如何高亮显示？？？
+
+82：
+mtk_vt_call_button_fragment.xml
+<ImageButton
+android:id="@+id/VTSpeaker"
+android:layout_height="match_parent"
+style="@style/InCallButton"
+android:background="@drawable/mtk_btn_compound_audio_vt"	
+android:contentDescription="@string/onscreenAudioText"/>
+
+mtk_btn_compound_audio_vt.xml
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <bitmap xmlns:android="http://schemas.android.com/apk/res/android" android:src="@drawable/dial_background_texture" android:tileMode="repeat" />
+    </item>
+    <item android:id="@+id/compoundBackgroundItem" android:drawable="@drawable/btn_compound_background" />		//这个是背景图片
+    <item android:id="@+id/moreIndicatorItem">
+        <bitmap android:src="@drawable/ic_more_indicator_holo_dark" android:gravity="center" />
+    </item>
+    <item android:id="@+id/bluetoothItem">
+        <bitmap android:src="@drawable/ic_sound_bluetooth_holo_dark" android:gravity="center" />
+    </item>
+    <item android:id="@+id/handsetItem">
+        <bitmap android:src="@drawable/ic_sound_handset_holo_dark" android:gravity="center" />
+    </item>
+    <item android:id="@+id/speakerphoneOnItem">
+        <bitmap android:src="@drawable/ic_sound_speakerphone_holo_dark" android:gravity="center" />
+    </item>
+    <item android:id="@+id/speakerphoneOffItem">
+        <bitmap android:src="@drawable/ic_sound_off_speakerphone_holo_dark" android:gravity="center" />
+    </item>
+</layer-list>
+
+btn_compound_background.xml
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true" android:drawable="@drawable/list_pressed_holo_dark" />
+    <item android:state_checked="true" android:state_focused="true" android:drawable="@drawable/list_selector_focused_and_checked" />
+    <item android:state_focused="true" android:drawable="@drawable/list_focused_holo" />
+    <item android:state_checked="true" android:drawable="@drawable/ic_active_state_dialer_holo_dark" />
+    <item android:drawable="@android:color/transparent" />
+</selector>
+
+packages/apps/incallui/src/com/android/incallui/CallButtonFragment.java文件中有
+layers.findDrawableByLayerId(R.id.compoundBackgroundItem).setAlpha(showToggleIndicator ? VISIBLE : HIDDEN);
+
+R.id.callButtonContainer

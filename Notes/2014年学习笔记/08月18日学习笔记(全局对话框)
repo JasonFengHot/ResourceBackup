@@ -1,0 +1,11 @@
+	1.全局警告对话框的使用？？？
+
+	解决：
+	AlertDialog.Builder builder = new AlertDialog.Builder(mApplicationContext);
+	...
+	AlertDialog alertDialog = builder.create();
+	alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+	//在AndroidManifest.xml文件中添加如下权限
+	<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
+2.

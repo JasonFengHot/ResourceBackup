@@ -1,0 +1,35 @@
+	1.修改wifi热点密码？
+
+	解决：
+	M:mediatek/config/up19_h351_ddm_fd3/sagereal_copy/frameworks/base/wifi/java/android/net/wifi/WifiApConfigStore.java
+	private void setDefaultApConfiguration() {
+		...
+		//config.preSharedKey = "sayyezz.com";
+		// Redmine42555 zhangqi modified for random hot-spot password 2015/12/03:begin
+		config.preSharedKey = randomUUID.substring(0, 8);											//随机wifi热点密码
+		// Redmine42555 zhangqi modified for random hot-spot password 2015/12/03:end
+		//Redmine17137 : yaowen  modify for wifi hotport default key : sayyezz.com  : 20140915 start
+		sendMessage(WifiStateMachine.CMD_SET_AP_CONFIG, config);
+	}
+
+		2.Enable ”CONFIG_MTK_USB_UNIQUE_SERIAL“ 之后，产线SN Writer Tool/HW Test Tool/ATE Tool 测试每台手机时候，都要求安装驱动，给产线生产带来不便???
+
+		解决：
+		https://onlinesso.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ08670
+		a. SN Writer Tool
+		修改SN Writer Tool执行路径下SN_SETUP.txt 文件设置，如下
+		IS Composite Device Enable = False
+
+		b. HW Test Tool
+		界面上取消勾选Option->Enable composite kernel device
+
+		c. ATE Tool
+		修改ATE Tool 执行路径下Customer_Setup.txt 文件设置，如下：
+		IS Composite Device Enable = 0
+
+		d. 客户自己写工具，请在调用
+		LIBEXPORT int __stdcall SP_Preloader_BootMode(SP_BOOT_ARG_S * pArg);
+		boot meta mode 时候设置传入参数
+		pArg->m_bIsCompositeDeviceEnable = 0;
+	
+	3.

@@ -1,0 +1,17 @@
+1.App列表的行数和列数在哪里确定？？？
+
+mCellCountY = AllApps.sAppsCellCountY;
+
+mCellCountY = mWidgetSpacingLayout.getCellCountY();
+
+01-01 01:57:27.685: E/zhangqi1(991): mCellCountY3 = 4
+01-01 01:57:27.690: E/zhangqi1(991): mCellCountY4 = 5
+01-01 01:57:27.698: E/zhangqi1(991): mCellCountY3 = 4
+01-01 01:57:27.704: E/zhangqi1(991): mCellCountY4 = 5
+01-01 01:57:27.709: E/zhangqi1(991): mCellCountY3 = 4
+01-01 01:57:27.711: E/zhangqi1(991): mCellCountY4 = 5
+
+	2.如何连同ActionBar一起设置背景？？？
+
+	解决：
+	((View)findViewById(android.R.id.content).getParent()).setBackgroundResource(R.drawable.background);

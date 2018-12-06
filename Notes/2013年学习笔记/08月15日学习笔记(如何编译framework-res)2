@@ -1,0 +1,25 @@
+	1.前置摄像头的默认像素的修改？？？
+
+	解决：
+	参照up06_bouygues_auriga项目的修改方法修改
+	首先需要修改arrays.xml文件中默认值
+	再在CameraSettings.java中修改restore之后的默认取值顺序
+
+	    2.如何编译framework-res.apk文件？？？？
+
+	    解决：在编译framework-res.apk文件之前先删除out/target/common/obj/apps/framework-res_intermediates文件夹
+	    ./mk -t mm framework/base/core/res/res
+
+    3.这里的@*表示什么意思？？？
+    <com.android.internal.widget.PasswordEntryKeyboardView 
+    android:id="@+id/keyboard"
+    android:layout_alignParentBottom="true"
+    android:layout_width="300px"
+    android:layout_height="280px"
+    android:background="#00000000"
+    android:layout_marginBottom="20dip"
+    android:keyBackground="@*android:drawable/btn_keyboard_key_fulltrans"
+    />
+
+    解决：
+    表示使用framework下的hide(不可见)的资源

@@ -1,0 +1,114 @@
+/tecno_noGMS/build/target/product/up11_tecno_x352.mk
+/tecno_noGMS/mediatek/preloader/preloader_up11_tecno_x352.bin
+/tecno_noGMS/mediatek/preloader/preloader_up11_tecno_x352.elf
+/tecno_noGMS/bootable/bootloader/lk/project/up11_tecno_x352.mk
+/tecno_noGMS/copy_up11_tecno_x352.sh
+/tecno_noGMS/frameworks/base/data/sounds/up11_tecno_x352.mk
+
+
+
+添加文件夹如下：
+trunk/build/target/product/security/up11_tecno_x352
+/tecno_noGMS/bootable/bootloader/lk/build-up11_tecno_x352/
+/tecno_noGMS/kernel/out/mediatek/custom/out/up11_tecno_x352
+/tecno_noGMS/mediatek/binary/packages/
+/tecno_noGMS/mediatek/config/up11_tecno_x352/
+/tecno_noGMS/mediatek/custom/up11_tecno_x352/
+/tecno_noGMS/vendor/mediatek/up11_tecno_x352/
+
+
+------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------
+ 导翻译
+package/app部分：
+  在launcher2之前
+  需要导入的是：Assistant2    BasicSmsReceiver   Bluetooth     Browser   Calculator   Calendar  
+             Camera   CellBroadcastReceiver  CertInstaller Contact   DeskClock    Email    Exchange      
+             FlashLight    Gallery   Gallery2   HTMLViewer
+
+test部分，不需要的是：  FactoryDevelop   FactoryDevelopX    DeviceTestApp
+
+package/其他部分
+   /tecno/packages/inputmethods/LatinIME/java/res/
+   /tecno/packages/inputmethods/OpenWnn/res/ 
+   /tecno/packages/inputmethods/PinyinIME/res/
+
+    /tecno/packages/providers/DownloadProvider/res/
+    /tecno/packages/providers/DownloadProvider/ui/res/
+    /tecno/packages/providers/ContactsProvider/res/
+    /tecno/packages/providers/CalendarProvider/res/
+    /tecno/packages/providers/ApplicationsProvider/res/
+    /tecno/packages/providers/DrmProvider/res/
+    /tecno/packages/providers/MediaProvider/res/
+    /tecno/packages/providers/TelephonyProvider/res/
+
+    /tecno/packages/screensavers/PhotoTable/res/
+    /tecno/packages/screensavers/Basic/res/
+
+     /tecno/packages/wallpapers/Basic/res/
+     /tecno/packages/wallpapers/Galaxy4/res/
+     /tecno/packages/wallpapers/HoloSpiral/res/
+     /tecno/packages/wallpapers/LivePicker/res/
+     /tecno/packages/wallpapers/MagicSmoke/res/
+     /tecno/packages/wallpapers/MusicVisualization/res/
+     /tecno/packages/wallpapers/NoiseField/res/
+     /tecno/packages/wallpapers/PhaseBeam/res/
+
+frameworke部分需要上传的。
+      /tecno/frameworks/base/core/res/res/
+
+      /tecno/frameworks/base/packages/BackupRestoreConfirmation/res/
+      /tecno/frameworks/base/packages/DefaultContainerService/res/
+      /tecno/frameworks/base/packages/SettingsProvider/res/
+      /tecno/frameworks/base/packages/SystemUI/res/
+      /tecno/frameworks/base/packages/VpnDialogs/res/
+      /tecno/frameworks/base/packages/FusedLocation/res/
+      /tecno/frameworks/base/packages/InputDevices/res/
+
+
+      /tecno/frameworks/ex/chips/res/values-om-rET
+      /tecno/frameworks/ex/photoviewer/res/
+      /tecno/frameworks/ex/photoviewer/sample/res/
+
+      /tecno/frameworks/opt/mailcommon/res/
+      /tecno/frameworks/opt/photoviewer/res/
+
+framework部分test，service部分，不需要上传的。
+
+      /tecno/frameworks/base/media/mca/samples/CameraEffectsRecordingSample/res/
+      /tecno/frameworks/base/samples/training/network-usage/res/
+      /tecno/frameworks/ml/bordeaux/service/res/values-om-rET
+  
+
+
+mediatek部分
+
+	mediatek/packages/apps/
+         需要上传的
+		3DWorld   ApplicationGuide   BackupRestore   BatteryWarning     CalendarImporter  CellConnService  DataDialog   FileManager  FMRadio  FMRadio_modify  FMTransmitter  MTKThermalManager  Mtv 			Omacp  OOBE  SchedulePowerOnOff Stk1 Stk2 StkSelection  SystemUpdate Tecno_UE_FMRadio  Todos VideoFavorites    VideoPlayer VoiceUnlock   WorldClockWidget
+
+         不需要上传的 
+              BSPTelephonyDevTool  CdsInfo  CmasEM  CMMB    DataUsageLockScreenClient  EngineerMode EngineerTest  iSMS  MATVEM   MediatekDM  MTKAndroidSuiteDaemon   NoteBook NvRAM RCSe                  			SimLock  SmsReg SystemUpdateAssistant  WiFiSDIOTest YGPS
+
+	mm编译出错，但是不需要上传的 Weather3D
+	mm编译错处， 但是依旧上传： VideoOrbPlugin Media3D  
+	mm编译错处， 但是需要全编然后上传的。 Bluetooth   
+
+
+	mediatek/package目录下：
+		mediatek/packages/wallpapers/MTKVideoLiveWallpaper/
+
+
+	mediatek下
+	   不需要翻译的：binary  build cgen config  dct  device  external factory  frameworks-ext  hardware kernel mtk6572m_kernel_lcm_lib  platform preloader
+
+	   需要编译上传的：mediatek/custom/common/resource_overlay/tablet   mediatek/frameworks/base/res/  mediatek/operator/OP02/packages/apps/Plugins/
+
+
+
+
+
+
+
+
+

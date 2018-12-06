@@ -1,0 +1,56 @@
+	1.修改《邮箱联系人》无法添加到《手机群组》中？？？
+
+	解决：
+	//ContactDetailActivity.java
+	select display_name,version from raw_contacts;
+	如何判断是《手机联系人》还是《邮箱联系人》还是《SIM卡联系人》
+
+	在 RawContactEditorView.java 中有 mGroupMembershipView 这个就是 Group Name 所在的 View
+
+	在联系人详情页面 ContactDetailFragment.java 中有 mGroupEntries.add(entry); 添加联系人分组
+
+	ContactLoader.java中有loadContactHeaderDataEX()方法
+	在这个方法中有设置联系人信息的一些方法
+
+2.在文件管理器界面添加设置MP3为铃声的功能？？？
+
+解决：
+//在音乐播放器界面点击"SetAs"按钮之后调用showRinglistsDialog()这个方法
+protected void showRinglistsDialog(final String id,final String path) {
+	Builder dialog = new AlertDialog.Builder(this);
+	dialog.setTitle(R.string.popsetas);
+	String[] ringlistStrs = new String[4];
+	Resources res = mContext.getResources();
+	ringlistStrs[0] = res.getString(R.string.ring_contact);
+	ringlistStrs[1] = res.getString(R.string.ring_notification);
+	ringlistStrs[2] = res.getString(R.string.ring_alarm);
+	ringlistStrs[3] = res.getString(R.string.ring_incoming);
+	dialog.setItems(ringlistStrs, new DialogInterface.OnClickListener() {
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			if (0 == which) {
+				Intent intent = new Intent();
+				intent.putExtra("MP3",path);
+				File sdfile = new File(path);    
+				intent.setDataAndType(Uri.EMPTY, "vnd.android.cursor.dir/contact");
+				intent.putExtra("isonlyphone", true);
+				intent.setAction("android.intent.action.PICK");
+				startActivityForResult(intent,RingLing);
+				mRingToneId = Integer.valueOf(id);
+			} else if (1 == which) {
+				MusicUtils.setNotification(mContext, Integer.valueOf(id));
+			} else if (2 == which) {
+				MusicUtils.setAlarmtone(mContext, Integer.valueOf(id));
+			} else if (3 == which) {
+				MusicUtils.setRingtone(mContext, Integer.valueOf(id));
+			}
+		}
+	});
+	dialog.show();
+}
+
+
+    <string name="ring_setto">Set As Ring Successfully</string>
+    <string name="ringtone_set">\"<xliff:g id="name" example="Alarm Bell">%s</xliff:g>\" set as phone ringtone.</string>
+    <string name="setNotificationSucceed">Notification is set successfully</string>
+    <string name="setsetAlarmtone">Alarm is set successfully</string>

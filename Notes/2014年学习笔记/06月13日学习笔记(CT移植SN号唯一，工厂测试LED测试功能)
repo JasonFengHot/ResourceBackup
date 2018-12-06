@@ -1,0 +1,37 @@
+1.修改手机端的Sn序列号??
+
+解决：
+方法1：手机连接pc，在adb shell中，切换目录到
+	cd sys/class/android_usb/android0/
+	echo 0123456789123456 > iSerial   修改一个与之前的手机不同的Sn号
+	之后重新插拔手机。
+	注意：此种方法重启手机后，序列号会还原。
+方法2：永久性修改使每一只手机SN号码唯一
+	修改mediate/config/<chip>/autoconfig/kconfig/platform
+	打开CONFIG_MTK_USB_UNIQUE_SERIAL可设置每只手机的SN号码唯一。
+
+在mediatek/config/mq16_h504_c5v/autoconfig/kconfig/ 目录下添加 platform 文件（从 mediatek/config/mt6582/autoconfig/kconfig/platform 拷贝过来）
+
+2.设置LED灯的闪烁？？？
+
+解决：
+private LightsService lights = new LightsService(context);
+private LightsService.Light mNotificationLight = lights.getLight(LightsService.LIGHT_ID_NOTIFICATIONS);
+mNotificationLight.turnOff();
+mNotificationLight.setFlashing(ledARGB, LightsService.LIGHT_FLASH_TIMED, ledOnMS, ledOffMS);	//设置led灯闪烁
+
+只要写文件就可以了
+/sys/class/led/blue
+/sys/class/led/red
+/sys/class/led/green
+
+try {
+	FileOutputStream fos = new FileOutputStream(FLASHLIGHT_FILE);
+	byte[] bytes = new byte[2];
+	bytes[0] = (byte)(on ? '1' : '0');
+	bytes[1] = '\n';
+	fos.write(bytes);
+	fos.close();
+} catch (Exception e) {
+	e.printStackTrace();
+}

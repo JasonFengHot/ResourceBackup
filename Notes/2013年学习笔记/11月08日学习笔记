@@ -1,0 +1,39 @@
+	1.在修改tecno_noGMS_l3工程的时候，情景模式的铃声效果还没有添加？？？
+
+	解决：
+	将音效资源放到raw文件夹下
+	private MediaPlayer mediaPlayer;
+
+	mediaPlayer = MediaPlayer.create(mContext,R.raw.diu);
+	try{
+		mediaPlayer.prepare();			//prepare()只需要在外面调用一次就行了
+	}catch(Exception e){
+		e.printStackTrace();
+	}
+	Button btn_play = (Button)findViewById(R.id.btn_play);
+	btn_play.setOnClickListener(new OnClickListener(){
+		public void onClick(View v){
+			mediaPlayer.start();		//mediaPlayer可以多次start()
+		}
+	});
+
+2.在修改tecno_noGMS_l3工程的时候，关机的时候还是会有对话框提示？？？
+
+3.如何将照相机的video quality修改为fine？？？？？
+
+4.在GlobalActionDialog的对话框中，修改情景模式不会马上在对话框上显示状态？？？？
+
+5.
+
+
+
+
+工厂测试的bug
+
+插入耳机就一直显示耳机已插入
+自动测试中屏幕亮点测试需要改为自动改变
+
+public static final int QUALITY_MTK_LOW = 8;
+public static final int QUALITY_MTK_MEDIUM = 9;
+public static final int QUALITY_MTK_HIGH = 10;
+public static final int QUALITY_MTK_FINE = 11;

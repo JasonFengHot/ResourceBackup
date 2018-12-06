@@ -1,0 +1,63 @@
+本来今天是应该和大家一起研究Binder来着。实在没空，正好手头在给客户定制UA String，就弄个简单的跟大家分享吧。
+    什么是UAProf？
+    UA的全称是User Agent，即用户代理。UAProf 的全称是User Agent Profile,就是 用户代理描述，主要用于描述终端设备的性能和优先选择信息，主要是为了让其他设备（比如WAP网关）能够自动识别终端的能力，从而可以优化传递给终端的内容格式。UAProf通常描述了终端的硬件平台、软件平台、与此设备相连的网络环境特性等信息。（好吧，我承认这一段是拷贝的）
+    UAProf是一个xml的形式，描述了七个方面的特性。
+    HardwarePlatform: 硬件平台
+    SoftwarePlatform: 软件平台
+    BrowserUA: 终端浏览器
+    NetworkCharacteristics：网络特性
+    WAPCharacteristics：WAP特性
+    PUSHCharacteristics：PUSH特性
+    MmsCharacteristics：MMS特性（电信暂无）
+    
+    UAProf常见于运行商定制终端。运营商对这些UAProf进行集中管理。运营商根据它对终端设备的软硬件特性进行判断，当向终端设备推送自己的增值业务时，会跟据这些特性来推送适合终端设备的内容。比如可以判断出终端设备是支持MP4还是RM格式视频。根据支持不同的视频格式，推送不同的视频内容。
+    非运营商定制设备也可以向运营商提供终端设备的UAProf，那么运营商是如何收集非运营商定制设备的UAProf的呢？
+    收集的方式是这样的，在手机的浏览器发送http信息是，手机的http Heaer的字段信息多了两个信息，分别是User-Agent（用户浏览器名称）和x-wap-profile(UAProf的网络路径)。运营商只要根据x-wap-profile制定的网络路径进行下载，就可以得到该终端的UAProf，从而达到收集的目的。
+    
+    那么在Android中，如何写入UAProf的网络路径这个头信息呢。
+    我们可以在Framework下的webkit目录下的BrowserFramework文件中进行修改。我们可以在startLoadingResource函数中加入headers.put("x-wap-profile", "http://www-ccpp.tcl-ta.com/files/ALCATEL_one_touch_890D.xml");
+    
+   然而并不是每个终端都会定制这个头信息，因此会有很多设备，运营商无法知道确切的信息。因此有替代的方案是使用简单的UA String。 
+   那么Android中是怎么定义自己的UA String的呢？
+   主要改动有两个文件。packages\apps\Browser\src\com\android\browser\BrowserSettings.java和packages\apps\Browser\res\values\strings.xml。
+   首先看strings.xml文件，有两个数组。
+ 
+
+    <string-array name="pref_development_ua_choices" translatable="false">  
+     <item>Android</item>  
+     <item>Desktop</item>  
+     <item>iPhone</item>  
+    </string-array> 
+     
+     <string-array name="pref_development_ua_values" translatable="false">  
+      <item>0</item>  
+      <item>1</item>  
+      <item>2</item>  
+    </string-array> 
+
+ 
+   这两个数组是什么含义呢？
+   原来，android所用的浏览器未Chrome lite，该浏览器在不同平台上是不一样的。它预先定义了android, Mac Os和iphone三个平台下的UA String。
+   我们来看下代码。
+ 
+
+    private static final String DESKTOP_USERAGENT = "Mozilla/5.0 (Macintosh; " + "U; Intel Mac OS X 10_5_7; en-us) AppleWebKit/530.17 (KHTML, " + "like Gecko) Version/4.0 Safari/530.17"; 
+    private static final String IPHONE_USERAGENT = "Mozilla/5.0 (iPhone; U; " + "CPU iPhone OS 3_0 like Mac OS X; en-us) AppleWebKit/528.18 " + "(KHTML, like Gecko) Version/4.0 Mobile/7A341 Safari/528.16"; 
+     
+    public void update(Observable o, Object arg) {  
+    BrowserSettings b = (BrowserSettings)o;  
+    WebSettings s = mSettings;  
+    s.setLayoutAlgorithm(b.layoutAlgorithm);  
+    if (b.userAgent == 0) {  
+    s.setUserAgentString(null);  
+    } else if (b.userAgent == 1) {  
+    s.setUserAgentString(DESKTOP_USERAGENT);  
+    } else if (b.userAgent == 2) {  
+    s.setUserAgentString(IPHONE_USERAGENT);  
+    } 
+
+ 
+   这样我们就一目了然了。如果想加入自己的UA String，那么在b.userAgent == 0时，加入自己的UAString。
+
+注:该文为转载:现在4.2上在syncSetting()里面进行获取和设置的,x-wap-profile 全局搜索就知道在哪儿设置uaprofile 的url
+了

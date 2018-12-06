@@ -1,0 +1,57 @@
+[DESCRIPTION]
+遇到Audio/Speech相关问题时，经常需要抓取相关log信息，总结抓取方法如下
+[SOLUTION]
+1.    通话声音相关的问题：
+Case 1: 通话中某一方或者双方都无声音，所需Log：VM Log ；Register info ; Mobile Log ；Modem Log
+Case 2: 输出设备routing 错误：Mobile Log；Register info
+2.    音乐播放声音相关问题：
+Case 1: 某一设备没有声音输出，所需Log: Register info ; Mobile Log
+Case 2: 声音卡顿问题， 所需Log：Mobile Log ；ftrace ；PCM data
+Case 3：杂音，噪音问题，所需Log：Mobile Log；PCM data
+3.    FM声音相关问题：
+Common：需要请客户提供FM chip的型号，连接方式(Analog or I2S)
+Case 1: 某一设备没有声音输出，所需Log: Register info ; Mobile Log
+ 
+Mobile Log抓取方法：
+有两种方式去打开mtklog
+1.    直接执行MtkLogger这个apk，去打开mtklog
+2.    进入工程模式->System Log->Mobile Log，打开Mobile Log，再去操作手机就会在mtklog文件夹下生成mobile log
+
+工模中没有开启mobile log选项，可使用logcat抓取mobile log：
+Ex. 
+# for the main log
+adb wait-for-device logcat -v time > dt_XXX_main_20120727.txt 2>&1
+# for the radio log
+adb wait-for-device logcat -v time -b radio > dt_XXX_radio_20120727.txt 2>&1
+ 
+How to get Modem log：
+进入工程模式->System Log->modem log打开modem log，就會有*.dmp的log文件生成，這個文件很小，因為存的是log的簡化信息，需要用catcher和database來還原Log信息
+
+VM Log抓取方法：
+1.    插入sdcard，用来存储所谓的vm log；
+2.    进入Engineer Mode；
+3.    Enter Engineer Mode\Audio\Speech Logger\单击 Enable，并选择Enable EPL.
+4.    退出Engineer Mode.
+5.    拨打一个电话，或者接听一个电话，通话过程中复现贵司所说的问题。
+6.    挂断电话，并将/sdcard/VM_Log下的*.vm文档寄过来即可。
+
+Register info抓取方法：
+1.    复现问题
+2.    从命令行中进入adb shell mode
+3.    输入 cat proc/audio；ALSA 结构(MT6595及以后的platform)下的Register Info，请下如下command：cat /sys/kernel/debug/mtksocaudio
+4.    截取register info并保存到txt中
+Tips：概率性问题，需要在正常和复现问题时各抓取一次
+ 
+PCM data 抓取方法：
+1.    插入sdcard，用来保存PCM data
+2.    进入工模->Audio->Audio Logger，点选需要抓取的pcm data
+3.    复现问题，抓取data dump，再进入工模点掉刚才的选项
+5.    将sdcard中生成的.pcm文件寄过来即可
+
+Ftrace抓取方法:
+1.    复现问题
+2.    运行ftrace_all_in_one下的01-catch.bat开始
+3.    press anykey to stop cat
+4.    运行ftrace_all_in_one下的02-parse.bat解析Ftrace
+5.    将抓取到的trace.vcd文件提供给我们分析
+

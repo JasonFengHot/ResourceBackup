@@ -1,0 +1,80 @@
+1.
+Setting:
+	-Settings -> Battery -> "Battery percentage" should be "ENABLE"				Settings/Battery/Battery percentage					
+		mtk_defaults.xml	<bool name="def_battery_percentage">false</bool>	data/data/com.android.providers.settings/databases/settings.db/"secure"
+
+	-Settings -> Security -> "Make passwords visible" should be "DISABLE"		Settings/Security/Make passwords visible
+		默认就是disable的
+
+	-Settings -> Security -> "Unknown sources" should be "DISABLE"				Settings/Security/Unknown sources
+		默认就是disable的
+
+	-Settings -> Security -> "Verify apps" should be "ENABLE"					Settings/Security/Verify apps
+		默认就是enable的
+
+-Data roaming should be "National roaming only" for both SIM Cards			Settings/SIM management/Roaming/Data roaming
+	？？？？？？	这个地方没有找到
+
+-Show roaming reminder should be "Always"									Settings/SIM management/Roaming/Show roaming reminder
+	默认就是always的
+
+-Network mode should be GSM/WCDMA (Auto)									Settings/More/Mobile networks/Preferred network type
+	这个貌似已经没有 GSM/WCDMA 选项了
+
+	-Screen lock sounds should be ENABLE: Slide									Settings/Security/Screen lock
+		貌似默认就是Slide	(ChooseLockGeneric.java)
+	
+	-Auto-rotate screen should be ENABLE										Settings/Display/Auto-rotate screen
+		默认就是enable的
+
+	-Font Size should be NORMAL													Settings/Display/Font size
+		默认就是Normal的
+
+	-Lock Screen Notifications should be ENABLE									Settings/Display/Lock screen notifications
+		默认就是enable的
+
+	-Scheduled power on & off should be DISABLE									Settings/Schedule power on & off
+		默认就是disable的
+
+	-Schedule airplane on/off should be DISABLE									Settings/More/Airplane mode
+		默认就是disable的
+
+	-Spell checker should be ENABLE												Settings/Language & input/Spell checker		
+		默认就是enable的
+
+	-Back up my data should be ENABLE											Settings/Backup & reset/Back up my data
+		defaults.xml	<bool name="def_backup_enabled">true</bool>
+
+	-Automatic restore should be ENABLE											Settings/Backup & reset/Automatic restore
+		默认就是enable的
+
+	-Screen Sleep should be set to "30 seconds"									Settings/Display/Sleep
+		defaults.xml	<integer name="def_screen_off_timeout">30000</integer>
+
+	-System power saving is OFF by default										Settings/Battery/Standby intelligent power saving
+		mtk_defaults.xml	<integer name="def_bg_power_saving">0</integer>		1:开启 0:关闭
+
+	-All Sounds Settings should be set to default setting, roughly medium		Settings/Audio profiles/General/Volumes
+		默认就在中间
+
+	-Screen brightness should be set to "Automatic brightness" by default		Settings/Display/Brightness
+		defaults.xml	<bool name="def_screen_brightness_automatic_mode">false</bool>
+
+	-Timezone should be "Warsaw, Amsterdam, Berlin GMT" by default				Settings/Date & time/Select time zone
+		mediatek/config/mq16_h451_t3_p/system.prop				persist.sys.timezone=Europe/Amsterdam
+
+	-Automatic date & time should be ON as default								Settings/Date & time/Automatic date & time 
+		默认就是enable的，用Use network-provided time
+
+	-Date format set to "DD/MM/YYYY"											Settings/Date & time/Choose date format
+		SAGEREAL_DATE_FORMAT_DD_MM_YYYY  这个宏打开就可以了  packages/apps/Settings/res/xml/date_time_prefs.xml	或在  date_time_prefs.xml  文件中添加默认值就可以了
+
+-Settings ->More -> Mobile networks -> 3G service							Settings/More/Mobile networks/3G service
+	？？？？？？
+
+	-Settings -> Audio Profiles -> General -> Vibrate should be ON				Settings/Audio profiles/General/Vibrate
+		final boolean DEFAULT_VIBRATION_GENERAL = true;	(mediatek/frameworkds/base/media/audio/java/com/mediatek/audioprofile/AudioProfileManager.java)
+
+	-Time format set to "24-hour"												Settings/Date & time/Use 24-hour format
+		SAGEREAL_TIME_24  				这个宏打开就可以了strings.xml	<string name="time_12_24" translatable="false">24</string>
+	

@@ -1,0 +1,100 @@
+	1.如何修改字体？？？？
+
+	解决：
+	[FAQ10020] 一些字符显示不清晰	Download
+	Platform:MT6572MT6582MT6588MT6589...
+	Branch:GB3JB2JB3JB5...
+	FAQ Content
+
+	有一些字符由于其字形比较特殊，当分辨率比较低时显示不是很清晰，把字体大小改大可以正常显示。比如孟加拉语字符অ(\u0985),如下图所示。
+	这个问题可以通过修改字库解决，方法如下：
+	a、找到孟加拉语字库Lohit-Bengali.ttf(external/lohit-fonts/lohit-bengali-ttf/)
+	b、使用字库工具打开上述字库文件。字库工具FontCreater5.6载网址为：http://so.pc6.com/?keyword=FontCreat&searchType=down
+	c、Ctrl+F查找$0985这个字形,右键->”编辑”,调整其笔画粗细,如下图所示：ff
+	d、修改后可以push到system/fonts下,然后重新开机查看效果
+
+	2.如何添加GMAIL的访问权限？？？参考《03月25日笔记》
+
+	解决：
+	//https://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ07863
+	在mediatek/packages/apps/Bluetooth/build/AndroidManifest.tpl中添加gmail的访问权限就行了
+	<uses-permission android:name="com.google.android.gm.permission.WRITE_GMAIL" />
+	<uses-permission android:name="com.google.android.gm.permission.READ_GMAIL" />
+	// 
+
+	4.如何编译mediatek/packages/apps/bluetooth/profiles/opp/src/com/mediatek/bluetooth/opp/mmi/UriDataUtils.java？？？？
+
+	解决：
+	------mediatek/packages/apps/Bluetooth/Android.mk文件------
+	MY_MODULE_PATH := $(call my-dir)
+	include $(MY_MODULE_PATH)/build/Android.mk	#找到这个文件
+	ifeq ($(MTK_BT_PROFILE_HIDH), yes)
+	include $(MY_MODULE_PATH)/tests/Android.mk
+
+	------mediatek/packages/apps/Bluetooth/build/Android.mk文件------
+	LOCAL_MODULE_TAGS := optional
+	LOCAL_PACKAGE_NAME := MtkBt			#这个就是生成.apk文件的文件名
+	LOCAL_CERTIFICATE := platform
+	LOCAL_PROGUARD_FLAGS := -include $(LOCAL_PATH)/proguard.flags
+	include $(BUILD_PACKAGE)
+
+	5.在使用mAudioProfileManager.reset()的时候会有权限不够的问题？？？
+	在frameworks/base/data/etc/platform.xml文件中有 <assign-permission name="android.permission.WRITE_SETTINGS" uid="shell" />
+
+	解决：
+	在AndroidManifest.xml文件中的<manifest>节点中加上 android:sharedUserId="android.uid.system"
+
+	6.Wifi信号强度的查询？？？
+
+	解决：
+	private void fetchRssiAndLinkSpeedNative() {
+		int newRssi = -1;
+		int newLinkSpeed = -1;
+		String signalPoll = mWifiNative.signalPoll();
+		if (signalPoll != null) {
+		    String[] lines = signalPoll.split("\n");
+		    for (String line : lines) {
+		        String[] prop = line.split("=");
+		        if (prop.length < 2) continue;
+		if (prop[0].equals("RSSI")) {
+			newRssi = Integer.parseInt(prop[1]);
+		} else if (prop[0].equals("LINKSPEED")) {
+			newLinkSpeed = Integer.parseInt(prop[1]);
+		}
+		    }
+		}
+		if (newRssi != -1 && MIN_RSSI < newRssi && newRssi < MAX_RSSI) { // screen out invalid values
+		    if (newRssi > 0) newRssi -= 256;
+		    mWifiInfo.setRssi(newRssi);
+		    int newSignalLevel = WifiManager.calculateSignalLevel(newRssi, WifiManager.RSSI_LEVELS);
+		    if (newSignalLevel != mLastSignalLevel) {
+		        if (mWifiExt.hasCustomizedAutoConnect()) {
+		            if (newRssi < WEAK_SIGNAL_THRESHOLD) {
+		                Xlog.d(TAG, "Rssi < -85, scan for checking signal!");
+		                mDisconnectNetworkId = mLastNetworkId;
+		                mScanForWeakSignal = true;
+		                startScan(true);
+		            }
+		        }
+		        sendRssiChangeBroadcast(newRssi);						//这里调用下面发送广播的方法
+		    }
+		    mLastSignalLevel = newSignalLevel;
+		} else {
+		    mWifiInfo.setRssi(MIN_RSSI);
+		}
+		if (newLinkSpeed != -1) {
+		    mWifiInfo.setLinkSpeed(newLinkSpeed);
+		}
+	}
+
+	private void sendRssiChangeBroadcast(final int newRssi) {
+		Intent intent = new Intent(WifiManager.RSSI_CHANGED_ACTION);
+		intent.addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY_BEFORE_BOOT);
+		intent.putExtra(WifiManager.EXTRA_NEW_RSSI, newRssi);					//发送rssi信号强度
+		mContext.sendStickyBroadcastAsUser(intent, UserHandle.ALL);
+	}
+
+	if(action.equals(WifiManager.RSSI_CHANGED_ACTION)) {
+		mWifiRssi = intent.getIntExtra(WifiManager.EXTRA_NEW_RSSI, -200);
+		mWifiLevel = WifiManager.calculateSignalLevel(mWifiRssi, WifiIcons.WIFI_LEVEL_COUNT); 	//wifi信号强度？？
+	}

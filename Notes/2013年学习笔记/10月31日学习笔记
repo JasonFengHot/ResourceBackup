@@ -1,0 +1,17 @@
+	1.ubuntu网络不可用，只要执行下面的命令就行了
+
+	解决：
+	sudo service network-manager stop
+	sudo rm /var/lib/NetworkManager/NetworkManager.state
+	sudo service network-manager start
+
+	2.虚拟机启动不了？？？？
+
+	解决：
+	sudo /etc/init.d/vboxdrv setup
+
+	3.如何手动设置对话框的边距？？？
+	
+	解决：
+	只要设置对话框的宽度为原始宽度-50就差不多了
+	在dialog中 dialog.getWindow().setLayout(winWidth - 50, dialog.getWindow().getAttributes().height);就行了

@@ -1,0 +1,579 @@
+
+
+apn攻略：
+
+1，百度apn概念：
+
+2：代码相关位置
+
+3：相关url
+
+4:apn type 值：
+
+5：一个完整版的apn配置参数
+
+spn攻略：
+
+1，百度spn概念:
+
+2：代码相关位置
+
+3，虚拟运营商
+
+4：ps下，之前虚拟运营商apn不能正确匹配
+
+5:虚拟运营商apn配置
+
+1，百度apn概念：
+
+APN（Access Point Name），即“接入点名称”，是您在通过手机上网时必须配置的一个参数，它决定了您的手机通过哪种接入方式来访问网络，用来标识GPRS的业务种类，目前分为两大类：CMWAP/UNIWAP/3GWAP（通过GPRS访问WAP业务）、CMNET/UNINET/3GNET（除了WAP以外的服务目前都用CMNET,比如连接因特网等）。 APN的完整说明在3GPP规范TS23.003 Clause 9中进行详细定义及说明。
+
+基本信息
+
+中文名称
+
+接入点
+
+外文名称
+
+Access Point Name
+
+分类
+
+CMWAP/UNIWAP/3GWAP
+
+目录
+
+展开
+
+1 基本概念
+
+2 APN的构成
+
+3 APN类型
+
+4 业务流程
+
+1 基本概念
+
+APN（Access Point Name），即“接入点名称”，是您在通过手机上网时必须配置的一个参数，
+
+APN
+
+它决定了您的手机通过哪种接入方式来访问网络，用来标识GPRS的业务种类，目前分为两大类：CMWAP/UNIWAP/3GWAP（通过GPRS访问WAP业务）、CMNET/UNINET/3GNET（除了WAP以外的服务目前都用CMNET,比如连接因特网等）。
+
+APN的完整说明在3GPP规范TS23.003 Clause 9中进行详细定义及说明。
+
+2 APN的构成
+
+接入点名字（APN Access Point Name）在GPRS骨干网中用来标识要使用的外部PDN网络（即我们常说的Internet），在GPRS网络中代表外部数据网络的总称。APN由以下两部分组成：
+
+- APN网络标识：这部分是必有的，它是由网络运营者分配给ISP或公司的、与其固定Internet域名一样的一个标识。
+
+- APN运营者标识：这部分是可选的，其形式为“xxx.yyy.gprs”（如MNC.MCC.gprs），用于标识归属网络。cmnet.000.460.gprs
+
+APN网络标识通常作为用户签约数据存储在HLR中，用户手机在发起分组数据业务时也可向网络侧提供APN，用于网络侧选择应接入相应的GGSN以及用于GGSN判断接入相应的外部网络。此外，HLR中也可存储一个通配符，这样用户或SGSN就可以选择接入一个没有在HLR中存储的APN。
+
+用户可以通过不同的APN选择GGSN，即用户可以激活多个PDP上下文，每个PDP上下文与一个APN相联系。用户选择不同的APN的目的就是通过不同的GGSN选择外部网络。
+
+APN需要通过DNS进行域名解析才能获取GGSN或外部网络节点的真实的IP地址。
+
+简单来说，APN实际上就是对一个外部PDN（Packet data network）的标识，这些PDN包括企业内部网，Internet，WAP网站，黑莓，行业内部网如公交电力系统等等专用网络。网络侧如果知道MS到底做了激活以后要访问哪个网络，给你分配哪个网段的IP呢（因为每个网络分配的IP可能都是不一样的，有的是私网，有的是公网IP）？这就要靠APN来区分了？现网中，APN=cmnet就代表internet, APN=cmwap就代表专用WAP数据网络，当然各个运营商可能名字不一样，如联通是uniwap,uninet等。
+
+3 APN类型
+
+现在我们涉及到的APN具体有两种，一种是通过手机浏览器上网使用的，另一种是通过客户端软件来登陆服务器。中国联通的2G业务WAP浏览器中使用的APN为“UNIWAP”，3G业务WAP浏览器使用的APN为“3GWAP”；中国联通的2G上公网使用的APN为“UNINET”，3G业务上网卡及上公网使用的APN为“3GNET”。 中国移动上内网的APN为“CMWAP”，上网卡及上公网使用的APN为“CMNET”。 中国电信上内网的APN为“CTWAP”，上网卡及上公网使用的APN为“CTNET”。
+
+好在现在国内销售的手机都已经将APN配置预先做好了，因此您不用为了APN的配置而太担心。
+
+专线APN
+
+根据企业对网络安全的特殊要求，采用了多种安全措施，主要包括：
+
+1.通过一条2M 专线接入运营商GPRS网络，双方互联路由器之间采用私有IP地址进行广域连接，在GGSN与移动公司互联路由器之间采用GRE隧道。
+
+2.为客户分配专用的APN，普通用户不得申请该APN。用于GPRS专网的SIM卡仅开通该专用APN，限制使用其他APN。
+
+3.客户可自建一套RADIUS服务器和DHCP服务器，GGSN向RADIUS服务器提供用户主叫号码，采用主叫号码和用户账号相结合的认证方式；用户通过认证后由DHCP服务器分配企业内部的静态IP地址。
+
+4.端到端加密：移动终端和服务器平台之间采用端到端加密，避免信息在整个传输过程中可能的泄漏。
+
+5.双方采用防火墙进行隔离，并在防火墙上进行IP地址和端口过滤。
+
+4 业务流程
+
+GPRS专网系统终端上网登录服务器平台的流程为：
+
+1）用户发出GPRS登录请求，请求中包括由移动公司为GPRS专网系统专门分配的专网APN；
+
+2）根据请求中的APN，SGSN向DNS服务器发出查询请求，找到与企业服务器平台连接的GGSN，并将用户请求通过GTP隧道封装送给GGSN；
+
+3）GGSN将用户认证信息（包括手机号码、用户账号、密码等）通过专线送至Radius进行认证；
+
+4）Radius认证服务器看到手机号等认证信息，确认是合法用户发来的请求，向DHCP服务器请求分配用户地址；
+
+5）Radius认证通过后，由Radius向GGSN发送携带用户地址的确认信息；
+
+6）用户得到了IP地址，就可以携带数据包，对GPRS专网系统信息查询和业务处理平台进行访问。
+
+APN的技术
+
+从运营商角度看，APN就是一个逻辑名字，接入点，APN一般都部署在GGSN设备上或者逻辑连接到GGSN上，用户使用GPRS上网时，都通过GGSN代理出去到外部网络，
+
+因此，APN设置，过滤，统计等等，就成为一个对GPRS计费，GPRS资费有重要参考价值的参数之一（因为APN可以区分一个业务或者外部网络）。
+
+此外，3gpp最新版本TS说明，gprs上网还可以基于APN实现内容计费。
+
+Application Serial Number （APN）
+
+常见于美国专利，是美国专利局在收到所申请专利后给的一个顺序排号。在专利工作中常会用到。
+
+2：代码相关位置：
+
+配置文件 apns-conf.xml alps\mediatek\frameworks\base\telephony\etc
+
+解析配置文件代码 TelephonyProvider.java alps\packages\providers\TelephonyProvider\src\com\android\providers\telephony
+
+此文件里面的loadApns函数getRow函数是关键的解析过程 insertAddingDefaults 
+
+生成的文档db /data/data/com.android.providers.telephony/databases/telephony.db 打开查看tables下面的carriers,可以看到所有的数据
+
+cmd使用（eng版本）
+
+adb remount
+
+adb pull /data/data/com.android.providers.telephony/databases/telephony.db d:\telephony.db
+
+导出db文档
+
+Telephony.java alps\frameworks\opt\telephony\src\java\android\provider 类 Carriers里面包含所有的列名称。
+
+3：相关url  Telephony.Carriers.CONTENT_URI
+
+插入修改数据的方法:
+
+Uri uri = Uri.withAppendedPath(Telephony.Carriers.CONTENT_URI, "current");
+
+ContentValues map = new ContentValues();
+
+String operatorNumeric = mSimRecords.getOperatorNumeric();
+
+map.put(Telephony.Carriers.NUMERIC, operatorNumeric);
+
+4:apn type 值：
+
+/**
+
+* APN types for data connections.  These are usage categories for an APN
+
+* entry.  One APN entry may support multiple APN types, eg, a single APN
+
+* may service regular internet traffic ("default") as well as MMS-specific
+
+* connections.<br/>
+
+* APN_TYPE_ALL is a special type to indicate that this APN entry can
+
+* service all data connections.
+
+*/
+
+public static final String APN_TYPE_ALL = "*";
+
+/** APN type for default data traffic */
+
+public static final String APN_TYPE_DEFAULT = "default";
+
+/** APN type for MMS traffic */
+
+public static final String APN_TYPE_MMS = "mms";
+
+/** APN type for SUPL assisted GPS */
+
+public static final String APN_TYPE_SUPL = "supl";
+
+/** APN type for DUN traffic */
+
+public static final String APN_TYPE_DUN = "dun";
+
+/** APN type for HiPri traffic */
+
+public static final String APN_TYPE_HIPRI = "hipri";
+
+/** APN type for FOTA */
+
+public static final String APN_TYPE_FOTA = "fota";
+
+/** APN type for IMS */
+
+public static final String APN_TYPE_IMS = "ims";
+
+/** APN type for CBS */
+
+public static final String APN_TYPE_CBS = "cbs";
+
+/** APN type for IA Initial Attach APN */
+
+public static final String APN_TYPE_IA = "ia";
+
+//MTK-START [mtk04070][111117][ALPS00093395]MTK added
+
+public static final String APN_TYPE_DM = "dm";
+
+public static final String APN_TYPE_WAP = "wap";
+
+public static final String APN_TYPE_NET = "net";
+
+public static final String APN_TYPE_CMMAIL = "cmmail";
+
+public static final String APN_TYPE_TETHERING = "tethering";
+
+public static final String APN_TYPE_RCSE = "rcse";
+
+//MTK-END [mtk04070][111117][ALPS00093395]MTK added
+
+5：一个完整版的apn配置参数
+
+彩信的：  必填写项为：
+
+carrier="Vodafone GR-MMS"
+
+mcc="202"
+
+mnc="05"
+
+apn="mms.vodafone.net"
+
+type="mms"
+
+mmsc为主页内容，有填写，没有不填
+
+----------------------
+
+<apn carrier="Vodafone GR-MMS"
+
+mcc="202"
+
+mnc="05"
+
+apn="mms.vodafone.net"
+
+user="user"
+
+password="pass"
+
+mmsc="http://mms.vodafone.gr"
+
+mmsproxy="213.249.19.49"
+
+mmsport="5080"
+
+type="mms"
+
+/>
+
+其他类别的配置，一般为：
+
+必须要的carrier="MoviStar Internet"
+
+mcc="334"
+
+mnc="030"
+
+apn="internet.movistar.mx"
+
+type="default,supl"
+
+------------------------
+
+<apn carrier="MoviStar Internet"
+
+mcc="334"
+
+mnc="030"
+
+apn="internet.movistar.mx"
+
+proxy="10.2.20.1"
+
+port="80"
+
+user="movistar"
+
+password="movistar"
+
+type="default,supl"
+
+/>
+
+这里注意一个配置：
+
+配置authenticationtype时需要写的为authtype=**,比如authtype="1"
+
+0 (None)
+1 (PAP)
+2 (CHAP)
+3 (PAP or CHAP)
+
+代码注释说明为 TelephonyProvider.java，在这里
+
+// The auth type column can have 4 values: 0 (None), 1 (PAP), 2 (CHAP)
+
+// 3 (PAP or CHAP). To avoid breaking compatibility, with already working
+
+// APNs, the unset value (-1) will be used. If the value is -1.
+
+// the authentication will default to 0 (if no user / password) is specified
+
+// or to 3. Currently, there have been no reported problems with
+
+// pre-configured APNs and hence it is set to -1 for them. Similarly,
+
+// if the user, has added a new APN, we set the authentication type
+
+// to -1.
+
+spn
+
+1:百度spn概念
+
+SPN（Service Provider name）编辑
+
+本词条缺少信息栏、名片图，补充相关内容使词条更完整，还能快速升级，赶紧来编辑吧！
+
+运营商名称
+
+SPN--Service Provider Name 运营商名称，其内容是写在USIM/SIM卡中EFspn字段中的，与当前注册的网络无关。如中国移动卡，漫游到任何网络，其SPN都是「CMCC」或「中国移动」；[1] 
+
+2：代码相关位置
+
+spn-conf.xml virtual-spn-conf-by-efspn.xml （这个后面再说）alps\mediatek\frameworks\base\telephony\etc
+
+SpnOverride.java alps\frameworks\opt\telephony\src\java\com\android\internal\telephony\uicc  PARTNER_SPN_OVERRIDE_PATH PARTNER_VIRTUAL_SPN_BY_EF_SPN_OVERRIDE_PATH
+
+关注加载点     private SpnOverride() ---loadSpnOverrides();  loadVirtualSpnOverridesByEfSpn();
+
+RIL.java 里面，使用点 alps\frameworks\opt\telephony\src\java\com\android\internal\telephony lookupOperatorName函数
+
+这里面你可以克制化，可以让spn依据语言变化，比如     if ((numeric.equals("46000")) || (numeric.equals("46002")) || (numeric.equals("46007")) || (numeric.equals("46008"))) {
+
+operName = context.getText(com.mediatek.R.string.oper_long_46000).toString(); 这样子即可。
+
+分析lookupOperatorName函数，我们可以看出spn得到运营商名字的逻辑顺序
+
+if (mSpnOverride != null) {
+
+mvnoOperName = mSpnOverride.getSpnByEfSpn(numeric, 
+
+mPhone.getMvnoPattern(PhoneConstants.MVNO_TYPE_SPN));  --先从这里获取，后面追加这个描述介绍
+
+riljLog("the result of searching mvnoOperName by EF_SPN: " + mvnoOperName);
+
+if(mvnoOperName == null) // determine by IMSI
+
+mvnoOperName = mSpnOverride.getSpnByImsi(numeric, mPhone.getSubscriberId());
+
+riljLog("the result of searching mvnoOperName by IMSI: " + mvnoOperName);
+
+if(mvnoOperName == null)
+
+mvnoOperName = mSpnOverride.getSpnByEfPnn(numeric, 
+
+mPhone.getMvnoPattern(PhoneConstants.MVNO_TYPE_PNN));
+
+riljLog("the result of searching mvnoOperName by EF_PNN: " + mvnoOperName);
+
+if(mvnoOperName == null)
+
+mvnoOperName = mSpnOverride.getSpnByEfGid1(numeric, 
+
+mPhone.getMvnoPattern(PhoneConstants.MVNO_TYPE_GID));
+
+riljLog("the result of searching mvnoOperName by EF_GID1: " + mvnoOperName);
+
+if(mvnoOperName != null)
+
+operName = mvnoOperName;
+
+}        
+
+if (mvnoOperName == null && desireLongName) { // MVNO-API     
+
+// ALFMS00040828 - add "46008"
+
+if ((numeric.equals("46000")) || (numeric.equals("46002")) || (numeric.equals("46007")) || (numeric.equals("46008"))) {
+
+operName = context.getText(com.mediatek.R.string.oper_long_46000).toString();
+
+} else if (numeric.equals("46001")) {
+
+operName = context.getText(com.mediatek.R.string.oper_long_46001).toString();
+
+} else if (numeric.equals("46003")) {
+
+operName = context.getText(com.mediatek.R.string.oper_long_46003).toString();
+
+如果前面的未拿到运营商名字mvnoOperName==null，则会走到后面的条件，走mSpnOverride.getSpn(numeric);或者直接未查到.
+
+一般的spn则流程基本完成了。
+
+3，虚拟运营商
+
+虚拟运营商（Virtual Network Operator，VNO）是指没有自己的通讯基础设施，借助传统的电信供应商来实现通讯服务的运营商。虚拟运营商通过向传统运营商租用相关的基础设施，建立具有自己特点的通讯业务，为消费者提供更加个性化的业务。虚拟运营商没有自己的通讯技术设备和技术支持，服务依靠传统运营商来实现。传统的运营商在建立和维护通讯网络上开销巨大，这一概念帮助削减资本支出。工信部在2013年底和2014年初先后向两批共19家民营企业颁发了虚拟运营商牌照。
+
+配置文件virtual-spn-conf-by-efspn.xml alps\mediatek\frameworks\base\telephony\etc
+
+我们打开来看下 <virtualSpnOverride mccmncspn="23401Vectone Mobile" name="Vectone"/> 可以看到比之spn-conf.xml信息上mccmncspn 变为mccmnc ，这里就体现出来了spn的意义了。这一行的意思为Vectone Mobile借着mccmnc = 23401的网，因此此时匹配出来要显示为name后面的信息。
+
+4：ps下，之前虚拟运营商apn不能正确匹配，修改在92kk ，change-id为I2f5f09141e8eccec1a556dfd2a843665fd799b86，原因为匹配语法错误。
+
+相关逻辑代码：ApnSettings.java alps\packages\apps\Settings\src\com\android\settings 代码位置：
+
+private void fillList() {
+
+String where = mExt.getFillListQuery(mNumeric,mSlotId);
+
+Xlog.e(TAG,"fillList where: " + where);
+
+Cursor cursor = getContentResolver().query(mUri, new String[] {
+
+"_id", "name", "apn", "type","sourcetype"}, where, null, null);
+
+cursor = mExt.customizeQueryResult(this,cursor,mUri,mNumeric);
+
+getFillListQuery函数最终调用在：
+
+DefaultApnSettingsExt.java alps\packages\apps\Settings\ext\src\com\mediatek\settings\ext
+
+/** the default implementation is not null ,so when operator part 
+
+*  extends this class to over write it , must need to think that
+
+*  whether call super class's implementaion or not
+
+* */
+
+public String getFillListQuery(String numeric,int slotId) {
+
+// get mvno type and mvno match data    
+
+String sqlStr = "";
+
+try {
+
+ITelephony telephony = ITelephony.Stub.asInterface(ServiceManager.getService(Context.TELEPHONY_SERVICE));
+
+String mvnoType = telephony.getMvnoMatchType(slotId);
+
+String mvnoPattern = telephony.getMvnoPattern(mvnoType,slotId);
+
+// set sql string
+
+sqlStr = " mvno_type=\'" + mvnoType + "\'" + " and mvno_match_data=\'" + mvnoPattern + "\'";
+
+}  catch (android.os.RemoteException e) {
+
+Xlog.d(TAG, "RemoteException " + e);
+
+}
+
+String result = "numeric=\'" + numeric + "\' and ( " + sqlStr + ")";
+
+Xlog.e(TAG,"getQuery result: " + result);
+
+return result;
+
+}
+
+5:虚拟运营商apn配置
+
+在原有apn里面增加
+
+mvno_type="spn"  --这里类别是spn
+
+mvno_match_data="Noverca"  --这里是自己的spn值，apn查找时是依据mccmnc值+mvno_type+mvno_match_data并列匹配的。
+
+除了spn配置方案外，还有IMSI和GID1
+
+详细的配置为：
+
+一，KK平台通过SPN方式识别MVNO卡配置方法： 
+
+先在源码中的 \mediatek\frameworks\base\telephony\etc\virtual-spn-conf-by-efspn.xml 根据虚拟运营商告知的SPN在该文件内按需添加mccmnc 和 spn的相关数据，如22201的一个虚拟运营商是Noverca，若在该xml里面没有这个mccmncspn信息则添加一条： 
+
+<virtualSpnOverride mccmncspn="22201Noverca" name="Noverca"/> 
+
+再在apns-conf.xml中添加该虚拟运营商的apn信息，如： 
+
+<apn carrier="NOVERCA PPPPPP" 
+
+mcc="222" 
+
+mnc="01" 
+
+apn="PPPPPP" 
+
+type="default,supl" 
+
+mvno_type="spn" 
+
+mvno_match_data="Noverca" 
+
+/> 
+
+二，KK平台通过IMSI方式识别MVNO卡配置方法： 
+
+先在源码中的 \mediatek\frameworks\base\telephony\etc\virtual-spn-conf-by-imsi.xml 根据虚拟运营商告知的IMSI虚拟运营商字段在该文件内按需添加imsipattern数据，如20801的一个虚拟运营商是在imsi第9位和10位是67来识别MVNO卡，若在该xml里面没有这个imsipattern信息则添加一条（x表示通配符）： 
+
+<virtualSpnOverride imsipattern="20801xxx67xxxxx" name="Virgin"/> 
+
+再在apns-conf.xml中添加该虚拟运营商的apn信息，如： 
+
+<apn carrier="Virgin PPPPPP" 
+
+mcc="208" 
+
+mnc="01" 
+
+apn="PPPPPP" 
+
+user="orange" 
+
+password="orange" 
+
+type="default,supl" 
+
+mvno_type="imsi" 
+
+mvno_match_data="20801xxx67xxxxx" 
+
+/> 
+
+三，KK平台通过GID1方式识别MVNO卡配置方法： 
+
+先在源码中的 \mediatek\frameworks\base\telephony\etc\virtual-spn-conf-by-efgid1.xml 根据虚拟运营商告知的GID1在虚拟运营商sim卡的值，在该文件内按需添加mccmncgid1数据，如23430的一个虚拟运营商的gid1栏位是2343040，若在该xml里面没有这个mccmncgid1信息则添加一条： 
+
+<virtualSpnOverride mccmncgid1="2343040" name="Virgin"/> 
+
+再在apns-conf.xml中添加该虚拟运营商的apn信息，如： 
+
+<apn carrier="PPPPPP" 
+
+mcc="234" 
+
+mnc="30" 
+
+apn="PPPPPP" 
+
+user="PP" 
+
+password="PP" 
+
+type="default,supl" 
+
+mvno_type="gid" 
+
+mvno_match_data="2343040" 
+
+/> 
+

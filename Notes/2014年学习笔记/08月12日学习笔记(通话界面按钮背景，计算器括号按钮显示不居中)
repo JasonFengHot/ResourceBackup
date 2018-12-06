@@ -1,0 +1,11 @@
+	1.Bug13555 通话界面上的拨号盘按钮会有斜条纹？？？
+
+	解决：
+	将packages/apps/InCallUI/res/layout/call_button_fragment.xml中的dialpadButton的background修改为android:background="@drawable/btn_compound_dialpad"
+
+	2.Bug14154 修改计算器横屏界面括号按钮显示不居中？？？
+
+	解决：
+	//packages/apps/Calculator/res/layout-land/simple_pad.xml
+	将 leftParen,rightParen 这两个按钮的字体大小修改 40dp 就行了
+	//这个代码其实有点问题，可以研究一下

@@ -1,0 +1,5 @@
+1.Android重写view时 onAttachedToWindow () 和 onDetachedFromWindow () ??
+
+解决：
+当此view附加到窗体上时调用该方法。在这时，view有了一个用于显示的Surface，将开始绘制。
+注意，此方法要保证在调用onDraw(Canvas) 之前调用，但可能在调用 onDraw(Canvas) 之前的任何时刻，包括调用 onMeasure(int, int) 之前或之后。

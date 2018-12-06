@@ -1,0 +1,15 @@
+问题1.修改驱动键值???
+
+解决：
+alps/mediatek/kernel/include/linux/kpd.h
+alps/mediatek/kernel/drivers/keypad/kpd.c
+{
+	{
+		if(linux_keycode==KEY_STAR)				
+			linux_keycode=KEY_FN;//KEY_FN;
+		if(linux_keycode==KEY_POUND)				
+			linux_keycode=KEY_TAB;
+	}		
+}	
+	
+alps/mediatek/platform/mt6572/lk/include/linux/input.h

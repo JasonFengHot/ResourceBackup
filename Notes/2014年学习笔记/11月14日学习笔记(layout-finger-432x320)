@@ -1,0 +1,11 @@
+	1.Bug21980 : [bug](语言)多种语言下短信编辑页面提示文字显示不全???
+
+	解决：
+	M:packages/apps/Mms/res/layout-finger-432x320/recipients_editor.xml				//这个文件为什么是在 layout-finger-432x320 这个目录下的？？？
+	将 recipients_editor 的 layout_height 从 45dp 改为 wrap_content
+
+	2.Bug21989 : [bug](语言)多种语言下，文字与按钮重叠
+
+	解决：
+	M:frameworks/base/packages/SystemUI/res/layout-port/application_guide.xml
+	修改 application_guide.xml 的布局以便显示

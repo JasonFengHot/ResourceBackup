@@ -1,0 +1,59 @@
+1.Skype通话过程中状态灯一直闪蓝色的问题？？？？
+
+//Log中有
+01-12 17:11:10.626   658   658 D NotificationService: useDefaultSound=false
+01-12 17:11:10.626   658   658 D NotificationService: notification.sound=null
+01-12 17:11:10.626   658   658 I System.out: rongweidi ledARGB=-16776961--ledno.contentIntent=PendingIntent{42dfb798: PendingIntentRecord{423c9168 com.skype.rover startActivity}}
+01-12 17:11:10.627   658   690 I WindowManager: Losing focus: Window{428b2680 u0 com.skype.rover/com.skype.android.app.calling.PreCallActivity}
+01-12 17:11:10.627   658   658 D NotificationService: notification setFlashing ledOnMS = 500 ledOffMS = 500
+01-12 17:11:10.627   658   658 D LightsService: setLight_native: light=4, colorARGB=0xff0000ff, flashMode=1, onMS=500, offMS=500, brightnessMode=0
+01-12 17:11:10.627   658   658 D lights  : set_led_state colorRGB=00000000, onMS=0, offMS=0
+01-12 17:11:10.627   658   658 D lights  : set_led_state colorRGB=FF0000FF, onMS=500, offMS=500
+01-12 17:11:10.627   658   658 D lights  : blink_blue, level=255, onMS=500, offMS=500
+
+//com.skype.android.app.calling.CallAgent.java 文件中有
+  private NotificationCompat.Builder buildNotification(Conversation paramConversation){
+    int i;
+    PendingIntent localPendingIntent2;
+    int k;
+    String str;
+    NotificationCompat.Builder localBuilder = new NotificationCompat.Builder(this.context);
+    localBuilder.setOnlyAlertOnce(true);
+    localBuilder.setOngoing(true);
+    if (getUserPreferences().isNotificationLightEnabled()){
+      i = 500;
+      localBuilder.setLights(-16776961, i, i);						//这里就是设置LED灯颜色的地方
+      localBuilder.setLargeIcon(this.imageCache.a(paramConversation));
+      int j = paramConversation.getObjectID();
+      Intent localIntent1 = new Intent(this.context, CallActivity.class);
+      localIntent1.putExtra("com.skype.objId", j);
+      localIntent1.addFlags(131072);
+      localIntent1.addFlags(2097152);
+      localBuilder.setContentIntent(PendingIntent.getActivity(this.context, j, localIntent1, 268435456));
+      Intent localIntent2 = new Intent("endCall");
+      localIntent2.putExtra("com.skype.objId", j);
+      PendingIntent localPendingIntent1 = PendingIntent.getBroadcast(this.context, j, localIntent2, 268435456);
+      localBuilder.addAction(2130837697, this.context.getString(2131165442), localPendingIntent1);
+      Intent localIntent3 = new Intent("muteCall");
+      localIntent3.putExtra("com.skype.objId", j);
+      localPendingIntent2 = PendingIntent.getBroadcast(this.context, j, localIntent3, 268435456);
+      if (!(paramConversation.getLiveIsMutedProp()))
+        break label273;
+      k = 2130837733;
+      str = this.context.getString(2131165445);
+    }
+    while (true)
+    {
+      while (true)
+      {
+        localBuilder.addAction(k, str, localPendingIntent2);
+        return localBuilder;
+        i = 0;
+      }
+      label273: k = 2130837729;
+      str = this.context.getString(2131165443);
+    }
+  }
+
+2.
+

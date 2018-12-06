@@ -1,0 +1,84 @@
+1.开机之后蓝牙报错？？？
+
+Log:
+Backtrace: 
+Process: com.android.bluetooth
+Flags: 0xc8be45
+Package: com.android.bluetooth v19 (4.4.2-eng.zq.1415855271)
+Build: TECNO/up09_tecno_h5kk/up09_tecno_h5kk:4.4.2/KOT49H/1415799978:eng/test-keys
+
+java.lang.NullPointerException
+	at com.android.bluetooth.btservice.AdapterProperties.setScanMode(AdapterProperties.java:144)
+	at com.android.bluetooth.btservice.AdapterProperties.onBluetoothReady(AdapterProperties.java:543)
+	at com.android.bluetooth.btservice.AdapterState$PendingCommandState.processMessage(AdapterState.java:288)
+	at com.android.internal.util.StateMachine$SmHandler.processMsg(StateMachine.java:966)
+	at com.android.internal.util.StateMachine$SmHandler.handleMessage(StateMachine.java:789)
+	at android.os.Handler.dispatchMessage(Handler.java:110)
+	at android.os.Looper.loop(Looper.java:193)
+	at android.os.HandlerThread.run(HandlerThread.java:61)
+
+	2.相机报错？？？
+
+	Log:
+	Backtrace: 
+	Process: com.android.gallery3d
+	Flags: 0x98bc45
+	Package: com.android.gallery3d v40030 (1.1.40030)
+	Build: TECNO/up09_tecno_h5kk/up09_tecno_h5kk:4.4.2/KOT49H/1415758308:user/test-keys
+
+	java.lang.NullPointerException
+		at com.android.camera.ListPreference.getEntry(ListPreference.java:171)
+		at com.android.camera.ui.InLineSettingSublist.updateView(InLineSettingSublist.java:79)
+		at com.android.camera.ui.InLineSettingItem.reloadPreference(InLineSettingItem.java:112)
+		at com.android.camera.ui.InLineSettingItem.initialize(InLineSettingItem.java:90)
+		at com.android.camera.ui.SettingListLayout$SettingsListAdapter.getView(SettingListLayout.java:126)
+		at android.widget.AbsListView.obtainView(AbsListView.java:2338)
+		at android.widget.ListView.makeAndAddView(ListView.java:1813)
+		at android.widget.ListView.fillDown(ListView.java:698)
+		at android.widget.ListView.fillGap(ListView.java:662)
+		at android.widget.AbsListView.trackMotionScroll(AbsListView.java:5529)
+		at android.widget.AbsListView.scrollIfNeeded(AbsListView.java:3366)
+		at android.widget.AbsListView.onTouchMove(AbsListView.java:3802)
+		at android.widget.AbsListView.onTouchEvent(AbsListView.java:3597)
+		at android.view.View.dispatchTouchEvent(View.java:7790)
+
+	解决：
+	修改 Camera 下的数组的值就可以了
+
+3.google开机向导可能会报错？？？
+
+Log:
+Backtrace: 
+Process: com.google.android.setupwizard
+Flags: 0x40c8be05
+Package: com.google.android.setupwizard v130 (1.3)
+Build: TECNO/up09_tecno_h5kk/up09_tecno_h5kk:4.4.2/KOT49H/1415885684:eng/test-keys
+
+java.lang.RuntimeException: Unable to start activity ComponentInfo{com.google.android.setupwizard/com.google.android.setupwizard.SetupWizardActivity}: android.content.ActivityNotFoundException: No Activity found to handle Intent { act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10200000 }
+	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:2338)
+	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:2390)
+	at android.app.ActivityThread.access$800(ActivityThread.java:151)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1321)
+	at android.os.Handler.dispatchMessage(Handler.java:110)
+	at android.os.Looper.loop(Looper.java:193)
+	at android.app.ActivityThread.main(ActivityThread.java:5299)
+	at java.lang.reflect.Method.invokeNative(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:515)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:825)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:641)
+	at dalvik.system.NativeStart.main(Native Method)
+Caused by: android.content.ActivityNotFoundException: No Activity found to handle Intent { act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10200000 }
+	at android.app.Instrumentation.checkStartActivityResult(Instrumentation.java:1638)
+	at android.app.Instrumentation.execStartActivity(Instrumentation.java:1430)
+	at android.app.Activity.startActivityForResult(Activity.java:3457)
+	at android.app.Activity.startActivityForResult(Activity.java:3418)
+	at android.app.Activity.startActivity(Activity.java:3660)
+	at android.app.Activity.startActivity(Activity.java:3628)
+	at com.google.android.setupwizard.BaseActivity.onSetupComplete(BaseActivity.java:980)
+	at com.google.android.setupwizard.SetupWizardActivity.onCreate(SetupWizardActivity.java:104)
+	at android.app.Activity.performCreate(Activity.java:5264)
+	at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1088)
+	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:2302)
+	... 11 more
+
+4.

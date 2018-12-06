@@ -1,0 +1,99 @@
+	1.Bug12288 中的铃声和音乐后台播放问题的时候会出现问题？？？
+
+	解决：
+	需要修改packages/providers/mediaprovider/src/com/android/providers/media/RingtonePickerActivity.java
+	需要在onCreate()中发送一个开始播放的广播
+	需要在onDestroy()中发送一个暂停播放的广播
+	if (CMDPAUSE.equals(cmd) || PAUSE_ACTION.equals(action) || AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(action)) {
+		pause();
+		mPausedByTransientLossOfFocus = false;
+	} else if (CMDPLAY.equals(cmd)) {
+		play();
+	}
+
+
+	private static final String SERVICECMD = "com.android.music.musicservicecommand";
+	private static final String CMDNAME = "command";
+	private static final String CMDPAUSE = "pause";
+	//
+	Intent iPause = new Intent(com.android.music.musicservicecommand);
+	iPause.putExtra("command", "pause");
+	sendBroadcast(iPause);
+
+	Intent iPlay = new Intent("com.android.music.musicservicecommand");
+	iPlay.putExtra("command","play");
+	sendBroadcast(iPlay);
+
+	    2.修改关机充电时候图标乱的问题？？
+
+	    解决：
+	    Submitter：
+	        zhangqi      
+	    checker:
+	        rongweidi         
+	    Bug：
+	        Bug12247(No9.Power off charging animation is wrong)
+	    Files: 
+	        M:mediatek/custom/common/lk/include/target/cust_display.h
+	    Comment:
+	    经常会出现开机logo显示正确，而关机充电图标显示乱，原因是我们少修改了一个文件(mediatek/custom/common/lk/include/target/cust_display.h)
+	    以tecno的X35为例：
+	    config文件中BOOT_LOGO=hvga_polish_x35
+	    tecnoD7项目是FWVGA的分辨率，因此需要在cust_display.h的FWVGA最后添加一项
+	    #elif defined(HVGA) || defined(CU_HVGA) || defined(CMCC_HVGA)|| defined(HVGA_UP11)||defined(HVGA_BRITISH_X35) || defined(HVGA_SYM_W16) || defined(HVGA_DDM35) || defined(HVGA_POLISH_X35)
+	    注：BOOT_LOGO中定义的是小写的，而cust_display.h中需要写成大写的
+	    Date:
+	        2013/10/16
+
+3.
+##################Bug12247 zhangqi modified for HDR 2013/10/15:begin ##########################
+$(shell cp $(TOPDIR)mediatek/config/$(PROJECT)/sagereal_copy/camera/up11_ModePicker.java 		$(TOPDIR)packages/apps/Camera/src/com/android/camera/manager/ModePicker.java)
+##################Bug12247 zhangqi modified for HDR 2013/10/15:end ##########################
+
+Submitter：
+    zhangqi      
+checker:
+    rongweidi         
+Bug：
+    Bug12247
+Files: 
+    M：mediatek/custom/common/lk/include/target/cust_display.h
+Comment:
+    No.7 The camera has no full screen mode
+	前置摄像头像素太低，不会显示全屏预览菜单，不做修改
+    No.8 NO HDR mode
+	硬件不支持，不做修改
+    No.9 Power off charging animation is wrong	
+	经常会出现开机logo显示正确，而关机充电图标显示乱，原因是我们少修改了一个文件(mediatek/custom/common/lk/include/target/cust_display.h)
+	以tecno的X35为例：
+	config文件中BOOT_LOGO=hvga_polish_x35
+	tecnoD7项目是FWVGA的分辨率，因此需要在cust_display.h的FWVGA最后添加一项
+	#elif defined(HVGA) || defined(CU_HVGA) || defined(CMCC_HVGA)|| defined(HVGA_UP11)||defined(HVGA_BRITISH_X35) || defined(HVGA_SYM_W16) || defined(HVGA_DDM35) || defined(HVGA_POLISH_X35)
+	注：BOOT_LOGO中定义的是小写的，而cust_display.h中需要写成大写的
+Date:
+    2013/10/16
+
+Dear Supporter:
+貌似现在问题更严重了，取消了之后都不能下载了！
+我已上传了最新的log，请尽快反馈！
+期待您的答复！
+
+	4.修改音量控制面板？？？？
+
+	解决：
+	Submitter：
+	    zhangqi      
+	checker:
+	    rongweidi         
+	Bug：
+	    Bug11129
+	Files: 
+	    M:mediatek/build/custgen.mk
+	    M:mediatek/config/sr_common_copy/screen_common/symbols.xml
+	    M:mediatek/config/up07_id_fly_polish_x55/sagereal_copy/up07_VolumePanel.java
+	    A:mediatek/config/up07_id_fly_polish_x55/sagereal_copy/up07_volume_adjust.xml
+	    A:mediatek/config/up07_id_fly_polish_x55/sagereal_copy/up07_volume_adjust_item.xml
+	Comment:
+	    [需求]Display icon on volume adjustment bar to change all volumes
+	Date:
+	    2013/10/17

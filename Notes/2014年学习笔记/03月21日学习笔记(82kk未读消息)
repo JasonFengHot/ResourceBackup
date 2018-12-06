@@ -1,0 +1,21 @@
+	1.如何修改tecno_H5桌面Widget上am,pm的阿木哈拉语翻译？？？
+
+	解决：
+	在packages/apps/TimeWidget2下面，而不是在packages/apps/DeskClock下面
+
+	2.目前短信的未读消息可以显示出来了，但Phone的未读消息还没有显示出来？？？？
+
+	解决：
+	将packages/apps/Launcher3/res/xml/unread_support_shortcuts.xml中的
+	com.android.contacts
+	com.android.contacts.activities.DialtactsActivity
+	改为
+	com.android.dialer
+	com.android.dialer.DialtactsActivity
+
+	3.在Launcher界面上接受到消息更新未读消息之后会出现异常？？？类型转换异常
+
+	解决：
+	将AppsCustomizePagedView	4269行		PagedViewCellLayout cl = (PagedViewCellLayout) getPageAt(i);
+	改为Page page = (Page)getPageAt(i);	//这样就不会出现转换异常了
+

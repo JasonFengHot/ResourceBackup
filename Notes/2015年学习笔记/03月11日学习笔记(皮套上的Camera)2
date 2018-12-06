@@ -1,0 +1,44 @@
+	1.如何使用Canvas绘制封闭图形？？？
+
+	解决：
+	Path mPath = new Path();
+	mPath.moveTo(x, y);
+	mPath.lineTo(x + dWidth, y);
+	mPath.lineTo(x + dWidth + dx, y + dy);
+	mPath.lineTo(x + dx, y + dy);
+	mPath.lineTo(x, y);
+	mPath.close();
+	canvas.drawPath(mPath,mPaint);
+
+2.Shutter Button为什么在下面？？？
+
+解决：
+<style name="ShutterGroup" parent="ScreenMargin">
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_gravity">bottom|center_horizontal</item>		//这个属性将 shutter_button 设置到屏幕下方，居中
+    <item name="android:gravity">center</item>
+    <item name="android:background">@drawable/bg_shutter_background</item>
+    <item name="android:orientation">horizontal</item>
+</style>
+
+3.隐藏Mode Picker？？？？？
+
+解决：
+packages/apps/Camera/res/layout-port/mode_picker.xml	中有
+<LinearLayout android:id="@+id/mode_picker"
+    style="@style/ModePickerGroup"
+    android:splitMotionEvents="false">
+</LinearLayout>
+<style name="ModePickerGroup">
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:orientation">vertical</item>
+    <item name="android:gravity">center_horizontal</item>
+</style>
+
+packages/apps/Camera/src/com/android/camera/manager/PickerManager.java
+
+4.合上皮套开启录像功能之后，过5秒之后还是会灭屏？？？
+
+5.

@@ -1,0 +1,85 @@
+1.分享联系人会出现 SD Card ？？？？
+
+Uri shareUri = Uri.withAppendedPath(Contacts.CONTENT_VCARD_URI, mContactData.getLookupKey());
+final Intent intent = new Intent(Intent.ACTION_SEND);
+if (mContactData.isUserProfile()) {
+    shareUri = getPreAuthorizedUri(shareUri);
+    intent.putExtra("userProfile", "true");
+} else {
+    intent.putExtra("contactId", String.valueOf(mContactData.getContactId()));
+}
+intent.setType(Contacts.CONTENT_VCARD_TYPE);  
+intent.putExtra(Intent.EXTRA_STREAM, shareUri);
+intent.putExtra(VCardCommonArguments.ARG_CALLING_ACTIVITY, PeopleActivity.class.getName());
+final Intent chooseIntent = Intent.createChooser(intent, mContext.getText(R.string.share_via));
+try {
+    mContext.startActivity(chooseIntent);
+} catch (ActivityNotFoundException ex) {
+    Toast.makeText(mContext, R.string.share_error, Toast.LENGTH_SHORT).show();
+}
+
+在 packages/apps/contacts/AndroidManifest.xml 文件中有
+<activity android:name="com.mediatek.contacts.ShareContactViaSDCardActivity"
+	android:label="@string/imexport_bridge_sd_card"
+	android:icon="@drawable/mtk_contact_sd_card_icon"
+	android:configChanges="orientation|keyboardHidden"
+	android:theme="@style/BackgroundOnlyTheme" >
+	<intent-filter>
+		<action android:name="android.intent.action.SEND"/>
+		<category android:name="android.intent.category.DEFAULT" />
+		<data android:mimeType="text/x-vcard" /> <!-- Modify by shengjun for redmine5910 -->
+		<!--<data android:mimeType="vnd.android.cursor.item/contact" android:host="com.android.contacts" /> -->
+	</intent-filter>
+</activity>
+
+不能将 AndroidManifest.xml 中的 intent-filter 去掉
+只能在ResolverActivity.java文件的bindView()的地方判断，判断方法如下
+StorageManager storageManager = (StorageManager)mContext.getSystemService(Context.STORAGE_SERVICE);
+String volumeState = storageManager.getVolumeState("/storage/sdcard1");		//SD卡路径
+if(volumeState.equalsIgnoreCase("mounted")){ ... }
+
+
+
+2.
+将DataRowHandlerForPhoneNumber.java (alps\packages\providers\contactsprovider\src\com\android\providers\contacts)中
+
+private void updatePhoneLookup(SQLiteDatabase db, long rawContactId, long dataId, String number, String numberE164) {
+	mSelectionArgs1[0] = String.valueOf(dataId);
+	db.delete(Tables.PHONE_LOOKUP, PhoneLookupColumns.DATA_ID + "=?", mSelectionArgs1);
+	if (number != null) {
+		String normalizedNumber = PhoneNumberUtils.normalizeNumber(number);
+		if (!TextUtils.isEmpty(normalizedNumber)) {
+			ContentValues phoneValues = new ContentValues();
+			phoneValues.put(PhoneLookupColumns.RAW_CONTACT_ID, rawContactId);
+			phoneValues.put(PhoneLookupColumns.DATA_ID, dataId);
+			phoneValues.put(PhoneLookupColumns.NORMALIZED_NUMBER, normalizedNumber);
+			phoneValues.put(PhoneLookupColumns.MIN_MATCH,
+			PhoneNumberUtils.toCallerIDMinMatch(normalizedNumber));
+			db.insert(Tables.PHONE_LOOKUP, null, phoneValues);
+			if (numberE164 != null && !numberE164.equals(normalizedNumber)) {
+				phoneValues.put(PhoneLookupColumns.NORMALIZED_NUMBER, numberE164);
+				phoneValues.put(PhoneLookupColumns.MIN_MATCH,
+				PhoneNumberUtils.toCallerIDMinMatch(numberE164));
+				db.insert(Tables.PHONE_LOOKUP, null, phoneValues);
+			}
+		}
+	}
+}
+
+修改为
+private void updatePhoneLookup(SQLiteDatabase db, long rawContactId, long dataId, String number, String numberE164) {
+	mSelectionArgs1[0] = String.valueOf(dataId);
+	db.delete(Tables.PHONE_LOOKUP, PhoneLookupColumns.DATA_ID + "=?", mSelectionArgs1);
+	if (number != null) {
+		ContentValues phoneValues = new ContentValues();
+		phoneValues.put(PhoneLookupColumns.RAW_CONTACT_ID, rawContactId);
+		phoneValues.put(PhoneLookupColumns.DATA_ID, dataId);
+		phoneValues.put(PhoneLookupColumns.NORMALIZED_NUMBER, number);
+		phoneValues.put(PhoneLookupColumns.MIN_MATCH,
+		PhoneNumberUtils.toCallerIDMinMatch(number));
+		db.insert(Tables.PHONE_LOOKUP, null, phoneValues);
+	}
+}
+这种修改方法只能在插入数据库的时候将联系人改为*611,在查询611匹配的时候还是会匹配到*611
+
+

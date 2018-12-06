@@ -1,0 +1,11 @@
+1.Bug
+
+2.Bug21336 添加浏览器标签???
+
+3.如何隐藏SIM management???
+
+4.Bug21510 [Bug](通话)通话时的录音文件以视频格式打开???
+
+在packages\services\telephony\src\com\mediatek\phone\recording\PhoneRecorder.java 文件中有
+startRecording(MediaRecorder.OutputFormat.THREE_GPP, ".3gpp");
+设计如此，不做修改。

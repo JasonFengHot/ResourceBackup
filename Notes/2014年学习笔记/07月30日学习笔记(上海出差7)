@@ -1,0 +1,61 @@
+1.
+//IGraph.java
+public interface IGraph{
+	void onPaint();
+	void paint();
+}
+
+//Shape.java
+public abstract class Shape implements IGraph{
+	Graphics m_gr;
+	public Shape(Graphics gr){
+		m_gr = gr;
+	}
+	public void onPaint(){	//4.调用这个方法，画背景
+		m_gr.setColor(Color.black)
+		m_gr.fillRect(10,30,200,100);
+	}
+	public void paint(){
+		onPaint();			//2.在这里调用onPaint()函数
+	}
+}
+
+//Bird.java
+public Bird extends Shape{
+	Graphics m_gr;
+	public Bird(Graphics gr){
+		super(gr)
+		m_gr = gr;
+	}
+	public void onPaint(){	//3.调用这个方法
+		super.onPaint();	//4.调用Shape类中的onPaint()方法
+							//5.调用下面的方法画海鸥
+		m_gr.setColor(Color.CYAN);
+		m_gr.drawArc(30,80,90,110,40,100);
+		m_gr.drawArc(88,93,90,100,40,80);
+		m_gr.setColor(Color.WHITE);
+		m_gr.drawArc(30,55,90,150,35,75);
+		m_gr.drawArc(90,80,90,90,40,80);
+	}
+}
+
+class JP extends JPanel{
+	public void paintComponent(Graphics gr){
+		super.paintComponents(gr);
+		IGraph cc = new Bird(gr);
+		cc.paint();			//1.调用pain()方法
+	}
+}
+
+class JMain extends JFrame{
+	public JMain(){
+		setTitle("");
+		setSize(350,250);
+	}
+	public static void main(String[] args){
+		JMain frm = new JMain();
+		JP panel = new JP();
+		frm.add(panel);
+		frm.setVisible(true);
+	}
+}

@@ -1,0 +1,92 @@
+	1.根据控件的ID值获取控件的ID名称？？
+
+	解决：
+	private String getNameById(int id) {
+		Resources r = getResources();
+		String pkgname = "";
+		String typename = "";
+		String entryname = "";
+		if (id != 0 && r != null) {
+			try {
+				switch (id & 0xff000000) {
+				case 0x7f000000:
+					pkgname = "app";
+					break;
+				case 0x01000000:
+					pkgname = "android";
+					break;
+				default:
+					pkgname = r.getResourcePackageName(id);
+					break;
+				}
+				typename = r.getResourceTypeName(id);
+				entryname = r.getResourceEntryName(id);
+			} catch (Resources.NotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		return entryname;
+	}
+
+		2.修改主菜单页面控制和功能机一样？？
+
+		解决：
+		alps/packages/apps/Launcher3/src/com/android/launcher3/FocusHelper.java
+		handleAppsCustomizeKeyEvent(){
+			switch (keyCode) {
+				case KeyEvent.KEYCODE_DPAD_LEFT:
+				    if (handleKeyEvent) {
+						//Redmine62818 zhangqi modified for workspace focus 2016/06/01:begin
+						if(x == 0 && pageIndex > 0){
+							newParent = getAppsCustomizePage(container, pageIndex - 1);
+							if (newParent != null) {
+								container.snapToPage(pageIndex - 1);
+								child = newParent.getChildAt(iconIndex + 2);
+								if (child != null) {
+									child.requestFocus();
+									return true;
+								}
+							}
+						}
+						//Redmine62818 zhangqi modified for workspace focus 2016/06/01:end
+				    }
+				    ...
+				    wasHandled = true;
+				    break;
+				case KeyEvent.KEYCODE_DPAD_RIGHT:
+				    if (handleKeyEvent) {
+						//Redmine62818 zhangqi modified for workspace focus 2016/06/01:begin
+						if (x == 2 && pageIndex < (pageCount - 1)) {
+							newParent = getAppsCustomizePage(container, pageIndex + 1);
+							if (newParent != null) {
+								container.snapToPage(pageIndex + 1);
+								child = newParent.getChildAt(iconIndex - 2);
+								if (child != null) {
+									child.requestFocus();
+									return true;
+								}
+								child = newParent.getChildAt(0);
+								if (child != null) {
+									child.requestFocus();
+									return true;
+								}
+							}
+						}
+						//Redmine62818 zhangqi modified for workspace focus 2016/06/01:end
+					}
+					...
+			}
+		}
+		
+	3.去掉ID资源编译检查？？
+	
+	解决：
+	alps/vendor/mediatek/proprietary/framework/base/res/android.mk 文件中
+	#include #(LOCAL_PATH)/apicheck.mk
+	
+		4.添加 T9 输入法？？
+	
+		解决：
+		alps/mediatek/config/mt6572/Init_Config.mk
+		alps/mediatek/config/sr72_w_lca/mtk-kpd.kcm
+		alps/mediatek/packages/apps/Todos/src/com/mediatek/todos/EditTodoActivity.java

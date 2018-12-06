@@ -1,0 +1,13 @@
+	1.在安装了Skype之后如何在Phone拨号界面弹出选择phone和skype进行通话的对话框？？？
+
+	解决：
+	修改packages/apps/Contacts/src/com/mediatek/contacts/calloption/ContactsCallOptionHandler.java文件中的onContinueCallProcess()方法中的intent
+	//intent.setAction(Constants.OUTGOING_CALL_RECEIVER);
+	//intent.setClassName(Constants.PHONE_PACKAGE, Constants.OUTGOING_CALL_RECEIVER);
+	//ContactsApplication.getInstance().sendBroadcast(intent);
+	//-----------------将上面那段代码改为下面这段代码，但不知道会有什么影响-----------------
+	intent.setAction(Intent.ACTION_CALL);
+	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	mActivityContext.startActivity(intent);
+
+2.

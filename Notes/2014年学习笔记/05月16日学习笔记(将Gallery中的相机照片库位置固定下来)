@@ -1,0 +1,35 @@
+	1.将Gallery中的Camera固定下来？？？
+
+	解决：
+	LocalAlbum.java
+		@Override
+		public boolean isCameraRoll() {
+			/// M: get default storage path in run time
+			return mBucketId == MediaSetUtils.CAMERA_BUCKET_ID;				//注意这里的BUCKET_ID
+			//String defaultPath = "/storage/sdcard0"+"/DCIM/Camera";		
+			//return mBucketId == GalleryUtils.getBucketId(defaultPath);
+		}
+	MediaSetUtils.java
+		public static int CAMERA_BUCKET_ID = GalleryUtils.getBucketId("/storage/sdcard0" + "/" + BucketNames.CAMERA);	//将这个修改成/storage/sdcard0
+		public static void refreshBucketId() {
+		    CAMERA_BUCKET_ID = GalleryUtils.getBucketId("/storage/sdcard0" + "/DCIM/Camera");							//将这个修改成/storage/sdcard0
+		}
+
+2.蓝牙通话报错Log分析？？？
+
+05-08 18:30:06.874   883   883 E AndroidRuntime: Caused by: java.lang.NullPointerException
+05-08 18:30:06.874   883   883 E AndroidRuntime: 	at android.os.Parcel.readException(Parcel.java:1471)
+05-08 18:30:06.874   883   883 E AndroidRuntime: 	at android.os.Parcel.readException(Parcel.java:1419)
+05-08 18:30:06.874   883   883 E AndroidRuntime: 	at android.bluetooth.IBluetoothHeadset$Stub$Proxy.getConnectionState(IBluetoothHeadset.java:479)
+05-08 18:30:06.874   883   883 E AndroidRuntime: 	at android.bluetooth.BluetoothHeadset.getConnectionState(BluetoothHeadset.java:443)
+05-08 18:30:06.874   883   883 E AndroidRuntime: 	at com.android.phone.BluetoothManager.isBluetoothAvailable(BluetoothManager.java:132)
+05-08 18:30:06.874   883   883 E AndroidRuntime: 	at com.android.phone.AudioRouter.calculateSupportedModes(AudioRouter.java:394)
+05-08 18:30:06.874   883   883 E AndroidRuntime: 	at com.android.phone.AudioRouter.updateAudioModeTo(AudioRouter.java:349)
+05-08 18:30:06.874   883   883 E AndroidRuntime: 	at com.android.phone.AudioRouter.onBluetoothIndicationChange(AudioRouter.java:201)
+05-08 18:30:06.874   883   883 E AndroidRuntime: 	at com.android.phone.BluetoothManager.notifyListeners(BluetoothManager.java:244)
+05-08 18:30:06.874   883   883 E AndroidRuntime: 	at com.android.phone.BluetoothManager.updateBluetoothIndication(BluetoothManager.java:227)
+05-08 18:30:06.874   883   883 E AndroidRuntime: 	at com.android.phone.BluetoothManager$BluetoothBroadcastReceiver.onReceive(BluetoothManager.java:396)
+05-08 18:30:06.874   883   883 E AndroidRuntime: 	at android.app.LoadedApk$ReceiverDispatcher$Args.run(LoadedApk.java:798)
+05-08 18:30:06.874   883   883 E AndroidRuntime: 	... 9 more
+
+这里是不是只要将BluetoothManager

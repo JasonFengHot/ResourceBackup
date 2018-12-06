@@ -1,0 +1,30 @@
+    1.Bug12697 法语状态下MMS添加幻灯片界面有个按钮显示不全？？？
+
+    解决:
+    修改 packages/apps/Mms/res/layout-port-finger-480x320/edit_slide_activity.xml 中remove_slide_button的android:layout_height="70dp"即可
+
+    2.如何过滤出所有动态壁纸的apk????
+
+    解决:
+    public static final String SERVICE_INTERFACE = "android.service.wallpaper.WallpaperService";
+    List<ResolveInfo> list = mPackageManager.queryIntentServices(new Intent(WallpaperService.SERVICE_INTERFACE), PackageManager.GET_META_DATA);
+
+3.SystemUI上不能直接打开手电筒？？？
+
+    4.在FileManager上添加将mp3设置为铃声的功能？？？
+
+    解决:
+    FileManagerOperationActivity.java
+    edit_view_menu.xml
+    MusicUtils.java
+    AndroidManifest.xml
+    strings.xml(有一个字符串<string name="ringtone_set">\"<xliff:g id="name" example="Alarm Bell">%s</xliff:g>\" set as phone ringtone.</string> 还有点问题)
+
+    5.Bug12963 修改VideoCamera.java的布局？？？
+
+    解决:
+    //packages/apps/Camera/res/layout/recoring.xml中
+    R.id.btn_pause_resume        //这个按钮的margin_top太小了，改为583就好多了
+    R.id.shutter_button_video
+
+6.

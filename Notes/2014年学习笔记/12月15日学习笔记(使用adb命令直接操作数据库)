@@ -1,0 +1,21 @@
+1.
+
+//Telenor
+[gsm.sim.operator.alpha]: [Telenor BG]
+[gsm.sim.operator.numeric]: [28405]
+[gsm.sim.operator.iso-country]: [bg]
+[gsm.sim.operator.default-name]: [Telenor BG]
+
+//BG Globul
+[gsm.sim.operator.alpha]: [BG GLOBUL]
+[gsm.sim.operator.numeric]: [28405]
+[gsm.sim.operator.iso-country]: [bg]
+[gsm.sim.operator.default-name]: [Telenor BG]
+
+	2.直接使用 sqlite3 对数据库进行操作？？？
+
+	解决：
+	adb shell sqlite3 /data/data/com.android.launcher3/databases/launcher.db "select * from favorites;"
+	adb shell sqlite3 /data/data/com.android.launcher3/databases/launcher.db ".dump" > sql.txt
+
+3.

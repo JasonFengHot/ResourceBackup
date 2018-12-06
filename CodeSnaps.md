@@ -478,20 +478,17 @@ android.os.SystemProperties.get("ro.build.type", "null");
 
 # ContentObserver监听某个数据库的值
 ``` Java
-private ContentObserver mDownloadsObserver = new DownloadsChangeObserver(Downloads.CONTENT_URI);
-private class DownloadsChangeObserver extends ContentObserver {
-    public DownloadsChangeObserver(Uri uri) {
-        super(new Handler());
-    }
+getContentResolver().registerContentObserver(android.provider.Settings.System.getUriFor(android.provider.Settings.System.AIRPLANE_MODE_ON), false, new android.database.ContentObserver(new android.os.Handler()) {
     @Override
-    public void onChange(boolean selfChange) {
+    public void onChange(boolean selfChange, android.net.Uri uri) {
+        super.onChange(selfChange, uri);
     }
-}
+});
 ```
 
 # Toast
 ``` Java
-android.widget.Toast.makeText(mContext, "", android.widget.Toast.LENGTH_SHORT).show();
+android.widget.Toast.makeText(getContext(), "", android.widget.Toast.LENGTH_SHORT).show();
 ```
 
 高级版

@@ -1,0 +1,33 @@
+	1.Bug1029 将闹铃时的默认选项设置为snooze,目前为do nothing????
+
+	<string-array name="volume_button_setting_entries">
+		<item>Snooze</item>
+		<item>Dismiss</item>
+		<item>Do nothing</item>
+	</string-array>
+	<string-array name="volume_button_setting_values" translatable="false">
+		<item>1</item>
+		<item>2</item>
+		<item>0</item>
+	</string-array>
+
+	解决：
+	只要将packages/apps/DeskClock/res/xml/settings.xml文件中的volume_button_setting中的defaultValue改为1就可以了
+	并将原先的AlarmAlertFullScreen.java中的case 0:去掉就可以了
+
+2.阿拉伯语下的+86号码中的+在前面显示？？？
+
+解决：
+在packages/apps/Settings/src/com/mediatek/gemini/SimInfoPreference.java
+在getView()方法一开始的地方就将mSimNum改为
+mSimNum = android.text.TextUtils.isEmpty(mSimNum) ? mSimNum : '\u202D' + mSimNum + '\u202C';
+	//这样还是会出现问题？显示短号的时候只会显示3个字符
+将表示短号的常量NUMFORMAT的值从4改成5就行了
+	//SIM Manager内部的号码？？
+	/home/zq/zq/tecno_noGMS_l3/packages/apps/Settings/src/com/mediatek/gemini/SimInfoEditor.java
+将SimInfoEditor.java中的 updateInfo()方法中修改为如下代码就行了
+        mSimNumber.setSummary(android.text.TextUtils.isEmpty(siminfo.mNumber) ? siminfo.mNumber : '\u202D' + siminfo.mNumber + '\u202C');
+        mSimNumber.setText(android.text.TextUtils.isEmpty(siminfo.mNumber) ? siminfo.mNumber : '\u202D' + siminfo.mNumber + '\u202C');
+
+
+3.

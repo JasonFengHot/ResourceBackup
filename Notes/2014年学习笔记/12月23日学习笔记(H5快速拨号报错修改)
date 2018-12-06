@@ -1,0 +1,42 @@
+	1.修改H5_JB快速拨号对话框报错？？？
+
+	解决：
+	//packages/apps/Tecno_UE_Contacts/src/com/mediatek/contacts/widget/SpeedDialPad.java
+	@Override
+	public void onClick(View v) {
+		Log.d(TAG, "SpeedDialpad onClick");
+		int id = v.getId();
+		if(id == R.id.speed_one) {
+			//zhangqi modified for speedDialDialog 2014/12/23:begin
+			java.util.List<SIMInfo> mSiminfoList = SIMInfo.getInsertedSIMList(mContext);			//在这里添加一个SIM卡的判断就可以了
+			if(mSiminfoList.size() == 2){
+				Intent intent = new Intent(); 
+				intent.setClassName("com.android.contacts","com.mediatek.contacts.calloption.SimSelectionCallScreen");
+				intent.putExtra("IsMailSet",true);
+				mActivity.startActivity(intent);
+			}
+			if(mSiminfoList.size() == 1){
+				if(mSiminfoList.get(0).mSlot == PhoneConstants.GEMINI_SIM_1){
+					Intent intentCallSetting = new Intent(Intent.ACTION_MAIN);
+					intentCallSetting.setClassName("com.android.phone", "com.mediatek.settings.VoiceMailSetting");
+					intentCallSetting.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					intentCallSetting.putExtra(com.mediatek.phone.GeminiConstants.SLOT_ID_KEY,0);
+					mActivity.startActivity(intentCallSetting);
+				}else if(mSiminfoList.get(0).mSlot == PhoneConstants.GEMINI_SIM_2){
+					Intent intentCallSetting = new Intent(Intent.ACTION_MAIN);
+					intentCallSetting.setClassName("com.android.phone", "com.mediatek.settings.VoiceMailSetting");
+					intentCallSetting.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					intentCallSetting.putExtra(com.mediatek.phone.GeminiConstants.SLOT_ID_KEY,1);
+					mActivity.startActivity(intentCallSetting);
+				}
+			}
+			//zhangqi modified for speedDialDialog 2014/12/23:end
+		    return;
+		 }
+		 OnClickButton(v.getId());        
+	}
+
+2.在H5_JB上添加一个《2G only》的选项？？？
+
+解决：
+

@@ -1,0 +1,52 @@
+	1.(彩信)短信收到后未振动手机?????
+
+	解决：
+	在 packages/apps/Mms/src/com/android/mms/transaction/MessagingNotification.java	文件中的 updateNotification() 方法中添加
+	/// M:Code analyze 014, for brazil request, when calling still have sound @{
+	int state = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getCallState();
+	if (state != TelephonyManager.CALL_STATE_IDLE) {
+		//redmin6305:wangdandan add for mms 2014/05/07 begin
+		//playTone(context, ToneGenerator.TONE_SUP_DIAL);
+		defaults |= Notification.DEFAULT_VIBRATE;
+		//redmin6305:wangdandan add for mms 2014/05/07 end		
+	} else {
+		noti.setSound(TextUtils.isEmpty(ringtoneStr) ? null : Uri.parse(ringtoneStr));
+	}
+
+	2.(通讯录搜索)在通讯录中搜索，输入不同数字结果列表有时会显示号码有时不显示??
+
+	解决：
+		//packages/apps/ContactsCommon/src/com/android/contacts/common/list/ContactListItemView.java
+	public void showSnippet(Cursor cursor, int summarySnippetColumnIndex) {
+		...
+		//add by panminjie for [82 KK BUG LTE 6285] begin					//添加这个方法用于去掉snippet字符串中的空格
+		String snippet = cursor.getString(summarySnippetColumnIndex);
+		String temp = null;
+		if (snippet != null) {
+		    temp = "";
+		    for (int i = 0; i < snippet.length(); i++) {
+		    	if (snippet.charAt(i) != ' ') {
+		    		temp += snippet.charAt(i);
+		    	}
+		    }
+		}
+		//add by panminjie for [82 KK BUG LTE 6285] end
+		...
+	}
+	//将packages/apps/ContactsCommon/src/com/android/contacts/common/util/SearchUtil.java文件中的
+	for (int i = 0; i < value.length(); i = findNextTokenStart(value, i)) {
+	//替换成
+	for (int i = 0; i < value.length(); i++) {
+
+	3.（设置）选择使用网络自动更新时间后，时间不准确
+
+	解决：
+	//jiangcunbin modify by Redmine 6137 Begin
+	private static final String[] SERVERLIST =  new String[]{
+											 //"203.160.128.59",			//将这个服务器去掉
+											 "2.android.pool.ntp.org",
+									         "time-a.nist.gov"
+											 };
+	//jiangcunbin modify by Redmine 6137 Begin
+
+4.

@@ -1,0 +1,38 @@
+    1.使用 database.query 进行模糊查询？？？
+
+    解决：
+    String keyword = "%" + et_keyword.getText().toString().trim() + "%";
+    Cursor cursor = database.query("contacts", new String[] { "name", "phonenum", "email" }, "name like ? or phonenum like ? or email like ?", new String[] { keyword, keyword, keyword }, null, null, null);
+
+    2.wifi直连名称修改？？？
+
+    解决：
+    frameworks\base\wifi\java\android\net\wifi\p2p\WifiP2pService.java 文件中有一个方法 getPersistedDeviceName() 可以返回需要显示的wifi直连名称
+
+    3.如何让 EditText 不自动获取焦点？？？
+
+    解决：
+    在 EditText 的父控件中添加如下代码即可
+    android:focusable="true"  
+    android:focusableInTouchMode="true"
+    例如：
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"                //看这里
+        android:focusableInTouchMode="true"        //和这里
+        android:orientation="horizontal" >
+        <EditText
+            android:id="@+id/et_keyword"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/btn_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/search" />
+    </LinearLayout>
+
+4.

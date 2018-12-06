@@ -1,0 +1,124 @@
+MTK分布式编译提高编译速度(IncredBuild)
+
+一台机子编译一个程序要几个小时，如果利用上开发小组的其它联网电脑实现资源共享提高速度是不错的解决方式
+
+下面说一下怎样利用increbuild实现分布式编译
+
+1.make文件夹里面的Gsm2.mak修改make工具的编译项为IncredBuild增加运行参数
+
+#@echo tools\make.exe -fmake\comp.mak -r -R COMPONENT=$* ... $(strip $(COMPLOGDIR))\$*.log
+
+@if /I %OS% EQU WINDOWS_NT \
+
+(if /I $(BM_NEW) EQU TRUE \
+
+(XGConsole /command="tools\make.exe -fmake\comp.mak -k -r -R $(strip $(CMD_ARGU)) COMPONENT=$* > $(strip $(COMPLOGDIR))\$*.log 2>&1" /NOLOGO /profile="tools\XGConsole.xml") \
+
+else \
+
+(XGConsole /command="tools\make.exe -fmake\comp.mak -r -R $(strip $(CMD_ARGU)) COMPONENT=$* > $(strip $(COMPLOGDIR))\$*.log 2>&1" /NOLOGO /profile="tools\XGConsole.xml") \
+
+) \
+
+else \
+
+(if /I $(BM_NEW) EQU TRUE \
+
+(tools\make.exe -fmake\comp.mak -k -r -R $(strip $(CMD_ARGU)) COMPONENT=$* > $(strip $(COMPLOGDIR))\$*.log) \
+
+else \
+
+(tools\make.exe -fmake\comp.mak -r -R $(strip $(CMD_ARGU)) COMPONENT=$* > $(strip $(COMPLOGDIR))\$*.log) \
+
+)
+
+@type $(strip $(COMPLOGDIR))\$*.log >> $(LOG)
+
+@perl .\tools\chk_lib_err_warn.pl $(strip $(COMPLOGDIR))\$*.log
+
+2.tools工具夹里面加入 XGConsole.xml
+
+内容为
+
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<Profile FormatVersion="1">
+
+<Tools>
+
+<Tool Filename="perl" AllowRemote="true" />
+
+<Tool Filename="make" AllowIntercept="true" />
+
+<Tool Filename="tcc" AllowRemote="true" />
+
+<Tool Filename="tcpp" AllowRemote="true" />
+
+<Tool Filename="armcc" AllowRemote="true" />
+
+<Tool Filename="armcpp" AllowRemote="true" />
+
+<Tool Filename="strcmpex" AllowRemote="true" />
+
+<Tool Filename="warp" AllowRemote="true" />
+
+<Tool Filename="armar" AllowRemote="false" />
+
+<Tool Filename="formelf" AllowRemote="false" />
+
+</Tools>
+
+</Profile>
+
+3.tools工具夹里面的make2.pl修改以下几行
+
+if (($action eq "update") || ($action eq "remake") || ($action eq "new") || ($action eq "bm_new") ||
+
+($action eq "c,r") || ($action eq "c,u")) {
+
+if ($ENV{"NUMBER_OF_PROCESSORS"} > 1) {
+
+if ($fullOpts eq "") {
+
+$fullOpts = "CMD_ARGU=-j$ENV{\"NUMBER_OF_PROCESSORS\"}";
+
+} else {
+
+$fullOpts .= ",-j$ENV{\"NUMBER_OF_PROCESSORS\"}";
+
+}
+
+}
+
+}
+
+改为
+
+if (($action eq "update") || ($action eq "remake") || ($action eq "new") || ($action eq "bm_new") ||
+
+($action eq "c,r") || ($action eq "c,u")) {
+
+if ($ENV{"NUMBER_OF_PROCESSORS"} >= 1) {
+
+if ($fullOpts eq "") {
+
+$fullOpts = "CMD_ARGU=-j$ENV{\"NUMBER_OF_PROCESSORS\"}"."0";
+
+} else {
+
+$fullOpts .= ",-j$ENV{\"NUMBER_OF_PROCESSORS\"}"."0";
+
+}
+
+}
+
+}
+
+$ENV{"NUMBER_OF_PROCESSORS"} = 10; //修改为你想要的进程数
+
+4.把tools里面的make.exe换成多任务的文件
+
+lei1217
+
+0 0 0
+

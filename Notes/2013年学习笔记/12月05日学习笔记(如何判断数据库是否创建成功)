@@ -1,0 +1,45 @@
+	1.修改通话界面的OperatorName????
+
+	解决:
+	只要将phone/res/layout/primary_card_info.xml文件中的operatorName的控件的maxWidth去掉就可以了
+
+	    2.AC4E_OPEN数据漫游不能勾选的bug??????
+
+	    解决：
+	    达哥改好了
+
+	3.修改app中下面的内存使用信息显示不足的bug??????
+
+	解决：
+	Title: [bug](设置)应用程序中下方的空间大小提示显示不全
+	Submitter：
+		zhangqi
+	checker:
+		rongweidi
+	Bug：
+		Bug1485
+	File:
+		M:packages/apps/Settings/res/layout/manage_applications_apps.xml
+	Comment:
+		这个问题是因为底部三个文本框TextView一起分配了LinearLayout的width，
+		只要将manage_applications_apps.xml文件中的usedStorageText和freeStorageText提取到一个horizontal的LinearLayout中，并修改一下布局即可
+	Date:
+	    2013/12/05 
+
+	    4.如何判断数据库是否创建成功？？？？
+
+	    解决：使用rawQuery()判断记录是否为0即可
+	    Cursor cursor = db.rawQuery("select count(_id) from calls where type in (3,4) AND new=1", null);
+	    if (cursor != null) {
+	        if (cursor.moveToFirst()) {
+		    newCallsCount = cursor.getInt(0);
+	        }
+	        cursor.close();
+	    }
+
+5.Spinner如何设置内容监听器？？？？？
+
+6.对数据库操作的时候，失败的时候，如何对事务进行操作？？？
+
+7.如何让EditText一开始不获取焦点？？？？
+

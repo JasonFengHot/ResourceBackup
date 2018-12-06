@@ -1,0 +1,48 @@
+	1.修改Contacts中的字体颜色？？？
+
+	解决：
+
+	2.修改82平台下秒表界面显示label????
+
+	解决：
+	在packages/apps/deskclock/src/com/android/deskclock/timer/CountingTimerView.java的onDraw()方法中修改
+	String hLabel = r.getString(R.string.hours_label).toUpperCase();
+	String mLabel = r.getString(R.string.minutes_label).toUpperCase();
+	String sLabel = r.getString(R.string.seconds_label).toUpperCase();
+	if (mHours != null) {
+		xTextStart = mBigHours.draw(canvas, mHours, xTextStart, yTextStart);		
+		canvas.drawText(hLabel, xTextStart - mBigHours.getLabelWidth(), labelYStart, mPaintLabel);	//在这里将符号画出来
+	}
+	if (mMinutes != null) {
+		xTextStart = mBigMinutes.draw(canvas, mMinutes, xTextStart, yTextStart);		
+		canvas.drawText(mLabel, xTextStart - mBigMinutes.getLabelWidth(), labelYStart, mPaintLabel);	//在这里将符号画出来
+	}
+	if (mSeconds != null) {
+		xTextStart = mBigSeconds.draw(canvas, mSeconds, xTextStart, yTextStart);		
+		canvas.drawText(sLabel, xTextStart - mBigSeconds.getLabelWidth(), labelYStart, mPaintLabel);	//在这里将符号画出来
+	}
+	if (mHundredths != null) {
+		mMedHundredths.draw(canvas, "." + mHundredths, xTextStart, yTextStart);
+	}
+
+	3.修改Browser浏览器的默认下载路径？？？
+
+	解决：
+	BrowserSettings.java
+	public String getDownloadPath() {
+		return mPrefs.getString(PREF_DOWNLOAD_DIRECTORY_SETTING, getDefaultDownloadPathWithMultiSDcard());
+	}
+
+	public String getDefaultDownloadPathWithMultiSDcard() {
+		String defaultDownloadPath = DEFAULT_DOWNLOAD_DIRECTORY_OP01;		//默认下载路径
+		String defaultStorage = StorageManagerEx.getDefaultPath();
+		sBrowserDownloadEx = Extensions.getDownloadPlugin(mContext);
+		if (null != defaultStorage) {
+			defaultDownloadPath = defaultStorage + sBrowserDownloadEx.getDefaultDownloadFolder(); 
+		}
+		return defaultDownloadPath;
+	}
+
+	public static final String DEFAULT_DOWNLOAD_DIRECTORY_OP01 = "/storage/sdcard0/MyFavorite";		//只要修改这个地方
+	public static final String DEFAULT_DOWNLOAD_SDCARD2_DIRECTORY_OP01 = "/storage/sdcard1/MyFavorite";	//还有这个地方就ok了
+	public static final String DEFAULT_MY_FAVORITE_FOLDER_OP01 = "/MyFavorite";

@@ -1,0 +1,24 @@
+	1.Wallpaper如何选中当前壁纸？？？
+
+	解决：
+	//MyLocalGridViewAdapter.java
+	PreferencesService service = new PreferencesService(mContext);
+	if(service.getPreferencesPosition() == position){			//这里的
+		holder.current_setted.setVisibility(View.VISIBLE);
+	}else{
+		holder.current_setted.setVisibility(View.INVISIBLE);
+	}
+
+	//PreferencesService.java
+	public int getPreferencesPosition(){
+		int WallpaperPosition;
+		SharedPreferences preferences = context.getSharedPreferences("TecnoWallpaper", Context.MODE_PRIVATE);
+		WallpaperPosition = preferences.getInt("WallpaperPosition", Constants.Extra.defaultsLocalWallpaper);	//public static final int defaultsLocalWallpaper = 1;
+		return WallpaperPosition;		//这里的位置需要和当前壁纸相对应
+	}
+
+	2.如何直接打开Camera闪光灯？？？
+
+	解决：
+	在PhoneStatusBar.java
+	将R5的FlashLight移植过来就可以了

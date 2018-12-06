@@ -1,0 +1,11 @@
+	1.如何修改照片详情中的的 MAKE 和 MODEL？？
+
+	解决：
+	/home/zq/zq/kk_h5_0828/mediatek/custom/common/hal/inc/camera_custom_exif.h
+	#define CUSTOM_EXIF_STRING_MAKE  "TECNO"
+	#define CUSTOM_EXIF_STRING_MODEL "TECNO L7"
+	还需要将camera_custom_exif.h文件中的 #define EN_CUSTOM_EXIF_INFO 打开
+	为什么在 ProjectConfig.mk 添加了 TECNO_CAMERA_EXIF_H5 宏定义之后在这里判断不起作用呢？？
+	#ifdef TECNO_CAMERA_EXIF_H5
+
+2.

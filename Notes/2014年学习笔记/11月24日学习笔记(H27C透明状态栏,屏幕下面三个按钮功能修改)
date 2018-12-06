@@ -1,0 +1,24 @@
+	1.透明状态栏？？？
+
+	解决：
+	frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/BarTransitions.java		
+	这个文件中有一个	private final boolean mSupportsTransitions = true;		//貌似把这个改为 true 就行了
+
+	2.阿拉伯语下，在 Calendar 和 Launcher 下面有些menu菜单的弹出框显示不全？？？
+
+	解决：
+	//frameworks/base/core/res/res/values/themes.xml
+	只要将 theme.xml 文件中的 <item name="panelMenuListWidth">320dip</item> //将这里原来的 360dp 修改为 320dp 就可以了
+
+	3.修改下面三个实体按键的功能？？？
+
+	解决：
+	九十五、soft touch 左右中快捷键（menu键出现运行的文件）（具体可参考h502s_srf中的redmine 16884）
+	frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java，加上keyCode == KeyEvent.KEYCODE_F12的判断
+	frameworks/base/core/res/res/values/config.xml		<integer name="config_longPressOnHomeBehavior">1</integer>	改为	2
+	frameworks/base/core/res/res/values/config.xml		<bool name="config_dreamsEnabledByDefault">true</bool>		改为	false
+
+	mediatek/custom/up16_sfr_h502s/kernel/touchpanel/GT9XX_V22/tpd_custom_gt9xx.h，把
+	#define GTP_KEY_TAB	 {KEY_BACK, KEY_HOMEPAGE, KEY_MENU}
+	改为
+	#define GTP_KEY_TAB	 {KEY_BACK, KEY_HOMEPAGE, KEY_F12}

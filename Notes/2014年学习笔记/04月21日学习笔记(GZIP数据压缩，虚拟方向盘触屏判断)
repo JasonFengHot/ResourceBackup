@@ -1,0 +1,35 @@
+    1.修改视频通话时的按钮的大小？？？
+
+    解决：
+    将values-hdpi/dimens.xml文件中的<dimen name="vt_incall_screen_button_width">74px</dimen>    这里改为74px比较平均
+    通过hierarchyviewer工具查看Measuring中的width 比较精准
+
+    2.如何将下载的数据进行压缩？？？
+
+    解决：
+    GZIPInputStream rawData = new GZIPInputStream(new DefaultHttpClient().execute(new HttpGet("http://example.com/gzipcontent")).getEntity().getContent());
+
+    3.判断触摸到哪个按扭的方法？？？
+
+    解决：
+    Rect rKeyUp = new Rect(56,290,86,320);
+    Rect rKeyDown = new Rect(56, 350, 86, 380);
+    Rect rKeyLeft = new Rect(26, 320, 56, 350);
+    Rect rKeyRight = new Rect(86, 320, 116, 350);
+    public boolean onTouchEvent(MotionEvent event){
+        if(event.getAction() == MotionEvent.ACTION_DOWN){
+            int ax = (int)event.getX();
+            int ay = (int)event.getY();
+            if(rKeyUp.contains(ax,ay)){                    //这里用Rect和点击的位置判断点在哪个按键上
+                y -= 10;
+            }else if(rKeyDown.contains(ax,ay)){
+                y += 10;
+            }else if(rKeyLeft.contains(ax,ay)){
+                x -= 10;
+            }else if(rKeyRight.contains(ax,ay)){
+                x += 10;
+            }
+            postInvalidate();
+        }
+        return super.onTouchEvent(event);
+    }

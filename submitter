@@ -1,0 +1,13 @@
+Redmine #152609 : [bug][email]email中调出菜单，高亮可移动到设置选项的下边
+Submitter:
+    zhangqi
+Checker:
+    liangshuang
+Files:
+    M:alps/vendor/mediatek/proprietary/packages/apps/Email/UnifiedEmail/src/com/android/mail/browse/MessageHeaderView.java
+    M:alps/vendor/mediatek/proprietary/packages/apps/Email/UnifiedEmail/src/com/android/mail/ui/AbstractActivityController.java
+    M:alps/vendor/mediatek/proprietary/packages/apps/Email/UnifiedEmail/res/layout/conversation_message_header.xml
+Comment:
+    Email中调出菜单，高亮不可以移动到设置选项的下边
+Date:
+    2018/11/03

@@ -1,0 +1,99 @@
+	1.修改编译InCallUI并且push之后没有效果？？？
+
+	解决：
+	不要编译push->InCallUI
+	应该编译push->Dialer
+	//修改Speaker的选中效果
+	将mtk_btn_compound_audio_vt.xml 中的	btn_compound_background	改为	btn_fake_compound_background
+	//修改VTDialpad的选中效果
+	在mtk_btn_compound_dialpad_vt.xml 中添加	<item android:drawable="@drawable/btn_compound_background" />
+
+	//语音通话中的外放按钮
+	<ImageButton 
+		android:id="@+id/audioButton"
+		style="@style/InCallButton"
+		android:background="@drawable/btn_compound_audio"			
+		android:contentDescription="@string/onscreenAudioText"/>
+
+	//视频通话中的外放按钮
+	<ImageButton
+		android:id="@+id/VTSpeaker"
+		android:layout_height="match_parent"
+		style="@style/InCallButton"
+		android:background="@drawable/mtk_btn_compound_audio_vt"		//将这里的background换成上面的btn_compound_audio就可以出现高亮效果
+		android:contentDescription="@string/onscreenAudioText"/>
+	---------------------------------------------------------------语音通话---------------------------------------------------------------
+	btn_compound_audio.xml
+	<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+	    <item android:id="@+id/compoundBackgroundItem" android:drawable="@drawable/btn_fake_compound_background" />							//这个就是下面的蓝色横条
+	    <item android:id="@+id/moreIndicatorItem">	<bitmap android:src="@drawable/ic_more_indicator_holo_dark" android:gravity="center" />		</item>
+	    <item android:id="@+id/bluetoothItem">	<bitmap android:src="@drawable/ic_sound_bluetooth_holo_dark" android:gravity="center" />	</item>
+	    <item android:id="@+id/handsetItem">	<bitmap android:src="@drawable/ic_sound_handset_holo_dark" android:gravity="center" />		</item>
+	    <item android:id="@+id/speakerphoneOnItem"> <bitmap android:src="@drawable/ic_sound_speakerphone_holo_dark" android:gravity="center" />	</item>		//这个就是上面的开关
+	    <item android:id="@+id/speakerphoneOffItem"><bitmap android:src="@drawable/ic_sound_off_speakerphone_holo_dark" android:gravity="center" />	</item>
+	</layer-list>
+
+	btn_fake_compound_background.xml
+	<selector xmlns:android="http://schemas.android.com/apk/res/android">
+	    <item android:state_pressed="true" 	android:state_selected="true" android:drawable="@drawable/list_selector_selected_and_pressed" />				//这个
+	    <item android:state_pressed="true" 	android:drawable="@drawable/list_pressed_holo_dark" />
+	    <item android:state_selected="true" android:state_focused="true" android:drawable="@drawable/list_selector_focused_and_checked" />
+	    <item android:state_focused="true"	android:drawable="@drawable/list_focused_holo" />
+	    <item android:state_selected="true" android:drawable="@drawable/ic_active_state_dialer_holo_dark" />
+	    <item android:drawable="@android:color/transparent" />
+	</selector>
+
+	list_selector_selected_and_pressed.xml
+	<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+	    <item android:drawable="@drawable/ic_active_state_dialer_holo_dark" />											//这个就是蓝色条状图片
+	    <item android:drawable="@drawable/list_pressed_holo_dark" />
+	</layer-list>
+	---------------------------------------------------------------视频通话---------------------------------------------------------------
+	mtk_btn_compound_audio_vt.xml
+	<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+	    <item>	<bitmap xmlns:android="http://schemas.android.com/apk/res/android" android:src="@drawable/dial_background_texture" android:tileMode="repeat" />	</item>		//斜杠纹理背景
+	    <item android:id="@+id/compoundBackgroundItem" android:drawable="@drawable/btn_compound_background" />						//将这个改为btn_fake_compound_background即可
+	    <item android:id="@+id/moreIndicatorItem">	<bitmap android:src="@drawable/ic_more_indicator_holo_dark" android:gravity="center" />		</item>
+	    <item android:id="@+id/bluetoothItem">	<bitmap android:src="@drawable/ic_sound_bluetooth_holo_dark" android:gravity="center" />	</item>
+	    <item android:id="@+id/handsetItem">	<bitmap android:src="@drawable/ic_sound_handset_holo_dark" android:gravity="center" />		</item>
+	    <item android:id="@+id/speakerphoneOnItem">	<bitmap android:src="@drawable/ic_sound_speakerphone_holo_dark" android:gravity="center" />	</item>
+	    <item android:id="@+id/speakerphoneOffItem"><bitmap android:src="@drawable/ic_sound_off_speakerphone_holo_dark" android:gravity="center" />	</item>
+	</layer-list>
+
+	btn_compound_background.xml
+	<selector xmlns:android="http://schemas.android.com/apk/res/android">
+	    <item android:state_pressed="true" android:drawable="@drawable/list_pressed_holo_dark" />
+	    <item android:state_checked="true" android:state_focused="true" android:drawable="@drawable/list_selector_focused_and_checked" />
+	    <item android:state_focused="true" android:drawable="@drawable/list_focused_holo" />
+	    <item android:state_checked="true" android:drawable="@drawable/ic_active_state_dialer_holo_dark" />
+	    <item android:drawable="@android:color/transparent" />
+	</selector>
+
+	list_selector_focused_and_checked.xml
+	<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+	    <item android:drawable="@drawable/ic_active_state_dialer_holo_dark" />
+	    <item android:drawable="@drawable/list_focused_holo" />
+	</layer-list>
+
+
+	---------------------------------------------------------------就是下面这两个地方不同---------------------------------------------------------------
+	btn_compound_background.xml
+	<selector xmlns:android="http://schemas.android.com/apk/res/android">
+	    <item android:state_pressed="true" android:drawable="@drawable/list_pressed_holo_dark" />
+	    <item android:state_checked="true" android:state_focused="true" android:drawable="@drawable/list_selector_focused_and_checked" />
+	    <item android:state_focused="true" android:drawable="@drawable/list_focused_holo" />
+	    <item android:state_checked="true" android:drawable="@drawable/ic_active_state_dialer_holo_dark" />
+	    <item android:drawable="@android:color/transparent" />
+	</selector>
+
+	btn_fake_compound_background.xml
+	<selector xmlns:android="http://schemas.android.com/apk/res/android">
+	    <item android:state_pressed="true" 	android:state_selected="true" android:drawable="@drawable/list_selector_selected_and_pressed" />
+	    <item android:state_pressed="true" 	android:drawable="@drawable/list_pressed_holo_dark" />
+	    <item android:state_selected="true" android:state_focused="true" android:drawable="@drawable/list_selector_focused_and_checked" />
+	    <item android:state_focused="true"	android:drawable="@drawable/list_focused_holo" />
+	    <item android:state_selected="true" android:drawable="@drawable/ic_active_state_dialer_holo_dark" />
+	    <item android:drawable="@android:color/transparent" />
+	</selector>
+
+2.

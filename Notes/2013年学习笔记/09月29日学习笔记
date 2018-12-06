@@ -1,0 +1,57 @@
+1.
+<string-array name="gsm_umts_network_preferences_choices">
+	<item>GSM/WCDMA (auto mode)</item>
+	<item>WCDMA only</item>
+	<item>GSM only</item>
+</string-array>
+<string-array name="gsm_umts_network_preferences_values">
+	<item>"0"</item>
+	<item>"2"</item>
+	<item>"1"</item>
+</string-array>
+
+在NetworkModeSettings.java文件中有
+int oldNetworkMode = android.provider.Settings.Global.getInt(getContentResolver(),Settings.Global.PREFERRED_NETWORK_MODE, PREFERRED_NT_MODE);
+int newNetworkMode = Utils.getNetworkMode(Integer.valueOf((String) arg1).intValue());	//这里的arg1就是现在的networkMode
+Intent intent = new Intent("com.android.phone.NETWORK_MODE_CHANGE", null);
+intent.putExtra("com.android.phone.OLD_NETWORK_MODE", oldNetworkMode);		//这里的oldNetworkMode
+intent.putExtra("com.android.phone.NETWORK_MODE_CHANGE", newNetworkMode);	//这里的newNetworkMode
+intent.putExtra("simId", 0);//在PhoneConstants.java中有public static final int GEMINI_SIM_1 = 0;
+sendBroadcast(intent);
+3G的应该是没问题了
+
+数据连接好像还是有问题？？？
+
+Phone phone = PhoneFactory.getDefaultPhone();
+
+
+if (action.equals(NETWORK_MODE_CHANGE)) {
+	int modemNetworkMode = intent.getIntExtra(NETWORK_MODE_CHANGE, 0);
+	int slotId = intent.getIntExtra(GeminiConstants.SLOT_ID_KEY, 0);
+	int oldmode = intent.getIntExtra(OLD_NETWORK_MODE, -1);
+	if (GeminiUtils.isGeminiSupport()) {
+		GeminiPhone dualPhone = (GeminiPhone)phone;
+		dualPhone.setPreferredNetworkTypeGemini(modemNetworkMode, mHandler.obtainMessage(MESSAGE_SET_PREFERRED_NETWORK_TYPE, oldmode, modemNetworkMode), slotId);
+	} else {
+		phone.setPreferredNetworkType(modemNetworkMode, mHandler.obtainMessage(MESSAGE_SET_PREFERRED_NETWORK_TYPE, oldmode, modemNetworkMode));
+	}
+}
+
+2.刚启动系统的时候GlobalAction上的数据连接是有问题的？？？需要先设置一下preferred network才可以使用
+
+3.如何改变数据连接的状态比较好？？？
+
+4.如何监听数据连接的状态比较好？？？
+
+5.在network_settings.xml中哪个是设置Data connection的preference??????
+
+解决：
+<com.mediatek.settings.DefaultSimPreference
+        style="@*android:style/Preference.Holo"
+	android:key="data_connection_setting"
+	android:title="@string/gemini_data_connection"/>
+在DefaultSimPreference
+
+6.打开飞行模式之后，GlobalAction上的数据连接还是打开的？？？？而且在打开了飞行模式之后，只能打开数据连接，不能关闭数据连接？？？？
+
+7.

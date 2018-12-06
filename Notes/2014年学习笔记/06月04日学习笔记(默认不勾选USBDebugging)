@@ -1,0 +1,129 @@
+    1.添加Hardware Version????
+
+    解决：
+    //斌哥改出来的问题
+    packages/apps/Settings/res/xml/device_info_settings.xml
+
+    2.默认不勾选USB debugging???
+
+    解决：
+    //packages/apps/Settings/src/com/android/settings/DevelopmentSettings.java
+    if (mAdbDialog != null && mAdbDialog.isShowing()) {
+        updateCheckBox(mEnableAdb,true);        
+    } else {
+        updateCheckBox(mEnableAdb, Settings.Global.getInt(cr,Settings.Global.ADB_ENABLED, 0) != 0);
+    }
+    //这个默认值在什么地方？？
+    可以参考
+    [FAQ03908] [USB]如何开关默认USB调试功能
+    [FAQ04776] 如何默认打开user版本 debug 选项, 默认打开adb 连接
+    将main.mk文件中的注释去掉，如下
+    --------------------------------------------------------------------------
+    #Bug8716 zhangqi modified for user mode default unchecked 2014/06/04:begin
+    ifeq (true,$(strip $(enable_target_debugging)))
+        # Target is more debuggable and adbd is on by default
+        ADDITIONAL_DEFAULT_PROPERTIES += ro.debuggable=1
+        # Include the debugging/testing OTA keys in this build.
+        INCLUDE_TEST_OTA_KEYS := true
+    else # !enable_target_debugging
+        # Target is less debuggable and adbd is off by default
+        ADDITIONAL_DEFAULT_PROPERTIES += ro.debuggable=0
+    endif # !enable_target_debugging
+    #Bug8716 zhangqi modified for user mode default unchecked 2014/06/04:end
+    --------------------------------------------------------------------------
+
+3.Bug8718 同 Bug4007 ????
+
+    4.修改Launcher界面上图标名称显示不清晰的Bug???
+
+    解决：
+    将packages/apps/Launcher2/res/layout/apps_customize_pane.xml中的AppsCustomizeTabHost的android:background="#00000000"改为android:background="#77000000"
+    
+5.户外模式的设置？？
+
+解决：
+AudioProfilePreference pref = (AudioProfilePreference) findPreference(GENERAL_PREF_KEY);
+pref = (AudioProfilePreference) findPreference(OUTDOOR_PREF_KEY);
+pref.setOnSettingsClickListener(mProfileSettingListener);
+private final View.OnClickListener mProfileSettingListener = new View.OnClickListener() {
+    public void onClick(View v) {
+        String key = (String) (v.getTag());
+        Bundle args = new Bundle();
+        args.putString("profileKey", key);
+        ((PreferenceActivity) getActivity()).startPreferencePanel(Editprofile.class.getName(), args, 0, null, null, 0);
+    }
+};
+
+//
+AudioProfileManager.java
+public void setActiveProfile(String profileKey) {
+    if (profileKey == null) {
+        return;
+    }
+    IAudioProfileService service = getService();
+    try {
+        service.setActiveProfile(profileKey);
+    } catch (RemoteException e) {
+    }
+}
+
+mtk_audioprofile_general
+mtk_audioprofile_silent
+mtk_audioprofile_meeting
+mtk_audioprofile_outdoor
+
+    6.Data roaming 数据漫游默认打开？？？
+
+    解决：
+    //SimRoamingSettings.java
+    int prevalue = Settings.System.getInt(getContentResolver(), Settings.System.ROAMING_REMINDER_MODE_SETTING, 0);
+    mRoamReminder.setValueIndex(prevalue);
+
+    mRoamingReminderSummary = getResources().getTextArray(R.array.gemini_sim_roaming_reminder_entries);        //数组
+    <string-array name="gemini_sim_roaming_reminder_entries">
+        <item>Once</item>
+        <item>Always</item>
+        <item>Never</item>
+    </string-array>
+
+    //DatabaseHelper.java
+    loadSetting(stmt, Settings.System.ROAMING_REMINDER_MODE_SETTING, 2);        //只要将拷贝文件 DatabaseHelper.java 中的2改为1就行了
+
+    7.修改Agps的配置表？？？
+
+    解决：
+    可以参考https://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ03537
+    //packages/apps/settings/src/com/mediatek/lbs/AgpsSettings.java中的onCreate()方法中有
+    mAgpsProfileManager.updateAgpsProfile("/etc/agps_profiles_conf.xml");    //这个文件在mediatek/frameworks/base/agps/etc/agps_profiles_conf.xml文件中
+        //添加一个AGPS
+    <!--Bug8830 zhangqi add for Nextel agps 2014/06/05:begin-->
+    <agps_profile code="Nextel Localización"
+        slp_name="Nextel Localización"
+        backup_slp_name_var="Nextel_SPL_Name"
+        address="supl.nexteldata.com.mx"
+        port="7275"
+        tls="1"
+        show_type="0"
+    />
+    <!--Bug8830 zhangqi add for Nextel agps 2014/06/05:end-->
+        //修改默认
+    <agps_conf_para 
+        ...
+        default_profile="Nextel Localización"     //修改这个地方
+        ...
+    />
+
+8.SIM Management 中设置Sim卡的颜色会报错？？
+
+解决：
+05-21 12:00:49.113  3109  3109 E AndroidRuntime: java.lang.ArrayIndexOutOfBoundsException: length=4; index=-1
+05-21 12:00:49.113  3109  3109 E AndroidRuntime:     at com.mediatek.gemini.ColorPickerPreference.getView(ColorPickerPreference.java:161)
+05-21 12:00:49.113  3109  3109 E AndroidRuntime:     at android.preference.PreferenceGroupAdapter.getView(PreferenceGroupAdapter.java:221)
+
+bgColor.setBackgroundColor(mContext.getResources().getColor(SIM_COLOR[mCurrentSelected]));
+
+//
+private int mCurrentSelected = -1;
+mCurrentSelected = siminfo.mColor;        //onBindDialogView()        //
+mCurrentSelected = k;
+mCurrentSelected = colorIndex;            //setInitValue()

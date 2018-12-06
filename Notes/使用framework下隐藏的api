@@ -1,0 +1,2 @@
+在 Android.mk 文件中添加 LOCAL_JAVA_LIBRARIES := framework 即可
+

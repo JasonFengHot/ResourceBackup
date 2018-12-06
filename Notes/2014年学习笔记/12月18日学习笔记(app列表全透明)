@@ -1,0 +1,27 @@
+	1.修改 Launcher 上 app 列表的显示背景为全透明？？？？
+
+	解决：
+	方法1：
+	在 packages/apps/Launcher3/src/com/android/launcher3/Launcher.java 的 showAllApps() 方法的最后面添加一句代码
+	mAppsCustomizeTabHost.setBackgroundColor(android.graphics.Color.parseColor("#00000000"));
+
+	方法2：
+	在 packages/apps/Launcher3/res/values/config.xml 文件中修改如下
+	<!--Bug26179 zhangqi modified for appsCustomizePagedView background from 65 to 0 2014/12/18:begin-->
+		<integer name="config_appsCustomizeSpringLoadedBgAlpha">0</integer>
+	<!--Bug26179 zhangqi modified for appsCustomizePagedView background from 65 to 0 2014/12/18:end-->
+
+	2.修改锁屏界面下方的CarrierText的显示为小写？？？
+
+	解决：
+	frameworks/base/packages/Keyguard/ext/src/com/mediatek/keyguard/ext/DefaultCarrierTextExt.java
+	@Override
+	public String changedPlmnToCapitalize(String plmn) {
+		if (plmn != null ){
+			//return plmn.toString().toUpperCase();		
+		    return plmn.toString();						//把上面这句代码修改为下面这句代码就行了
+		}
+		return null;
+	}
+
+3.

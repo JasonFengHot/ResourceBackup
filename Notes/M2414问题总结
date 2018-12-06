@@ -1,0 +1,1121 @@
+1. SKU2 网络问题？
+
+解决方案：ALPS03374760
+客户发现在南非某些地方概率性无法上网，APN参数都OK，通过版本回溯发现是MODEM patch13的问题，
+申请patch的eService id 是 ALPS03205524，是为了申请支持 enable E-RACH，E-FACH 功能
+网络配置MAC_IIS，导致问题，确实是E_RACH的patch导致的问题，目前这个问题与运营商等有一定关联，建议关闭这个feature，关闭feature对于正常使用手机各功能及网速不会有影响。
+目前临时的解决方案是去掉MTK释放的modem P13，重新释放软件之后，客户验证可以上网。
+MTK给的解决方案：
+    1. 不支持和e-rach，但是支持e-fach。
+    2. 修改方法：
+    Please disable MAC-IIS feature in Nvram_data_items.c
+    1. Search for __MAC_IIS_SUPPORT__
+    2. Change the value from 0x04 to 0x00.
+
+2.Redmine97130:[工厂反馈]概率性桌面文件丢失？
+
+解决方案：
+工厂在开机过程中强制拔电池造成的，桌面图标并未消失，因为hotseat上的图标还在，查看数据库发现workspace数据库中没有数据，说明Launcher界面没有默认页
+alps/packages/apps/Launcher3/src/com/android/launcher3/LauncherModel.java
+    -if (loadedOldDb) {
+    +if (loadedOldDb && sBgWorkspaceScreens.size() == 0) {  //添加保护，防止workspace数据没有加载的时候不去重新加载数据
+
+3.Redmine96455:[客户需求 77]GEA4 is not supported and GEA1 is supported as seen in Attach Request message.
+
+解决方案：
+关闭 GPRS GEA1，用 SAGEREAL_DISABLE_GEA1 宏控，可以参考 FAQ14741 修改，按照需求来改
+SR72_W_KK_HSPA_MOLY.WR8/custom/service/nvram/nvram_data_items.c
+#ifdef __NO_SUPPORT_A5_3__
+        0xc1, /* GEA1, 2 and SM cap support */
+    #ifdef __SAGEREAL_DISABLE_GEA1__
+        0x41, /* GEA1, 2 and SM cap support */
+    #else
+        0xc1, /* GEA1, 2 and SM cap support */
+    #endif
+#else // The chip support A5/3(GEA/3)
+    0xe1, /* GEA1, 2, 3 and SM cap support */
+    #ifdef __SAGEREAL_DISABLE_GEA1__
+        0x61, /* GEA1, 2, 3 and SM cap support */
+    #else
+        0xe1, /* GEA1, 2, 3 and SM cap support */
+    #endif
+#endif
+
+4.Redmine96384:[客户需求]And please replace ADUPS logo on this « Your social medias » icon by the pictures enclosed.
+
+解决方案：
+步骤a:默认移除whatsapp和facebook(google会查)
+步骤b:添加Social Media应用，可以跳转到fota应用，并下载fota包升级，升级完了之后就会有whatsapp和facebook
+步骤c:升级完了之后需要修改桌面布局显示，把whatsapp和facebook显示在桌面上，需要修改Launcher数据库的版本才能生效
+
+5.Redmine96678:[BUG] 长按绿键直接拨打通话记录中的第一个号码，请修改.
+
+解决方案：
+步骤a:去掉长按 KEYCODE_CALL 按键在 PhoneFallbackEventHandler 中的响应事件
+    alps/frameworks/base/policy/src/com/android/internal/policy/impl/PhoneFallbackEventHandler.java
+        case KeyEvent.KEYCODE_CALL: {
+            if (getKeyguardManager().inKeyguardRestrictedInputMode() || dispatcher == null) {
+                break;
+            }
+            if (event.getRepeatCount() == 0) {
+                dispatcher.startTracking(event, this);
+            } else if (event.isLongPress() && dispatcher.isTracking(event)) {       //KEYCODE_CALL长按事件
+                dispatcher.performedLongPress(event);
+                mView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                //Redmine96678 zhangqi modified to avoid starting call activity when long press 2017/06/02:begin
+                // launch the VoiceDialer
+                /*
+                Intent intent = new Intent(Intent.ACTION_VOICE_COMMAND);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                try {
+                    sendCloseSystemWindows();
+                    mContext.startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    startCallActivity();
+                }
+                */
+                //Redmine96678 zhangqi modified to avoid starting call activity when long press 2017/06/02:end
+            }
+            return true;
+        }
+步骤b:修改按键事件监听，在 KeyEvent.ACTION_UP 事件中处理，而不要在 ACTION_DOWN 事件中处理
+    alps/packages/apps/Dialer/src/com/mediatek/dialer/calllogex/CallLogFragmentEx.java
+		-if(keyCode == KeyEvent.KEYCODE_CALL){
+		+if(keyCode == KeyEvent.KEYCODE_CALL && event.getAction() == KeyEvent.ACTION_UP){
+    alps/packages/apps/Launcher3/src/com/android/launcher3/Launcher.java
+        public boolean onKeyUp(int keyCode, KeyEvent event) {
+            ......
+            if (keyCode == KeyEvent.KEYCODE_CALL && FeatureOption.SAGEREAL_KEYCODE_CALL_ENTRY_CALL_HISTORY) {
+                Intent intent = new Intent();
+                intent.setAction("android.intent.action.VIEW");
+                intent.setType("vnd.android.cursor.dir/calls");
+                this.startActivity(intent);
+                return true;
+            }
+            return super.onKeyUp(keyCode, event);
+        }
+
+6.Redmine94659:[客户反馈 56]OMA_CP - Configuration fails via network pin, DUT asks for PIN repetitively ？？
+
+解决方案：
+ALPS03345390
+alps/mediatek/packages/apps/Omacp/src/com/mediatek/omacp/message/OmacpReceiverService.java
+-if (mac != null && !mac.equalsIgnoreCase("") && sec != null && sec.equalsIgnoreCase("")) {
++if (mac != null && !mac.equalsIgnoreCase("") && sec != null &&(sec.equalsIgnoreCase("") || sec.equalsIgnoreCase("0"))) {   //添加 sec == 0 的判断条件
+
+-if (sec == null || mac == null || sec.equalsIgnoreCase("") || mac.equalsIgnoreCase("")) { 
++if (sec == null || mac == null || sec.equalsIgnoreCase("") || mac.equalsIgnoreCase("") || sec.equalsIgnoreCase("0")) {     //添加 sec == 0 的判断条件
+
+这是因为，在国内，Omacp如果收到network pin，标准的sec值是“”，但是在国外，标准的sec值是0，所以如果针对国外项目，需要进行修改。如下：
+请在OmacpReceiverService.java里面添加如下代码:
+a.//new added begin
+if(sec!=null){
+    if (sec.equalsIgnoreCase("0")) {
+        sec = "";
+    }
+}else{
+    return false;//这里return true或者false，也要看运营商的需求，有的运营商要求，sec=null的时候直接返回不处理，但是国内要求sec=null的时候，继续解析
+}
+//new added end
+// sec == "" indicates Network PIN, in this case, check SIM's IMSI, if
+// verify fails, then ignore this message
+if (sec != null && sec.equalsIgnoreCase("") && mac != null && !mac.equalsIgnoreCase("")) {
+
+b.parseOmacpMessage方法
+//new added begin
+if (sec.equalsIgnoreCase("0")) {
+    sec = "";
+}
+//new added end
+if (sec == null || mac == null || sec.equalsIgnoreCase("") || mac.equalsIgnoreCase("")) {
+    value.put("pin_unlock", 1);
+c.如果是单卡的话,并修改这里 OmacpMessageSettingDetails.java:
+public static String getSimImsi(int simId) {
+    String imsi;
+    TelephonyManagerEx mTelephonyManager = TelephonyManagerEx.getDefault();
+    Imsi = mTelephonyManager.getSubscriberId(sinId);
+}
+
+7.Redmine98200: [客户反馈]When FM radio is active, it is no longer possible to use hardware delete button! Seen when trying to setup email account or input text messages while FM radio is active？
+
+解决方案：
+相关bug: #98200
+a:前台播放界面如FMRadio界面，音乐播放界面，可以通过*#键调节音量
+b:在Notification通知栏上添加调节音量的控件，可以通过左右键和*#键调节音量，要有Safe音量提示框，并且不需要显示VolumePanel
+c:当用户从前台播放返回到主菜单界面的时候，提示用户可以在Notification通知栏上调节音量
+d:facebook,browser,whatsapp等第三方应用中通过*#键调节音量
+e:修改 VolumePanel 界面可以获取焦点，修改 VolumePanel 可以监听左右导航键和*#键的点击事件
+f:注意修改工厂测试中的按键测试对应的按键
+涉及代码太多，就不贴出来了，可以根据bug号去查找
+
+8.Redmine95003:[Bug](设置)飞行模式开启后，重启手机，设置中的SIM卡管理置灰无法进入
+
+解决方案：
+前期的设计问题，需要和客户沟通，把飞行模式的菜单从SIM卡管理菜单里面挪到外面
+目前打开飞行模式之后SIM Management还是没有显示灰色，需要重启之后才会显示灰色，需要进一步优化
+
+9.Redmine93235:[客户需求]Smart FP WhatsApp downloader Specific develloment to do
+
+解决方案：
+a.通过apk的MD5码校验不可重复下载
+b.下载whatsapp安装之后自动删除apk和下载记录
+c.去掉内存不足的弹出框显示管理app的按钮
+
+10.Redmine97699:[客户反馈] [Common Bug] 移除手机中所有的google，Android字样
+
+解决方案：
+相关bug还有 #94973，#102044
+由于系统中的google字样太多，目前只修改 Settings 下的 google 字符串为 Sakari
+修改FOTA升级完成之后显示的 Android is upgrading 改为 Software is upgrading，并让客户提供其他语言下 Software 的翻译
+
+11.Redmine94342:[客户反馈 61]After 4 unsuccessful Location Update Requests, the device does not perform a network re-selection.
+
+解决方案：94342
+ALPS03314390 + BSP
+    SR72_W_KK_HSPA_MOLY.WR8/custom/service/nvram/nvram_data_items.c
+    步骤一、
+    a. nvram_ef_sbp_modem_config_default数组，然后找到：
+    #if defined(__MM_TRY_ABNORMAL_LAI_ONCE_MORE)
+    0x04 |
+    #endif
+    将其修改为：
+    //#if defined(__MM_TRY_ABNORMAL_LAI_ONCE_MORE)
+    0x04 |
+    //#endif
+
+    同样，
+    #if defined(__MM_PERFORM_PLMN_SEARCH_AFTER_LU_ABNORMAL__)
+    0x40 |
+    #endif
+    修改为
+    //#if defined(__MM_PERFORM_PLMN_SEARCH_AFTER_LU_ABNORMAL__)
+    0x40 |
+    //#endif
+    也就是判断条件删除。
+
+    b.修改：NVRAM_EF_SBP_MODEM_CONFIG_LID_VERNO 将其加1
+    
+    步骤二
+    按照上述方法修改了之后发现还是没有编译进去，最后发现 #if defined(__SBP_SUPPORT__) 这个 __SBP_SUPPORT__ 宏没有定义
+    重新提了 eService : ALPS03416383， MTK 释放了 modem 的 patch p14，打上之后发现添加了 __SBP_SUPPORT__ 这个宏定义
+
+12.Redmine100439:[客户反馈 48]The device must be able to automatically reselect to HPLMN from roaming network when registered to roaming network through manual selection and it has good network signal for HPLMN.
+
+解决方案：
+在 modem 中添加 CUSTOM_OPTION += __PERMANENT_AUTO_SEL_MODE__ 宏控
+同上，按照上述方法修改了之后发现还是没有编译进去，最后发现 #if defined(__SBP_SUPPORT__) 这个 __SBP_SUPPORT__ 宏没有定义
+重新提了 eService : ALPS03416383， MTK 释放了 modem 的 patch p14，打上之后发现添加了 __SBP_SUPPORT__ 这个宏定义
+
+13.Redmine100040:修改IMEISV版本号？
+
+解决方案：
+步骤a:
+custom/service/nvram/nvram_data_items.c
+在文件中修改 IMEISV 版本号 SYS_CACHE_ENTRY(NVRAM_SYS_SVN ，注意用宏控
+
+步骤b:
+custom/service/nvram/custom_nvram_int_config.c
+在 custom_nvram_config() 方法末尾添加
+#if defined(__M2414_VODAFONE_EU_MODIFY_SVN_NUMBEN__) || defined(__M2414_VODAFONE_AU_MODIFY_SVN_NUMBEN__)
+    {
+        kal_uint8 dataSVN[] = {0x20, 0x00, 0x00,0x00, 0x00, 0x00, 0x00, 0x00};
+        nvram_external_write_data(NVRAM_EF_SYS_CACHE_OCTET_LID, NVRAM_SYS_SVN, dataSVN, NVRAM_EF_SYS_CACHE_OCTET_SIZE);     //把 dataSVN 数据重新写一遍
+    }
+#endif
+
+步骤c:
+interface/service/nvram/nvram_editor_data_item.h
+修改 NVRAM_EF_SYS_CACHE_OCTET_LID_VERNO 的版本号
+
+步骤d:
+验证升级下载之后 IMEI SV 版本号是否改变
+验证FOTA升级之后 IMEI SV 版本号是否改变
+
+14.Redmine98506:降低长按按键的时候输入法字符的切换速度？
+
+解决方案：
+alps/packages/inputmethods/SageRealIME/src/com/sagereal/zq/softkeyboard/SoftKeyboard.java
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(event.getRepeatCount() % 3 != 0){    //每3次输入取1次
+            return true;
+        }
+        ......
+    }
+
+15.Redmine98469:[客户反馈 6]There is no option to do manual network search in the device. This is poor user experience.
+    
+解决方案：
+添加手动搜索网络功能
+alps/packages/apps/Settings/res/xml/sim_management.xml
+    <PreferenceScreen
+        android:key="button_carrier_sel_key"
+        android:title="@string/networks"
+        android:summary="@string/sum_carrier_select"
+        android:persistent="false">
+        <intent android:action="android.intent.action.MAIN"
+            android:targetPackage="com.android.phone"
+            android:targetClass="com.android.phone.NetworkSetting" />
+    </PreferenceScreen>
+
+16.Redmine98514:[客户反馈 33]The apps menu has endless horizontal scroll？
+
+解决方案：
+修改 AllApp 界面上的焦点可以上下左右自由无限循环切换，需要计算下一个的焦点的位置
+alps/packages/apps/Launcher3/src/com/android/launcher3/FocusHelper.java
+    static boolean handleAppsCustomizeKeyEvent(View v, int keyCode, KeyEvent e) {
+        ......
+    }
+
+17.Redmine98488:[bug] (录音) 录音过程中关机，关机前录音文件没有被保存
+
+解决方案：
+修改关机之后录音文件会自动保存
+alps/packages/apps/SoundRecorder/src/com/android/soundrecorder/SoundRecorderService.java
+    else if (Intent.ACTION_SHUTDOWN.equals(action) || ACTION_SHUTDOWN_IPO.equals(action)) {
+       // save the recording parameters
+       stopRecordingAsync();           //add
+       saveRecordAsync();              //add
+       storeRecordParamsSettings();
+    }
+
+18.添加一门新的语言？如阿尔巴尼亚语
+
+解决方案：FAQ04326
+a. 在 https://onlinesso.mediatek.com/FAQ/SW/FAQ03761 上或百度上找到 阿尔巴尼亚语 对应的语言代码 sq_AL
+b. 在 ProjectConfig.mk 文件中添加 MTK_PRODUCT_LOCALES = sq_AL
+c. 导出翻译，注意列名为 sq_AL，如果有新添加的字符串可以及时问客户要，部分翻译还需要自行添加修改icu资源
+
+19.Redmine97633:[COMMON客户反馈 71]There is no option for sending SMS during ongoing call in DUT.
+
+解决方案：
+在 InCallActivity 下添加发送短信的菜单
+//添加 menu_send_mms 菜单
+alps/packages/apps/InCallUI/res/menu/mtk_incall_menu.xml
+    <item
+        android:id="@+id/menu_send_mms"
+        android:title="@string/text_send_mms"
+        android:orderInCategory="1" />
+
+//添加 menu_send_mms 菜单的功能
+alps/packages/apps/InCallUI/src/com/android/incallui/CallButtonFragment.java
+    public boolean handleMenuItemClickMTK(MenuItem menuItem) {
+        ...
+        case R.id.menu_send_mms:
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setClassName("com.android.mms", "com.android.mms.ui.ComposeMessageActivity");    //跳转到短信界面
+            getActivity().startActivity(intent);
+            break;
+        ...
+    }
+
+20.Redmine98475:[客户反馈 9]User is not able to access device menu options during a call.
+
+解决方案：
+同上，在通话界面添加菜单可以返回到桌面idle界面
+
+31.Redmine100442:[BUG](Email)Email新建邮件界面，添加音乐文件过程中，预览音频时按# 无响应，按* 响应一些奇怪的字符？
+
+解决方案：
+alps/packages/apps/Music/src/com/android/music/MusicPicker.java
+a:在文件中添加*#键的按键监听，并将其转换为VOLUME_UP和VOLUME_DOWN按键事件
+b:在 onQueryComplete() 方法中添加listview的焦点获取
+c:关闭 ListView 的 TextFilter 功能 listView.setTextFilterEnabled(false);
+
+22.Redmine94655:[客户反馈 50]MMS - Few phone number formats are not recognised as active content
+
+解决方案：
+接收到的短信中的数字不会显示超链接，把 tel: 的号码都标记为超链接
+alps/frameworks/base/core/java/android/text/util/Linkify.java
+    if ((mask & PHONE_NUMBERS) != 0) {
+        gatherTelLinks(links, text);
+        gatherLinks(links, text, Patterns.PHONE, new String[] { "tel:" }, null, null);  //添加这一行代码
+    }
+
+23.Redmine97588:[bug]（设置）锁屏界面输入小于4位的密码点击确定后消失，而且也没有密码输入错误的提示信息
+
+解决方案：
+锁屏密码输入界面默认小于4位的时候不会提示错误信息，目前修改为小于4为的时候也会提示密码错误的信息，应该是kk平台共性问题
+alps/frameworks/base/packages/Keyguard/src/com/android/keyguard/KeyguardAbsKeyInputView.java
+    protected void verifyPasswordAndUnlock() {
+        String entry = mPasswordEntry.getText().toString();
+        if (mLockPatternUtils.checkPassword(entry)) {
+            mCallback.reportSuccessfulUnlockAttempt();
+            mCallback.dismiss(true);
+        } else if (entry.length() > MINIMUM_PASSWORD_LENGTH_BEFORE_REPORT ) {
+            mCallback.reportFailedUnlockAttempt();
+            if (0 == (mCallback.getFailedAttempts() % LockPatternUtils.FAILED_ATTEMPTS_BEFORE_TIMEOUT)) {
+                long deadline = mLockPatternUtils.setLockoutAttemptDeadline();
+                handleAttemptLockout(deadline);
+            }
+            mSecurityMessageDisplay.setMessage(getWrongPasswordStringId(), true);
+        } else if (entry.length() <= MINIMUM_PASSWORD_LENGTH_BEFORE_REPORT) {       //MINIMUM_PASSWORD_LENGTH_BEFORE_REPORT = 3;
+            mSecurityMessageDisplay.setMessage(getWrongPasswordStringId(), true);   //修改密码小于等于3位的时候也显示密码错误提示
+        }
+        mPasswordEntry.setText("");
+    }
+
+24.Redmine94380: [客户反馈 85]Please replace "VODA P" by "vodafone P"----按照客户需求修改运营商名称
+
+解决方案：
+根据 MCCMNC 修改运营商名称
+alps/frameworks/base/packages/Keyguard/src/com/mediatek/keyguard/Telephony/MediatekCarrierText.java
+alps/frameworks/base/packages/SystemUI/src/com/mediatek/systemui/statusbar/util/SIMHelper.java
+
+25.Redmine100343:【COMMON】（通话）通话过程中，按左软键进入选项菜单后按绿键，会闪白屏？
+
+解决方案：
+在 frameworks/base/core/java/com/android/internal/view/menu/ListMenuPresenter.java 中的 getMenuView() 方法中修改
+if(mMenuView.getContext().getPackageName().equalsIgnoreCase("com.android.dialer")){
+    mMenuView.setOnKeyListener(new android.view.View.OnKeyListener() {
+        @Override
+        public boolean onKey(View v, int keyCode, android.view.KeyEvent event) {
+            // TODO Auto-generated method stub
+            if(keyCode == android.view.KeyEvent.KEYCODE_CALL){      //在通话菜单上屏蔽CALL按键
+                return true;
+            }
+            return false;
+        }
+    });
+}
+
+26.Redmine97240:[Bug]在某些语言下打开相机中的菜单会报错(如爱沙尼亚语)
+
+解决方案：
+因为爱沙尼亚语下没有 pref_camera_hdr_title 这个翻译，并且默认 values 下面也把这个翻译注释掉了
+打开 mtk_camera_strings.xml 中注释掉的翻译 pref_camera_hdr_title
+alps/packages/apps/Camera/res/values/mtk_camera_strings.xml
+
+27.Redmine100831:[客户反馈 95]Exploratory_App: Alarm loudness over headset should be limited？
+
+解决方案：
+插耳机的时候开启安全音量提醒
+插耳机默认音量太高，会伤害耳朵，客户建议修改默认音量为5
+alps/frameworks/base/media/java/android/media/AudioManager.java
+    DEFAULT_STREAM_VOLUME
+alps/mediatek/frameworks/base/media/audio/java/com/mediatek/audioprofile/AudioProfileManager.java
+    DEFAULT_RINGER_VOLUME_GENERAL
+
+28.Redmine100533:[bug](通话)通话时录音时间不会显示？
+
+解决方案：
+添加通话录音时间显示，参考 #100533，建议在基本移植任务中添加
+    
+29.Redmine100255:[客户反馈 47]Device has only 3G network mode present in the network selection mode？
+
+解决方案：
+客户需要去掉几种网络模式，有以下几点需要注意：
+a:需要提前和客户确认默认的网络模式
+b:alps/frameworks/base/telephony/java/com/android/internal/telephony/RILConstants.java 记得修改这个文件中的默认网络模式
+    PREFERRED_NETWORK_MODE
+c:修改设置下的菜单的默认网络模式显示
+
+30.Redmine94166:[客户反馈 53] UCS2 characters are not transformed to 7-bit alphabets even when GSM alphabet mode is selected in text message settings
+
+解决方案：
+添加短信 7-bit 编码，并默认设置为 GSM alphabet
+
+31.Redmine94356:[客户反馈 83/84]When inserted a portuguese simcard the device should assume the European Portuguese language.
+
+解决方案：
+插入葡萄牙语的卡应该显示欧洲葡萄牙语，客户后续反馈是翻译的问题，导出翻译的时候语言选择不对
+alps/frameworks/opt/telephony/src/java/com/android/internal/telephony/MccTable.java
+    -sTable.add(new MccEntry(268,"pt",2));	        //Portugal
+    +sTable.add(new MccEntry(268,"pt",2,"pt"));	    //Portugal
+
+32.Redmine100257: launcher上页面切换优化？
+
+解决方案：
+alps/packages/apps/Launcher3/src/com/android/launcher3/PagedView.java 
+修改 snapToPage() 方法，把 immediate 写死为 true，防止 Launcher 上概率性切换页面较慢
+去掉 computeScroll()，防止切换页面之后界面上的应用名称字体显示不清晰
+
+33.Redmine98484:修改第三通电话的时候，会自动挂断非hold的电话
+
+解决方案：
+在来第三通电话的时候给出提示对话框
+
+34.Redmine94344:[客户反馈 66]Not possible to correct wrong SIM PIN entry; Delete button not work.
+
+解决方案：
+在锁屏界面上添加#键的删除功能
+alps/frameworks/base/packages/Keyguard/src/com/mediatek/keyguard/Telephony/KeyguardSimPinPukView.java
+    mPinText.setOnKeyListener(new OnKeyListener() {     //添加对 KEYCODE_POUND 键的监听
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+            // TODO Auto-generated method stub
+            if(event.getAction() == KeyEvent.ACTION_DOWN){
+                if(keyCode == KeyEvent.KEYCODE_POUND){
+                    keyRemappingSendFakeKeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL);
+                    keyRemappingSendFakeKeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL);
+                    return true;
+                }
+            }
+            return false;
+        }
+    });
+
+35.Redmine94149: [客户反馈 63]DUT doesnot accept calendar files. When a calendar file is sent from reference device/computer to DUT.
+
+解决方案：
+不能通过蓝牙发送接收日历文件
+packages/apps/Bluetooth/src/com/android/bluetooth/opp/Constants.java
+添加 "text/x-vcalendar", 格式的文件支持
+从视频和log里面看是手机给电脑发送文件失败，我们这边用M2414给张工的笔记本电脑发送文件也是发送不成功的，然后用N9做对比测试也是不能发送的，目前怀疑是客户的电脑不支持OPP协议
+
+36.Redmine94755:[客户反馈]4.3 - Multi-Party Calling
+
+解决方案：
+相关bug:92020
+多方通话，添加管理会议通话的菜单，在管理会议通话界面可以分开/挂断一路通话
+
+37.Redmine94349:[客户反馈]Many APNs; Limit the APNs to only 2, namely: Smart.Vodacom and MMS.Vodacom(should be greyed-out /non editable)
+
+解决方案：
+修改APN不可编辑
+alps/packages/apps/Settings/ext/src/com/mediatek/settings/ext/DefaultApnSettingsExt.java
+    public boolean isAllowEditPresetApn(String type, String apn, String numeric, int sourcetype) {
+        return false;   //这里可以添加 mccmnc 控制
+    }
+
+38.Redmine95972:[客户需求]Vodafone launcher Apk : please use Vodafone icon and please add it on the menu
+
+解决方案：
+添加一个APK，点击进去之后可以直接跳转到指定的网页，后续可以进行优化，把网址用宏控制起来，并且最好可以用宏控制快捷方式的显示？？
+alps/packages/apps/SageRealApp/VodafoneLauncher/*
+
+39.Redmine98836:不能下载Email中的附件？
+
+解决方案：94162
+a:把WebView设置为不可获取焦点，让其父控件 LinearLayout 可以获取焦点，这样可以防止WebView的内容获取焦点
+b:添加Email浏览界面显示鼠标功能
+
+40.Redmine98477:[客户反馈 10]Device presents the option to enable /disable the SIM in the settings and user must not be presented with the option.
+
+解决方案：
+隐藏SIM卡管理中的开关按钮
+alps/packages/apps/Settings/commonui/src/com/mediatek/gemini/simui/SimInfoViewUtil.java
+
+41.Redmine94210: [客户反馈 54]the volum icon is overlapped with the warning message as you can see in the screenshot
+
+解决方案：
+修改安全音量提示框可以显示在最前面
+alps/frameworks/base/core/java/android/view/VolumePanel.java
+    sConfirmSafeVolumeDialog.getWindow().setType(
+        -WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);
+        +WindowManager.LayoutParams.TYPE_SYSTEM_ERROR);
+
+42.Redmine91018: [bug](相机)相机菜单显示问题
+
+解决方案：
+把布局文件 in_line_setting_sublist.xml 中的 id/content 改为 id/content_layout(也可以是别的) 就可以了，这一点非常奇怪？？？
+alps/packages/apps/Camera/res/layout/in_line_setting_sublist.xml
+    -        android:layout_toStartOf="@+id/content" />
+    -    <FrameLayout android:id="@+id/content"
+    +        android:layout_toStartOf="@+id/content_layout" />
+    +    <FrameLayout android:id="@+id/content_layout"
+    
+43.Redmine92698: [Bug]M2414无法输入*号，经验证浏览器、短信、电话本等编辑界面均无法输入*号
+
+解决方案：
+在 mtk-kpd.kcm 文件中添加 KEYCODE_STAR 对应的输入字符
+alps/mediatek/config/sr72_w_lca/mtk-kpd.kcm
+    +key STAR {
+    +label: '*'
+    +base: '*'
+    +}
+修改*键也可以输入一些字符(包括*)
+alps/packages/inputmethods/SageRealIME/src/com/sagereal/zq/softkeyboard/CandidateView.java
+alps/packages/inputmethods/SageRealIME/src/com/sagereal/zq/softkeyboard/SoftKeyboard.java
+
+44.Redmine92922: [BUG]无法使用暗码＋PUK码（**05*PUK码*新PIN码*新PIN码#）的方式更改PIN码问题
+
+解决方案：
+alps/packages/services/Telephony/src/com/android/phone/EmergencyDialer.java
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        ......
+        case KeyEvent.KEYCODE_STAR:
+            mDigits.onKeyDown(keyCode, new KeyEvent(KeyEvent.ACTION_DOWN, keyCode));
+            break;
+    }
+
+45.Redmine62797: 不允许安装其他第三方APK
+
+解决方案：
+通过宏控和包名双重保护控制第三方apk无法安装，只允许安装 whatsapp 和 facebook
+去掉手机中所有进入 app 管理界面的入口
+
+46.Redmine92239: [客户需求]modify Voda NZ settings----修改Wifi热点自动关闭的默认值
+
+解决方案：
+通过 def_wifi_hotspot_auto_disable 默认值控制
+alps/frameworks/base/packages/SettingsProvider/res/values/defaults.xml
+    
+47.Redmine92239: [客户需求]modify Voda NZ settings----客制化Vodafone NZ紧急号码
+
+解决方案：
+修改以下两个文件中的 emergencyNumList 即可
+alps/frameworks/base/telephony/java/android/telephony/PhoneNumberUtils.java
+alps/mediatek/frameworks/base/op/java/com/mediatek/op/telephony/PhoneNumberExt.java
+
+48.Redmine92239: [客户需求]modify Voda NZ settings----修改默认日期格式和时间格式
+
+解决方案：
+alps/frameworks/base/core/java/android/text/format/DateFormat.java
+    result = context.getString(R.string.numeric_date_format_0);
+    
+49.Redmine92024: [客户需求] Mobile bookmarks to configure----修改浏览器主页和书签
+
+解决方案：
+alps/packages/apps/Browser/src/com/android/browser/provider/BrowserProvider2.java
+alps/packages/apps/Browser/res/values/bookmarks_icons.xml
+alps/packages/apps/Browser/res/values/strings.xml
+
+50.Redmine91826: [客户需求] EMail APK - Account type to preconfigure----------------------Vodafone Hungary MCC/MNC 216/70
+
+解决方案：
+根据 mccmnc 修改 email providers
+alps/packages/apps/Email/src/com/android/email/activity/setup/AccountSettingsUtils.java
+    xml = context.getResources().getXml(R.xml.providers_hu);
+
+51.Redmine91829: [客户需求]Phone----------for Vodafone AL MCC/MNC 276/02
+
+解决方案：
+更具 mccmnc 修改默认情景模式
+alps/packages/apps/Mms/src/com/android/mms/AidlService.java
+    mProfileManager.setDtmfToneEnabled("mtk_audioprofile_general", true);
+
+52.第三方 whatsapp 等应用的修改
+
+解决方案：
+参照 Redmine68191 修改，具体的修改方法会在《焦点问题集锦》中讲解
+
+53.Redmine92447: [BUG]M2414机器无法使用PUK码解PIN码,请安排修改.
+
+解决方案：
+导致这个问题的原因是原来在 onKeyDown 和 onKeyUp 的时候都会去验证密码并解锁，导致 onKeyDown 的时候已经解锁，onKeyUp 的时候密码又验证失败
+目前的解决方案是在 onKeyUp 事件中处理解锁事件
+alps/frameworks/base/packages/Keyguard/src/com/android/keyguard/KeyguardAbsKeyInputView.java
+    -verifyPasswordAndUnlock();
+    +if(event.getAction() == KeyEvent.ACTION_UP){
+    +   verifyPasswordAndUnlock();  //在 onKeyUp 事件中处理解锁事件
+    +}
+
+54.Redmine91814: [客户需求]SW project information----修改蓝牙名称和热点名称
+
+解决方案：
+bluetooth_hostname 和 wlan_ssid
+sagereal/mk/up253_m2414_Vodafone/ProjectConfig.mk
+
+55.Redmine91837: [客户需求]Messaging----------for Vodafone AL MCC/MNC 276/02----添加彩信600K压缩选项
+
+解决方案：
+alps/packages/apps/Mms/src/com/android/mms/ui/MessageUtils.java
+
+56.Redmine91891: [客户反馈]Decription : With the physical keypad lock activated, the DUT is unable to make any call including emergency number 111 or 112.
+
+解决方案：
+修改在锁屏界面可以拨打紧急拨号
+alps/frameworks/base/packages/Keyguard/src/com/android/keyguard/EmergencyButton.java
+alps/frameworks/base/packages/Keyguard/res/layout/keyguard_emergency_carrier_area.xml
+
+57.Redmine91284: [客户反馈]When Wifi/Data is not available, FB Lite will promote user with the screen below to turn on WiFi/Data. 
+
+解决方案：
+修改鼠标显示在最顶层，不会被别的界面覆盖，建议以后的项目都这么修改，让鼠标显示在最顶层
+alps/frameworks/base/services/java/com/android/server/mouse/MouseService.java
+    -mLayoutParams.type = WindowManager.LayoutParams.TYPE_TOAST;
+    +mLayoutParams.type = WindowManager.LayoutParams.TYPE_TOP_MOST;
+
+58.Redmine70736: [需求]移植FOTA
+
+解决方案：
+这个值 SAGEREAL_PRODUCT_DEVICE = sr72_w_lca 不可以修改，否则fota升级不上去
+联系广升提供新的apk可以支持不插SD卡升级，并且可以支持按键操作
+必要的时候还需要让广升修改翻译
+
+59.Redmine90050: [客户需求]Call APK - Phone number to install in the phone----预置联系人
+
+解决方案：
+MTK给的方法有问题，还可以进一步优化
+alps/packages/apps/Contacts/src/com/mediatek/contacts/simservice/PresetContactsImportProcessorVodacom.java
+alps/packages/apps/Contacts/src/com/mediatek/contacts/simservice/SIMProcessorManager.java
+alps/packages/apps/ContactsCommon/src/com/mediatek/contacts/simservice/SIMServiceUtils.java
+alps/packages/apps/Contacts/src/com/mediatek/contacts/simcontact/BootCmpReceiver.java
+
+60.Redmine89592: [客户反馈]when the screen is locked and we press on the top left key
+
+解决方案：
+修改灭屏界面按左软键后直接进入Settings的bug
+alps/packages/apps/Launcher3/src/com/android/launcher3/Launcher.java
+
+61.Redmine89504: [bug](通话)测试机来电界面，调出信息界面后，配合机挂断，信息文本不会返回
+
+解决方案：
+修改挂断电话之后隐藏快捷回复对话框
+alps/packages/apps/InCallUI/src/com/android/incallui/AnswerFragment.java
+alps/packages/apps/InCallUI/src/com/android/incallui/InCallActivity.java
+    if(mAnswerFragment != null){
+        mAnswerFragment.dismissCannedResponsePopup();
+        mAnswerFragment.dismissCustomMessagePopup();
+        mAnswerFragment.dismissPendingDialogues();
+    }
+
+62.Redmine88752: [BUG] Please remove the point in the first screen as shown in the picture
+
+解决方案：
+因为只有一页主菜单，去掉 Launcher 界面上的 indicator 指示器
+alps/packages/apps/Launcher3/src/com/android/launcher3/PageIndicator.java
+    void addMarker(int index, PageMarkerResources marker, boolean allowAnimations) {
+        if(true){
+            return;
+        }
+        ......
+    }
+
+63.Redmine85506: [bug](日历)来日程查看后未读日程数字不会消失
+
+解决方案：
+修改进入日历之后未读消息数量变为0
+alps/packages/apps/Calendar/src/com/android/calendar/AllInOneActivity.java
+    protected void onResume() {
+        ......
+        com.mediatek.calendar.MTKUtils.writeUnreadReminders(this, 0);  //把未读消息数量设置为0即可
+    }
+
+64.Redmine88749: [BUG] When we have a missing call, it is really not intuitive to remove the miss call counter.
+
+解决方案：
+修改进入拨号盘之后把未读消息标记为已读
+alps/packages/apps/Dialer/src/com/android/dialer/DialtactsActivity.java
+    @Override
+    protected void onResume() {
+        ......
+        CallLogQueryHandlerEx mCallLogQueryHandler = new CallLogQueryHandlerEx(getContentResolver(), null);
+        mCallLogQueryHandler.markNewCallsAsOld();   //把未读标记为已读
+        removeMissedCallNotifications();            //移除未读消息通知
+    }
+
+65.Redmine88010: [bug](相机)相机设置中的GPS location info设置为off，拍照后查看图片详情，有location项
+
+解决方案：
+我们手机中没有安装AGPS的应用，只通过gps无法快速精确定位，建议去掉相机中的 GPS 信息
+alps/packages/apps/Camera/src/com/android/camera/SettingChecker.java
+    public static final int[] SETTING_GROUP_COMMON_FOR_TAB = new int[]{
+        //ROW_SETTING_GEO_TAG,//common          //注释掉这一行就可以了，去掉菜单
+    }
+alps/packages/apps/Gallery2/src/com/android/gallery3d/data/LocalMediaItem.java
+    //details.addDetail(MediaDetails.INDEX_LOCATION, new double[] {latitude, longitude});   //去掉这一行，去掉照片详情中的位置信息
+
+66.Redmine87801: [Bug](相机)相机闪光灯默认开启，无法再手动关闭
+
+解决方案：
+在相机设置中添加闪关灯的菜单
+public static final int[] SETTING_GROUP_COMMON_FOR_TAB = new int[]{
+    ROW_SETTING_FLASH,//common                  //添加这一行就可以了
+}
+
+67.Redmine87990: [反馈] Functional----Screenlock cannot be slide as it is a non-touch screen. Wording to change!
+
+解决方案：
+去掉滑动解锁菜单
+alps/packages/apps/Settings/src/com/android/settings/ChooseLockGeneric.java
+alps/packages/apps/Settings/res/layout/confirm_lock_password.xml
+    } else if (KEY_UNLOCK_SET_PIN.equals(key)) {
+        enabled = quality <= DevicePolicyManager.PASSWORD_QUALITY_NUMERIC;
+        visible = false;                //添加这一行代码就可以了
+    }
+
+68.Redmine98482:[客户反馈 13]Network unlock procedure in locked devices only provide 5 retries to unlock them. After 5 unsuccessful tries, device is permanently locked.
+
+解决方案：
+修改锁网密码输入没有限制，可以无限次输入
+alps/frameworks/base/packages/Keyguard/src/com/mediatek/keyguard/Telephony/KeyguardSimPinPukView.java
+
+69.Redmine98834:[客户反馈 39] With MVNO SIM card (Lebara), device displays Lebara as the network name instead of Roaming.
+
+解决方案：
+客户希望插入 Lebara 卡能显示 Lebara
+a:修改运营商名称的显示 
+    alps/frameworks/opt/telephony/src/java/com/android/internal/telephony/gsm/GsmServiceStateTracker.java
+    alps/mediatek/frameworks/base/telephony/etc/virtual-spn-conf-by-efspn.xml
+b:修改网络名称的显示
+    alps/packages/services/Telephony/src/com/mediatek/settings/NetworkSettingList.java
+c:去除运营商显示后面的01，并修改通话过程中运营商名称的显示
+    Redmine98478
+d:修改STK的显示名称
+
+70.Redmine98465:修改STK名称从SIM卡中读取？
+
+解决方案：#98465
+修改STK名称从卡中获取
+    alps/frameworks/opt/telephony/src/java/com/android/internal/telephony/cat/CommandParamsFactory.java
+        if(com.mediatek.common.featureoption.FeatureOption.SAGEREAL_VODAFONE_AU_STKNAME){
+            if(!is_item_select){
+                android.os.SystemProperties.set("gsm.sim.operator.sume", menu.title==null?"":menu.title);   //保存STK中的名称到 gsm.sim.operator.sume
+            }
+        }
+    alps/frameworks/opt/telephony/src/java/com/android/internal/telephony/gsm/GsmServiceStateTracker.java
+        if(com.mediatek.common.featureoption.FeatureOption.SAGEREAL_VODAFONE_AU_STKNAME){
+            try {
+                PackageManager pm = mPhone.getContext().getPackageManager();
+                if(pm.getApplicationEnabledSetting("com.android.stk") == PackageManager.COMPONENT_ENABLED_STATE_DEFAULT){
+                    pm.setApplicationEnabledSetting("com.android.stk", PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+                }
+                pm.setApplicationEnabledSetting("com.android.stk", PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    alps/frameworks/base/core/java/android/app/ApplicationPackageManager.java
+        //修改 getText() 方法，修改获取应用名称的方法
+        if(com.mediatek.common.featureoption.FeatureOption.SAGEREAL_VODAFONE_AU_STKNAME){
+            try {
+                if ("com.android.stk".equalsIgnoreCase(packageName)) {
+                    String tmptext0 = SystemProperties.get("gsm.sim.operator.sume", "");
+                    String tmptext2 = SystemProperties.get(TelephonyProperties.PROPERTY_OPERATOR_ALPHA_2);
+                    if (!tmptext0.isEmpty() && tmptext2.isEmpty() ) {
+                        if (!tmptext0.equalsIgnoreCase("com.android.stk")) {
+                            text = tmptext0;
+                        }
+                    } else if (tmptext0.isEmpty() && !tmptext2.isEmpty()) {
+                        if (!tmptext2.equalsIgnoreCase("com.android.stk")) {
+                            text = tmptext2;
+                        }
+                    } else {
+                        Log.w("PackageManager", "Failure retrieving text 0x" + Integer.toHexString(resid) + " in package " + packageName);
+                    }
+                }
+            } catch (RuntimeException e) {
+                Log.w("PackageManager", "Failure retrieving text 0x" + Integer.toHexString(resid) + " in package " + packageName, e);
+            }
+        }
+
+71. Redmine86490: [客户反馈]Notification : We should be able to remove them by press on the left direction key , as done in appplication historic
+
+解决方案：
+把状态栏上的通知栏修改为通过左右键可以移除通知信息
+alps/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/BaseStatusBar.java
+    row.setOnKeyListener(new OnKeyListener() {
+        @Override
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+            if(event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)){
+                if(mPile.canChildBeDismissed(v)){
+                    mPile.dismissRowAnimated(v);    //移除通知
+                }
+                return true;
+            }
+            return false;
+        }
+    });
+
+72. Redmine86489:[客户反馈]In a field to input text, when pressing keys, could we have the letters that come out first, and the number after?
+
+解决方案：
+修改输入法的顺序：大写字母 + 小写字母 + 数字
+目前修改为在 toString() 的时候控制，方便后续修改
+alps/frameworks/base/core/java/android/text/method/WordResource.java
+    class Word {
+        private String wordLower;
+        private String wordCapital;
+        private String wordSpecielLower;
+        private String wordSpecielCapital;
+        private String wordNumber;
+        public Word(String wordLower, String wordCapital, String wordSpecielLower, String wordSpecielCapital, String wordNumber) {
+            super();
+            this.wordLower = wordLower;
+            this.wordCapital = wordCapital;
+            this.wordSpecielLower = wordSpecielLower;
+            this.wordSpecielCapital = wordSpecielCapital;
+            this.wordNumber = wordNumber;
+        }
+        public String toString() {
+            return wordLower + wordCapital + wordNumber + wordSpecielLower + wordSpecielCapital;    //通过这个方法进行顺序的控制
+        }
+    }
+
+73.Redmine97742:(设置)设置情境模式预览音量能后台播放，且播放的时候来电，播放铃声和来电铃声能同时播放
+
+解决方案：
+在退出的时候暂停播放
+alps/packages/apps/Settings/src/com/mediatek/audioprofile/AudioProfileSettings.java
+    public void onPause() {
+        super.onPause();
+        SagerealVolumePreference alarm_volume_perference = (SagerealVolumePreference)findPreference(KEY_ALARM_VOLUME);
+        SagerealVolumePreference ring_volume_perference = (SagerealVolumePreference)findPreference(KEY_RING_VOLUME);
+        if(alarm_volume_perference != null){
+            alarm_volume_perference.stopPlaying();  //在onPause的时候停止播放
+        }
+        if(ring_volume_perference != null){
+            ring_volume_perference.stopPlaying();   //在onPause的时候停止播放
+        }
+        mProfileManager.listenAudioProfie(mListener, AudioProfileListener.LISTEN_NONE);
+    }
+
+74. Redmine89657: [客户反馈]In email application , we cannot delete Email account 
+
+解决方案：
+在 Email 的设置下添加移除 account 的菜单，参照 Settings/account 下的移除账户的菜单代码
+alps/packages/apps/Email/src/com/android/email/activity/setup/AccountSettingsFragment.java
+
+75. Redmine101218: [客户反馈 49]We cannot add contact in +61****** format. User cannot add '+' as prefix
+
+解决方案：
+参考拨号盘上的 digits 控件做处理，长按的时候把0替换为+
+可以参照拨号盘界面上的号码输入框的实现方法，通过跟踪代码发现长按0键之后会调用如下方法
+packages/apps/Dialer/src/com/android/dialer/dialpad/DialpadFragment.java
+public boolean onLongClick(View view) {
+    ......
+    case R.id.zero: {
+        removePreviousDigitIfPossible();        //删除之前输入的 "0"
+        keyPressed(KeyEvent.KEYCODE_PLUS);      //输入 "+"
+        stopTone();
+        mPressedDialpadKeys.remove(view);
+        return true;
+    }
+    ......
+}
+private void removePreviousDigitIfPossible() {
+    final Editable editable = mDigits.getText();
+    final int currentPosition = mDigits.getSelectionStart();
+    if (currentPosition > 0) {
+        mDigits.setSelection(currentPosition);
+        mDigits.getText().delete(currentPosition - 1, currentPosition);
+    }
+}
+private void keyPressed(int keyCode) {
+    ......
+    mDigits.onKeyDown(keyCode, new KeyEvent(KeyEvent.ACTION_DOWN, keyCode));        //关键代码，重新发送 keycode 的 event 事件，模拟按键的输入
+    final int length = mDigits.length();
+    if (length == mDigits.getSelectionStart() && length == mDigits.getSelectionEnd()) {
+        mDigits.setCursorVisible(false);
+    }
+    mDigits.setCursorVisible(true);
+}
+
+但是很遗憾，EditText默认没有 onKey 的长按监听事件，我们需要自己重写EditText，添加 onKey 的长按监听事件
+alps/packages/apps/Contacts/src/com/android/contacts/editor/DigitsEditText.java
+    public class DigitsEditText extends EditText {
+        @Override
+        public boolean dispatchKeyEvent(KeyEvent event) {
+            if(event.getRepeatCount() > 0 && lockLongPressKey){
+                if(KeyEvent.KEYCODE_0 <= event.getKeyCode() && event.getKeyCode() <= KeyEvent.KEYCODE_9){
+                    return true;
+                }else if(KeyEvent.KEYCODE_STAR == event.getKeyCode()){
+                    return true;
+                }else if(KeyEvent.KEYCODE_POUND == event.getKeyCode()){
+                    return true;
+                }
+            }
+            return super.dispatchKeyEvent(event);
+        }
+        private boolean lockLongPressKey = false;
+        private final static int MSG_LONG_CLICK = 777;
+        @Override
+        public boolean onKeyDown(int keyCode, KeyEvent event) {
+            if(event.getRepeatCount() > 0 && !lockLongPressKey){
+                event.startTracking();
+                lockLongPressKey = true;
+                Message msg = new Message();
+                msg.what = MSG_LONG_CLICK;
+                msg.arg1 = keyCode;
+                handler.sendMessageDelayed(msg, 500);
+                return true;
+            }
+            return super.onKeyDown(keyCode, event);
+        }
+        private Handler handler = new Handler(){
+            public void handleMessage(Message msg){
+                if(msg.what == MSG_LONG_CLICK){
+                    if(mOnKeyLongClickListener != null){
+                        mOnKeyLongClickListener.onKeyLongClick(msg.arg1);
+                    }
+                }
+            }
+        };
+        public interface OnKeyLongClickListener{
+            public void onKeyLongClick(int keyCode);
+        }
+        private OnKeyLongClickListener mOnKeyLongClickListener;
+        public void setOnKeyLongClickListener(OnKeyLongClickListener onKeyLongClickListener){
+            mOnKeyLongClickListener = onKeyLongClickListener;
+        }
+        @Override
+        public boolean onKeyUp(int keyCode, KeyEvent event) {
+            if(lockLongPressKey){
+                lockLongPressKey = false;
+                handler.removeMessages(MSG_LONG_CLICK);
+                return true;
+            }
+            return super.onKeyUp(keyCode, event);
+        }
+    }
+
+长按 onKey 方法的实现原理如下：
+a. 在 onKeyDown() 的时候发送一个延时500ms的消息
+b. 在 onKeyUp() 的时候移除这个消息，如果Handler接收到了这个消息，就处理长按事件，如果Handler没有接收到这个消息，就处理短按事件
+
+alps/packages/apps/Contacts/src/com/android/contacts/editor/TextFieldsEditorView.java
+    EditText fieldView = new EditText(mContext);
+    if(field.titleRes == R.string.phoneLabelsGroup){
+        fieldView = new DigitsEditText(mContext);
+        final DigitsEditText mfieldView = (DigitsEditText)fieldView;
+        mfieldView.setOnKeyLongClickListener(new com.android.contacts.editor.DigitsEditText.OnKeyLongClickListener() {
+            public void onKeyLongClick(int keyCode){
+                if(keyCode == KeyEvent.KEYCODE_0){
+                    // removePreviousDigitIfPossible()
+                    final Editable editable = mfieldView.getText();
+                    final int currentPosition = mfieldView.getSelectionStart();
+                    if (currentPosition > 0) {
+                        mfieldView.setSelection(currentPosition);
+                        mfieldView.getText().delete(currentPosition - 1, currentPosition);  //删除先前输入的0
+                    }
+                    // keyPressed(KeyEvent.KEYCODE_PLUS)
+                    mfieldView.onKeyDown(KeyEvent.KEYCODE_PLUS, new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_PLUS)); //输入+
+                }
+            }
+        });
+    }
+
+76. Redmine101225: [需求]退出browser就直接stop网页浏览或者灭屏动作直接stop网页浏览
+
+解决方案：
+功耗优化，浏览器在后台运行的时候stop网页浏览
+alps/packages/apps/Browser/src/com/android/browser/BrowserActivity.java
+    protected void onStop() {
+        super.onStop();
+        if(com.mediatek.common.featureoption.FeatureOption.SAGEREAL_BROWSER_STOP_BACKGROUND && mController instanceof UiController){
+            ((com.android.browser.UiController)mController).stopLoading();      //stop网页浏览
+        }
+    }
+
+77.Redmine98504:[客户反馈 25]Cannot setup a Gmail account that has two step authentication enabled. User just gets a 'username or password incorrect' error.
+
+解决方案：
+Email中不支持两步验证的功能，和客户沟通在用户输入邮箱账户完成切换到密码框的时候，提示用户要去掉两步验证才能登录
+
+78.APN参数问题？
+
+解决方案：
+最好让客户提前测试彩信，上网，打电话功能
+最好能让客户提供对比机的apn参数(提供方法让客户提取对比机的apn参数)，提供截图，抓log
+
+79.去掉一些无法实现或没必要的功能？
+
+解决方案：
+Redmine98468:去掉IP拨号功能
+Redmine98582:去掉添加账户功能
+Redmine98567:移除Email中的VIP菜单
+Redmine98505:移除设置下的Make passwords visible菜单
+Redmine89553:去掉复制粘贴的功能
+
+80. UX 修改
+
+解决方案：
+最好不要改系统默认的颜色，否则会引起很多问题
+尽量使用.9的图片，往drawable-ldpi添加图片的时候，在drawable中也添加一份相同的，防止编译报错和运行时报错
+一些特定的界面，通过在APP中继承 theme 和 style 来单独修改，而不要在framework下直接修改
+参考例子：
+alps/packages/apps/Calendar/res/values/styles.xml
+    <style name="CalendarActionBarTheme" parent="android:Theme.Holo.Light"> //自定义主题，继承自 Theme.Holo.Light
+        <item name="android:actionBarStyle">@style/ActionBarStyle</item>
+    </style>
+    <style name="ActionBarStyle" parent="android:style/Widget.Holo.Light.ActionBar.Solid">
+        <item name="android:background">#282B33</item>
+    </style>
+alps/packages/apps/Calendar/AndroidManifest.xml
+    <activity android:name=".selectcalendars.SelectVisibleCalendarsActivity"
+        android:label="@string/select_visible_calendars_title"
+        android:theme="@style/CalendarActionBarTheme"/>     //使用自定义的主题
+
+81.按键功能定义
+
+解决方案：
+*+power键打开鼠标
+#+power键截图
+后续其他项目建议添加音量实体键
+DEL的功能最好不要在#键上(需要研究别人输入法按返回键删除和返回的功能，如IQQI)
+
+82.输入法的优化
+
+解决方案：
+添加一些之前不能输入的字符，如7-bit表中的字符
+修改输入法的输入速度
+通过更好的方法控制输入法的显示顺序如(小写字母+数字+大写字母+其他字母)
+
+83.进入Browser和whatsapp，facebook等应用自动显示鼠标
+
+解决方案：
+在 WindowManagerService.java 中处理，通过包名判断是否进入应用的时候就默认打开鼠标
+    final class H extends Handler {
+        public void handleMessage(Message msg) {
+            if(titleStr.contains("com.facebook.lite")){
+                mContext.sendBroadcast(new Intent("action.mouse.show"));    //发送广播打开鼠标
+            }
+        }
+    }
+
+84.修改SKU1插不同的卡可以显示不同的客户需求？
+
+解决方案：
+通过MCCMNC判断，注意如果有锁网的话就可能会影响 mccmnc 的读取速度
+后续最好添加和锁网相同的 MCCMNC(46001) 方便测试
+
+85.修改SKU不同软件之间可以互刷？？
+
+解决方案：
+Redmine97211
+客户说只有一台手机，而且不会格式化下载导参数，所以才提出这么奇怪的需求
+后续建议每个项目寄一台手机，并且教会客户保存参数，格式化下载，导参数
+
+------------------------------------默认值的修改------------------------------------
+默认24小时制         
+    alps/frameworks/base/packages/SettingsProvider/res/values/defaults.xml  
+        def_time_12_24
+默认MTP               
+    sagereal/mk/up253_m2414_Vodafone/ProjectConfig.mk                      
+        MTK_MASS_STORAGE=no     //no 代表 mtp
+默认GPS高精度
+    alps/frameworks/base/packages/SettingsProvider/res/values/defaults.xml 
+        def_location_providers_allowed = gps,network
+默认时区
+    alps/mediatek/config/sr72_w_lca/system.prop
+        persist.sys.timezone = Europe/Brussels  //从 frameworks/base/core/res/res/xml/time_zones_by_country.xml 文件中查看
+默认蓝牙名称
+    alps/mediatek/config/sr72_w_lca/custom.conf
+        bluetooth.HostName
+默认热点名称
+    alps/mediatek/config/sr72_w_lca/custom.conf
+        wlan.SSID
+默认开启锁屏
+    alps/frameworks/base/packages/SettingsProvider/res/values/defaults.xml
+        def_lockscreen_disabled = false         //false表示默认开启锁屏
+默认分区表
+    alps/mediatek/config/sr72_w_lca/partition_table_MT6572.xls
+默认浏览器书签
+    alps/packages/apps/Browser/res/values/strings.xml
+        bookmarks
+    alps/packages/apps/Browser/res/values/bookmarks_icons.xml
+        bookmark_preloads
+默认浏览器主页
+    alps/packages/apps/Browser/res/values/mtk_strings.xml
+        homepage_base_site_navigation
+默认日期格式和时间格式
+    alps/frameworks/base/core/java/android/text/format/DateFormat.java
+        result = context.getString(R.string.numeric_date_format_0);
+默认Wifi热点自动关闭
+    alps/frameworks/base/packages/SettingsProvider/res/values/defaults.xml
+        def_wifi_hotspot_auto_disable
+紧急号码
+    alps/frameworks/base/telephony/java/android/telephony/PhoneNumberUtils.java
+    alps/mediatek/frameworks/base/op/java/com/mediatek/op/telephony/PhoneNumberExt.java
+        emergencyNumList
+EmailProvider
+    alps/packages/apps/Email/src/com/android/email/activity/setup/AccountSettingsUtils.java
+        xml = context.getResources().getXml(R.xml.providers_hu);
+默认音量
+    alps/frameworks/base/media/java/android/media/AudioManager.java
+        DEFAULT_STREAM_VOLUME
+    alps/mediatek/frameworks/base/media/audio/java/com/mediatek/audioprofile/AudioProfileManager.java
+        DEFAULT_RINGER_VOLUME_GENERAL
+默认灭屏时间
+    alps/frameworks/base/packages/SettingsProvider/res/values/defaults.xml
+        def_screen_off_timeout

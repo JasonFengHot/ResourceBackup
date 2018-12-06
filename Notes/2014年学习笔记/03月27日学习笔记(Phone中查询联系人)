@@ -1,0 +1,271 @@
+1.修改拨号界面联系人搜索结果？？？
+
+R.id.search_src_text	(AutoCompleteTextView)
+R.id.contact_tile_list	(ListView)
+
+mListView = (ListView) listLayout.findViewById(R.id.contact_tile_list);
+mAdapter = new PhoneFavoriteMergedAdapter(getActivity(),mContactTileAdapter, mAccountFilterHeaderContainer, mAllContactsAdapter,mLoadingView);
+mListView.setAdapter(mAdapter);
+
+通过log查看
+tag:ContactsProvider
+
+//Phone里面
+matcher.addURI(ContactsContract.AUTHORITY, "data/callables/filter/*", CALLABLES_FILTER);
+content://com.android.contacts/data/callables/filter/ffff?directory=0&remove_duplicate_entries=true		//将Phone里面的查询条件换成Contact里面的查询条件
+
+packages/apps/contacts/src/com/android/contacts/list/PhoneNumberListAdapter.java										//Phone
+    public void configureLoader(CursorLoader loader, long directoryId) {
+        final Builder builder;
+        if (isSearchMode()) {
+            final Uri baseUri = mUseCallableUri ? Contacts.CONTENT_FILTER_URI : Phone.CONTENT_FILTER_URI;	//将这里的Callables改为Contacts
+            builder = baseUri.buildUpon();
+            final String query = getQueryString();												//查询条件	ffff
+            if (TextUtils.isEmpty(query)) {
+                builder.appendPath("");
+            } else {
+                builder.appendPath(query);      // Builder will encode the query
+            }
+            builder.appendQueryParameter(ContactsContract.DIRECTORY_PARAM_KEY,String.valueOf(directoryId));					//directory=0
+        } else {
+            final Uri baseUri = mUseCallableUri ? Callable.CONTENT_URI : Phone.CONTENT_URI;
+            builder = baseUri.buildUpon().appendQueryParameter(ContactsContract.DIRECTORY_PARAM_KEY, String.valueOf(Directory.DEFAULT));	
+            if (isSectionHeaderDisplayEnabled()) {
+                builder.appendQueryParameter(ContactCounts.ADDRESS_BOOK_INDEX_EXTRAS, "true");							
+            }
+            applyFilter(loader, builder, directoryId, getFilter());
+        }
+        builder.appendQueryParameter(ContactsContract.REMOVE_DUPLICATE_ENTRIES, "true");							//remove_duplicate_entries=true
+        loader.setUri(builder.build());														//这里的builder.build()就是生成的查询uri
+        if (getContactNameDisplayOrder() == ContactsContract.Preferences.DISPLAY_ORDER_PRIMARY) {
+            loader.setProjection(PhoneQuery.PROJECTION_PRIMARY);
+        } else {
+            loader.setProjection(PhoneQuery.PROJECTION_ALTERNATIVE);
+        }
+        if (getSortOrder() == ContactsContract.Preferences.SORT_ORDER_PRIMARY) {
+            loader.setSortOrder(Phone.SORT_KEY_PRIMARY);
+        } else {
+            loader.setSortOrder(Phone.SORT_KEY_ALTERNATIVE);
+        }
+    }
+
+android.provider.ContactsContract.CommonDataKinds.Callable.CONTENT_FILTER_URI	=
+Uri.withAppendedPath(Uri.withAppendedPath(Uri.withAppendedPath(Uri.parse("content://" + "com.android.contacts"), "data"),"callables"),"filter");		//这个是Phone里面的查询uri
+
+
+android.provider.ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI	= 
+Uri.withAppendedPath(Uri.withAppendedPath(Uri.withAppendedPath(Uri.parse("content://" + "com.android.contacts"), "data"),"phones"),"filter");
+
+
+//Contacts里面
+matcher.addURI(ContactsContract.AUTHORITY, "contacts/filter/*", CONTACTS_FILTER);
+content://com.android.contacts/contacts/filter/Aaaa?directory=0&snippet_args=%01%2C%01%2C%E2%80%A6%2C5&deferred_snippeting=1
+
+packages/apps/contacts/src/com/android/contacts/list/DefaultContactListAdapter.java
+    public void configureLoader(CursorLoader loader, long directoryId) {
+        if (loader instanceof ProfileAndContactsLoader) {
+            mSDNLoader = (ProfileAndContactsLoader) loader;
+            ((ProfileAndContactsLoader) loader).setLoadProfile(shouldIncludeProfile());
+        }
+        ContactListFilter filter = getFilter();
+        if (isSearchMode()) {
+            String query = getQueryString();											//Aaaa或Bbbb
+            if (query == null) {
+                query = "";
+            }
+            query = query.trim();
+            if (TextUtils.isEmpty(query)) {
+                loader.setUri(Contacts.CONTENT_URI);
+                loader.setProjection(getProjection(false));
+                loader.setSelection("0");
+            } else {
+                Builder builder = Contacts.CONTENT_FILTER_URI.buildUpon();
+                builder.appendPath(query);
+                builder.appendQueryParameter(ContactsContract.DIRECTORY_PARAM_KEY,String.valueOf(directoryId));			//directory=0
+                if (directoryId != Directory.DEFAULT && directoryId != Directory.LOCAL_INVISIBLE) {
+                    builder.appendQueryParameter(ContactsContract.LIMIT_PARAM_KEY,String.valueOf(getDirectoryResultLimit()));
+                }
+                builder.appendQueryParameter(SearchSnippetColumns.SNIPPET_ARGS_PARAM_KEY,SNIPPET_ARGS);				//snippet_args=%01%2C%01%2C%E2%80%A6%2C5
+                builder.appendQueryParameter(SearchSnippetColumns.DEFERRED_SNIPPETING_KEY,"1");					//deferred_snippeting=1
+                loader.setUri(builder.build());											//这里的builder.build()就是生成的查询uri
+                loader.setProjection(getProjection(true));
+            }
+        } else {
+            configureUri(loader, directoryId, filter);
+            loader.setProjection(getProjection(false));
+            configureSelection(loader, directoryId, filter);
+        }
+        if (isOnlyShowPhoneContacts()) {
+            configureOnlyShowPhoneContactsSelection(loader, directoryId, filter);
+        }
+        String sortOrder;
+        if (getSortOrder() == ContactsContract.Preferences.SORT_ORDER_PRIMARY) {
+            sortOrder = Contacts.SORT_KEY_PRIMARY;
+        } else {
+            sortOrder = Contacts.SORT_KEY_ALTERNATIVE;
+        }
+        loader.setSortOrder(sortOrder);
+    }
+
+
+	    case CALLABLES_FILTER: {
+		final String mimeTypeIsPhoneExpression = DataColumns.MIMETYPE_ID + "=" + mDbHelper.get().getMimeTypeIdForPhone();
+                final String mimeTypeIsSipExpression = DataColumns.MIMETYPE_ID + "=" + mDbHelper.get().getMimeTypeIdForSip();
+                String typeParam = uri.getQueryParameter(DataUsageFeedback.USAGE_TYPE);
+                final int typeInt = getDataUsageFeedbackType(typeParam,DataUsageStatColumns.USAGE_TYPE_INT_CALL);
+                setTablesAndProjectionMapForData(qb, uri, projection, true, typeInt);
+                if (match == CALLABLES_FILTER) {
+                    qb.appendWhere(" AND ((" + mimeTypeIsPhoneExpression + ") OR (" + mimeTypeIsSipExpression + "))");
+                } else {
+                    qb.appendWhere(" AND " + mimeTypeIsPhoneExpression);
+                }
+                if (uri.getPathSegments().size() > 2) {
+                    final String filterParam = uri.getLastPathSegment();
+                    final boolean searchDisplayName = uri.getBooleanQueryParameter(Phone.SEARCH_DISPLAY_NAME_KEY, true);
+                    final boolean searchPhoneNumber = uri.getBooleanQueryParameter(Phone.SEARCH_PHONE_NUMBER_KEY, true);
+                    final StringBuilder sb = new StringBuilder();
+                    sb.append(" AND (");
+                    boolean hasCondition = false;
+                    final String ftsMatchQuery = searchDisplayName ? SearchIndexManager.getFtsMatchQuery(filterParam, FtsQueryBuilder.UNSCOPED_NORMALIZING) : null;
+                    if (!TextUtils.isEmpty(ftsMatchQuery)) {
+                        sb.append(Data.RAW_CONTACT_ID + " IN " + "(SELECT " + RawContactsColumns.CONCRETE_ID + " FROM " + Tables.SEARCH_INDEX + " JOIN " + Tables.RAW_CONTACTS + " ON (" + Tables.SEARCH_INDEX + "." + SearchIndexColumns.CONTACT_ID + "=" + RawContactsColumns.CONCRETE_CONTACT_ID + ")" + " WHERE " + SearchIndexColumns.NAME + " MATCH '");
+                        sb.append(ftsMatchQuery);
+                        sb.append("')");
+                        hasCondition = true;
+                    }
+                    if (searchPhoneNumber) {
+                        final String number = PhoneNumberUtils.normalizeNumber(filterParam);//这里会将A转换成2
+//-------------------------------------------发现是这下面出了问题-------------------------------------------
+                        if (!TextUtils.isEmpty(number)) {
+                            if (hasCondition) {
+                                sb.append(" OR ");
+                            }
+                            sb.append(Data._ID + " IN (SELECT DISTINCT " + PhoneLookupColumns.DATA_ID + " FROM " + Tables.PHONE_LOOKUP + " WHERE " + PhoneLookupColumns.NORMALIZED_NUMBER + " LIKE '");
+                            sb.append(number);
+                            sb.append("%')");
+                            hasCondition = true;
+                        }
+//-------------------------------------------发现是这上面出了问题-------------------------------------------
+                        if (!TextUtils.isEmpty(filterParam) && match == CALLABLES_FILTER) {
+                            if (hasCondition) {
+                                sb.append(" OR ");
+                            }
+                            sb.append("(");
+                            sb.append(mimeTypeIsSipExpression);
+                            sb.append(" AND ((" + Data.DATA1 + " LIKE ");
+                            DatabaseUtils.appendEscapedSQLString(sb, filterParam + '%');
+                            sb.append(") OR (" + Data.DATA1 + " LIKE ");
+                            DatabaseUtils.appendEscapedSQLString(sb, "sip:"+ filterParam + '%');
+                            sb.append(")))");
+                            hasCondition = true;
+                        }
+                    }
+                    if (!hasCondition) {
+                        sb.append("0");
+                    }
+                    sb.append(")");
+                    qb.appendWhere(sb);
+                }
+                if (match == CALLABLES_FILTER) {
+                    String isPhoneAndHasNormalized = "(" + mimeTypeIsPhoneExpression + " AND " + Phone.NORMALIZED_NUMBER + " IS NOT NULL)";
+                    groupBy = "(CASE WHEN " + isPhoneAndHasNormalized + " THEN " + Phone.NORMALIZED_NUMBER + " ELSE " + Phone.NUMBER + " END), " + RawContacts.CONTACT_ID;
+                } else {
+                    groupBy = "(CASE WHEN " + Phone.NORMALIZED_NUMBER + " IS NOT NULL THEN " + Phone.NORMALIZED_NUMBER + " ELSE " + Phone.NUMBER + " END), " + RawContacts.CONTACT_ID;
+                }
+                if (sortOrder == null) {
+                    final String accountPromotionSortOrder = getAccountPromotionSortOrder(uri);
+                    if (!TextUtils.isEmpty(accountPromotionSortOrder)) {
+                        sortOrder = accountPromotionSortOrder + ", " + PHONE_FILTER_SORT_ORDER;
+                    } else {
+                        sortOrder = PHONE_FILTER_SORT_ORDER;
+                    }
+                }
+                break;
+            }
+
+//通过Log查看查询联系人的SQL语句
+SELECT DISTINCT MIN(_id) AS _id, data2, data3, data1, contact_id, lookup, photo_id, display_name, indicate_phone_or_sim_contact, is_sdn_contact 
+FROM view_data data LEFT OUTER JOIN data_usage_stat ON (data_usage_stat.data_id=data._id AND data_usage_stat.usage_type=0) 
+WHERE (1 AND ((mimetype_id=5) OR (mimetype_id=6)) AND (raw_contact_id IN (
+	SELECT raw_contacts._id 
+	FROM search_index JOIN raw_contacts ON (search_index.contact_id=raw_contacts.contact_id) 
+	WHERE name MATCH '2727*') OR _id IN (
+
+	SELECT DISTINCT data_id 
+	FROM phone_lookup 
+	WHERE normalized_number LIKE '222%') OR (mimetype_id=6 AND ((data1 LIKE 'aaa%') OR (data1 LIKE 'sip:aaa%'))))) 
+GROUP BY (CASE WHEN (mimetype_id=5 AND data4 IS NOT NULL) THEN data4 ELSE data1 END), contact_id 
+ORDER BY sort_key;
+
+SELECT DISTINCT MIN(_id) AS _id, data2, data3, data1, contact_id, lookup, photo_id, display_name, indicate_phone_or_sim_contact, is_sdn_contact FROM view_data data LEFT OUTER JOIN data_usage_stat ON (data_usage_stat.data_id=data._id AND data_usage_stat.usage_type=0) WHERE (1 AND ((mimetype_id=5) OR (mimetype_id=6)) AND (raw_contact_id IN (SELECT raw_contacts._id FROM search_index JOIN raw_contacts ON (search_index.contact_id=raw_contacts.contact_id) WHERE name MATCH '272727*') OR (mimetype_id=6 AND ((data1 LIKE 'aaaa%') OR (data1 LIKE 'sip:aaaa%'))))) GROUP BY (CASE WHEN (mimetype_id=5 AND data4 IS NOT NULL) THEN data4 ELSE data1 END), contact_id ORDER BY sort_key;
+
+OR _id IN (SELECT DISTINCT data_id FROM phone_lookup WHERE normalized_number LIKE '222%')	把这个条件去掉就可以了？？？？
+
+
+
+PhoneNumberUtils.normalizeNumber(a));		//这里会得到2？？？
+
+public static String normalizeNumber(String phoneNumber) {
+	if (phoneNumber == null) {
+	    return null;
+	}
+	StringBuilder sb = new StringBuilder();
+	int len = phoneNumber.length();
+	for (int i = 0; i < len; i++) {
+	    char c = phoneNumber.charAt(i);
+	    int digit = Character.digit(c, 10);
+	    if (digit != -1) {
+		sb.append(digit);
+	    } else if (i == 0 && c == '+') {
+		sb.append(c);
+	    } else if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
+		return normalizeNumber(PhoneNumberUtils.convertKeypadLettersToDigits(phoneNumber));
+	    }
+	}
+	return sb.toString();
+}
+
+public static String convertKeypadLettersToDigits(String input) {
+	if (input == null) {
+	    return input;
+	}
+	int len = input.length();
+	if (len == 0) {
+	    return input;
+	}
+	char[] out = input.toCharArray();
+	for (int i = 0; i < len; i++) {
+	    char c = out[i];
+	    out[i] = (char) KEYPAD_MAP.get(c, c);
+	}
+	return new String(out);
+}
+
+    private static final SparseIntArray KEYPAD_MAP = new SparseIntArray();
+    static {
+        KEYPAD_MAP.put('a', '2'); KEYPAD_MAP.put('b', '2'); KEYPAD_MAP.put('c', '2');
+        KEYPAD_MAP.put('A', '2'); KEYPAD_MAP.put('B', '2'); KEYPAD_MAP.put('C', '2');
+
+        KEYPAD_MAP.put('d', '3'); KEYPAD_MAP.put('e', '3'); KEYPAD_MAP.put('f', '3');
+        KEYPAD_MAP.put('D', '3'); KEYPAD_MAP.put('E', '3'); KEYPAD_MAP.put('F', '3');
+
+        KEYPAD_MAP.put('g', '4'); KEYPAD_MAP.put('h', '4'); KEYPAD_MAP.put('i', '4');
+        KEYPAD_MAP.put('G', '4'); KEYPAD_MAP.put('H', '4'); KEYPAD_MAP.put('I', '4');
+
+        KEYPAD_MAP.put('j', '5'); KEYPAD_MAP.put('k', '5'); KEYPAD_MAP.put('l', '5');
+        KEYPAD_MAP.put('J', '5'); KEYPAD_MAP.put('K', '5'); KEYPAD_MAP.put('L', '5');
+
+        KEYPAD_MAP.put('m', '6'); KEYPAD_MAP.put('n', '6'); KEYPAD_MAP.put('o', '6');
+        KEYPAD_MAP.put('M', '6'); KEYPAD_MAP.put('N', '6'); KEYPAD_MAP.put('O', '6');
+
+        KEYPAD_MAP.put('p', '7'); KEYPAD_MAP.put('q', '7'); KEYPAD_MAP.put('r', '7'); KEYPAD_MAP.put('s', '7');
+        KEYPAD_MAP.put('P', '7'); KEYPAD_MAP.put('Q', '7'); KEYPAD_MAP.put('R', '7'); KEYPAD_MAP.put('S', '7');
+
+        KEYPAD_MAP.put('t', '8'); KEYPAD_MAP.put('u', '8'); KEYPAD_MAP.put('v', '8');
+        KEYPAD_MAP.put('T', '8'); KEYPAD_MAP.put('U', '8'); KEYPAD_MAP.put('V', '8');
+
+        KEYPAD_MAP.put('w', '9'); KEYPAD_MAP.put('x', '9'); KEYPAD_MAP.put('y', '9'); KEYPAD_MAP.put('z', '9');
+        KEYPAD_MAP.put('W', '9'); KEYPAD_MAP.put('X', '9'); KEYPAD_MAP.put('Y', '9'); KEYPAD_MAP.put('Z', '9');
+    }
+
+//最后修改为在ContactsProvider2.java中添加一个判断条件，判断输入的是不是数字或+，如果是就查询号码，如果不是就不查询号码，这样就不会将字母转换成数字

@@ -1,0 +1,18 @@
+	1.Settings/More/Tethering & portable hotspot/Wi-Fi hotspot/Set up Wi-Fi hotspot/Security,为什么没有显示《WPA PSK》选项？？？
+
+	解决：
+	在DefaultWifiApDialogExt.java中的setAdapter()方法中有一个
+	public void setAdapter(Context context, Spinner spinner, int arrayId) {
+		mWps2Test = "true".equals(SystemProperties.get(KEY_PROP_WPS2_SUPPORT, "true"));
+		if (mWps2Test) {
+		    String[] setUpArray = context.getResources().getStringArray(arrayId);
+		    ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item);
+		    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		    adapter.add(setUpArray[0]);
+											//在这里就已经将array[1]给去掉了
+		    adapter.add(setUpArray[2]);	
+		    spinner.setAdapter(adapter);
+		}
+	}
+
+2.

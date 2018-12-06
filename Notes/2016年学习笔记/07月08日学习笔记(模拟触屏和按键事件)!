@@ -1,0 +1,22 @@
+	1.模拟触屏事件？？？
+
+	解决：
+	//下面这个方法必须在子线程中运行
+	Instrumentation instrumentation = new Instrumentation();
+	instrumentation.sendPointerSync(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, 240, 600, 0));
+	instrumentation.sendPointerSync(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, 240, 600, 0));
+
+	2.模拟按键事件？？？
+
+	解决：
+	方法a.
+	new EditText(context).onKeyDown(keyCode, new KeyEvent(KeyEvent.ACTION_DOWN, keyCode));	//模拟按键的点击事件,这里必须需要一个EditText才可以
+	方法b.	//这个也可以通过命令行发送	adb shell input keyevent 82
+	Process process = Runtime.getRuntime().exec("input keyevent 82");						//模拟按键的点击事件,82相当于上面的keyCode
+	方法c.
+	Instrumentation instrumentation = new Instrumentation();
+	instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_MENU);
+	方法d.
+	Instrumentation instrumentation = new Instrumentation();
+	instrumentation.sendKeySync(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MENU));
+	instrumentation.sendKeySync(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MENU));

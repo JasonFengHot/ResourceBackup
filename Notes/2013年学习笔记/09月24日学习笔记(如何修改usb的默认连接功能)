@@ -1,0 +1,14 @@
+	1.如何修改usb的默认连接功能？？？？
+
+	解决：
+	在build/core/main.mk文件中有
+	ifeq ($(strip $(MTK_MASS_STORAGE)),yes)					//这里貌似需要有一个判断MTK_MASS_STORAGE，好像只要修改 ProjectConfig.mk文件中的	MTK_MASS_STORAGE=no
+	  ADDITIONAL_DEFAULT_PROPERTIES += persist.sys.usb.config=mass_storage	
+	else
+	  ADDITIONAL_DEFAULT_PROPERTIES += persist.sys.usb.config=mtp
+	endif
+
+	    2.GlobalAction中切换飞行模式的小bug????
+
+	    解决：
+	    将刚开始的时候调用的onAirplaneModeChanged()改为initAirplaneMode()，而不是直接去掉

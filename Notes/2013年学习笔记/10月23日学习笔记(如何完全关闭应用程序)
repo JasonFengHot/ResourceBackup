@@ -1,0 +1,5 @@
+	1.如何完全关闭应用程序？？？？
+
+	解决：
+	ActivityManager am = (ActivityManager)this.getSystemService(Context.ACTIVITY_SERVICE);
+	am.forceStopPackage("com.example.factorydevelop");

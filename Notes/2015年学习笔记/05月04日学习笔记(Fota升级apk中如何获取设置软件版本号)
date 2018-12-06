@@ -1,0 +1,372 @@
+1.Fota升级中如何获取设置软件版本号？？？
+
+解决：
+//com.adups.fota.ni.MobileInfo.java 文件中有
+private void setDeviceVersionInfo(){
+	...
+	Object[] arrayOfObject5 = new Object[1];
+	arrayOfObject5[0] = new String("ro.fota.version.display");
+	this.disPlayVersion = ((String)localMethod.invoke(localObject, arrayOfObject5));
+	l.d("MobileInfo:", "oem = " + this.oem + ", product = " + this.product + ", buildnumber = " + this.buildnumber + ",disPlayVersion = " + this.disPlayVersion);
+	return;
+}
+
+
+
+  private void setDeviceInfo()
+  {
+    Object localObject2;
+    Method localMethod;
+    String str16;
+    Object localObject1 = "";
+    try
+    {
+      localObject2 = new Object();
+      Class localClass = Class.forName("android.os.SystemProperties");
+      Class[] arrayOfClass = new Class[1];
+      arrayOfClass[0] = String.class;
+      localMethod = localClass.getMethod("get", arrayOfClass);
+      Object[] arrayOfObject1 = new Object[1];
+      arrayOfObject1[0] = "ro.fota.platform";
+      this.platform = ((String)localMethod.invoke(localObject2, arrayOfObject1));
+      Object[] arrayOfObject2 = new Object[1];
+      arrayOfObject2[0] = "ro.adups.fota.type";
+      label822: label971: label846: label888: str16 = (String)localMethod.invoke(localObject2, arrayOfObject2);
+    }
+    catch (Exception localException10)
+    {
+      String str17;
+      try
+      {
+        Object[] arrayOfObject3 = new Object[1];
+        arrayOfObject3[0] = "ro.fota.type";
+        str17 = (String)localMethod.invoke(localObject2, arrayOfObject3);
+      }
+      catch (Exception localException10)
+      {
+        String str18;
+        try
+        {
+          Object[] arrayOfObject4 = new Object[1];
+          arrayOfObject4[0] = "ro.adups.fota.version";
+          str18 = (String)localMethod.invoke(localObject2, arrayOfObject4);
+        }
+        catch (Exception localException10)
+        {
+          String str19;
+          try
+          {
+            Object[] arrayOfObject5 = new Object[1];
+            arrayOfObject5[0] = "ro.fota.version";
+            str19 = (String)localMethod.invoke(localObject2, arrayOfObject5);
+          }
+          catch (Exception localException10)
+          {
+            String str20;
+            try
+            {
+              Object[] arrayOfObject6 = new Object[1];
+              arrayOfObject6[0] = "ro.adups.fota.oem";
+              str20 = (String)localMethod.invoke(localObject2, arrayOfObject6);
+            }
+            catch (Exception localException10)
+            {
+              String str21;
+              try
+              {
+                Object[] arrayOfObject7 = new Object[1];
+                arrayOfObject7[0] = "ro.adups.fota.device";
+                str21 = (String)localMethod.invoke(localObject2, arrayOfObject7);
+              }
+              catch (Exception localException10)
+              {
+                String str22;
+                try
+                {
+                  Object[] arrayOfObject8 = new Object[1];
+                  arrayOfObject8[0] = "ro.fota.oem";
+                  str22 = (String)localMethod.invoke(localObject2, arrayOfObject8);
+                }
+                catch (Exception localException10)
+                {
+                  String str23;
+                  try
+                  {
+                    Object[] arrayOfObject9 = new Object[1];
+                    arrayOfObject9[0] = "ro.fota.device";
+                    str23 = (String)localMethod.invoke(localObject2, arrayOfObject9);
+                  }
+                  catch (Exception localException10)
+                  {
+                    String str24;
+                    try
+                    {
+                      Object[] arrayOfObject10 = new Object[1];
+                      arrayOfObject10[0] = "ro.product.locale.language";
+                      str24 = (String)localMethod.invoke(localObject2, arrayOfObject10);
+                    }
+                    catch (Exception localException10)
+                    {
+                      String str25;
+                      try
+                      {
+                        Object[] arrayOfObject11 = new Object[1];
+                        arrayOfObject11[0] = "ro.operator.optr";
+                        str25 = (String)localMethod.invoke(localObject2, arrayOfObject11);
+                      }
+                      catch (Exception localException10)
+                      {
+                        String str1;
+                        String str2;
+                        String str3;
+                        String str4;
+                        String str5;
+                        String str6;
+                        String str7;
+                        String str8;
+                        String str9;
+                        try
+                        {
+                          Object[] arrayOfObject12 = new Object[1];
+                          arrayOfObject12[0] = "ro.build.fingerprint";
+                          this.fingerprint = ((String)localMethod.invoke(localObject2, arrayOfObject12));
+                          str2 = str16;
+                          str1 = str25;
+                          str4 = str17;
+                          str3 = str24;
+                          str6 = str18;
+                          str5 = str23;
+                          str7 = str22;
+                          str9 = str19;
+                          localObject1 = str20;
+                          str8 = str21;
+                          while (true)
+                          {
+                            while (true)
+                            {
+                              while (true)
+                              {
+                                while (true)
+                                {
+                                  while (true)
+                                  {
+                                    while (true)
+                                    {
+                                      while (true)
+                                      {
+                                        while (true)
+                                        {
+                                          while (true)
+                                          {
+                                            String str12;
+                                            String str13;
+                                            String str14;
+                                            String str15;
+                                            String str10 = str3.replaceAll("_", "\\$");
+                                            String str11 = str1.replaceAll("_", "\\$");
+                                            if (str11.equalsIgnoreCase("OP01"))
+                                              str12 = "CMCC";
+                                            while (true)
+                                            {
+                                              while (true)
+                                              {
+                                                if (this.platform.length() <= 0)
+                                                  this.platform = "unknownPlatform";
+                                                if ((str2.length() > 0) || (str4.length() > 0))
+                                                  break label822;
+                                                this.deviceType = "phone";
+                                                if ((((String)localObject1).length() > 0) || (str7.length() > 0))
+                                                  break label846;
+                                                this.deviceVersion = "unknownoem";
+                                                if ((str8.length() > 0) || (str5.length() > 0))
+                                                  break label888;
+                                                this.deviceVersion = this.deviceVersion + "_unknownproduct_" + str10;
+                                                this.project = this.deviceVersion + "_" + str12;
+                                                if ((str6.length() > 0) || (str9.length() > 0))
+                                                  break label971;
+                                                this.versionInfo = "unknownbuildnumber";
+                                                this.deviceVersion = this.deviceVersion + "_" + this.versionInfo.replaceAll("_", "\\$") + "_" + str12;
+                                                if (this.fingerprint.length() <= 0)
+                                                  this.fingerprint = "unknownFingerprint";
+                                                l.d("MobileInfo:", "platform = " + this.platform + ", deviceType = " + this.deviceType);
+                                                l.d("MobileInfo:", "versionInfo = " + this.versionInfo);
+                                                l.d("MobileInfo:", "deviceVersion = " + this.deviceVersion);
+                                                l.d("MobileInfo:", "fingerprint = " + this.fingerprint);
+                                                return;
+                                                if (!(str11.equalsIgnoreCase("OP02")))
+                                                  break;
+                                                str12 = "CU";
+                                              }
+                                              str12 = "other";
+                                            }
+                                            if (str2.length() <= 0);
+                                            while (true)
+                                            {
+                                              while (true)
+                                                this.deviceType = str4;
+                                              str4 = str2;
+                                            }
+                                            if (((String)localObject1).length() <= 0)
+                                              str13 = str7.replaceAll("_", "\\$");
+                                            while (true)
+                                            {
+                                              while (true)
+                                                this.deviceVersion = str13;
+                                              str13 = ((String)localObject1).replaceAll("_", "\\$");
+                                            }
+                                            StringBuilder localStringBuilder = new StringBuilder().append(this.deviceVersion).append("_");
+                                            if (str8.length() <= 0)
+                                              str14 = str5.replaceAll("_", "\\$");
+                                            while (true)
+                                            {
+                                              while (true)
+                                                this.deviceVersion = str14 + "_" + str10;
+                                              str14 = str8.replaceAll("_", "\\$");
+                                            }
+                                            if (str6.length() <= 0)
+                                              str15 = str9;
+                                            while (true)
+                                            {
+                                              while (true)
+                                                this.versionInfo = str15;
+                                              str15 = str6;
+                                            }
+                                            localException1 = localException1;
+                                            str1 = "";
+                                            str2 = "";
+                                            str3 = "";
+                                            str4 = "";
+                                            str5 = "";
+                                            str6 = "";
+                                            str7 = "";
+                                            str8 = "";
+                                            str9 = "";
+                                          }
+                                          localException2 = localException2;
+                                          str3 = "";
+                                          str2 = str16;
+                                          str1 = "";
+                                          str4 = "";
+                                          str5 = "";
+                                          str6 = "";
+                                          str7 = "";
+                                          str8 = "";
+                                          str9 = "";
+                                        }
+                                        localException3 = localException3;
+                                        str5 = "";
+                                        str6 = "";
+                                        str7 = "";
+                                        str4 = str17;
+                                        str3 = "";
+                                        str2 = str16;
+                                        str1 = "";
+                                        str9 = "";
+                                        str8 = "";
+                                      }
+                                      localException4 = localException4;
+                                      str7 = "";
+                                      str4 = str17;
+                                      str3 = "";
+                                      str2 = str16;
+                                      str1 = "";
+                                      str8 = "";
+                                      str9 = "";
+                                      str5 = "";
+                                      str6 = str18;
+                                    }
+                                    localException5 = localException5;
+                                    str8 = "";
+                                    str9 = str19;
+                                    str7 = "";
+                                    str4 = str17;
+                                    str3 = "";
+                                    str2 = str16;
+                                    str1 = "";
+                                    str5 = "";
+                                    str6 = str18;
+                                  }
+                                  localException6 = localException6;
+                                  localObject1 = str20;
+                                  str8 = "";
+                                  str9 = str19;
+                                  str7 = "";
+                                  str4 = str17;
+                                  str3 = "";
+                                  str2 = str16;
+                                  str1 = "";
+                                  str5 = "";
+                                  str6 = str18;
+                                }
+                                localException7 = localException7;
+                                str9 = str19;
+                                str7 = "";
+                                str4 = str17;
+                                str3 = "";
+                                str2 = str16;
+                                str1 = "";
+                                str8 = str21;
+                                localObject1 = str20;
+                                str5 = "";
+                                str6 = str18;
+                              }
+                              localException8 = localException8;
+                              str4 = str17;
+                              str3 = "";
+                              str2 = str16;
+                              str1 = "";
+                              localObject1 = str20;
+                              str8 = str21;
+                              str7 = str22;
+                              str9 = str19;
+                              str5 = "";
+                              str6 = str18;
+                            }
+                            localException9 = localException9;
+                            str6 = str18;
+                            str5 = str23;
+                            str4 = str17;
+                            str3 = "";
+                            str2 = str16;
+                            str1 = "";
+                            str7 = str22;
+                            str9 = str19;
+                            str8 = str21;
+                            localObject1 = str20;
+                          }
+                          localException10 = localException10;
+                          str2 = str16;
+                          str1 = "";
+                          str4 = str17;
+                          str3 = str24;
+                          str6 = str18;
+                          str5 = str23;
+                          str7 = str22;
+                          str9 = str19;
+                          localObject1 = str20;
+                          str8 = str21;
+                        }
+                        catch (Exception localException11)
+                        {
+                          str2 = str16;
+                          str1 = str25;
+                          str4 = str17;
+                          str3 = str24;
+                          str6 = str18;
+                          str5 = str23;
+                          str7 = str22;
+                          str9 = str19;
+                          localObject1 = str20;
+                          str8 = str21;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }

@@ -1,0 +1,20 @@
+	1.User版本如何获取root权限？？？
+
+	解决：
+	在 mediatek/packages/apps/EngineerMode/src/com/mediatek/engineermode/user2root/User2rootActivity.java 文件中有
+	private void toRoot_ics(){
+		SystemProperties.set(ADB_ENABLE_ICS, "none");
+		//SystemProperties.set("ctl.stop", "adbd");
+		SystemProperties.set(RO_SECURE, "0");
+		//SystemProperties.set(RO_ALLOW_MOCK_LOCATION,"1" );
+		SystemProperties.set(RO_DEBUG, "1");
+		SystemProperties.set(ADB_ENABLE_ICS, "mass_storage,adb,acm");
+		//SystemProperties.set("ctl.start", "adbd");
+		SystemProperties.set(ATCI_USERMODE, "1");
+		try {
+		    Process proc = Runtime.getRuntime().exec("start atcid-daemon-u");
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}
+		Toast.makeText(User2rootActivity.this, "Update to Root Success", Toast.LENGTH_LONG).show();
+	}

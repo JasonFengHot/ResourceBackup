@@ -1,0 +1,11 @@
+	1.如何在widget添加界面上，将widget的图标都设为居中显示？？？
+
+	解决：
+	//packages/apps/tecno_launcher2/src/com/android/launcher2/AppsCustomizePagedView.java
+	getShortcutPreview()方法
+	将
+	renderDrawableToBitmap(icon, preview, 0, 0, mAppIconSize, mAppIconSize);
+	修改为
+	renderDrawableToBitmap(icon, preview, (scaledIconWidth - mAppIconSize) / 2, 0, mAppIconSize, mAppIconSize);
+	即可
+

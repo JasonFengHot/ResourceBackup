@@ -1,0 +1,50 @@
+	1.如何通过代码设置语言？？
+
+	解决：
+	Resources resources = getResources();//获得res资源对象
+	Configuration config = resources.getConfiguration();//获得设置对象
+	DisplayMetrics dm = resources.getDisplayMetrics();//获得屏幕参数：主要是分辨率，像素等。
+	config.locale = Locale.SIMPLIFIED_CHINESE; //简体中文
+	resources.updateConfiguration(config, dm);
+
+en 英文 
+en_US 英文 (美国) 
+ar 阿拉伯文 
+ar_AE 阿拉伯文 (阿拉伯联合酋长国) 
+ar_BH 阿拉伯文 (巴林) 
+ar_DZ 阿拉伯文 (阿尔及利亚) 
+ar_EG 阿拉伯文 (埃及) 
+ar_IQ 阿拉伯文 (伊拉克) 
+ar_JO 阿拉伯文 (约旦) 
+ar_KW 阿拉伯文 (科威特) 
+ar_LB 阿拉伯文 (黎巴嫩) 
+ar_LY 阿拉伯文 (利比亚) 
+ar_MA 阿拉伯文 (摩洛哥) 
+ar_OM 阿拉伯文 (阿曼) 
+ar_QA 阿拉伯文 (卡塔尔) 
+ar_SA 阿拉伯文 (沙特阿拉伯) 
+ar_SD 阿拉伯文 (苏丹) 
+ar_SY 阿拉伯文 (叙利亚) 
+ar_TN 阿拉伯文 (突尼斯) 
+ar_YE 阿拉伯文 (也门) 
+be 白俄罗斯文 
+be_BY 白俄罗斯文 (白俄罗斯) 
+bg 保加利亚文 
+
+2.如何调试LED和LCD？？？
+
+解决：https://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ07302
+
+3.ANR分析？？？
+
+解决：
+//Main Log
+06-18 16:06:12.646   500   553 I InputDispatcher: Application is not responding: Window{4264aaa8 u0 Keyguard}.  It has been 8002.4ms since event, 8002.1ms since wait started.  Reason: Waiting because the touched window has not finished processing the input events that were previously delivered to it.
+//Event Log
+06-18 16:06:12.791   500   553 I am_anr  : [0,500,system,13155849,keyDispatchingTimedOut]
+
+4.
+android:paddingStart="@dimen/preference_screen_header_padding_side"
+android:paddingEnd="  @dimen/preference_screen_header_padding_side"
+android:paddingTop="   @dimen/preference_screen_header_vertical_padding"
+android:paddingBottom="@dimen/preference_screen_header_vertical_padding"

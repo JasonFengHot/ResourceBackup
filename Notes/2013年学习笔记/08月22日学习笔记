@@ -1,0 +1,7 @@
+1.在使用emulator创建自定义的模拟器的时候出现以下问题？？？？？
+system partition size adjusted to match image file (166 MB > 66 MB)???
+Unable to create sensors port: Connection refused?????
+
+2.开关机选项的修改？？？？？
+frameworks/base/policy/src/com/android/internal/policy/impl/GlobalActions.java
+

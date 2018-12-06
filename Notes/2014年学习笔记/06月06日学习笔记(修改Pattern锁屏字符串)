@@ -1,0 +1,9 @@
+	1.修改Pattern锁屏字符串？？？
+
+	解决：
+	//frameworks/base/core/res/res/values-es/strings.xml
+	<string name="kg_too_many_failed_pattern_attempts_dialog_message" msgid="74089475965050805">"Has fallado <xliff:g id="NUMBER_0">%d</xliff:g> veces al dibujar tu patrón de desbloqueo. "\n\n"Inténtalo de nuevo en <xliff:g id="NUMBER_1">%d</xliff:g> segundos."</string>
+	//改成
+	<string name="kg_too_many_failed_pattern_attempts_dialog_message" msgid="74089475965050805">"Has intentado desbloquear tu telefono <xliff:g id="NUMBER_0">%d</xliff:g> veces."\n\n"Inténtalo de nuevo en <xliff:g id="NUMBER_1">%d</xliff:g> segundos."</string>
+
+2.

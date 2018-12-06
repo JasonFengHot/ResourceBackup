@@ -1,0 +1,3 @@
+1.改进开关机 飞行模式图标问题，滑动关机卡顿的问题，
+
+2.在WallpaperPreviewActivity的onTouchEvent()事件中添加MotionEvent.ACTION_DOWN的处理，改善预览图片的切换效果？？？

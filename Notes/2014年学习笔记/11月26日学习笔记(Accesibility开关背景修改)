@@ -1,0 +1,35 @@
+	1.Bug23745 修改 Accesibility 开关按钮的背景图???
+
+	解决：
+	//去掉下面两行代码中的 setTrackResource 就可以了
+	./src/com/android/settings/accessibility/ToggleFeaturePreferenceFragment.java:       	toggleSwitch.setTrackResource(R.drawable.switch_background);	//这个地方姚稳改的
+	./src/com/android/settings/accessibility/ToggleCaptioningPreferenceFragment.java:       toggleSwitch.setTrackResource(R.drawable.switch_background);	//这个地方姚稳改的
+
+	2.Bug23852 settings->apps下有些图片看不清？？？
+
+	解决：
+	替换为新的图片就可以了
+	mediatek/packages/apps/SmsReg/res/drawable-hdpi/perm_sent_mms.png						//Device Management
+	mediatek/packages/apps/MTKAndroidSuiteDaemon/res/drawable-hdpi/stat_pcsync_tool.png		//MTK Android Suite Daemon
+
+3.在测试的时候Launcher报错？？？
+
+Log:
+java.lang.RuntimeException: An error occured while executing doInBackground()
+	at android.os.AsyncTask$3.done(AsyncTask.java:300)
+	at java.util.concurrent.FutureTask.finishCompletion(FutureTask.java:355)
+	at java.util.concurrent.FutureTask.setException(FutureTask.java:222)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:242)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1112)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:587)
+	at java.lang.Thread.run(Thread.java:848)
+Caused by: java.lang.NullPointerException
+	at com.android.launcher2.AppsCustomizePagedView.getWidgetPreview(AppsCustomizePagedView.java:2163)
+	at com.android.launcher2.AppsCustomizePagedView.loadWidgetPreviewsInBackground(AppsCustomizePagedView.java:2368)
+	at com.android.launcher2.AppsCustomizePagedView.access$200(AppsCustomizePagedView.java:212)
+	at com.android.launcher2.AppsCustomizePagedView$8.run(AppsCustomizePagedView.java:1930)
+	at com.android.launcher2.AppsCustomizeAsyncTask.doInBackground(AppsCustomizePagedView.java:180)
+	at com.android.launcher2.AppsCustomizeAsyncTask.doInBackground(AppsCustomizePagedView.java:168)
+	at android.os.AsyncTask$2.call(AsyncTask.java:288)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:237)
+	... 3 more

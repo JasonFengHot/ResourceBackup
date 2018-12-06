@@ -1,0 +1,97 @@
+2.switch控件为什么用不了？？怎么用？？？？
+
+	3.actionBar的学习和使用？？？
+
+	解决：
+	a.如何将menu显示在ActionBar上
+	menu1.xml
+	<?xml version="1.0" encoding="utf-8"?>
+	<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+	    <item android:icon="@drawable/ic_launcher" android:showAsAction="always|withText" android:title="菜单1">
+		<menu>
+		    <group android:checkableBehavior="single" >
+		        <item android:id="@+id/menua" android:title="菜单aa"/>
+		        <item android:id="@+id/menub" android:title="菜单bb"/>
+		        <item android:id="@+id/menuc" android:title="菜单cc"/>
+		        <item android:id="@+id/menud" android:title="菜单dd"/>
+		    </group>
+		</menu>
+	    </item>
+	    <!-- 在ActionBar上显示SearchView -->
+	    <item android:showAsAction="always" android:title="菜单2" android:actionLayout="@layout/searchbar"/>
+	    <item android:icon="@drawable/ic_launcher" android:showAsAction="always" android:title="菜单3">
+		<menu >
+		    <group>
+		        <item android:id="@+id/color_red" android:title="红色"/>
+		        <item android:id="@+id/color_green" android:title="绿色"/>
+		        <item android:id="@+id/color_blue" android:title="蓝色"/>
+		    </group>
+		</menu>
+	    </item>    
+	</menu>
+	并且在代码中
+	public boolean onCreateOptionsMenu(Menu menu) 
+	{
+		MenuInflater menuInflater = getMenuInflater();
+		menuInflater.inflate(R.menu.menu1, menu);		// 只有这样才会将menu在ActionBar上显示出来
+		return super.onCreateOptionsMenu(menu);
+	}
+		b.如何在ActionBar上显示控件
+		<item android:showAsAction="always" android:title="菜单1" android:actionLayout="@layout/searchbar"/>
+		//或
+		<item android:showAsAction="always" android:title="菜单2" android:actionViewClass="android.widget.SearchView"/>
+	c.使用ActionBar实现Tab导航
+	解决：
+	actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+	actionBar.addTab(actionBar.newTab().setText("第一页").setTabListener(new ActionBar.TabListener(){
+		public void onTabUnselected(ActionBar.Tab tab){}
+		public void onTabSelected(ActionBar.Tab tab,FragmentTransaction fragmentTransaction){
+			Fragment fragment = null;
+			switch(tag.getPosition()){
+				case 0: fragment = new FragmentA(); break;
+				case 1: fragment = new FragmentB(); break;
+				case 2: fragment = new FragmentC(); break;
+			}
+			if(fragment != null){
+				getFragmentManager().beginTransaction().replace(R.id.linearLayout,fragment).commit();	//注意这里的FragmentTransaction不能用函数自带的，这里的R.id.linearLayout必须是ViewGroup的id
+			}
+		}
+		public void onTabReselected(ActionBar.Tab tab,FragmentTransaction fragmentTransaction){}
+	}));
+	d.导航状态条组件PagerTitleStrip的学习和使用？？？
+	<android.support.v4.view.ViewPager>
+		<android.support.v4.view.PagerTitleStrip
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="top"
+			android:background="#33b5e5"
+			android:textColor="#fff"
+			android:paddingTop="4dp"
+			android:paddingBottom="4dp"/>
+	</android.support.v4.view.ViewPager>
+
+	e.下拉式导航？？？
+	actionBar.setNavigation(ActionBar.NAVIGATION_MODE_LIST);
+	actionBar.setListNavigationCallbacks(new ArrayAdapter(mContext,android.R.layout.simple_list_item_1,android.R.id.text1,new String[]{"第一页","第二页"}),new ActionBar.NavigationCallbacks(){
+		public boolean onNavigationItemSelected(int position,long id){
+			Fragment fragment = new FragmentA();
+			Bundle bundle = new Bundle();
+			bundle.putInt("num",position);
+			fragment.setArgument(bundle);
+			getFragmentManager().beginTransaction().replace(R.id.linearLayout,fragment).commit();
+		}
+	});
+
+	public class FragmentA extends Fragment{
+		public View onCreateView(LayoutInflater inflater,Bundle savedInstanceState){
+			View view = inflater.inflate(R.layout.fragment_a,null);
+			TextView textViewA = (TextView)findViewById(R.id.textViewA);
+			int num = (Integer)getArgument().get("num");
+			textViewA.setText("num:"+num);
+			return view;
+		}
+	}
+
+4.自定义补间动画？？？
+
+5.属性动画的学习？？？

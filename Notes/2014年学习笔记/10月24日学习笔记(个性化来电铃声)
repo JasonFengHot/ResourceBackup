@@ -1,0 +1,30 @@
+    1.来电铃声在什么地方？？？
+
+    解决：
+    packages/services/Telephony/src/com/android/phone/CallNotifier.java
+    //在Logcat中通过 TAG：CallNotifier 可以看到		PHONE_INCOMING_RING !
+    在handleMessage()	方法中有	mRinger.ring();
+
+    packages/services/Telephony/src/com/android/phone/Ringer.java
+    在 Ringer.java 的 ring() 方法中有 makeLooper() 方法
+
+    //在Logcat中通过 TAG：Ringer 可以看到			creating ringtone: content://settings/system/ringtone
+    r = RingtoneManager.getRingtone(mContext, mCustomRingtoneUri);		//get ringtone by ringtone uri
+
+    void setCustomRingtoneUri (Uri uri) {								//set ringtone uri
+        if (RingtoneManager.isRingtoneExist(mContext, uri)) {
+            mCustomRingtoneUri = uri;
+        } else {
+            mCustomRingtoneUri = Settings.System.DEFAULT_RINGTONE_URI;
+        }
+    }
+
+    Uri mCustomRingtoneUri = Settings.System.DEFAULT_RINGTONE_URI;		//default ringtone uri
+
+    mRingHandler.sendEmptyMessageDelayed(PLAY_RING_ONCE, mFirstRingStartTime - mFirstRingEventTime);
+
+    mFirstRingStartTime = SystemClock.elapsedRealtime();
+    mFirstRingEventTime = SystemClock.elapsedRealtime();
+
+    在 SettingsProvider 的数据库 /data/data/com.android.providers.settings/databases/settings.db 数据库中有
+    464|ringtone|content://media/internal/audio/media/163	//这个就是用户在AudioProfile中设置的铃声

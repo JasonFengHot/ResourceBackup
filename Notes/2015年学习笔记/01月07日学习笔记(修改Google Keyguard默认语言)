@@ -1,0 +1,6 @@
+	1.修改Google Keyguard默认语言？？？
+
+	解决：
+	ProjectConfig.mk 文件中修改 DEFAULT_LATIN_IME_LANGUAGES=pt
+
+2.

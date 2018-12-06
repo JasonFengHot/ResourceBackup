@@ -1,0 +1,9 @@
+	1.如何修改通话界面挂机按钮的高度？？？？
+
+	解决：
+	packages/apps/phone/res/layout/incall_touch_ui.xml中的endButtonArea
+
+	2.关机充电图标的修改？？？？
+
+	解决：
+	mediatek/custom/common/lk/logo/wvga_infinix_x405/wvga_infinix_x405_bat_100.bmp

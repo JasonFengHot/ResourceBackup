@@ -1,0 +1,30 @@
+1.选择铃声界面上有白色的空白选项？？？
+
+解决：
+/data/data/com.android.providers.media/databases/external.db
+select _data,_display_name,title from audio;		//在audio表中有
+在com.android.settings.ChooseRingtone
+
+2.SwitchWidgetAppProvider上的数据连接开关在双卡的时候打开失败，而且会很卡，卡死？？？？
+
+解决：
+packages/apps/Settings/src/com/android/settings/widget/SwitchWidgetAppProvider.java
+packages/apps/Settings/res/xml/switchwidget_info.xml
+android:initialLayout="@layout/widget_switch_small"
+
+下拉状态栏上面的
+//frameworks/base/packages/SystemUI/src/com/mediatek/systemui/statusbar/toolbar/QuickSettingsConnectionModel.java
+
+	3.安兔兔报错？？？
+
+	解决：
+	内存溢出问题，只需要加大 system.prop 文件中的
+	dalvik.vm.heapgrowthlimit=256m		
+	dalvik.vm.heapsize=512m
+
+	4.在Tecno_Wallpaper中下载好壁纸之后如何刷新Gallery???
+
+	解决：
+	只需要在OnlineGridViewPagerActivity.java文件的UIHandler里面的
+	if(progressBar.getProgress() == progressBar.getMax()){	}里面添加如下代码重新扫描tecnoWallpaper文件夹即可	
+	sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(savePath))));

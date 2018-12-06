@@ -1,0 +1,6 @@
+1.在platform中添加了 CONFIG_MTK_USB_UNIQUE_SERIAL 之后还是无效？？？
+
+解决：
+只要将 CONFIG_MTK_USB_UNIQUE_SERIAL 移到第二个 # CONFIG_MTK_USB_UNIQUE_SERIAL is not set 下面就可以了
+
+2.

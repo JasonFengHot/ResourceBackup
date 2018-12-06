@@ -1,0 +1,3 @@
+RuntimeException here = new RuntimeException("bolex");
+here.fillInStackTrace();
+Log.w("myTag", "Called: " + this, here);

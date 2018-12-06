@@ -1,0 +1,14 @@
+1.java使用代理访问网络
+
+使用代码的方式：
+String proxyHost = "127.0.0.1";
+String proxyPort = "1080";
+
+System.setProperty("http.proxyHost", proxyHost);
+System.setProperty("http.proxyPort", proxyPort);
+
+System.setProperty("https.proxyHost", proxyHost);
+System.setProperty("https.proxyPort", proxyPort);
+
+使用参数的方式：
+-Dhttp.proxyHost=127.0.0.1 -Dhttp.proxyPort=1080 -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=1080

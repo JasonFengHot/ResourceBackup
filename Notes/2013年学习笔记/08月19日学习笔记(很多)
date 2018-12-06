@@ -1,0 +1,177 @@
+	1.为什么模块编译framework-res.apk的时候会出现不会编译up06而是编译up11????out/target/product/up11_sfr_mensa/system/framework/framework-res.apk????
+
+	解决：默认模块编译的是最后一次编译的工程，只需要在模块编译的时候添加上要编译的工程就行了。如：./mk -t up11_sfr_mensa mm frameworks/base/core/res/ 
+
+	    2.如何添加宏控？？？
+
+	    解决：
+	    mediatek/build/tools/javaoption.pm	中声明
+	    mediatek/config/XXXX/ProjectConfig.mk	中添加初始值
+	
+	3.判断是否是user模式？？？
+
+	解决：
+	先将usb调味media device模式
+	adb shell getprop ro.build.type
+
+	    4.couldn't pair with ANDROID BT because of an incorrect PIN or passkey???
+
+	    解决：这个貌似不是bug，应该是正常现象，因为在一个蓝牙设备处于搜索状态的时候是不能被别的蓝牙设备搜索到的
+
+	5.修改锁网密码键盘的Enter按钮为Delete按钮？？
+
+	解决：
+	只要修改frameworks/base/core/res/res/xml/目录下相应的键盘布局文件即可
+
+6.ap是什么意思???
+
+	7.使用adb命令抓log???
+
+	解决：
+	adb logcat -b radio -v time >radio.txt		radio log
+	adb logcat -b main -v time >main.txt		main log 
+	adb logcat -b events -v time >events.log	event log
+
+	    8.如何增加新的字库？？？
+
+	    解决：
+	    添加下载的字体文件到frameworks/base/data/fonts/目录下就行了
+
+	9.如何开启NavigationBar????
+
+	解决：
+	将frameworkds/base/core/res/res/values/config_showNavigationBar的值改为true之后重新build就行了
+
+	    10.如何修改Settings/About Phone里面的Model number等信息？？？
+
+	    解决：
+	    只要修改alps/build/tools/buildinfo.sh
+	    echo "ro.product.model=$PRODUCT_MODEL"	将$PRODUCT_MODEL中的信息修改为定制的信息就行了
+
+	11.如何定制主菜单列表中应用程序图标的顺序？？？？
+
+	解决：
+	<toppackages>
+		<app 	launcher:topPackageName="com.yahoo.mobile.client.android.odp" 
+			launcher:topClassName="com.yahoo.mobile.client.android.odp.YahooODP"
+			launcher:topOrder="4"/>
+		<app 	launcher:topPackageName="com.yahoo.mobile.client.android.im" 
+			launcher:topClassName="com.yahoo.mobile.client.android.im.YahooMessager"
+			launcher:topOrder="5"/>
+	</toppackages>
+
+	    12.如何在Android代码中对电源惊醒控制？？
+
+	    解决：
+	    PowerManager mPm = (PowerManager)getSystemService(POWER_SERVICE);
+	    /**
+	    PARTIAL_WAKE_LOCK	//保持CPU运转，屏幕，键盘灯有可能识关闭的
+	    SCREEN_DIM_WAKE_LOCK	//保持CPU运转，允许保持屏幕显示但有可能是半暗的，允许关闭键盘灯
+	    SCREEN_BRIGHT_WAKE_LOCK	//保持CPU运转，允许保持屏幕高亮显示，允许关闭键盘灯
+	    FULL_WAKE_LOCK		//保持CPU运转，保持屏幕高亮显示，键盘也保持亮度
+	    */
+	    PowerManager.WakeLock mWakeLock = mPm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP,"wakelock");
+	    mWakeLock.acquire();//点亮键盘灯
+	    mWakeLock.release();//关闭键盘灯
+	    需要权限 WAKE_LOCK 和 DEVICE_POWER
+
+	13.如何开关Mediatek开发的Feature???
+
+	解决：
+	mediatek/config/..../ProjectConfig.mk
+
+	    14.在Android App中屏蔽Home按键和其他按键????
+
+	    解决：
+	    public class LockByKeyGuard extends Activity
+	    {
+		    public void onCreate(Bundle savedInstanceState)
+		    {
+			    super.onCreate(savedInstanceState);
+			    setContentView(R.layout.main);
+		    }
+		    public void onAttachedToWindow(){
+			    this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_HOMEKEY_DISPATCHED);
+			    super.onAttachedToWindow();
+		    }
+		    public boolean dispatchKeyEvent(KeyEvent event){
+			    return true;
+		    }
+	    }
+
+	15.如何在锁屏界面显示充电和闹铃信息？？？
+
+	解决：
+	在lockscreen.java文件中修改
+	//只充电，不闹铃
+	if(mCharging != null && mNextAlarm == null){
+		mStatus1.setVisibility(View.VISIBLE);
+		mStatus2.setVisibility(View.INVISIBLE);
+		mStatus1.setText(mCharging);
+		mStatus1.setCompoundDrawablesWithIntrinsicBounds(mChargingIcon,null,null,null);
+	//既充电，又闹铃
+	}else if(mCharging !=null && mNextAlarm != null){
+		mStatus1.setVisibility(View.VISIBLE);
+		mStatus2.setVisibility(View.VISIBLE);
+		mStatus1.setText(mCharging);
+		mStatus1.setCompoundDrawablesWithIntrinsicBounds(mChargingIcon,null,null,null;
+		mStatus2.setText(mNextAlarm);
+		mStatus2.setCompoundDrawableWithInstrinsicBounds(mAlarmIcon,null,null,null);
+	//只闹铃，不充电
+	}else if(mCharging == null && mNextAlarm != null){
+		mStatus1.setVisibility(View.VISIBLE);
+		mStatus2.setVisibility(View.INVISIBLE);
+		mStatus1.setText(mNextAlarm);
+		mStatus1.setCompoundDrawablesWithIntrinsicBounds(mAlarmIcon,null,null,null);
+	}
+
+	    16.如何修改让Pin码的输入内容不回显？？？
+
+	    解决：
+	    在SecuritySettings.java文件的onResume()方法中修改
+	    mShowPassword.setChecked(Settings.System.getInt(getContentResolver(),Settings.System.TEXT_SHOW_PASSWORD,0)!=0);		//这样修改貌似不太好
+
+	17.修改默认时区？？？
+
+	解决：
+	mediatek/config/..../system.prop中增加以下字段
+	persist.sys.defaulttimezone=Asia/Shanghai
+	RuntimeInit.java文件中修改
+	private static final void commonInit()
+	{	
+		TimezoneGetter.setInstance(new TimezoneGetter(){
+			public String getId(){
+				String zoneinfo = SystemProperties.get("persist.sys.timezone");
+				if(zoneinfo == null || zoneinfo.length() == 0){
+					String zonedefaultinfo = SystemProperties.get("persist.sys.defaulttimezone");
+					if(zonedefaultinfo != null && zonedefaultinfo.length() > 0){
+						SystemProperties.get("persist.sys.timezone",zonedefaultinfo);	//设置
+					}
+				}
+				return SystemProperties.get("persist.sys.timezone");				//返回
+			}
+		});
+	}
+
+	    18.如何在状态栏上增加一个icon???
+
+	    解决：
+	    a.frameworks/base/core/res/res/values/config.xml
+	    <resources>
+		    ......
+		    <item><xliff:g id="id">headset</xliff:g></item>	//添加耳机图标
+		    ......
+	    </resources>
+	    b.frameworks/packages/SystemUI/src/com/android/systemui/statusbar/PhoneStatusBarPolicy.java中进行初始化
+	    mService.setIcon("headset",R.drawable.zzz_headset_with_mic,0,null);	//设置要显示的图标
+	    mService.setIconVisiblity("headset",false);				//默认不可见
+	    c.frameworks/packages/SystemUI/src/com/android/systemui/statusbar/PhoneStatusBarPolicy.java中注册相应的receiver来接受Intent
+	    private BroadcastReceiver mIntentReceiver = new BroadcastReceiver(){
+		    public void onReceive(Context context,Intent){
+			    String action = intent.getAction();
+			    //在插上耳机的时候
+			    if(action.equals(Intent.ACTION_HEADSET_PLUG)){
+				    updateHeadSet(intent);
+			    }
+		    }
+	    };

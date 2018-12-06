@@ -1,0 +1,6 @@
+	1.TextView如何获取焦点？？
+
+	解决：
+	TextView tv_header = (TextView) findViewById(R.id.tv_header);
+	tv_header.setFocusable(true);
+	tv_header.requestFocus();

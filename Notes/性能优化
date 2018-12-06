@@ -1,0 +1,11 @@
+1、移除或修改Window默认的Background
+2、移除XML布局文件中非必需的Background
+3、按需显示占位背景图片
+4、控制绘制区域
+
+
+第一个建议：可以使用相对布局减少层级的就使用相对布局，否则使用线性布局。Android中RelativeLayout和LinearLayout性能分析，参考：www.jianshu.com/p/8a7d059da…
+第二个建议：用merge标签来合并布局，这可以减少布局层次。
+第三个建议：用include标签来重用布局，抽取通用的布局可以让布局的逻辑更清晰明了，但要避免include乱用。
+第四个建议：避免创建不必要的布局层级。（最容易发生的！）
+第五个建议：使用惰性控件ViewStub实现布局动态加载

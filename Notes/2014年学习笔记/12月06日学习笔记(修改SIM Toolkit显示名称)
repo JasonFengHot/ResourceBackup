@@ -1,0 +1,63 @@
+1.SPN是如何获取的？？？？？
+
+解决：
+//frameworks/opt/telephony/src/java/com/android/internal/telephony/uicc/SIMRecords.java
+
+String spn = (iccRecords != null) ? iccRecords.getServiceProviderName() : "";
+
+mSpn = IccUtils.adnStringFieldToString(data, 1, data.length - 1);
+mSpn = IccUtils.adnStringFieldToString(data, 0, data.length);
+
+//mSpnOverride = new SpnOverride();						//这里为什么要注释掉？？？
+//setSpnFromConfig(operator);							//?????
+
+private void setSpnFromConfig(String carrier) {
+    if (mSpnOverride.containsCarrier(carrier)) {
+        mSpn = mSpnOverride.getSpn(carrier);
+    }
+}
+
+
+private void fetchSpn() {
+    if (DBG) log("fetchSpn()");
+    boolean bSpnActive = false;
+    Phone.IccServiceStatus iccSerStatus =  getSIMServiceStatus(Phone.IccService.SPN);
+    if (iccSerStatus == Phone.IccServiceStatus.ACTIVATED) {  
+        mSpn = null;
+        mFh.loadEFTransparent(EF_SPN, obtainMessage(EVENT_GET_SPN_DONE));
+        mRecordsToLoad++;
+    } else {
+        Rlog.i(LOG_TAG, "[SIMRecords] SPN service is not activated  " );
+    }
+}
+
+
+
+2.如何在MtkLog中查看ro开头的属性值？？？
+
+解决：
+在 MtkLog 文件夹中有 APLog_2014_1205_145410/properties 这个文件中会有好多 ro开头的属性值
+
+3.修改《SIM Toolkit》的名称？？？
+
+解决：
+在mediatek/packages/apps/Stk1/res/ 目录下创建 values-mcc460-mnc00 文件夹
+并添加一个 strings.xml 文件
+修改 strings.xml 文件中的 <string name="app_name">My GLOBUL</string>
+
+4.修改 SIM Toolkit 应用里面标题中显示的名称？？？
+
+解决：
+//mediatek/packages/apps/Stk1/src/com/android/stk/StkMenuInstance.java
+mStkMenu = appService.getMenu(mSimId);
+
+Menu getMenu(int sim_id) {
+    CatLog.d(LOGTAG, "StkAppService, getMenu, sim id: " + sim_id);
+    if (sim_id >=0 && sim_id < STK_GEMINI_SIM_NUM){
+        return mStkContext[sim_id].mCurrentMenu;
+	}else{
+        return null;
+	}
+}
+
+5.

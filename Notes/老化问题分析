@@ -1,0 +1,46 @@
+======================================01======================================
+
+----- timezone:GMT
+01-02 00:17:56.175197 22325 22334 E AndroidRuntime: FATAL EXCEPTION: FinalizerWatchdogDaemon
+01-02 00:17:56.175197 22325 22334 E AndroidRuntime: Process: com.google.android.gm, PID: 22325
+01-02 00:17:56.175197 22325 22334 E AndroidRuntime: java.util.concurrent.TimeoutException: android.os.BinderProxy.finalize() timed out after 10 seconds
+01-02 00:17:56.175197 22325 22334 E AndroidRuntime: 	at android.os.BinderProxy.destroy(Native Method)
+01-02 00:17:56.175197 22325 22334 E AndroidRuntime: 	at android.os.BinderProxy.finalize(Binder.java:684)
+01-02 00:17:56.175197 22325 22334 E AndroidRuntime: 	at java.lang.Daemons$FinalizerDaemon.doFinalize(Daemons.java:223)
+01-02 00:17:56.175197 22325 22334 E AndroidRuntime: 	at java.lang.Daemons$FinalizerDaemon.run(Daemons.java:210)
+01-02 00:17:56.175197 22325 22334 E AndroidRuntime: 	at java.lang.Thread.run(Thread.java:761)
+01-02 11:14:54.235967  3991  4000 E AndroidRuntime: FATAL EXCEPTION: FinalizerWatchdogDaemon
+01-02 11:14:54.235967  3991  4000 E AndroidRuntime: Process: com.google.android.gms.unstable, PID: 3991
+01-02 11:14:54.235967  3991  4000 E AndroidRuntime: java.util.concurrent.TimeoutException: java.lang.ref.FinalizerReference$Sentinel.finalize() timed out after 10 seconds
+01-02 11:14:54.235967  3991  4000 E AndroidRuntime: 	at java.lang.ref.FinalizerReference.remove(FinalizerReference.java:66)
+01-02 11:14:54.235967  3991  4000 E AndroidRuntime: 	at java.lang.Daemons$FinalizerDaemon.doFinalize(Daemons.java:219)
+01-02 11:14:54.235967  3991  4000 E AndroidRuntime: 	at java.lang.Daemons$FinalizerDaemon.run(Daemons.java:210)
+01-02 11:14:54.235967  3991  4000 E AndroidRuntime: 	at java.lang.Thread.run(Thread.java:761)
+
+
+
+./mobilelog/APLog_2018_0101_174741/sys_log.2:01-02 17:09:33.932599   762   789 E ANRManager: ANR in com.android.settings, time=84180042
+./mobilelog/APLog_2018_0101_174741/sys_log.2:01-02 17:10:39.203509   762   789 E ANRManager: ANR in com.mediatek.engineermode, time=84239977
+./mobilelog/APLog_2018_0101_174741/sys_log.2:01-02 17:48:13.604177   762   789 E ANRManager: ANR in com.google.android.googlequicksearchbox:search, time=86499111
+./mobilelog/APLog_2018_0101_174741/sys_log.2:01-02 18:52:59.313629   762   789 E ANRManager: ANR in com.google.android.gm, time=90384680
+./mobilelog/APLog_2018_0101_174741/sys_log.3:01-02 06:30:27.942955   762   789 E ANRManager: ANR in com.android.systemui, time=45831879
+./mobilelog/APLog_2018_0101_174741/sys_log.3:01-02 13:03:28.521512   762   789 E ANRManager: ANR in com.google.android.gms.unstable, time=69412278
+
+
+======================================02======================================
+./mobilelog/APLog_2018_0101_174741/sys_log.2:01-02 17:09:33.932599   762   789 E ANRManager: ANR in com.android.settings, time=84180042
+./mobilelog/APLog_2018_0101_174741/sys_log.2:01-02 17:09:33.932599   762   789 E ANRManager: 99% TOTAL: 99% user + 0.6% kernel
+
+./mobilelog/APLog_2018_0101_174741/sys_log.2:01-02 17:10:39.203509   762   789 E ANRManager: ANR in com.mediatek.engineermode, time=84239977
+./mobilelog/APLog_2018_0101_174741/sys_log.2:01-02 17:10:39.203509   762   789 E ANRManager: 100% TOTAL: 99% user + 0.5% kernel + 0% iowait
+
+./mobilelog/APLog_2018_0101_174741/sys_log.2:01-02 17:48:13.604177   762   789 E ANRManager: ANR in com.google.android.googlequicksearchbox:search, time=86499111
+./mobilelog/APLog_2018_0101_174741/sys_log.2:01-02 17:48:13.604177   762   789 E ANRManager: 100% TOTAL: 99% user + 0.6% kernel
+
+./mobilelog/APLog_2018_0101_174741/sys_log.2:01-02 18:52:59.313629   762   789 E ANRManager: ANR in com.google.android.gm, time=90384680
+./mobilelog/APLog_2018_0101_174741/sys_log.2:01-02 18:52:59.313629   762   789 E ANRManager: 99% TOTAL: 99% user + 0.5% kernel
+
+
+
+./mobilelog/APLog_2018_0101_174741/sys_log.3:01-02 06:30:27.942955   762   789 E ANRManager: ANR in com.android.systemui, time=45831879
+./mobilelog/APLog_2018_0101_174741/sys_log.3:01-02 13:03:28.521512   762   789 E ANRManager: ANR in com.google.android.gms.unstable, time=69412278

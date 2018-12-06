@@ -1,0 +1,118 @@
+1.H27C 的 SystemUI 报错？？？？
+
+Log:
+Backtrace: 
+Process: com.android.systemui
+Flags: 0x40c8be4d
+Package: com.android.keyguard v19 (4.4.2)
+Package: com.android.systemui v19 (4.4.2)
+Build: MOBIWIRE/Cygnus45/Cygnus45:4.4.2/KOT49H/1415772610:eng/release-keys
+
+java.lang.IllegalArgumentException: bitmap size exceeds 32bits
+	at android.graphics.Bitmap.nativeCreate(Native Method)
+	at android.graphics.Bitmap.createBitmap(Bitmap.java:819)
+	at android.graphics.Bitmap.createBitmap(Bitmap.java:777)
+	at android.view.View.buildDrawingCache(View.java:13847)
+	at android.view.View.getDrawingCache(View.java:13702)
+	at android.view.View.draw(View.java:14412)
+	at android.view.ViewGroup.drawChild(ViewGroup.java:3252)
+	at android.view.ViewGroup.dispatchDraw(ViewGroup.java:3070)
+	at android.view.View.draw(View.java:14607)
+	at android.view.ViewGroup.drawChild(ViewGroup.java:3252)
+	at android.view.ViewGroup.dispatchDraw(ViewGroup.java:3070)
+	at android.view.View.draw(View.java:14607)
+	at android.view.ViewGroup.drawChild(ViewGroup.java:3252)
+	at android.view.ViewGroup.dispatchDraw(ViewGroup.java:3070)
+	at android.view.View.draw(View.java:14747)
+	at android.widget.FrameLayout.draw(FrameLayout.java:534)
+	at android.widget.ScrollView.draw(ScrollView.java:1614)
+	at android.view.View.draw(View.java:14612)
+	at android.view.ViewGroup.drawChild(ViewGroup.java:3252)
+	at android.view.ViewGroup.dispatchDraw(ViewGroup.java:3070)
+	at android.view.View.draw(View.java:14607)
+	at android.view.ViewGroup.drawChild(ViewGroup.java:3252)
+	at android.view.ViewGroup.dispatchDraw(ViewGroup.java:3070)
+	at android.view.View.draw(View.java:14607)
+	at android.view.ViewGroup.drawChild(ViewGroup.java:3252)
+	at android.view.ViewGroup.dispatchDraw(ViewGroup.java:3070)
+	at android.view.View.draw(View.java:14747)
+	at android.widget.FrameLayout.draw(FrameLayout.java:534)
+	at com.android.systemui.statusbar.phone.NotificationPanelView.draw(NotificationPanelView.java:96)
+	at android.view.ViewDebug$4.run(ViewDebug.java:567)
+	at android.view.ViewDebug$5.run(ViewDebug.java:611)
+	at android.os.Handler.handleCallback(Handler.java:808)
+	at android.os.Handler.dispatchMessage(Handler.java:103)
+	at android.os.Looper.loop(Looper.java:193)
+	at android.app.ActivityThread.main(ActivityThread.java:5299)
+	at java.lang.reflect.Method.invokeNative(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:515)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:825)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:641)
+	at dalvik.system.NativeStart.main(Native Method)
+
+2.fota升级空间不足？？？？
+
+code:
+long lPkgSize = Util.getFileSize(Util.getPackageFileName(this));
+long lSizeNeeded = Util.getExtraSpaceNeeded(this, (long) (mDownloadInfo.getUpdateImageSize() * (Util.DECOMPRESS_RATIO + 1) - lPkgSize));
+if (lSizeNeeded == -1) {
+    Toast.makeText(this, getString(R.string.unmount_sdcard), Toast.LENGTH_LONG).show();
+    return true;
+} else if (lSizeNeeded > 0) {
+    Toast.makeText(this, getString(R.string.insufficient_space_content, lSizeNeeded), Toast.LENGTH_LONG).show();
+    return true;
+}
+
+
+
+String availablePath = getAvailablePath(context);									//
+if (availablePath == null) {
+    return -1;
+}
+StatFs statfs = new StatFs(availablePath);
+if (statfs == null) {
+    return -1;
+}
+long totalSize = (long) statfs.getBlockSize() * statfs.getAvailableBlocks();		//这里的 totalSize 为 0
+Xlog.i(TAG, "checkSdcardSpaceNeeded, totalSize = " + totalSize);
+if (totalSize < miniSize) {
+    return miniSize - totalSize;
+}
+
+
+static String getAvailablePath(Context context) {
+    if (sAvailablePath == null) {
+        if (FeatureOption.MTK_2SDCARD_SWAP || FeatureOption.MTK_SHARED_SDCARD) {	//这里可以把 MTK_2SDCARD_SWAP 这个宏关闭吗？？？
+            if (sExternalSdCardPath == null) {
+                sExternalSdCardPath = getExternalSDCardPath(context);				//走这一段
+            }
+            sAvailablePath = sExternalSdCardPath;
+        } else {
+            File sdcardSystem = Environment.getExternalStorageDirectory();
+            sAvailablePath = sdcardSystem.getPath();
+        }
+    }
+    return sAvailablePath;
+}
+
+static String getExternalSDCardPath(Context context) {
+    StorageManager storManager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
+    if (storManager == null) {
+        return null;
+    }
+    StorageVolume[] volumes = storManager.getVolumeList();
+    if (volumes == null) {
+        return null;
+    }
+    Xlog.i(TAG, "start scan and length = " + volumes.length);
+    for (int i = 0; i < volumes.length; i++) {
+        if ((volumes[i] != null) && (volumes[i].isRemovable())) {
+            String path = volumes[i].getPath();
+            if ((path != null) && (!path.contains(EXTERNAL_USB_STORAGE))) {
+                Xlog.i(TAG, " path = " + path);										//这里会打印 /storage/sdcard1/
+                return path;
+            }
+        }
+    }
+    return null;
+}

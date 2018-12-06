@@ -517,3 +517,17 @@ fromdos xxx.txt
 
 # 配置快捷键返回桌面
 Settings/Keyboard/Shortcuts/Navigation/Hide all normal windows //把这个改为 WIN+D 键，和windows保持一致
+
+
+# nautilus文件夹进不去
+``` bash
+** Message: Init Stock Icons
+
+(nautilus:12030): Gtk-WARNING **: Theme parsing error: <broken file>:1:0: Failed to import: The resource at '/org/gnome/libgd/tagged-entry/default.css' does not exist
+Nautilus-Share-Message: Called "net usershare info" but it failed: Failed to execute child process "net" (No such file or directory)
+**
+ERROR:nautilus-canvas-container.c:6021:finish_adding_new_icons: assertion failed: (!container->details->auto_layout)
+Aborted (core dumped)
+
+解决方法：
+```

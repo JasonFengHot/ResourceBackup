@@ -1,0 +1,54 @@
+	1.修改D7的音乐播放界面？？？
+
+	解决：替换相应的图片就可以了
+
+	2.编译push系统的资源framework-res.apk？？？
+
+	解决：
+	先删除out/target/common/obj/apps/framework-res_intermediates文件夹
+	然后编译资源文件./mk -t mm frameworks/base/core/res/
+	然后adb remount
+	然后adb push out/target/product/up07_tecno_d7/system/framework/framework-res.apk system/framework
+
+	3.tab栏的背景该怎么改？？？？
+
+	解决：
+	改package/app/Music/res/layout/main.xml文件中的TabWidget标签里面的android:background="@drawable/music_control_bg"就可以了
+	然而改package/app/Music/res/layout/buttonbar.xml中的TabWidget的背景是没有用的
+
+	4.tabWidget中的TextView点击不到？？？
+
+	解决：
+	android:clickable="true"就可以了
+
+	5.tabWidget点击了之后没有选中？？？
+
+	解决：没有给tabWidget中的TextView添加监听器
+
+	6.如何修改TabWdiget里面控件的分隔符？？？没有合适的图片？？？
+
+	解决：直接替换tabWidget的selector文件中的为选中时候的图片就行了
+
+	7.桌面上的Music的快捷方式的图标在什么地方？？？
+
+	解决：在launcher的资源文件里面
+	
+8.framework.apk是如何编译成的？？？
+
+9.研究.mk编译文件的源代码？？？
+
+	10.music里面的ActionBar的修改？？？
+
+	解决：
+	a.修改styles.xml
+	<style name = "MySettingsTheme"  parent = "android:Theme.Holo">
+		<item name ="android:actionBarStyle">@style/ActionBar</item>
+	</style>
+	<style name = "ActionBar" parent = "android:style/Widget.Holo.ActionBar" >
+		<item name = "android:background" >@drawable/activity_title_bar_test</item>
+	</style>
+	b.修改AndroidManifest.xml
+	<application android:theme="@style/MyMusicTheme"/>
+	c.修改MusicBrowserActivity的主题为android:theme="@android:style/Theme.Holo.NoActionBar"就可以去掉ActionBar并且不影响下面的搜索按钮和TAB上的Divider
+
+11.TabWidget的android:showDividers="end"属性有什么用？？？

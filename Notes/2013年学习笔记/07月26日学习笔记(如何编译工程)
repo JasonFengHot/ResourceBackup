@@ -1,0 +1,77 @@
+5.Eclipse遇到的问题？？？
+
+6.手机连接不上ddms????经常出现断断续续的现象????
+
+	7.输入法经常崩溃的问题????
+
+	解决：不知道怎么样就好了，暂时不用解决了
+
+8.在画坦克的时候出现 IllegalArgumentException 的问题 ???
+
+9.
+RotateImageView R.id.setting_indicator
+SettingManager.java
+SettingChecker.java 中有 
+照相机尺寸的设置保存在data/data/com.android.gallery3d/share_prefs/com.android.gallery3d_preferences_0.xml和com.android.gallery3d_preferences_0.xml???
+<string name="pref_camera_picturesize_ratio_key">1.7778</string>
+在CameraSettings.java中的buildPreviewRatio()方法中有一个add full screen ratio
+
+CameraSettings.java中的第284行
+ListPreference pictureRatio = group.findPreference(KEY_PICTURE_RATIO);
+
+先删除SharedPreference文件看看效果，再问问看看是否需要每次进入都是4*3的？？？
+
+可以将这一行移到下面试一下
+supportedRatios.add(SettingUtils.getRatioString(4d / 3)); //add standard ratio
+
+Camera.java/mInitialParams = CameraHolder.instance().getOriginalParameters();
+
+value = String.valueOf(pref.getEntryValues()[0]);
+
+在 SettingChecker.java/value = String.valueOf(pref.getEntryValues()[0]);
+
+camera/res/values/Array.xml
+
+	10.G-sensor校准出现问题???
+
+	com.android.settings.GSensorCalibrate 中
+	找id img_cylinder_v 的 ImageView在Gsensor.xml中，把右边的小水滴移到左边一点，修改 Gsensor.xml img_bubble_v  android:layout_marginRight="30dip"
+
+	11.firefox浏览器有问题？？？
+
+	解决：使用sudo firefox就能登录
+
+	    13.修改Make passwwords visible默认为false????
+
+	    解决：
+	    a.修改/frameworks/base/packages/settingsprovider/src/com/android/providers/settings/DatabaseHelper.java
+	    在DatabaseHelper.java中的loadSystemSettings()方法中加上loadIntegerSetting(stmt,Settings.System.TEXT_SHOW_PASSWORD,R.integer.sagereal_text_show_password);
+	    b.修改trunk/mediatek/config/up07_id_fly_polish_x55/sagereal_copy/defaults.xml
+	    在defaults.xml中添加<integer name="sagereal_text_show_password">1</integer>
+	    c.修改trunk/frameworks/base/packages/SettingsProvider/res/values/defaults.xml
+	    在defaults.xml中添加<integer name="sagereal_text_show_password">1</integer>
+	    d.必要的时候修改一下trunk/mediatek/build/custgen.mk
+	    在文件末尾添加上如下信息
+	    #(shell cp $(TOPDIR)mediatek/conig/$(PROJECT)/sagereal_copy/mtk_camera_dimens.xml  $(TOPDIR)packages/apps/Camera/res/values/mtk_dimens.xml)
+
+	    14.修改verity apps???
+	    SecuritySettings.java/mToggleVerifyApps
+	    if (mIsPrimary && showVerifierSetting()) {
+	        if (isVerifierInstalled()) {
+			    mToggleVerifyApps.setChecked(isVerifyAppsEnabled());
+	        } else {
+			    mToggleVerifyApps.setChecked(false);
+			    mToggleVerifyApps.setEnabled(false);		//将这里的false改为true就可以了
+	        }
+	    }
+	    不作修改，暂不解决,这个问题貌似只要安装一个Google包中的应用就可以了
+
+	15.如何编译工程？?
+
+	解决：
+	进入../trunk/ ./mk listp				列出工程列表
+	./mk XXXX new						编译的工程
+	./mk mm -t pacakge/app/...				模块编译
+	adb remount						重新挂载
+	adb push out/target/product/.../../*.apk system/app	将编译好的模块推送到手机上
+

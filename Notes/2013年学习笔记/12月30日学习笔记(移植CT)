@@ -1,0 +1,16 @@
+	1.移植CT功能？？？？
+
+	解决：
+	a.PATCH：  	打上1个patch(2个java文件和1个Android.mk文件)    注意要用拷贝文件，特别注意在拷贝Android.mk文件的时候应该将Android.mk文件改成别的名字，否则会编译不过的
+	b.PATCH支持包：	记得将vendor/absolute文件夹中的 lib 和 src 文件夹中的内容也上传
+	c.修改分区表：	在mediatek/build/tools/ptgen/MT6572/partition_table_MT6572.xls(需要拷贝) 文件中添加所需要的test分区
+	d.权限：		在mediatek/config/mt6572/文件夹下的init.rc,meta_init.rc,factory_init.rc文件中给test分区添加相应的权限
+	e.预置APK：	将需要预置的APK和相应的Android.mk文件放到packages/apps/SageRealApp/Ddm_ac4e/ABTMarketingApp/ 目录下
+	f.添加宏：	在mediatek/build/tools/javaoption.pm和ProjectConfig.mk（所有工程下都要添加）文件中添加 ABSOLUTE_ENABLE 即可
+
+	2.修改Camera顶部的ModePicker栏，将其改大一点，否则比较难点中？？？
+
+	解决：
+	在mtk_dimens.xml和mtk_styles.xml文件中修改相应的参数即可（注意，这里的Camera是横屏的，而不是竖屏的，应该修改layout_height而不是修改layout_width）
+
+3.

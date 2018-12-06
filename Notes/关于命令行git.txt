@@ -1,0 +1,239 @@
+﻿
+注意：git的命令没有缩写
+
+1 如果你不知道命令怎么用git命令,可通过如下方式查询：
+git help
+知道了子命令，但是不知道子命令的用法，还可以查询：
+git help commit
+
+
+2 创建共享git服务器资源库。命令如下：
+git init --bare test
+
+由上面的命令可以知道资源库的名称为test，由于该命令会在当前目录下创建对应的资源库，所以在执行该命令之前，要将目录切换到
+想要存放资源库的目录下，例如我存放资源库的目录为D:\studysoftware\Repositories\git，则我要执行的命令如下(可以通过命令
+ pwd 查看当前所在目录，同时也可以找到目录的格式)：
+cd /d/studysoftware/Repositories/git
+
+该命令执行完成后，就会在终端所在目录下生存一个test目录。
+
+
+3 将共享git服务器资源库test克隆到本地，从而创建本地的资源库。命令如下：
+git clone /g/software/repository/git/test .
+
+由上面的命令可以知道/g/software/repository/git/test为仓库目录，.代表用户目录(我用的用户目录为/d/Workspaces/git/cy)。
+该命令执行完成后会生成一个隐藏的.git文件夹（由于此时共享git服务器资源库test为空），注意：clone时候用户目录必须为空。
+
+
+4 添加文件或者文件夹到共享git服务器资源库test中
+
+4.1 添加文件1.txt到共享git服务器资源库test中
+
+a: 首先将文件1.txt放到用户目录下，然后将终端切换到该目录下。
+
+b: 查看当前目录下文件和文件夹的状态。命令如下：
+git status
+执行完该命令后，终端上会输出一段文本，你可以看见红色的 1.txt 。则说明要对该文件执行添加操作。
+
+c: 将文件1.txt设置为添加状态，即说明该文件将要被添加到本地资源库test中。命令如下：
+   git add 1.txt
+
+d: 查看当前目录下文件和文件夹的状态。命令如下：
+git status
+执行完该命令后，终端上会输出一段文本，你可以看见绿色的 1.txt 。则说明该文件添加成功，可以提交到本地资源库test中。
+
+e: 将添加状态的文件1.txt提交，即将该文件添加到本地资源库test中。命令如下：
+   git commit -m "cy add 1.txt" 1.txt
+
+如果没有添加-m "cy add 1.txt"参数，则该命令会自动进入VIM编辑器中，然后你点击i键就可以进入编辑模式，然后将log信息
+cy add 1.txt添加进去，然后输入（:wq）保存退出。
+
+f: 将本地本地资源库test推送到共享git服务器资源库test中，命令如下：
+git push origin master
+
+该命令中的origin参数（代表共享git服务器资源库test的路径）和master参数（代表本地资源库test的主分支）
+可以在D:\Workspaces\git\cy\.git\config中看到。如下所示：
+[remote "origin"]
+	fetch = +refs/heads/*:refs/remotes/origin/*
+	url = d:/studysoftware/Repositories/git/test/
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+
+
+4.2 添加文件夹hello到共享git服务器资源库test中，该文件夹下由2个文件（2.txt、3.txt），和2个文件夹（aa、bb）。
+
+  a:首先将文件夹hello放到用户目录下，然后将终端切换到该目录下。
+  b: 查看当前目录下文件和文件夹的状态。命令如下：
+  git status
+  执行完该命令后，终端上会输出一段文本，你可以看见红色标注的 hello/ 。则说明要对文件夹hello及其在文件夹和子文件执行添加操作。
+   
+  c:将文件夹hello及其在文件夹和子文件设置为添加状态，即说明该文件夹及其在文件夹和子文件将要被添加到本地资源库test中。
+  命令如下：
+  git add hello/
+  
+  c:将添加状态的文件夹hello及其在文件夹和子文件提交，即将该文件夹及其在文件夹和子文件添加到服务器的test资源库中。命令如下：
+  git commit -m "lhl add hello"
+
+  d: 查看当前目录下文件和文件夹的状态。命令如下：
+  git status
+  执行完该命令后，终端上会输出一段文本，你可以看见绿色标注的 
+  new file:   hello/2.txt
+  new file:   hello/3.txt
+  。则说明文件夹hello及其在文件夹和子文件添加成功，可以提交到本地资源库test中。
+
+  e: 将添加状态的文件夹hello及其在文件夹和子文件提交，即将文件夹hello及其在文件夹和子文件添加到本地资源库test中。命令如下：
+  git commit -m "cy add hello."
+
+  如果没有添加-m "cy add hello."参数，则该命令会自动进入VIM编辑器中，然后你点击i键就可以进入编辑模式，然后将log信息
+  cy add hello.添加进去，然后输入（:wq）保存退出。
+
+  f: 将本地本地资源库test推送到共享git服务器资源库test中，命令如下：
+  git push origin master
+   
+
+5 将共享git服务器资源库test中的hello文件夹中的2.txt文件删除
+
+  a:将本地的该文件设置为删除状态，即本地资源库test中该文件将被删除。命令如下：
+  git rm hello/2.txt
+  执行完该命令后，可以看到本地的该文件已经移除。
+  b:将删除状态的文件hello/2.txt提交，即将本地资源库test中该文件删除。命令如下：
+  git commit -m "cy delete hello/2.txt." hello/2.txt
+  c: 将本地本地资源库test推送到共享git服务器资源库test中，命令如下：
+  git push origin master
+
+
+6 修改最后一次提交注释
+如果某次提交(针对commit命令，即提交到本地库后，还没有提交到远程库。)的注释写错了，可以执行如下命令进行修改
+git commit --amend
+
+此命令将使用当前的暂存区域快照提交。如果刚才提交完没有作任何改动，直接运行此命令的话，相当于有机会重新编辑上一次提交的注释，而所提交的文件快照和之前的一样。
+启动文本编辑器后，会看到上次提交时的说明，编辑它确认没问题后保存退出，就会使用新的提交说明覆盖刚才失误的提交。
+
+$ git commit -m 'initial commit'
+$ git add forgotten_file
+$ git commit --amend
+上面的三条命令最终得到一个提交，第二个提交命令修正了第一个的提交内容。
+
+7 取消已经暂存的文件
+查看文件状态的时候就提示了该如何撤消，所以不需要死记硬背。来看下面的例子，有两个修改过的文件，我们想要分开提交，
+但不小心用 git add * 全加到了暂存区域。该如何撤消暂存其中的一个文件呢？git status 命令的输出会告诉你怎么做：
+
+$ git add .
+$ git status
+# On branch master
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#       modified:   README.txt
+#       modified:   benchmarks.rb
+#
+
+就在 “Changes to be committed” 下面，括号中有提示，可以使用 git reset HEAD <file>... 的方式取消暂存。好吧，我们来试试取消暂存 benchmarks.rb 文件：
+
+$ git reset HEAD benchmarks.rb 
+benchmarks.rb: locally modified
+$ git status
+# On branch master
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#       modified:   README.txt
+#
+# Changed but not updated:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
+#
+#       modified:   benchmarks.rb
+#
+
+这条命令看起来有些古怪，先别管，能用就行。现在 benchmarks.rb 文件又回到了之前已修改未暂存的状态。
+
+8 取消对文件的修改
+如果觉得刚才对 benchmarks.rb 的修改完全没有必要，该如何取消修改，回到之前的状态（也就是修改之前的版本）呢？git status 同样提示了具体的撤消方法，接着上面的例子，现在未暂存区域看起来像这样：
+
+# Changed but not updated:
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
+#
+#       modified:   benchmarks.rb
+#
+
+在第二个括号中，我们看到了抛弃文件修改的命令（至少在 Git 1.6.1 以及更高版本中会这样提示，如果你还在用老版本，我们强烈建议你升级，以获取最佳的用户体验），让我们试试看：
+
+$ git checkout -- benchmarks.rb
+$ git status
+# On branch master
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#       modified:   README.txt
+#
+
+可以看到，该文件已经恢复到修改前的版本。你可能已经意识到了，这条命令有些危险，所有对文件的修改都没有了，因为我们刚刚把之前版本的文件复制过来重写了此文件。
+所以在用这条命令前，请务必确定真的不再需要保留刚才的修改。
+
+9 查看git的所有配置信息
+格式：git config [--local|--global|--system] -l
+查看仓库级的config，即/home/cy/prj/git/MT82_WET_KK/.git/config，命令：git config --local --list      （只对当前仓库有效，如果仓库被删除，配置也就灰飞烟灭了）
+查看全局级的config，即/home/cy/.gitconfig，命令：git config --global --list  （只对当前用户有效，如果切换了用户，配置就无效了）
+查看系统级的config，即D:\Program Files\Git\etc\gitconfig，命令：git config --system --list （对所有用户有效）
+查看当前生效的配置，命令：git config --list，这个时候会显示最终三个配置文件计算后的配置信息，如下图：
+
+cy@cy-E32:~/prj/git/MT82_WET_KK$ git config --list
+user.name=chenyang
+user.email=chenyang@sagereal.com
+core.editor=gedit
+core.autocrlf=false
+core.repositoryformatversion=0
+core.filemode=true
+core.bare=false
+core.logallrefupdates=true
+remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+remote.origin.url=git@172.16.64.36:MT82_WET_KK
+branch.master.remote=origin
+branch.master.merge=refs/heads/master
+
+
+10 为global设置默认值
+
+git config --global core.editor gedit
+
+git config --global user.name "chenyang"
+
+git config --global user.email "chenyang@sagereal.com"
+
+
+12 对于多个用户可能发生的提交时发生的错误
+
+12.1 修改同一个文件，而不是同一行，在提交前先更新即可解决错误。
+
+12.2 修改同一个文件，而且是同一行。
+
+
+13 git pull 之后有冲突:
+
+$ git pull
+remote: Counting objects: 5, done.
+remote: Compressing objects: 100% (2/2), done.
+remote: Total 3 (delta 0), reused 0 (delta 0)
+Unpacking objects: 100% (3/3), done.
+From g:/software/repository/git/itheima26
+   50db030..a04027a  master     -> origin/master
+Auto-merging readme.txt
+CONFLICT (content): Merge conflict in readme.txt
+Automatic merge failed; fix conflicts and then commit the result.
+
+
+解决方法:
+1.git mergetool
+	调用上面命令之后会提示你输入编辑方法,输入:beyond compare 进入编辑器.
+
+2.编辑完之后.调用git commit -a 把当前目录中所有都提交到本地库中.
+
+3.git push origin master 提交到远程库中.
+
+
+
+
+

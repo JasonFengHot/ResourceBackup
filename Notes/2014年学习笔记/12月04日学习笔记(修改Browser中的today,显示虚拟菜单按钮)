@@ -1,0 +1,20 @@
+	1.修改Browser中的Today字符串？？？
+
+	解决：
+	frameworks/base/core/java/android/webkit/DateSorter.java
+	//
+	LocaleData localeData = LocaleData.get(locale);
+	mLabels[0] = localeData.today;				//这个地方读取icu资源
+	mLabels[1] = localeData.yesterday;
+
+2.打开虚拟菜单按钮？？？
+
+解决：
+//frameworks\base\core\java\android\view\ViewConfiguration.java
+public boolean hasPermanentMenuKey() {
+    if(com.mediatek.common.featureoption.FeatureOption.SAGEREAL_REMOVE_SETTING_MENU){
+       return sHasPermanentMenuKey;
+    }else{
+       return false; //add menu key
+    }
+}

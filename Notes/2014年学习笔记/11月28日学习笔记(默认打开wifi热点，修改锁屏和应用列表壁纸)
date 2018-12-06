@@ -1,0 +1,55 @@
+    1.默认打开wifi热点？？？
+
+    解决：
+    FAQ10275 ： 怎样默认打开便携式WIFI热点 
+    https://onlinesso.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ10275
+
+    //frameworks/base/services/java/com/android/server/wifi/WifiService.java
+    public void checkAndStartSoftAp() {                                        //在 WifiService 中添加这个方法
+        mWifiStateMachine.autoConnectInit();
+        boolean isAirplaneModeOn = Settings.Global.getInt(mContext.getContentResolver(), Settings.Global.AIRPLANE_MODE_ON, 0) != 0;
+        if (mWifiStateMachine.hasCustomizedAutoConnect() && isAirplaneModeOn) {
+            SXlog.i(TAG, "Don't enable softAp when airplane mode is on for customization.");
+        } else {
+            Slog.i(TAG, "WifiService starting up with softAp");
+            setWifiApEnabled(null, true);
+        }
+    }
+
+    //frameworks/base/services/java/com/android/server/SystemServer.java
+    在 initAndLoop() 方法中将
+    wifi.checkAndStartWifi();
+    替换为
+    wifi.checkAndStartSoftAp();        //调用上面添加的方法
+
+    2.修改《锁屏壁纸》 和 《应用列表壁纸》？？？
+
+    解决：
+    修改《应用列表壁纸》
+    frameworks/base/packages/Keyguard/res/layout-port/keyguard_host_view.xml        //
+    <com.android.keyguard.KeyguardHostView
+        ...
+        android:background="#ffffff"                                    //将上这句话就可以了
+        ...
+        />
+
+    packages/apps/Launcher3/res/layout/apps_customize_pane.xml            //修改这个地方的
+    <FrameLayout
+        ...
+        android:background="#ffffff"                                    //加上这句话就可以了
+        ...
+        >
+
+3.修改Contacts->settings->Only contacts with phones 默认选中？？？
+
+4.短信上方《新建信息》按钮和《搜索》按钮显示不清楚？？？
+
+解决：
+在 Mms/res/ 文件夹下重新创建一个文件夹 drawable-land-480x800-hdpi 的文件夹
+
+5.AppsCustomizePagedView.java 文件的 2163 行会报错？？？
+
+6.
+
+
+mMsgListView.setAdapter(mMsgListAdapter);

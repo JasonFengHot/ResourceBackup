@@ -1,0 +1,3 @@
+./bin/hubot -n bot -l / -a weixin
+
+./bin/hubot -a bearychat

@@ -1,0 +1,35 @@
+	1.如何在打电话的时候屏蔽MENU按键？？？
+
+	解决：
+	在 PhoneWindowManager.java 的 interceptKeyBeforeDispatching() 方法中添加
+	//Bug29454 zhangqi modified tip menu to toggleRecentApp 2015/02/10:begin
+	} else if (keyCode == KeyEvent.KEYCODE_F12) {
+	   	//Bug29566 zhangqi modified for KEYCODE_F12 2015/02/12:begin
+		if (win != null && win.getAttrs() != null) {
+		    final int flag = win.getAttrs().flags;
+		    if ((flag & WindowManager.LayoutParams.FLAG_HOMEKEY_DISPATCHED) != 0) {
+		        // the window wants to handle the home key, so dispatch it to it.
+		        return 0;
+		    }
+		}
+	   	//Bug29566 zhangqi modified for KEYCODE_F12 2015/02/12:end
+		if (!keyguardOn) {
+			if (down && repeatCount == 0) {
+				toggleRecentApps();
+			}
+		}
+		return -1;
+	//Bug29454 zhangqi modified tip menu to toggleRecentApp 2015/02/10:end
+
+	在 InCallActivity.java 的 onKeyDown() 方法中添加
+	case KeyEvent.KEYCODE_F12:
+		android.util.Log.e("zhangqi","ignore KEYCODE_F12");
+		return true;
+	
+	2.如何在没有实体Menu按键的应用中添加三个点的菜单按钮？？？
+
+	解决：
+	frameworks/base/core/java/android/view/ViewConfiguration.java
+	public boolean hasPermanentMenuKey() {
+		return false;													//将这里的返回值修改为false就可以了
+	}

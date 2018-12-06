@@ -1,0 +1,18 @@
+1.QuickSettings中的充电图标的颜色在哪里设置？？？
+
+解决：
+frameworks/base/packages/SystemUI/src/com/android/systemui/BatteryMeterView.java	//在这里面将充电图标给画出来
+
+2.将刷卡的宏改为单卡????
+
+解决：
+MTK_SHARE_MODEM_CURRENT=1
+MTK_GEMINI_ENHANCEMENT=no
+MTK_GEMINI_3G_SWITCH=no
+MTK_GEMINI_SMART_3G_SWITCH=0
+GEMINI=no
+
+3.修改默认的USB连接模式？？？
+
+解决：
+MTK_MASS_STORAGE

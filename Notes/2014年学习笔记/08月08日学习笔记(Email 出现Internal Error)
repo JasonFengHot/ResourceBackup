@@ -1,0 +1,17 @@
+1.Email同步异常？？？
+
+//packages/apps/Email/src/com/android/email/service/PopImapSyncAdapterService.java
+//private static void sync(final Context context, final long mailboxId,final Bundle extras, final SyncResult syncResult, final boolean uiRefresh,final int deltaMessageCount) {    }
+EmailServiceStatus.syncMailboxStatus(resolver, extras, mailboxId, cause, 0, UIProvider.LastSyncResult.INTERNAL_ERROR);
+
+//packages/apps/Email/unifiedemail/src/com/android/mail/browse/ConversationListFooterView.java
+//public boolean updateStatus(final ConversationCursor cursor) {    }
+mErrorText.setText(Utils.getSyncStatusText(getContext(), mErrorStatus));
+
+
+((ControllableActivity) activity).getListHandler().getConversationListCursor()
+
+ControllerFactory.forActivity(this, mViewMode, tabletUi).getConversationListCursor()
+
+
+结合Log和代码分析得出，应该是PopImap同步邮箱的时候出现的问题，应该是网络的问题，属于正常现象，

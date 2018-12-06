@@ -1,0 +1,181 @@
+01-01 00:53:31.843: E/InputEventReceiver(2441): Exception dispatching input event.
+01-01 00:53:31.845: E/MessageQueue-JNI(2441): Exception in MessageQueue callback: handleReceiveCallback
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): java.lang.SecurityException: Neither user 10051 nor current process has android.permission.WAKE_LOCK.
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.os.Parcel.readException(Parcel.java:1472)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.os.Parcel.readException(Parcel.java:1426)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.os.IPowerManager$Stub$Proxy.acquireWakeLock(IPowerManager.java:358)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.os.PowerManager$WakeLock.acquireLocked(PowerManager.java:872)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.os.PowerManager$WakeLock.acquire(PowerManager.java:857)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at com.android.internal.policy.impl.PhoneWindow$DecorView.dispatchTouchEvent(PhoneWindow.java:2103)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.view.View.dispatchPointerEvent(View.java:7980)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.view.ViewRootImpl$ViewPostImeInputStage.processPointerEvent(ViewRootImpl.java:4384)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.view.ViewRootImpl$ViewPostImeInputStage.onProcess(ViewRootImpl.java:4255)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.view.ViewRootImpl$InputStage.deliver(ViewRootImpl.java:3801)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.view.ViewRootImpl$InputStage.onDeliverToNext(ViewRootImpl.java:3851)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.view.ViewRootImpl$InputStage.forward(ViewRootImpl.java:3820)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.view.ViewRootImpl$AsyncInputStage.forward(ViewRootImpl.java:3927)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.view.ViewRootImpl$InputStage.apply(ViewRootImpl.java:3828)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.view.ViewRootImpl$AsyncInputStage.apply(ViewRootImpl.java:3984)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.view.ViewRootImpl$InputStage.deliver(ViewRootImpl.java:3801)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.view.ViewRootImpl$InputStage.onDeliverToNext(ViewRootImpl.java:3851)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.view.ViewRootImpl$InputStage.forward(ViewRootImpl.java:3820)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.view.ViewRootImpl$InputStage.apply(ViewRootImpl.java:3828)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.view.ViewRootImpl$InputStage.deliver(ViewRootImpl.java:3801)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.view.ViewRootImpl.deliverInputEvent(ViewRootImpl.java:6116)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.view.ViewRootImpl.doProcessInputEvents(ViewRootImpl.java:6096)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.view.ViewRootImpl.enqueueInputEvent(ViewRootImpl.java:6050)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.view.ViewRootImpl$WindowInputEventReceiver.onInputEvent(ViewRootImpl.java:6246)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.view.InputEventReceiver.dispatchInputEvent(InputEventReceiver.java:185)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.os.MessageQueue.nativePollOnce(Native Method)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.os.MessageQueue.next(MessageQueue.java:138)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.os.Looper.loop(Looper.java:150)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at android.app.ActivityThread.main(ActivityThread.java:5333)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at java.lang.reflect.Method.invokeNative(Native Method)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at java.lang.reflect.Method.invoke(Method.java:515)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:828)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:644)
+01-01 00:53:31.870: E/MessageQueue-JNI(2441): 	at dalvik.system.NativeStart.main(Native Method)
+01-01 00:53:31.924: E/AndroidRuntime(2441): FATAL EXCEPTION: main
+01-01 00:53:31.924: E/AndroidRuntime(2441): Process: com.android.launcher3, PID: 2441
+01-01 00:53:31.924: E/AndroidRuntime(2441): java.lang.SecurityException: Neither user 10051 nor current process has android.permission.WAKE_LOCK.
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.os.Parcel.readException(Parcel.java:1472)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.os.Parcel.readException(Parcel.java:1426)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.os.IPowerManager$Stub$Proxy.acquireWakeLock(IPowerManager.java:358)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.os.PowerManager$WakeLock.acquireLocked(PowerManager.java:872)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.os.PowerManager$WakeLock.acquire(PowerManager.java:857)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at com.android.internal.policy.impl.PhoneWindow$DecorView.dispatchTouchEvent(PhoneWindow.java:2103)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.view.View.dispatchPointerEvent(View.java:7980)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.view.ViewRootImpl$ViewPostImeInputStage.processPointerEvent(ViewRootImpl.java:4384)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.view.ViewRootImpl$ViewPostImeInputStage.onProcess(ViewRootImpl.java:4255)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.view.ViewRootImpl$InputStage.deliver(ViewRootImpl.java:3801)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.view.ViewRootImpl$InputStage.onDeliverToNext(ViewRootImpl.java:3851)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.view.ViewRootImpl$InputStage.forward(ViewRootImpl.java:3820)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.view.ViewRootImpl$AsyncInputStage.forward(ViewRootImpl.java:3927)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.view.ViewRootImpl$InputStage.apply(ViewRootImpl.java:3828)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.view.ViewRootImpl$AsyncInputStage.apply(ViewRootImpl.java:3984)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.view.ViewRootImpl$InputStage.deliver(ViewRootImpl.java:3801)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.view.ViewRootImpl$InputStage.onDeliverToNext(ViewRootImpl.java:3851)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.view.ViewRootImpl$InputStage.forward(ViewRootImpl.java:3820)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.view.ViewRootImpl$InputStage.apply(ViewRootImpl.java:3828)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.view.ViewRootImpl$InputStage.deliver(ViewRootImpl.java:3801)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.view.ViewRootImpl.deliverInputEvent(ViewRootImpl.java:6116)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.view.ViewRootImpl.doProcessInputEvents(ViewRootImpl.java:6096)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.view.ViewRootImpl.enqueueInputEvent(ViewRootImpl.java:6050)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.view.ViewRootImpl$WindowInputEventReceiver.onInputEvent(ViewRootImpl.java:6246)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.view.InputEventReceiver.dispatchInputEvent(InputEventReceiver.java:185)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.os.MessageQueue.nativePollOnce(Native Method)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.os.MessageQueue.next(MessageQueue.java:138)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.os.Looper.loop(Looper.java:150)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at android.app.ActivityThread.main(ActivityThread.java:5333)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at java.lang.reflect.Method.invokeNative(Native Method)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at java.lang.reflect.Method.invoke(Method.java:515)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:828)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:644)
+01-01 00:53:31.924: E/AndroidRuntime(2441): 	at dalvik.system.NativeStart.main(Native Method)
+01-01 00:53:32.615: E/UsimAccountType(2346): [addDataKindEmail]for AAS.
+01-01 00:53:32.878: E/ExternalAccountType(2346): Unsupported attribute readOnly
+01-01 00:53:33.139: E/(717): Could not open '/data/data/hotplug/cmd'
+01-01 00:53:33.139: E/(717): error : 2, No such file or directory
+01-01 00:53:33.234: E/(717): Could not open '/data/data/hotplug/cmd'
+01-01 00:53:33.234: E/(717): error : 2, No such file or directory
+01-01 00:53:33.401: E/CellLocation(717): create GsmCellLocation
+01-01 00:53:33.405: E/CellLocation(1242): create GsmCellLocation
+01-01 00:53:33.417: E/CellLocation(1242): create GsmCellLocation
+01-01 00:53:33.422: E/MtkAgps(717): [MtkAgpsManagerService][agps] ERR: imsi=null is invalid on SIM=1 
+01-01 00:53:33.460: E/CellLocation(717): create GsmCellLocation
+01-01 00:53:33.469: E/MtkAgps(717): [MtkAgpsManagerService][agps] ERR: invalid mccMnc= on SIM=1 
+01-01 00:53:33.486: E/CellLocation(1242): create GsmCellLocation
+
+
+
+
+
+
+
+
+01-01 01:15:18.406: E/GCM(1246): GCM failed to read backup checkin config, checkin may have failed
+01-01 01:15:18.435: E/GCM(1246): GCM failed to read backup checkin config, checkin may have failed
+01-01 01:15:18.555: E/Babel(2155): canonicalizeMccMnc: invalid mccmnc 
+01-01 01:15:18.557: E/Babel(2155): canonicalizeMccMnc: invalid mccmnc nullnull
+01-01 01:15:18.957: E/memtrack(2204): Couldn't load memtrack module (No such file or directory)
+01-01 01:15:18.957: E/android.os.Debug(2204): failed to load memtrack module: -2
+01-01 01:15:19.036: E/(717): Could not open '/data/data/hotplug/cmd'
+01-01 01:15:19.037: E/(717): error : 2, No such file or directory
+01-01 01:15:19.580: E/zhangqi(2127): actionDown
+01-01 01:15:19.592: E/InputEventReceiver(2127): Exception dispatching input event.
+01-01 01:15:19.593: E/MessageQueue-JNI(2127): Exception in MessageQueue callback: handleReceiveCallback
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): java.lang.SecurityException: Neither user 10051 nor current process has android.permission.WAKE_LOCK.
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.os.Parcel.readException(Parcel.java:1472)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.os.Parcel.readException(Parcel.java:1426)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.os.IPowerManager$Stub$Proxy.acquireWakeLock(IPowerManager.java:358)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.os.PowerManager$WakeLock.acquireLocked(PowerManager.java:872)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.os.PowerManager$WakeLock.acquire(PowerManager.java:857)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at com.android.internal.policy.impl.PhoneWindow$DecorView.dispatchTouchEvent(PhoneWindow.java:2106)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.view.View.dispatchPointerEvent(View.java:7980)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.view.ViewRootImpl$ViewPostImeInputStage.processPointerEvent(ViewRootImpl.java:4384)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.view.ViewRootImpl$ViewPostImeInputStage.onProcess(ViewRootImpl.java:4255)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.view.ViewRootImpl$InputStage.deliver(ViewRootImpl.java:3801)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.view.ViewRootImpl$InputStage.onDeliverToNext(ViewRootImpl.java:3851)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.view.ViewRootImpl$InputStage.forward(ViewRootImpl.java:3820)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.view.ViewRootImpl$AsyncInputStage.forward(ViewRootImpl.java:3927)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.view.ViewRootImpl$InputStage.apply(ViewRootImpl.java:3828)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.view.ViewRootImpl$AsyncInputStage.apply(ViewRootImpl.java:3984)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.view.ViewRootImpl$InputStage.deliver(ViewRootImpl.java:3801)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.view.ViewRootImpl$InputStage.onDeliverToNext(ViewRootImpl.java:3851)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.view.ViewRootImpl$InputStage.forward(ViewRootImpl.java:3820)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.view.ViewRootImpl$InputStage.apply(ViewRootImpl.java:3828)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.view.ViewRootImpl$InputStage.deliver(ViewRootImpl.java:3801)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.view.ViewRootImpl.deliverInputEvent(ViewRootImpl.java:6116)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.view.ViewRootImpl.doProcessInputEvents(ViewRootImpl.java:6096)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.view.ViewRootImpl.enqueueInputEvent(ViewRootImpl.java:6050)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.view.ViewRootImpl$WindowInputEventReceiver.onInputEvent(ViewRootImpl.java:6246)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.view.InputEventReceiver.dispatchInputEvent(InputEventReceiver.java:185)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.os.MessageQueue.nativePollOnce(Native Method)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.os.MessageQueue.next(MessageQueue.java:138)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.os.Looper.loop(Looper.java:150)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at android.app.ActivityThread.main(ActivityThread.java:5333)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at java.lang.reflect.Method.invokeNative(Native Method)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at java.lang.reflect.Method.invoke(Method.java:515)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:828)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:644)
+01-01 01:15:19.629: E/MessageQueue-JNI(2127): 	at dalvik.system.NativeStart.main(Native Method)
+01-01 01:15:19.698: E/AndroidRuntime(2127): FATAL EXCEPTION: main
+01-01 01:15:19.698: E/AndroidRuntime(2127): Process: com.android.launcher3, PID: 2127
+01-01 01:15:19.698: E/AndroidRuntime(2127): java.lang.SecurityException: Neither user 10051 nor current process has android.permission.WAKE_LOCK.
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.os.Parcel.readException(Parcel.java:1472)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.os.Parcel.readException(Parcel.java:1426)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.os.IPowerManager$Stub$Proxy.acquireWakeLock(IPowerManager.java:358)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.os.PowerManager$WakeLock.acquireLocked(PowerManager.java:872)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.os.PowerManager$WakeLock.acquire(PowerManager.java:857)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at com.android.internal.policy.impl.PhoneWindow$DecorView.dispatchTouchEvent(PhoneWindow.java:2106)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.view.View.dispatchPointerEvent(View.java:7980)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.view.ViewRootImpl$ViewPostImeInputStage.processPointerEvent(ViewRootImpl.java:4384)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.view.ViewRootImpl$ViewPostImeInputStage.onProcess(ViewRootImpl.java:4255)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.view.ViewRootImpl$InputStage.deliver(ViewRootImpl.java:3801)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.view.ViewRootImpl$InputStage.onDeliverToNext(ViewRootImpl.java:3851)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.view.ViewRootImpl$InputStage.forward(ViewRootImpl.java:3820)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.view.ViewRootImpl$AsyncInputStage.forward(ViewRootImpl.java:3927)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.view.ViewRootImpl$InputStage.apply(ViewRootImpl.java:3828)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.view.ViewRootImpl$AsyncInputStage.apply(ViewRootImpl.java:3984)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.view.ViewRootImpl$InputStage.deliver(ViewRootImpl.java:3801)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.view.ViewRootImpl$InputStage.onDeliverToNext(ViewRootImpl.java:3851)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.view.ViewRootImpl$InputStage.forward(ViewRootImpl.java:3820)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.view.ViewRootImpl$InputStage.apply(ViewRootImpl.java:3828)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.view.ViewRootImpl$InputStage.deliver(ViewRootImpl.java:3801)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.view.ViewRootImpl.deliverInputEvent(ViewRootImpl.java:6116)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.view.ViewRootImpl.doProcessInputEvents(ViewRootImpl.java:6096)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.view.ViewRootImpl.enqueueInputEvent(ViewRootImpl.java:6050)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.view.ViewRootImpl$WindowInputEventReceiver.onInputEvent(ViewRootImpl.java:6246)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.view.InputEventReceiver.dispatchInputEvent(InputEventReceiver.java:185)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.os.MessageQueue.nativePollOnce(Native Method)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.os.MessageQueue.next(MessageQueue.java:138)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.os.Looper.loop(Looper.java:150)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at android.app.ActivityThread.main(ActivityThread.java:5333)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at java.lang.reflect.Method.invokeNative(Native Method)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at java.lang.reflect.Method.invoke(Method.java:515)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:828)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:644)
+01-01 01:15:19.698: E/AndroidRuntime(2127): 	at dalvik.system.NativeStart.main(Native Method)
+01-01 01:15:20.313: E/(717): Could not open '/data/data/hotplug/cmd'
+01-01 01:15:20.313: E/(717): error : 2, No such file or directory
+

@@ -1,0 +1,51 @@
+1.在进行Monkey测试的时候出现的问题？？？？
+
+解决：
+//Wallpaper 报错
+NullPointerException
+OnlineCategoryViewActivity.java 61
+
+//Dialer 报错
+android.database.StaleDataException: Attempted to access a cursor after it has been closed.
+	at android.database.BulkCursorToCursorAdaptor.throwIfCursorIsClosed(BulkCursorToCursorAdaptor.java:64)
+	at android.database.BulkCursorToCursorAdaptor.getCount(BulkCursorToCursorAdaptor.java:70)
+	at android.database.AbstractCursor.moveToPosition(AbstractCursor.java:197)
+	at android.database.CursorWrapper.moveToPosition(CursorWrapper.java:162)
+	at com.android.common.widget.CompositeCursorAdapter.getItem(CompositeCursorAdapter.java:427)
+	at com.android.contacts.common.list.ContactEntryListAdapter.isUserProfile(ContactEntryListAdapter.java:622)
+	at com.android.contacts.common.list.ContactEntryListAdapter.getItemViewType(ContactEntryListAdapter.java:504)
+	at com.android.common.widget.CompositeCursorAdapter.getItemViewType(CompositeCursorAdapter.java:315)
+	at com.android.dialer.list.DialerPhoneNumberListAdapter.getItemViewType(DialerPhoneNumberListAdapter.java:110)
+
+//FlashLight 报错
+java.lang.RuntimeException: Unable to start service com.sagereal.flashlight.TorchDirectOpenService@422ae7d0 with Intent { cmp=com.sagereal.flashlight/.TorchDirectOpenService }: java.lang.RuntimeException: Fail to connect to camera service
+	at android.app.ActivityThread.handleServiceArgs(ActivityThread.java:2885)
+	at android.app.ActivityThread.access$2100(ActivityThread.java:151)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1418)
+	at android.os.Handler.dispatchMessage(Handler.java:110)
+	at android.os.Looper.loop(Looper.java:193)
+	at android.app.ActivityThread.main(ActivityThread.java:5299)
+	at java.lang.reflect.Method.invokeNative(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:515)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:825)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:641)
+	at dalvik.system.NativeStart.main(Native Method)
+Caused by: java.lang.RuntimeException: Fail to connect to camera service
+	at android.hardware.Camera.native_setup(Native Method)
+	at android.hardware.Camera.<init>(Camera.java:469)
+	at android.hardware.Camera.open(Camera.java:442)
+	at com.sagereal.flashlight.TorchDirectOpenService.onStartCommand(TorchDirectOpenService.java:47)
+	at android.app.ActivityThread.handleServiceArgs(ActivityThread.java:2868)
+	... 10 more
+
+2.
+
+int android.app.Service.START_STICKY = 1 [0x1]
+
+public static final int START_STICKY
+Since: API Level 5
+Constant to return from onStartCommand(Intent, int, int): if this service's process is killed while it is started (after returning from onStartCommand(Intent, int, int)), then leave it in the started state but don't retain this delivered intent. Later the system will try to re-create the service. Because it is in the started state, it will guarantee to call onStartCommand(Intent, int, int) after creating the new service instance; if there are not any pending start commands to be delivered to the service, it will be called with a null intent object, so you must take care to check for this.
+
+This mode makes sense for things that will be explicitly started and stopped to run for arbitrary periods of time, such as a service performing background music playback.
+
+Constant Value: 1 (0x00000001)

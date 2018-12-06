@@ -1,0 +1,1287 @@
+--------------------------------------------------------------------------------
+------------------------------------GMS认证-------------------------------------
+--------------------------------------------------------------------------------
+1.  GMS简介:GMS(GOOGLE MOBILE SERVICE，谷歌移动服务)是Google 安卓系统的核心，是Google 开发并推动Android 的动力，也是Android 系统的灵魂所在。其包含目前提供有Search、
+	Search by Voice、Gmail/Google Mail、Contact Sync、CalendarSyGMSnc、Talk、Maps、Street View、YouTube、Goole Play(原名为Android Market)服务。
+
+2.  GMS授权:Android系统是开源的，但是Google针对GMS所提供的Search、Search by Voice、Gmail/Google Mail、Contact Sync、Calendar Sync、Talk、Maps、Street View、YouTube、
+	Google Play(原名为Android Market)服务却是收费的，需要授权，即厂商需要获得GMS认证，才能获得授权来使用这些服务。
+
+3.  GMS认证的级别
+	level1 是免费使用android操作系统，但不内嵌GMS。
+	level2 是内嵌部分GMS服务，但手机不能打上谷歌的商标。
+	level3 是内嵌所有的GMS服务，也可以使用谷歌商标。
+
+4.  GMS认证大致流程
+	a.需要认证机型的产品规格和10台样机, 产品规格将发给Google申请GMS认证，10台样机的标准: 过四项硬件级认证测试(WiFi、BT、HDMI 和Battery）和软件CTS测试(包括CTS本身和CTS-Verifier),
+	  其中两台Google会留存，剩余返还给客户；
+		a)FCC/CE (OEM to do it) --- FCC/CE证书
+		b) WiFi certification (OEM to do it) --- 硬件认证测试
+		c) BT certification (OEM to do it) --- 硬件认证测试
+		d) HDMI certification (OEM to do it) --- 硬件认证测试
+		e) Battery certification (OEM to do it) --- 硬件认证测试
+		f) CTS 100% pass (ODM to do it ) --- CTS测试
+		g) CTS verifier 100% pass (ODM to do it ) --- CTS-Verifier测试
+		h) GTS pass (ODM to do it ) --- GTS测试
+		i) Widevine DRM (ODM to do it ) --- 带WideVine
+		j) OTA update (optional) --- OTA升级
+	　b.客户将样机提供给3PL，并测试CTS和GTS，测试通过后再将部分样机和相关文件提供给Google；
+		3PL：FIH（富士康）， Symphony-Teleca（泰利嘉）， Pegatron（和硕），WindRiver（风河）(我司桥梁)
+	　c.等待Google 的GMS认证结果。
+
+5.  GMS的重要性
+		国外很多运营商需要GMS认证，对于出口商而言没有授权就走不了运营商的通道。所以GMS认证对于出口型厂商的影响得分两种情况来说：在欧美等一些运营商主导手机市场的地方，没有GMS认证就相当
+	于走运营商渠道基本上是行不通了。但对于面向第三世界市场或者不走运营商通道的中小手机厂商来说，GMS的重要性就被放到了一个次要的位置，价格、出货速度这些因素成了决定性的因素，所以说不认
+	证一样出口，就是进不了大运营商而已。
+
+6.  GMS的两大重点：GTS和CTS(包括CTS-Verifier)
+	GTS：需要连接Google网站，对于每一个GTS版本只进行一次测试(大多让客户自己测试，但我司需要对客户测试失败项进行分析与解决)。
+	CTS：我司的重点测试项，需要我司测试，对失败项进行分析与解决(具体测试步骤稍后说明)。
+
+7.  其他：
+		GMS认证并不是想象的那么容易，谷歌要根据厂商的实力和地区因素来考虑是否认证。对于厂商来说，GMS除了获得更多的谷歌服务权限之外，还是拉开品牌区隔度的有效手段，也就是身份证明。由此
+	可见从一个厂商是否通过GMS认证，来简单的判断这个厂商的综合能力。
+
+
+
+--------------------------------------------------------------------------------
+------------------------------------CTS测试-------------------------------------
+--------------------------------------------------------------------------------
+1.  CTS简介
+	1.1 谷歌CTS，英文为Compatibility Test Suite，中文意思是兼容性测试,是Google提供的一个开源的兼容测试工具。
+	1.2 手机设备需要通过Android的兼容性测试(CTS)，以确保在android上开发的程序在手机设备上都能运行,Google CTS测试，旨在对Android设备的稳定性、兼容性以及性能进行全面的测试。Google并没
+		有在源代码中提供Android Market应用，他们希望所有设备生产商能够通过CTS测试,只有通过了Google官方CTS认证，才会被Google Play所支持，才可正常合法申请使用Google相关服务(GMS)。
+	1.3 CTS-Verifier，是CTS的一部分，需要手动进行，主要用于测试那些自动测试无法测试的功能，比如设备支持的硬件，camera、sensor等。
+
+2.  CTS测试须知
+	2.1 LCD 屏分辨率至少在426*320（mdpi）以上
+	2.2 设备必须支持OpenGL ES 1.0 and 2.0
+	2.3 必须具有至少一个sensor（Accelerometer，Magnetometer，GPS，Thermometer，ProximitySensor，Gyroscope）
+	2.4 必须至少具备一个可以上网的无线连接（wifi，3G，bluetooth），速率必须达到 4M/Sec，可以连接到Google的服务器
+	2.5 Camera（前、后置）谷歌的测试用例中会测试后置camera，如果没有后置摄像头需要把我们的虚拟的后置摄像头打开（至少在r3测试中仍然有测试用例去测试后置摄像头），前置摄像头是可选的
+	2.6 至少剩余340M可用物理内存（DDR），350M的 data空间（flash的一个分区），1G的存储器（可以是sdcard也可以是flash存储器）
+	2.7 必须具备至少一个麦克
+	2.8 手机的data区空间不小于1.5G
+	2.9 L版本Google明确说明 5.0新设备禁止配置物理menu键 
+	2.10 必须支持一种更新软件的机制，比如OTA
+
+3.  CTS的安装配置包括两个方面：电脑环境配置和手机设置。
+	3.1 电脑环境配置，由于CTS测试软件运行于电脑之上，并且不支持Windows系统，所以安装CTS有一些特殊要求：
+		a. OS:Ubuntu 10.4 (or latest)
+		b. Android SDK:提供adb支持
+		c. CTS SDK：需要安装和手机操作系统相对应的版本
+			4.0 : android-cts-4.0_r3-linux_x86-arm.zip
+			4.2 : android-cts-4.2_r1-linux_x86-arm.zip
+			4.4 : android-cts-4.4_r3-linux_x86-arm.zip (目前正在使用，不久将无效)
+			4.4 : android-cts-4.4_r4-linux_x86-arm.zip (该版本出现较多问题)
+			5.0 : android-cts-5.0_r1-linux_x86-arm.zip
+			5.0 : android-cts-5.0_r2-linux_x86-arm.zip
+			5.1 : android-cts-5.1_r3-linux_x86-arm.zip (目前正在使用，2016年1月份后无效)
+			5.1 : android-cts-5.1_r4-linux_x86-arm.zip (2016年1月份后正式使用)
+	3.2 CTS测试前手机设置（USER版本的手机，不可以是ENG/DEBUG版本的手机）
+	3.2.1 刷机或恢复出厂设置
+		  Settings/Backup & reset ---> Factory date reset
+	3.2.2 设置默认语言
+		  Settings/Language & input ---> English
+	3.2.3 Settings/Security:
+		  Screen Lock		--->	none
+		  Unknown Source	--->	Unchecked （此项需要默认不勾选）
+		  Veried App		--->	Unchecked （此项L上可能没有）
+	3.2.4 设置默认时区
+		  Settings/Date & time/Select Timezone ---> BeiJing+8或Shanghai+8 （KK手机有一项case测试会失败，需要设置成太平洋时区才可以通过，等到失败后在去修改）
+	3.2.5 拨号界面 ---> *#*#3646633#*#* ---> Telephony ---> Developer options，
+		  或是 进入Settings/About Phone,连续点击"Build number"菜单项，直到弹出提示“No need,you are already a developer.”，返回设置界面，进入Developer options，
+		  以上两种方式都可以进入Developer options设置以下三项：
+		  Stay awake			--->	checked
+		  USB debuging			--->	checked （弹出Allow USB Debugging提示框，选择始终并确定）
+		  Aollow mock location	--->	checked
+	3.2.6 设置灭屏时间
+		  Settings/Display/Sleep ---> 30mins或更长(never)
+	3.2.7 安装测试apk：
+		  adb install cts/android-cts/repository/testcases/CtsDeviceAdmin.apk（路径根据CtsDeviceAdmin.apk具体放置路径）
+		  在 Settings/Security/Device administrators 勾选Android Device Manager下面的前两项，并且Android Device Manager设置成不勾选
+	3.2.8 拷贝文件到手机：
+		a.cd CTS/android-cts/android-cts-media-1.1/;sh copy_media.sh;cd
+		  或用命令 adb push android-cts-media-1.1/ /storage/sdcard0/test（推荐使用）
+		  注意：手机有T卡时，sdcard0默认是T卡，若T卡空间不足，请更换T卡(直接拷贝至手机自带内存也是可以的)，每次拷贝完成后，进入手机文件管理器查看test文件夹大小，L版本的test文件夹是
+				1.81G，KK的test文件夹是1.03G左右。CTS测试过程会生成一些新的文件，所以当test文件拷贝成功后还要确保“test文件夹所在存储器”要有一定的空余空间，越大越好(防止以外情况)
+		b.CTS-android.mediaStress类多项失败
+		  	此问题设计到手机的视频解码速度问题，MTK之前给我们说的是要把整个media1.1文件全部push进sdcard，其实这样做是有问题的，media1.1中有个脚本，会根据手机支持的解码率来执行
+		  copy_media.sh，在测试android.mediaStress相关项时，会根据支持的解码率播放视频，比如我们不支持720P及1080P的解码，执行copy脚本后，这两个分辨率的视频不会拷贝进手机，测试到
+		  该项时会自动pass，但我们直接将media1.1 push进系统的结果是，在测试到相关项时，会播放720P及1080P的视频，解码速度太慢，直接fail。
+		  	以后我们的做法是： 依旧按照之前的方法，push整个media1.1包，若测试出现fail项，复测无法通过，请删除手机中的media文件，重新执行copy_media.sh脚本，复测， 这样做既防止之
+		  前出现100多项fail问题发生，也可通过想过fail项。
+	3.2.9 打开数据连接，打开并连接到wifi热点（IPV6），确保二者可以联网，二合一项目需插入T卡(暂不用纠结，只要确定有T卡，SIM卡，并且SIM卡和WIFI(IPV6)都可以联网即可)
+	3.2.10 安装CTS手机环境排查工具：
+		   adb install CTS/android-cts/CTSAssistant_V1.apk (路径根据CTSAssistant_V1.apk具体放置路径）
+		   主菜单中点击“CTS小助手”排查测试环境，有红色“X”的选项是没有设置成功的，需要重新设置
+		   注意：L上排查工具暂时用不了，建议不要安装
+	3.2.11 设置字体大小Settings/Display/Font size为normal
+		   若手机安装有两个或两个以上的浏览器时，设置一个默认的浏览器，通过桌面上的Google Search进入百度或其他网站，根据提示设置一个默认的浏览器，不要直接进入手机里的任何一个浏览器
+		   设置手机时间Settings/Date & time为12小时制,日期时间设置成当天的日期时间
+		   设置Settings/Apps/All/YouTube(列表最后一个就是)为DISABLE
+		   若手机支持两个或两个以上的Home桌面时，设置一个默认的桌面(目前只发现80平台VP25_H508_ORANGE有该功能，据集成说是第三方APK，暂时无法设置，可先不管)
+		   SIM卡需要被写入自己的号码，即SIM卡能给自己发短信：
+			  a.查看SIM卡是否已被写码：进入Settings/About Phone/Status/Sim status/My phone number,查看是否有SIM卡号码
+			  b.写码：进入Settings/Phonebook/Options/Phonebook settings/Extra numbers/Owner number/SIM1(根据SIM卡插入的卡槽选择)，编辑"<empty>"，写入号码，最后保存。 
+	3.2.12 使手机处于主页界面（按HOME键）
+	3.2.13 进入CTS控制台：cd CTS/android-cts/tools; ./cts-tradefed
+		a. 第一次进入CTS控制台，cts-tradefed.sh的权限可能不够，可以执行命令 sudo chmod 777 cts-tradefed.sh，给予最大权限
+		b. jdk版本需要与电脑的匹配，该文件的cts-tradefed.sh的jdk版本是1.6，可以用Text Editor方式打开文件，将jdk版本1.6修改为1.7或是更高的1.8版本
+	3.2.14 执行CTS测试：run cts --plan CTS
+
+4.  CTS报告查看
+	路径：cts/android-cts/repository/result/对应日期文件夹
+	查看：右键用浏览器打开testResult.xml
+
+5.  CTS复测命令
+	cts-tf > help  
+            列出该版本CTS可以使用的常用命令
+	cts-tf > l r   
+            列出所有的测试报告状态，包括session_ID、Pass数量、Fail数量、Not Executed数量、Start time、Plan name、Device serial(s)，主要用于查看session_ID，因为有些命令需要输入对
+			应的session_ID
+	cts-tf > l p   
+            列出所有的plan
+	cts-tf > add derivedplan --plan plan_name --session session_id -r fail (如：add derivedplan --plan Retest -s 0 -r fail)
+			基于某次测试所有的fail项新建一个plan，用于一次性复测所有失败项，该命令中plane_name自己定义，注意要先查看现存的所有plan，不要与他们命名相同，session_id就是第2步中找到的
+			session_ID，主要用于针对具体的测试报告新建plan，fail表示将session_ID对应的那一次报告中所以的fail项新建plan，可以换成pass、fail、notExecuted、timeout。
+	cts-tf > run cts --plan Retest
+            测试CTS这个plan，可以替换成我们在第3步中查找到的所有plan，我们平时都只使用了CTS这个plan，有了第4步我们就可以使用这个命令进行针对性测试了。
+
+	Test package:
+		run cts -p <java_package_name>
+		E.g: run cts -p android.os
+	Test class:
+		run cts -c <java_class_name>
+		E.g: run cts -c android.os.cts.AsyncTaskTest
+	Test case:
+		run cts -c <java_class_name> -m <test_name>
+		E.g: run cts -c android.os.cts.AsyncTaskTest -m testAsyncTask
+
+6.  CTS测试事项
+	6.1 主要步骤：CTS全测 ---> CTS fail复测(去掉14个case后生成新的plan,连接WIFI，不插SIM) ---> CTS单项复测
+	6.2 对于64位手机，由于64-bit需要兼容32-bit的ABI，比32-bit多出了ABI: arm64-v8a，测试case就多了将近1倍，测试时间多了一倍，约25小时。
+
+7.  CTS测试fail项分析与解决方法（仅供参考）
+Compatibility Test Package: android.accessibilityservice ABI: armeabi-v7a
+android.accessibilityservice.cts.AccessibilityWindowQueryTest
+-- testPerformGlobalActionPowerDialog	
+Reason: java.lang.RuntimeException: Could not launch intent Intent { act=android.intent.action.MAIN flg=0x10000000 cmp=com.android.cts.accessibilityservice
+		/android.accessibilityservice.cts.AccessibilityWindowQueryActivity } within 45 seconds. Perhaps the main thread has not gone idle within a reasonable amount of 
+		time?There could be an animation or something constantly repainting the screen. Or the activity is doing network calls on creation? See the threaddump logs. For your
+	 	reference the last time the event queue was idle before your activity launch request was 1444815929194 and now the last time the queue went idle was: 1444815930212.
+	 	If these numbers are the same your activity might be hogging the event queue.
+		at android.support.test.runner.MonitoringInstrumentation.startActivitySync(MonitoringInstrumentation.java:277)
+-- testPerformGlobalActionQuickSettings	
+Reason: java.lang.RuntimeException: Could not launch intent Intent { act=android.intent.action.MAIN flg=0x10000000 cmp=com.android.cts.accessibilityservice
+		/android.accessibilityservice.cts.AccessibilityWindowQueryActivity } within 45 seconds. Perhaps the main thread has not gone idle within a reasonable amount of 
+		time?There could be an animation or something constantly repainting the screen. Or the activity is doing network calls on creation? See the threaddump logs. For your
+	 	reference the last time the event queue was idle before your activity launch request was 1444815929194 and now the last time the queue went idle was: 1444815930212.
+	 	If these numbers are the same your activity might be hogging the event queue.
+		at android.support.test.runner.MonitoringInstrumentation.startActivitySync(MonitoringInstrumentation.java:277)
+-- testPerformGlobalActionRecents	
+Reason: java.lang.RuntimeException: Could not launch intent Intent { act=android.intent.action.MAIN flg=0x10000000 cmp=com.android.cts.accessibilityservice
+		/android.accessibilityservice.cts.AccessibilityWindowQueryActivity } within 45 seconds. Perhaps the main thread has not gone idle within a reasonable amount of 
+		time?There could be an animation or something constantly repainting the screen. Or the activity is doing network calls on creation? See the threaddump logs. For your
+	 	reference the last time the event queue was idle before your activity launch request was 1444815929194 and now the last time the queue went idle was: 1444815930212.
+	 	If these numbers are the same your activity might be hogging the event queue.
+		at android.support.test.runner.MonitoringInstrumentation.startActivitySync(MonitoringInstrumentation.java:277)
+-- testSingleAccessibilityFocusAcrossWindows	
+Reason: java.lang.RuntimeException: Could not launch intent Intent { act=android.intent.action.MAIN flg=0x10000000 cmp=com.android.cts.accessibilityservice
+		/android.accessibilityservice.cts.AccessibilityWindowQueryActivity } within 45 seconds. Perhaps the main thread has not gone idle within a reasonable amount of 
+		time?There could be an animation or something constantly repainting the screen. Or the activity is doing network calls on creation? See the threaddump logs. For your
+	 	reference the last time the event queue was idle before your activity launch request was 1444815929194 and now the last time the queue went idle was: 1444815930212.
+	 	If these numbers are the same your activity might be hogging the event queue.
+		at android.support.test.runner.MonitoringInstrumentation.startActivitySync(MonitoringInstrumentation.java:277)
+-- testTraverseAllWindows	
+Reason: java.lang.RuntimeException: Could not launch intent Intent { act=android.intent.action.MAIN flg=0x10000000 cmp=com.android.cts.accessibilityservice
+		/android.accessibilityservice.cts.AccessibilityWindowQueryActivity } within 45 seconds. Perhaps the main thread has not gone idle within a reasonable amount of 
+		time?There could be an animation or something constantly repainting the screen. Or the activity is doing network calls on creation? See the threaddump logs. For your
+	 	reference the last time the event queue was idle before your activity launch request was 1444815929194 and now the last time the queue went idle was: 1444815930212.
+	 	If these numbers are the same your activity might be hogging the event queue.
+		at android.support.test.runner.MonitoringInstrumentation.startActivitySync(MonitoringInstrumentation.java:277)
+-- testTraverseWindow	
+Reason: java.lang.RuntimeException: Could not launch intent Intent { act=android.intent.action.MAIN flg=0x10000000 cmp=com.android.cts.accessibilityservice
+		/android.accessibilityservice.cts.AccessibilityWindowQueryActivity } within 45 seconds. Perhaps the main thread has not gone idle within a reasonable amount of 
+		time?There could be an animation or something constantly repainting the screen. Or the activity is doing network calls on creation? See the threaddump logs. For your
+	 	reference the last time the event queue was idle before your activity launch request was 1444815929194 and now the last time the queue went idle was: 1444815930212.
+	 	If these numbers are the same your activity might be hogging the event queue.
+		at android.support.test.runner.MonitoringInstrumentation.startActivitySync(MonitoringInstrumentation.java:277)
+-- testTraverseWindowFromEvent	
+Reason: java.lang.RuntimeException: Could not launch intent Intent { act=android.intent.action.MAIN flg=0x10000000 cmp=com.android.cts.accessibilityservice
+		/android.accessibilityservice.cts.AccessibilityWindowQueryActivity } within 45 seconds. Perhaps the main thread has not gone idle within a reasonable amount of 
+		time?There could be an animation or something constantly repainting the screen. Or the activity is doing network calls on creation? See the threaddump logs. For your
+	 	reference the last time the event queue was idle before your activity launch request was 1444815929194 and now the last time the queue went idle was: 1444815930212.
+	 	If these numbers are the same your activity might be hogging the event queue.
+		at android.support.test.runner.MonitoringInstrumentation.startActivitySync(MonitoringInstrumentation.java:277)
+Solution: 复测通过
+
+
+Compatibility Test Package: android.adminhostside ABI: armeabi-v7a
+com.android.cts.devicepolicy.DeviceOwnerTest
+-- testApplicationRestrictions	
+Reason1:junit.framework.AssertionFailedError: Failed to remove device owner.
+		at junit.framework.Assert.fail(Assert.java:50)
+Solution1: 复测通过
+Reason2:junit.framework.AssertionFailedError: java.lang.IllegalStateException: Trying to set device owner but device owner is already set.
+		at android.os.Parcel.readException(Parcel.java:1554)
+Solution2: 恢复出厂设置，重新安装测试APK(CtsDeviceAdmin.apk)，在 Settings/Security/Device administrators 只勾选Android Device Manager下面的前两项，复测通过
+-- testCaCertManagement	
+Reason: junit.framework.AssertionFailedError: java.lang.IllegalStateException: Trying to set device owner but device owner is already set.
+		at android.os.Parcel.readException(Parcel.java:1554)
+-- testDeviceOwnerSetup	
+Reason: junit.framework.AssertionFailedError: java.lang.IllegalStateException: Trying to set device owner but device owner is already set.
+		at android.os.Parcel.readException(Parcel.java:1554)
+-- testKeyManagement	
+Reason: junit.framework.AssertionFailedError: java.lang.IllegalStateException: Trying to set device owner but device owner is already set.
+		at android.os.Parcel.readException(Parcel.java:1554)
+-- testLockTask	
+Reason: junit.framework.AssertionFailedError: java.lang.IllegalStateException: Trying to set device owner but device owner is already set.
+		at android.os.Parcel.readException(Parcel.java:1554)
+-- testPersistentIntentResolving	
+Reason: junit.framework.AssertionFailedError: java.lang.IllegalStateException: Trying to set device owner but device owner is already set.
+		at android.os.Parcel.readException(Parcel.java:1554)
+-- testScreenCaptureDisabled	
+Reason: junit.framework.AssertionFailedError: java.lang.IllegalStateException: Trying to set device owner but device owner is already set.
+		at android.os.Parcel.readException(Parcel.java:1554)
+Solution: 恢复出厂设置，重新安装测试APK(CtsDeviceAdmin.apk)，在 Settings/Security/Device administrators 只勾选Android Device Manager下面的前两项，复测通过
+com.android.cts.devicepolicy.LauncherAppsProfileTest
+-- testGetActivitiesWithProfile	
+Reason: junit.framework.ComparisonFailure: Error: couldn't create User.
+		expected:<[Success]:> but was:<[Error]:>
+-- testLauncherCallbackPackageAddedProfile	
+Reason: junit.framework.ComparisonFailure: Error: couldn't create User.
+		expected:<[Success]:> but was:<[Error]:>
+-- testLauncherCallbackPackageChangedProfile	
+Reason: junit.framework.ComparisonFailure: Error: couldn't create User.
+		expected:<[Success]:> but was:<[Error]:>
+-- testLauncherCallbackPackageRemovedProfile	
+Reason: junit.framework.ComparisonFailure: Error: couldn't create User.
+		expected:<[Success]:> but was:<[Error]:>
+Solution: 检查添加的多用户功能是否正确，复测通过
+com.android.cts.devicepolicy.ManagedProfileTest
+-- testBluetooth	
+Reason: junit.framework.ComparisonFailure: Error: couldn't create User.
+		expected:<[Success]:> but was:<[Error]:>
+-- testCrossProfileContent	
+Reason: junit.framework.ComparisonFailure: Error: couldn't create User.
+		expected:<[Success]:> but was:<[Error]:>
+-- testCrossProfileCopyPaste	
+Reason: junit.framework.ComparisonFailure: Error: couldn't create User.
+		expected:<[Success]:> but was:<[Error]:>
+-- testCrossProfileIntentFilters	
+Reason: junit.framework.ComparisonFailure: Error: couldn't create User.
+		expected:<[Success]:> but was:<[Error]:>
+-- testManagedContacts	
+Reason: junit.framework.ComparisonFailure: Error: couldn't create User.
+		expected:<[Success]:> but was:<[Error]:>
+-- testManagedProfileSetup	
+Reason: junit.framework.ComparisonFailure: Error: couldn't create User.
+		expected:<[Success]:> but was:<[Error]:>
+-- testNfcRestriction	
+Reason: junit.framework.ComparisonFailure: Error: couldn't create User.
+		expected:<[Success]:> but was:<[Error]:>
+-- testNoDebuggingFeaturesRestriction	
+Reason: junit.framework.ComparisonFailure: Error: couldn't create User.
+		expected:<[Success]:> but was:<[Error]:>
+-- testSettingsIntents	
+Reason: junit.framework.ComparisonFailure: Error: couldn't create User.
+		expected:<[Success]:> but was:<[Error]:>
+-- testWipeData	
+Reason: junit.framework.ComparisonFailure: Error: couldn't create User.
+		expected:<[Success]:> but was:<[Error]:>
+Solution: 检查添加的多用户功能是否正确，复测通过
+
+
+Compatibility Test Package: android.app ABI: armeabi-v7a
+android.app.cts.ProgressDialogTest
+-- testShow3	
+Reason: 'Failed to receive adb shell test output within 600000 ms. Test may have timed out, or adb connection to device became unresponsive'. Check device logcat for 			details
+-- testShow4	
+Reason: 'Failed to receive adb shell test output within 600000 ms. Test may have timed out, or adb connection to device became unresponsive'. Check device logcat for 			details
+Solution: 复测通过；若复测不过，可以尝试设置锁屏为none后复测
+android.app.cts.SystemFeaturesTest
+-- testSensorFeatures	
+Reason: junit.framework.AssertionFailedError: PackageManager#hasSystemFeature(android.hardware.sensor.proximity) returns true but SensorManager#getSensorList(8) shows
+ 		sensors [] expected:<true> but was:<false>
+		at junit.framework.Assert.fail(Assert.java:50)
+		这是测试手机Sensor，这里是因为手机不支持P-Sensor，导致测试通不过;有时候，有些项目硬件配置的是2D Sensor，CTS测试是3D Sensor，导致测试通不过。
+Solution: 在文件alps/device/sagetel/sr6572_wet_l/android.hardware.camera.xml中删除自动对焦选项 
+	      “<feature name="android.hardware.sensor.proximity" />”，注意用宏控删除
+		  复测通过
+-- testCameraFeatures
+Reason: junit.framework.AssertionFailedError: PackageManager#hasSystemFeature should NOT return true for android.hardware.camera.autofocus
+		at junit.framework.Assert.fail(Assert.java:50)
+		小手机一般不支持自动对焦功能
+Solution: 在文件alps/device/sagetel/sr6572_wet_l/android.hardware.camera.xml中删除自动对焦选项 
+	      “<feature name="android.hardware.camera.autofocus" />”，注意用宏控删除
+		  复测通过
+
+
+Compatibility Test Package: android.content ABI: armeabi-v7a
+android.content.pm.cts.FeatureTest
+ -- testNoManagedUsersIfLowRamDevice
+Reason: junit.framework.AssertionFailedError
+		at junit.framework.Assert.fail(Assert.java:48)
+Solution: 检查添加的多用户功能是否正确，复测通过
+
+
+Compatibility Test Package: android.core.tests.libcore.package.harmony_java_io ABI: armeabi-v7a
+org.apache.harmony.tests.java.io.SerializationStressTest
+-- test_resolveClass	
+Solution: 拔出SIM，连接WIFI，复测通过
+
+
+Compatibility Test Package: android.core.tests.libcore.package.harmony_java_net ABI: armeabi-v7a
+org.apache.harmony.tests.java.net.InetAddressTest
+-- test_getByName_exceptionContainsUsefulMessage		
+Reason: junit.framework.AssertionFailedError
+		at junit.framework.Assert.fail(Assert.java:48)
+-- test_isReachableLjava_net_NetworkInterfaceII	
+Reason: junit.framework.AssertionFailedError
+		at junit.framework.Assert.fail(Assert.java:48)
+org.apache.harmony.tests.java.net.SocketTest
+-- test_connect_unknownhost	
+Reason: java.net.ConnectException: failed to connect to localhost/127.0.0.1 (port 12345) after 90000ms: isConnected failed: ECONNREFUSED (Connection refused)
+		at libcore.io.IoBridge.isConnected(IoBridge.java:267)
+Solution: 拔出SIM，连接WIFI，复测通过
+
+
+Compatibility Test Package: android.core.tests.libcore.package.libcore ABI: armeabi-v7a
+libcore.java.net.InetAddressTest
+-- test_getByName	
+Reason: junit.framework.AssertionFailedError: 1.2.3.4.
+		at junit.framework.Assert.fail(Assert.java:50)
+libcore.java.net.InetSocketAddressTest
+-- test_isUnresolved	
+Reason: junit.framework.AssertionFailedError
+		at junit.framework.Assert.fail(Assert.java:48)
+libcore.java.net.OldSocketTest
+-- test_ConstructorLjava_lang_StringI	
+Reason: java.net.ConnectException: failed to connect to unknown.host.google.com/60.191.124.236 (port 0) after 90000ms: isConnected failed: ECONNREFUSED (Connection 	
+		refused)
+		at libcore.io.IoBridge.isConnected(IoBridge.java:267)
+-- test_connectLjava_net_SocketAddressI	
+Reason: java.net.SocketException: setsockopt failed: EBADF (Bad file number)
+		at libcore.io.IoBridge.setSocketOption(IoBridge.java:358)
+libcore.java.net.OldURLStreamHandlerTest
+Solution: 插入SIM卡，断开WIFI，复测通过
+-- test_getHostAddress	
+Reason: junit.framework.AssertionFailedError: Expected: <null> but was: fakehostname.fakedomain/::
+		at junit.framework.Assert.fail(Assert.java:50)
+libcore.java.net.URLConnectionTest
+-- testInvalidIpv4Address	
+Reason: junit.framework.AssertionFailedError
+		at junit.framework.Assert.fail(Assert.java:48)
+Solution: 拔出SIM，连接WIFI，复测通过
+
+
+Compatibility Test Package: android.core.tests.libcore.package.okhttp ABI: armeabi-v7a
+com.squareup.okhttp.internal.http.URLConnectionTest
+-- dnsFailureThrowsIOException	
+Reason: java.lang.AssertionError
+		at org.junit.Assert.fail(Assert.java:92)
+-- invalidHost	
+Reason: java.lang.AssertionError
+		at org.junit.Assert.fail(Assert.java:92)
+Solution: 拔出SIM，连接WIFI，复测通过
+
+
+Compatibility Test Package: android.core.tests.libcore.package.org ABI: armeabi-v7a
+org.apache.harmony.tests.java.net.DatagramSocketTest
+-- test_setBroadcastZ	
+Reason: jjava.net.ConnectException: failed to connect to /255.255.255.255 (port 0): connect failed: ENETUNREACH (Network is unreachable)
+		at libcore.io.IoBridge.connect(IoBridge.java:129)
+org.apache.harmony.tests.java.net.InetAddressTest
+-- test_getByName_exceptionContainsUsefulMessage	
+Reason: junit.framework.AssertionFailedError
+		at junit.framework.Assert.fail(Assert.java:48)
+-- test_isReachableLjava_net_NetworkInterfaceII	
+Reason: junit.framework.AssertionFailedError
+		at junit.framework.Assert.fail(Assert.java:48)
+org.apache.harmony.tests.java.net.MulticastSocketTest
+-- test_Constructor	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_ConstructorI	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_ConstructorLjava_net_SocketAddress	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_getInterface	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_getLoopbackMode	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_getNetworkInterface	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_getTTL	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_getTimeToLive	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_joinGroupLjava_net_InetAddress_IPv4	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_joinGroupLjava_net_InetAddress_IPv6	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_joinGroupLjava_net_SocketAddressLjava_net_NetworkInterface	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_joinGroupLjava_net_SocketAddressLjava_net_NetworkInterface_IPv4	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_joinGroupLjava_net_SocketAddressLjava_net_NetworkInterface_IPv4_nullInterface	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_joinGroupLjava_net_SocketAddressLjava_net_NetworkInterface_IPv6	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_joinGroupLjava_net_SocketAddressLjava_net_NetworkInterface_IPv6_nullInterface	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_joinGroupLjava_net_SocketAddressLjava_net_NetworkInterface_multiple_joins_IPv4	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_joinGroupLjava_net_SocketAddressLjava_net_NetworkInterface_multiple_joins_IPv6	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_joinGroup_non_multicast_address_IPv4	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_joinGroup_non_multicast_address_IPv6	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_joinGroup_null_null	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_leaveGroupLjava_net_InetAddress_IPv4	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_leaveGroupLjava_net_InetAddress_IPv6	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_leaveGroupLjava_net_SocketAddressLjava_net_NetworkInterface_IPv4	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_leaveGroupLjava_net_SocketAddressLjava_net_NetworkInterface_IPv6	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_leaveGroup_non_multicast_address_IPv4	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_leaveGroup_non_multicast_address_IPv6	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_leaveGroup_null_null	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_sendLjava_net_DatagramPacketB_IPv4	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_sendLjava_net_DatagramPacketB_IPv6	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_setInterfaceLjava_net_InetAddress	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_setInterface_unbound_address_IPv4	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_setInterface_unbound_address_IPv6	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_setLoopbackModeSendReceive_IPv4	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_setLoopbackModeSendReceive_IPv6	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_setLoopbackModeZ	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_setNetworkInterfaceLjava_net_NetworkInterface_IPv4	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_setNetworkInterfaceLjava_net_NetworkInterface_IPv6	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_setNetworkInterfaceLjava_net_NetworkInterface_null	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_setNetworkInterfaceLjava_net_NetworkInterface_round_trip	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_setReuseAddressZ	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_setTTLB	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_setTimeToLiveI	
+Reason: junit.framework.AssertionFailedError: Test environment must have at least one interface capable of multicast for IPv4 and IPv6
+		at junit.framework.Assert.fail(Assert.java:50)
+org.apache.harmony.tests.java.net.SocketTest
+-- test_connect_unknownhost	
+Reason: java.net.ConnectException: failed to connect to localhost/127.0.0.1 (port 12345) after 90000ms: isConnected failed: ECONNREFUSED (Connection refused)
+		at libcore.io.IoBridge.isConnected(IoBridge.java:267)
+Solution: 拔出SIM，连接WIFI，复测通过
+
+
+Compatibility Test Package: android.core.tests.libcore.package.tests ABI: armeabi-v7a
+tests.api.javax.net.ssl.SSLSocketFactoryTest
+-- test_createSocket	
+Reason: junit.framework.AssertionFailedError
+		at junit.framework.Assert.fail(Assert.java:48)
+tests.api.javax.net.ssl.SSLSocketTest
+-- testConstructor_StringI	
+Reason: junit.framework.AssertionFailedError
+		at junit.framework.Assert.fail(Assert.java:48)
+-- testConstructor_StringIInetAddressI	
+Reason: junit.framework.AssertionFailedError
+		at junit.framework.Assert.fail(Assert.java:48)
+tests.api.javax.net.SocketFactoryTest
+-- test_createSocket_05	
+Reason: junit.framework.AssertionFailedError: UnknownHostException wasn't thrown
+		at junit.framework.Assert.fail(Assert.java:50)
+- test_createSocket_StringI	
+Reason: junit.framework.AssertionFailedError: UnknownHostException wasn't thrown
+		at junit.framework.Assert.fail(Assert.java:50)
+tests.security.cert.CertificateFactory4Test
+-- test_generateCRLLjava_io_InputStream	
+Reason: junit.framework.AssertionFailedError: An exception was thrown while parsing "http://jcltest.apache.org/internalres/
+		Bug93893-1.crl": com.android.org.conscrypt.OpenSSLX509CertificateFactory$ParsingException: com.android.org.conscrypt.
+		OpenSSLX509CertificateFactory$ParsingException: java.lang.RuntimeException: error:0D0680A8:asn1 encoding routines:ASN1_CHECK_TLEN:wrong tag
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test_generateCRLsLjava_io_InputStream	
+Reason: junit.framework.AssertionFailedError: The CRLs in "http://jcltest.apache.org/internalres/Bug94404-PKCS7.crl" were not parsed correctly
+		at junit.framework.Assert.fail(Assert.java:50)
+Solution: 拔出SIM，连接WIFI，复测通过
+
+
+Compatibility Test Package: android.hardware ABI: armeabi-v7a
+android.hardware.camera2.cts.CameraDeviceTest
+-- testCameraDevicePreviewTemplate
+-- testCameraDeviceRecordingTemplate
+-- testCameraDeviceStillTemplate
+Reason: java.lang.Exception: Test failed for camera 0: Test failed for camera 0: Key android.control.aeAntibandingMode value 3 isn't one of the expected values [1, 2] 
+		expected: in(<[1, 2]>)
+liangshuang:首先，看到该fail描述，我们无法具体定位是在哪个地方出现问题，只能看出Test failed for camera 0，即后置camera，另外还可以看出Key android.control.aeAntibandingMode 	
+			value 3 isn't one of the expected values [1, 2] expected: in(<[1, 2]>) 是从java文件中打印出的log信息，我们搜索关键字“isn‘t one of the expected”，
+			在alps\cts\tests\tests\hardware\src\android\hardware\camera2\cts\helpers\CameraErrorCollector.java中找到该信息，
+				public <T> void expectKeyValueIsIn(CameraCharacteristics characteristics,CameraCharacteristics.Key<T> key, T... expected) {
+					...
+					String reason = "Key " + key.getName() + " value " + value + " isn't one of the expected values " + Arrays.deepToString(expected);
+		    		expectContains(reason, expected, value);
+					...
+				}
+			此处expectContains方法会根据value判断是否excepted是否被包含在内，若不在内，则抛出reason的异常信息，搜索该方法“expectKeyValueIsIn”，
+			发现在alps\cts\tests\tests\hardware\src\android\hardware\camera2\cts\CameraDeviceTest.java中调用，
+				private void checkAntiBandingMode(CaptureRequest.Builder request, int template) {
+					List<Integer> availableAntiBandingModes =Arrays.asList(toObject(mStaticInfo.getAeAvailableAntiBandingModesChecked()));
+					if (availableAntiBandingModes.contains(CameraMetadata.CONTROL_AE_ANTIBANDING_MODE_AUTO)) {
+				    	mCollector.expectKeyValueEquals(request, CONTROL_AE_ANTIBANDING_MODE,CameraMetadata.CONTROL_AE_ANTIBANDING_MODE_AUTO);
+					} else {
+				    	mCollector.expectKeyValueIsIn(request, CONTROL_AE_ANTIBANDING_MODE,CameraMetadata.CONTROL_AE_ANTIBANDING_MODE_50HZ,
+				        	CameraMetadata.CONTROL_AE_ANTIBANDING_MODE_60HZ);
+					}
+				}
+			此处进行判断，如果包含ANTIBANDING_MODE_AUTO的配置，则需默认为auto，否则，则需默认为50或者60hz，
+			然后我们根据mk文件中的camera配置CUSTOM_HAL_MAIN_IMGSENSOR = ov5645_mipi_yuv找到后置camera配置，
+			alps/vendor/mediatek/proprietary/custom/mt6572/hal/imgsensor/ov5645_mipi_yuv/config.ftbl.ov5645_mipi_yuv.h中检查相关配置，
+			发现默认为off且无auto菜单，与驱动沟通后修改相关配置，添加auto且默认，重新编译后发现不起作用，于是参考了35M平台的配置方法，
+			即将ov5645_mipi_yuv/config.ftbl.ov5645_mipi_yuv.h移至sendepfeature中，即：
+				alps/vendor/mediatek/proprietary/custom/mt6572/hal/sendepfeature/ov5645_mipi_yuv/config.ftbl.ov5645_mipi_yuv.h
+			总结：
+				1. 后置camera若支持ANTIBANDING_MODE_AUTO，则需要默认为auto，否则，需默认为50hz或者60hz，不能默认off
+				2. L平台，修改hal层camera的配置时需要在sendepfeature中修改，在其他地方修改无效
+Solution: 如上修改，复测通过
+android.hardware.camera2.cts.CaptureResultTest
+-- testCameraCaptureResultAllKeys	
+Reason: java.lang.Exception: There were 30 errors:
+		java.lang.Throwable(Test failed for camera 0: Failed capture result 0 test for key android.control.afMode (expected = 1, actual = 0) )
+device_logcat:  System.err: java.lang.NullPointerException: Attempt to invoke interface method 'android.os.IBinder com.android.internal.app.IAppOpsCallback.asBinder()' 
+				on a null object reference
+On-Line:  cts app认为当前是有support auto focus，当capture的result是没有auto focus（0为auto focus off，1为auto focus）。因为sub camera是不带AF功能的但是其
+		  feature table里面却配了AF的相关enum,所以测试失败。
+Solution: 将#if 1
+    		//  Focus Mode
+    		FTABLE_CONFIG_AS_TYPE_OF_DEFAULT_VALUES(
+        		KEY_AS_(MtkCameraParameters::KEY_FOCUS_MODE),
+        		SCENE_AS_DEFAULT_SCENE(
+            		ITEM_AS_DEFAULT_(MtkCameraParameters::FOCUS_MODE_AUTO),
+            		ITEM_AS_VALUES_(
+                		MtkCameraParameters::FOCUS_MODE_AUTO,  
+                		MtkCameraParameters::FOCUS_MODE_MACRO,
+                		MtkCameraParameters::FOCUS_MODE_INFINITY,
+                		MtkCameraParameters::FOCUS_MODE_CONTINUOUS_PICTURE,
+                		MtkCameraParameters::FOCUS_MODE_CONTINUOUS_VIDEO,
+                		"manual",   "fullscan",
+            		)
+        		),
+        	//......................................................................
+    		)
+			#endif
+		改为：
+			#if 1
+    		//  Focus Mode
+    		FTABLE_CONFIG_AS_TYPE_OF_DEFAULT_VALUES(
+        		KEY_AS_(MtkCameraParameters::KEY_FOCUS_MODE),
+        		SCENE_AS_DEFAULT_SCENE(
+ 					ITEM_AS_DEFAULT_(MtkCameraParameters::FOCUS_MODE_FIXED),
+            		ITEM_AS_VALUES_(
+                		MtkCameraParameters::FOCUS_MODE_FIXED,
+            		)
+       			 ),
+        	//......................................................................
+    		)
+		复测通过
+android.hardware.cts.CameraTest
+-- testPreviewPictureSizesCombination	
+device_logcat: expected:<1800> but was:<1808>
+Solution: 去掉[1200，1800]后，复测通过
+-- testVideoSnapshot	
+device_logcat : 复测log中
+		  		09-09 08:53:57.402   224   772 D CameraSource: isVideoSizeSupported
+		 		09-09 08:53:57.402   224   772 E CameraSource: Video dimension (352x288) is unsupported
+Reason： 不支持分辨率352x288
+Solution： config.ftabl.ov5648_mipi_raw.h文件中添分辨率“352x288”， 复测通过
+android.hardware.camera2.cts.RecordingTest
+-- testBurstVideoSnapshot	
+Reason: com.android.ex.camera2.exceptions.TimeoutRuntimeException: Timed out after 3000 ms waiting for state(s) SESSION_CLOSED
+		at com.android.ex.camera2.utils.StateWaiter.waitForAnyOfStates(StateWaiter.java:164)
+Solution: 可能是测试时光线太暗，测试时需要给手机的前后摄像头打灯(对准镜头和闪光灯)，复测通过
+android.hardware.camera2.cts.RobustnessTest
+-- testMandatoryOutputCombinations	
+Reason: java.lang.Exception: There were 2 errors:
+		java.lang.Throwable(Test failed for camera 1: Output combination { [YUV, PREVIEW] [JPEG, MAXIMUM] } failed due to:
+Solution: 可能是测试时光线太暗，测试时需要给手机的前后摄像头打灯(对准镜头和闪光灯)，复测通过
+android.hardware.camera2.cts.StillCaptureTest
+-- testStillPreviewCombination	
+Reason: Test failed to run to completion. Reason: 'Instrumentation run failed due to 'Process crashed.''. Check device logcat for details
+Solution: 复测通过（若复测不过，极有可能是手机问题，请更换手机）
+android.hardware.cts.SensorTest
+-- testBatchAndFlush	
+Reason: junit.framework.AssertionFailedError: WaitForEvents | sensor='GYROSCOPE', samplingPeriod=0us, maxReportLatency=10000000us | requested=500, received=34, 
+		timeout=26111000us WaitForEvents | sensor='Orientation Sensor', samplingPeriod=0us, maxReportLatency=10000000us | requested=500, received=0, timeout=26111000us
+Solution2: 前提是手机支持陀螺仪，使用MTK提供的 GameCube.apk 校准磁力计后再测试(测试中需要360度旋转手机)，复测通过
+-- testBatchAndFlushWithMultipleSensors
+Reason1: 驱动修改指南针Sensor，在底层驱动和上层应用之间有一个中间库，这里少了个与指南针有关的中间库
+Solution1: 添加指南针中间库后，复测通过
+Reason2: junit.framework.AssertionFailedError: junit.framework.AssertionFailedError: WaitForEvents | sensor='GYROSCOPE', samplingPeriod=0us, maxReportLa
+		tency=10000000us | requested=500, received=321, timeout=26111000us, junit.framework.AssertionFailedError: WaitForEvents | sensor='Orientation Sensor', 
+		samplingPeriod=0us, maxReportLatency=10000000us | requested=500, received=0, timeout=26111000us, at junit.framework.Assert.fail(Assert.java:50) 
+Solution2: 前提是手机支持陀螺仪，使用MTK提供的 GameCube.apk 校准磁力计后再测试(测试中需要360度旋转手机)，复测通过
+
+
+Compatibility Test Package: android.host.jdwpsecurity ABI: armeabi-v7a
+android.jdwpsecurity.cts.JdwpSecurityHostTest
+ -- testNonZygoteProgramIsNotDebuggable
+Reason: testNonZygoteProgramIsNotDebuggable fail junit.framework.AssertionFailedError: Test app should not have an active JDWP connection (pid 5930 is returned by 'adb
+		jdwp') at junit.framework.Assert.fail(Assert.java:50)
+Solution: 请务必保证有合入这笔Patch:ALPS02319365 [Google Security Patch][CVE-2015-3865]Elevation of Privilege Vulnerability in Android Runtime   (5.1_r3_cts)
+
+
+Compatibility Test Package: android.host.security ABI: armeabi-v7a
+android.cts.security.SELinuxHostTest
+-- testAllEnforcing	
+Reason: junit.framework.AssertionFailedError: The following SELinux domains were found to be in permissive mode: codetel
+android.cts.security.SELinuxNeverallowRulesTest
+-- testNeverallowRules20	
+Reason: junit.framework.AssertionFailedError: The following errors were encountered when validating the SELinuxneverallow rule: neverallow { appdomain -shell } { domain -
+		appdomain }:process { transition dyntransition };
+device_logcat : 客户提供的APK的权限有问题，等待客户重新提供APK
+Solution: 
+-- testNeverallowRules47	
+Reason: junit.framework.AssertionFailedError: The following errors were encountered when validating the SELinuxneverallow rule:
+		neverallow { domain -unconfineddomain -recovery } unlabeled:{ dir { { chr_file blk_file } { file lnk_file sock_file fifo_file } } } create;
+device_logcat： 07-31 09:58:06 I/SCNFQCS899999999: android.cts.security.SELinuxNeverallowRulesTest#testNeverallowRules47 FAIL 
+				junit.framework.AssertionFailedError: The following errors were encountered when validating the SELinuxneverallow rule:
+				neverallow { domain -unconfineddomain -recovery } unlabeled:{ dir { { chr_file blk_file } { file lnk_file sock_file fifo_file } } } create;
+				libsepol.report_failure: neverallow violated by allow system_server unlabeled:file { create };
+				libsepol.report_failure: neverallow violated by allow system_server unlabeled:dir { create };
+				libsepol.check_assertions: 2 neverallow failures occurred
+liangshuang:首先可以断定是Selinux权限出现了问题，然后呢？因为是R2包新加的测试项，本地代码是没有测试用例的，所以测试用例应该在测试包中，需要进行反编译，查看host_log,发现：
+			07-31 09:57:42 D/TestPackageDef: Creating host test for CtsSecurityHostTestCases
+			07-31 09:58:05 I/JarHostTest: Running android.host.security test package from jar, contains 1 tests.
+			然后我们在android-cts/repository/testcases目录中找到CtsSecurityHostTestCases.jar包，使用jdi工具打开该jd-gui包后，找到测试用例：
+			public void testNeverallowRules47() throws Exception {
+				String neverallowRule = "neverallow{domain -unconfineddomain -recovery}unlabeled:{dir{ {chr_file blk_file} {file lnk_file sock_file fifo_file}}} create;";
+    			ProcessBuilder pb = new ProcessBuilder(
+					new String[] {this.sepolicyAnalyze.getAbsolutePath(), this.devicePolicyFile.getAbsolutePath(), "neverallow", "-n", neverallowRule });
+				pb.redirectOutput(ProcessBuilder.Redirect.PIPE);
+				pb.redirectErrorStream(true);
+				Process p = pb.start();
+				p.waitFor();
+				BufferedReader result = new BufferedReader(new InputStreamReader(p.getInputStream()));
+				StringBuilder errorString = new StringBuilder();
+				String line;
+				while ((line = result.readLine()) != null) {
+					errorString.append(line);
+					errorString.append("\n");}
+					assertTrue(new StringBuilder().append("The following errors were encountered when validating the SELinuxneverallow rule:\n")
+												  .append(neverallowRule).append("\n").append(errorString).toString(), errorString.length() == 0);
+				}
+			}
+			然后，我们再看报错的信息，不允许违反具有system_server标签的文件及目录创建，我们在selinux文件中查找相关，发现在CT修改中，将-system_server 去除，
+				-neverallow { domain -unconfineddomain -recovery } unlabeled:dir_file_class_set create;
+				+neverallow { domain -unconfineddomain -recovery -system_server } unlabeled:dir_file_class_set create;
+			总结：对于selinux权限，我们可以添加自己需要的，但是系统原生的selinux权限请不要随意修改，修改之后会导致相关fail，
+Solution :  如上修改，复测通过
+
+
+Compatibility Test Package: android.host.theme ABI: armeabi-v7a
+android.theme.cts.ThemeHostTest
+-- testHoloThemes
+Solution: 进入Settings/Display/Font size，字体选择Normal， 复测通过
+
+
+Compatibility Test Package: android.keystore ABI: armeabi-v7a
+android.keystore.cts.KeyChainTest
+-- testIsBoundKeyAlgorithm_RequiredAlgorithmsSupported	
+Reason: junit.framework.AssertionFailedError: RSA must be hardware-backed by a hardware-specific Keymaster HAL
+		at junit.framework.Assert.fail(Assert.java:50)
+Result: 谷歌waive项(Waiting for google feedback)
+
+
+Compatibility Test Package: android.location ABI: armeabi-v7a
+android.location.cts.GeocoderTest
+-- testGetFromLocation	
+Reason: junit.framework.AssertionFailedError: Failed to geocode location 5 times.
+		at junit.framework.Assert.fail(Assert.java:50)
+-- testGetFromLocationName	
+Reason: junit.framework.AssertionFailedError: Failed to geocode location name 5 times.
+		at junit.framework.Assert.fail(Assert.java:50)
+Solution: 该测试需要访问google server，国内网络无法访问
+
+
+Compatibility Test Package: android.media ABI: armeabi-v7a
+android.media.cts.AudioTrackTest
+-- testPlayStreamData
+Reason: Test failed to run to completion. Reason: 'Test run failed to complete. Expected 1036 tests, received 132'. Check device logcat for details
+Solution: 复测通过
+android.media.cts.CamcorderProfileTest
+-- testGet	
+Reason: junit.framework.AssertionFailedError
+		at junit.framework.Assert.fail(Assert.java:48)
+device_logcat:  AlarmManager: rebatchAllAlarmsLocked  batch.size() = 1
+				CamcorderProfileTest: Size (720x480) is not supported
+				AlarmManager: isAlarmNeedAlign : charging
+				System.err: java.lang.NullPointerException: Attempt to invoke interface method 'android.os.IBinder com.android.internal.app.IAppOpsCallback.asBinder()' 
+				on a null object reference
+Solution: 在alps/vendor/mediatek/proprietary/custom/mt6572/hal/sendepfeature/gc2145mipi_yuv文件中添加的分辨率720x480， 复测通过
+-- testGetWithId	
+Reason: junit.framework.AssertionFailedError
+		at junit.framework.Assert.fail(Assert.java:48)
+device_logcat : CamcorderProfileTest: Size (720x480) is not supported
+Solution: 在alps/vendor/mediatek/proprietary/custom/mt6572/hal/sendepfeature/gc2145mipi_yuv文件中添加的分辨率720x480， 复测通过
+android.media.cts.DecoderTest
+-- testCodecResetsH263WithoutSurface
+Reason: Test failed to run to completion. Reason: 'Test run failed to complete. Expected 903 tests, received 79'. Check device logcat for details
+Solution: 复测通过
+-- testDecodeWithEOSOnLastBuffer
+Solution: 在文件alps/frameworks/av/media/libstagefright/ACodec.cpp中
+			将：
+				#define MP3_MULTI_FRAME_COUNT_IN_ONE_INPUTBUFFER_FOR_PURE_AUDIO 1
+				#define MP3_MULTI_FRAME_COUNT_IN_ONE_OUTPUTBUFFER_FOR_PURE_AUDIO 1
+			修改为：
+				#define MP3_MULTI_FRAME_COUNT_IN_ONE_INPUTBUFFER_FOR_PURE_AUDIO 2
+				#define MP3_MULTI_FRAME_COUNT_IN_ONE_OUTPUTBUFFER_FOR_PURE_AUDIO 2
+		  复测通过（修改方法慎用，有风险，咨询梁爽）
+android.media.cts.MediaCodecCapabilitiesTest
+-- testAvcBaseline12	
+Reason: 'Failed to receive adb shell test output within 600000 ms. Test may have timed out, or adb connection to device became unresponsive'. 
+		Check device logcat for details
+-- testAvcBaseline30	
+Reason: 'Failed to receive adb shell test output within 600000 ms. Test may have timed out, or adb connection to device became unresponsive'. 
+		Check device logcat for details
+-- testAvcHigh31
+Reason: 'Failed to receive adb shell test output within 600000 ms. Test may have timed out, or adb connection to device became unresponsive'. 
+		Check device logcat for details	
+-- testAvcHigh40
+Reason: 'Failed to receive adb shell test output within 600000 ms. Test may have timed out, or adb connection to device became unresponsive'. 
+		Check device logcat for details
+Result: 谷歌issue
+android.media.cts.MediaScannerTest
+-- testEncodingDetection	
+Reason: junit.framework.ComparisonFailure: mismatch on entry 4 field 0(/storage/sdcard0/android.media.cts.MediaScannerTest/gb18030_5.mp3) expected:<[光良]> but was:
+		<[<unknown>]>
+		at junit.framework.Assert.assertEquals(Assert.java:85)
+device_logcat:  是之前合一个google的patch引起的，合patch之前复测可以通过，现申请谷歌waive项
+On-Line:这是已知的google CTS issue，由于合入这笔security patch导致:
+			ALPS02307908 [[Google Security Patch][CVE-2015-3873]Vulnerabilities in libstagefright Could Allow Remote Code Execution]
+		请用如下link申请waive即可:https://android-review.googlesource.com/#/c/170860/
+		将alps/frameworks/av/media/libstagefright/id3/ID3.cpp中的:
+			if (baseSize == 0) {
+				return;
+			}
+		修改为:
+			if (baseSize == 0) {
+				/* Don't try to parse a frame with zero-sized data. Skip this
+				* header entirely */
+				mOffset += 10; // http://id3.org/id3v2.4.0-structure section 4
+				continue;
+			}
+Solution: 如上修改，复测通过
+android.media.cts.StreamingMediaPlayerTest
+-- testHLS	
+Reason: 'Failed to receive adb shell test output within 600000 ms. Test may have timed out, or adb connection to device became unresponsive'. 
+		Check device logcat for details
+-- testHTTP_H263_AMR_Video1	
+Reason: 'Failed to receive adb shell test output within 600000 ms. Test may have timed out, or adb connection to device became unresponsive'. 
+		Check device logcat for details
+-- testHTTP_H263_AMR_Video2	
+Reason: 'Failed to receive adb shell test output within 600000 ms. Test may have timed out, or adb connection to device became unresponsive'. 
+		Check device logcat for details
+-- testHTTP_H264Base_AAC_Video1	
+Reason: 'Failed to receive adb shell test output within 600000 ms. Test may have timed out, or adb connection to device became unresponsive'. 
+		Check device logcat for details
+-- testHTTP_H264Base_AAC_Video2	
+Reason: 'Failed to receive adb shell test output within 600000 ms. Test may have timed out, or adb connection to device became unresponsive'. 
+		Check device logcat for details
+-- testHTTP_MPEG4SP_AAC_Video1	
+Reason: 'Failed to receive adb shell test output within 600000 ms. Test may have timed out, or adb connection to device became unresponsive'. 
+		Check device logcat for details
+-- testHTTP_MPEG4SP_AAC_Video2	
+Reason: 'Failed to receive adb shell test output within 600000 ms. Test may have timed out, or adb connection to device became unresponsive'. 
+		Check device logcat for details
+Result: 谷歌issue
+android.media.cts.VisualizerTest
+-- test4_1MeasurePeakRms
+Reason: junit.framework.AssertionFailedError: peak deviation in mB=2361
+		at junit.framework.Assert.fail(Assert.java:50)
+-- test4_2MeasurePeakRmsLongMP3
+Reason: junit.framework.AssertionFailedError: peak deviation in mB=2429
+		at junit.framework.Assert.fail(Assert.java:50)
+Solution1: 测试前，进入Settings/Sound & notification/Sound enhancement,将"BesAudEnh"和"BesLoudness"两个选项勾选上，再取消勾选，复测通过
+Solution2: 在alps/vendor/mediatek/proprietary/custom/common/cgen/cfgdefault/audio_audenh_control_option.h中
+			将：		#define DEFAULT_AUDIO_AUDENH_CONTROL_OPTION_Coeff (0x00000002)
+			修改为：	#define DEFAULT_AUDIO_AUDENH_CONTROL_OPTION_Coeff (0x00000000)
+			注:如上修改，后续发现有问题(手机的音量变得很小)，经音频组修改音频参数可通过
+		   复测通过
+
+
+Compatibility Test Package: android.mediastress ABI: armeabi-v7a
+android.mediastress.cts.HEVCR720pAacLongPlayerTest
+-- testPlay00	
+Reason: junit.framework.AssertionFailedError: playback /storage/sdcard0/test/bbb_full/1280x720/
+		mp4_libx265_libfaac/bbb_full.ffmpeg.1280x720.mp4.libx265_880kbps_24fps.libfaac_stereo_128kbps_48000Hz.mp4
+		at junit.framework.Assert.fail(Assert.java:50)
+-- testPlay01	
+Reason: junit.framework.AssertionFailedError: playback /storage/sdcard0/test/bbb_full/1280x720/
+		mp4_libx265_libfaac/bbb_full.ffmpeg.1280x720.mp4.libx265_1140kbps_30fps.libfaac_stereo_128kbps_48000Hz.mp4
+		at junit.framework.Assert.fail(Assert.java:50)
+android.mediastress.cts.HEVCR720pAacShortPlayerTest
+-- testPlay01	
+Reason: junit.framework.AssertionFailedError: playback /storage/sdcard0/test/bbb_short/1280x720/
+		mp4_libx265_libfaac/bbb_short.fmpeg.1280x720.mp4.libx265_325kbps_30fps.libfaac_stereo_128kbps_48000hz.mp4
+		at junit.framework.Assert.fail(Assert.java:50)
+-- testPlay02	
+Reason: junit.framework.AssertionFailedError: playback /storage/sdcard0/test/bbb_short/1280x720/
+		mp4_libx265_libfaac/bbb_short.fmpeg.1280x720.mp4.libx265_650kbps_24fps.libfaac_stereo_128kbps_48000hz.mp4
+		at junit.framework.Assert.fail(Assert.java:50)
+-- testPlay03	
+Reason: junit.framework.AssertionFailedError: playback /storage/sdcard0/test/bbb_short/1280x720/
+		mp4_libx265_libfaac/bbb_short.fmpeg.1280x720.mp4.libx265_650kbps_30fps.libfaac_stereo_128kbps_48000hz.mp4
+		at junit.framework.Assert.fail(Assert.java:50)
+-- testPlay05	
+Reason: junit.framework.AssertionFailedError: playback /storage/sdcard0/test/bbb_short/1280x720/
+		mp4_libx265_libfaac/bbb_short.fmpeg.1280x720.mp4.libx265_880kbps_30fps.libfaac_stereo_128kbps_48000hz.mp4
+		at junit.framework.Assert.fail(Assert.java:50)
+-- testPlay06	
+Reason: junit.framework.AssertionFailedError: playback /storage/sdcard0/test/bbb_short/1280x720/
+		mp4_libx265_libfaac/bbb_short.fmpeg.1280x720.mp4.libx265_1140kbps_30fps.libfaac_stereo_128kbps_48000hz.mp4
+		at junit.framework.Assert.fail(Assert.java:50)
+-- testPlay07	
+Reason: junit.framework.AssertionFailedError: playback /storage/sdcard0/test/bbb_short/1280x720/
+		mp4_libx265_libfaac/bbb_short.fmpeg.1280x720.mp4.libx265_3250kbps_30fps.libfaac_stereo_128kbps_48000hz.mp4
+		at junit.framework.Assert.fail(Assert.java:50)
+-- testPlay08	
+Reason: junit.framework.AssertionFailedError: playback /storage/sdcard0/test/bbb_short/1280x720/
+		mp4_libx265_libfaac/bbb_short.fmpeg.1280x720.mp4.libx265_6500kbps_30fps.libfaac_stereo_128kbps_48000hz.mp4
+		at junit.framework.Assert.fail(Assert.java:50)
+device_logcat: 在log中搜索失败的视频格式，如“hevc”，“avc”等，这些视频的解码速度延时了。
+Solution: 多次复测，复测通过；若仍测试不通过，可能是因为手机硬件不支持720P的解码格式，最高只支持480P的解码格式，720P格式的视频解码速度跟不上，有所延迟，导致测试失败。
+		  在alps/device/mediatek/mt6572/media_codecs.xml文件中：
+			  <MediaCodec name="OMX.MTK.VIDEO.DECODER.AVC" type="video/avc" >
+			  	<Limit name="size" min="64x64" max="720x480" />
+			  	<Quirk name="requires-allocate-on-input-ports" />
+			   	<Quirk name="requires-allocate-on-output-ports" />
+			   	<Feature name="adaptive-playback"/>
+		      </MediaCodec>
+		  找到对应失败项的视频格式type，将max后的720P(即“1280x720”)修改为480P(即“720x480”)
+		  复测通过
+android.mediastress.cts.HEVCR1080pAacLongPlayerTest
+-- testPlay00	
+Reason: junit.framework.AssertionFailedError: playback /storage/sdcard0/test/bbb_full/1920x1080/mp4_libx265_libfaac/
+		bbb_full.ffmpeg.1920x1080.mp4.libx265_6500kbps_30fps.libfaac_stereo_128kbps_48000Hz.mp4
+		at junit.framework.Assert.fail(Assert.java:50)
+Result: 谷歌waive项(Only For MT6582 & MT6580 L)
+android.mediastress.cts.MediaRecorderStressTest
+-- testStressRecordVideoAndPlayback	
+Reason: java.lang.RuntimeException: start failed.
+		at android.media.MediaRecorder.start(Native Method)
+Solution: 复测通过
+android.mediastress.cts.NativeMediaTest
+-- testDefaultPlay	
+Reason: Test failed to run to completion. Reason: 'Instrumentation run failed due to 'junit.framework.AssertionFailedError''. Check device logcat for details
+Solution: 去掉T卡但是需要有media文件，复测通过
+
+
+Compatibility Test Package: android.net ABI: armeabi-v7a
+android.net.cts.ConnectivityManagerTest
+Reason: junit.framework.AssertionFailedError: Couldn't connect using hipri... 
+		at junit.framework.Assert.fail(Assert.java:50) 
+-- testStartUsingNetworkFeature_enableHipri	
+Solution: 插入SIM卡(确保能连网),并且连接wifi，复测通过
+android.net.cts.DnsTest
+-- testDnsWorks	
+Reason: junit.framework.AssertionFailedError
+		at junit.framework.Assert.fail(Assert.java:48)
+Solution: 连接WIFI，不插SIM卡，复测通过
+android.net.cts.TrafficStatsTest
+-- testTrafficStatsForLocalhost
+Reason: junit.framework.AssertionFailedError: too many non-localhost packets on the sam UID
+	at junit.framework.Assert.fail(Assert.java:50)	
+Solution: 关闭WIFI，不插SIM卡，复测通过
+android.net.http.cts.ApacheHttpClientTest
+-- testExecute_withMobile	
+Reason: 'Failed to receive adb shell test output within 600000 ms. Test may have timed out, or adb connection to device became unresponsive'. 
+		Check device logcat for details
+Solution: 关闭WIFI，复测通过(测试通过后WIFI会被打开，若测试前是打开的，测试后WIFI会被关闭但测试会失败)
+
+
+Compatibility Test Package: android.permission ABI: armeabi-v7a
+android.permission.cts.DebuggableTest
+-- testNoDebuggable	
+Reason: junit.framework.AssertionFailedError: Packages marked debuggable: [com.android.cts.robot, com.android.cts.verifier]
+		at junit.framework.Assert.fail(Assert.java:50)
+Solution: 复测通过
+
+
+Compatibility Test Package: android.permission2 ABI: armeabi-v7a
+android.permission2.cts.NoReceiveSmsPermissionTest
+-- testReceiveTextMessage	
+Reason: java.lang.IllegalArgumentException: Invalid destinationAddress
+		at android.telephony.SmsManager.sendTextMessage(SmsManager.java:288)
+Solution: SIM卡需要被写入自己的号码，即SIM卡能给自己发短信，复测通过
+
+
+Compatibility Test Package: android.os ABI: armeabi-v7a
+android.os.storage.cts.StorageManagerTest
+-- testAttemptMountNonObb	
+-- testAttemptMountObbWrongPackage	
+-- testMountAndUnmountObbNormal	
+-- testMountAndUnmountTwoObbs	
+Solution: 插入T卡, 复测通过
+
+
+Compatibility Test Package: android.provider ABI: armeabi-v7a
+android.provider.cts.BrowserTest
+-- testAccessHistory	
+Reason: junit.framework.AssertionFailedError: expected:<1> but was:<2>
+		at junit.framework.Assert.fail(Assert.java:50)
+Solution: 选择一个浏览器作为默认浏览器, 复测通过
+android.provider.cts.MediaStore_FilesTest
+-- testAccess	
+Solution: 插入T卡, 复测通过
+   
+
+Compatibility Test Package: android.tests.appsecurity ABI: armeabi-v7a
+com.android.cts.appsecurity.AppSecurityTests
+-- testExternalStorageNone	
+-- testExternalStorageRead	
+-- testExternalStorageWrite	
+Solution: 插入T卡, 复测通过
+
+
+Compatibility Test Package: android.os ABI: armeabi-v7a
+android.os.cts.BuildVersionTest
+-- testBuildFingerprint
+Reason1:junit.framework.ComparisonFailure: Tag expected:<[release]-keys> but was:<[dev]-keys> at     
+		junit.framework.Assert.assertEquals(Assert.java:85) 
+liangshuang:首先，根据fail标题testBuildFingerprint，可以看出是测试fingerprint的时fail，根据描述， expected:<[release]-keys> but was:<[dev]-keys> ，即期望是release-keys，但却是
+			dev-keys,即在组合fingerprint的时间出现问题，我们需要找到组合fingerprint的位置，即：
+			alps/build/core/Makefile文件，其中有定义该tag的地方：
+ 				ifeq ($(DEFAULT_SYSTEM_DEV_CERTIFICATE),build/target/product/security/testkey)
+					BUILD_KEYS := test-keys
+				else
+					BUILD_KEYS := dev-keys
+				endif
+				BUILD_VERSION_TAGS += $(BUILD_KEYS)
+			因DEFAULT_SYSTEM_DEV_CERTIFICATE未设置，故默认会设置dev-keys，同时看到是根据系统的签名来设置该key的，但我们使用了自己的签名，且打开了MTK_SIGNATURE_CUSTOMIZATION宏，
+			故此处加一个判断就OK了，即在外边封装一层判断。
+Solution1： 在alps/build/core/Makefile文件中修改
+			ifeq ($(MTK_SIGNATURE_CUSTOMIZATION),yes)   //add
+				BUILD_VERSION_TAGS += release-keys		//add
+			else  										//add
+				ifeq ($(DEFAULT_SYSTEM_DEV_CERTIFICATE),build/target/product/security/testkey)
+					BUILD_KEYS := test-keys
+				else
+					BUILD_KEYS := dev-keys
+				endif
+			endif 										//add
+			BUILD_VERSION_TAGS += $(BUILD_KEYS)
+			复测通过	
+Reason2:junit.framework.ComparisonFailure: android.os.cts.BuildVersionTest -
+		junit.framework.ComparisonFailure: expected:<Kalena> but was:<KALENA> at
+		android.os.cts.BuildVersionTest.testBuildFingerprint(BuildVersionTest.java:65)
+liangshuang:首先，根据log提示，我们找到BuildVersionTest.java 找到testBuildFingerprint方法：
+			public void testBuildFingerprint() {
+        		final String fingerprint = Build.FINGERPRINT;
+        		assertEquals("Build fingerprint must not include whitespace", -1,fingerprint.indexOf(' '));
+        		final String[] fingerprintSegs = fingerprint.split("/");assertEquals("Build fingerprint does not match expected format", 6, 	
+				fingerprintSegs.length);assertEquals(Build.BRAND, fingerprintSegs[0]);assertEquals(Build.PRODUCT, fingerprintSegs[1]);…
+			看到，获取到系统的Build.FINGERPRINT，根据fingerprint进行断言，首先不能存在空格，然后根据”/”进行分割断言，且分割后的字符必须与系统设定的BRAND,PRODUCT等一致，
+			即严格遵守： 
+				ro.build.fingerprint=MOBIWIRE/Kalena/Kalena:5.1/LMY47D/1437730040:eng/release-keys
+				=>[ro.product.brand]/[ro.product.name]/[ro.product.device]:[ro.build.version.release]/[ro.build.id]/[ro.build.version.incremental]:[ro.build.type]/
+				  [ro.build.tags]
+			而ro.product.brand， ro.product.name等ro值的定义在alps/build/tools/buildinfo.sh中
+			echo “ro.product.brand=$PRODUCT_BRAND”，而CTS判断的方法只是在build.prop中显示出的字符串是否一致，故我们可以采用重定向的方法修改该字符显示。
+Solution2 : 在ｍｋ文件中定义所需字符，
+		    在alps/build/tools/buildinfo.sh文件中进行重定向：
+				把：
+				echo "ro.product.name=$PRODUCT_NAME"
+				修改为：
+				if [ -n "$SAGEREAL_PRODUCT_NAME" ] ; then
+					echo "ro.product.name=$SAGEREAL_PRODUCT_NAME"
+				else
+					echo "ro.product.name=$PRODUCT_NAME"
+				fi	　
+		  	alps/build/core/Makefile文件中重定向：
+  				BUILD_FINGERPRINT := $(PRODUCT_BRAND)/$(TARGET_PRODUCT)/$(TARGET_DEVICE):$(PLATFORM_VERSION)/$(BUILD_ID)/$(BF_BUILD_NUMBER):$(
+									   TARGET_BUILD_VARIANT)/$(BUILD_VERSION_TAGS)
+				把上面的  (TARGET_PRODUCT)/$(TARGET_DEVICE)
+				修改为：  (SAGEREAL_PRODUCT_NAME)/$(SAGEREAL_TARGET_DEVICE) 
+				具体工程根据来源来修改(来源：sagereal/mk/project_name/ProjectConfig.mk中的“#客制化手机型号名称”下的SAGEREAL_PRODUCT_NAME和SAGEREAL_TARGET_DEVICE)
+		  	复测通过
+
+
+Compatibility Test Package: android.security ABI: armeabi-v7a
+android.security.cts.CertificateTest
+-- testNoAddedCertificates
+Reason: junit.framework.AssertionFailedError: Unknown CA certificates expected:<[]> but was:<[74:2C:31:92:E6:07:E4:24:EB:45:49:54:2B:E1:BB:C5:3E:61:74:E2]> 
+		at android.security.cts.CertificateTest.testNoAddedCertificates(CertificateTest.java:102)
+liangshuang:根据描述，我们看到期望的CA证书为空的，但得到的却不为空，因为从KK 开始,CTS 有测项禁止OEM沒有告知 Google 就自己增减预置CA证书，故该证书可能为我们自己添加的且未经过Google
+			同意就预置的证书，看下CertificateTest.java
+			public void testNoAddedCertificates() throws Exception {
+		    	Set<String> oemWhitelistedCertificates = getOemWhitelistedCertificates();
+		    	Set<String> expectedCertificates = new HashSet<String>(Arrays.asList(CertificateData.CERTIFICATE_DATA));
+		    	Set<String> deviceCertificates = getDeviceCertificates();
+				deviceCertificates.removeAll(expectedCertificates);
+				deviceCertificates.removeAll(oemWhitelistedCertificates);
+				assertEquals("Unknown CA certificates", Collections.EMPTY_SET, deviceCertificates);
+			}
+			其实同之前的方法一致，即获取到所有证书，移出掉系统认可的证书，断言剩余的，若不为空，则断言失败，在getDeviceCertificates方法中，add的是获取到的证书的fingerprint，故猜想
+			可能是根据fingerprint来进行判断的， 
+	 			String fingerprint = getFingerprint(certificate);
+		        certificates.add(fingerprint);
+			我们在： vendor/mediatek/up11_vsn_h1_single/artifacts/out/target/product/up11_vsn_h1_single/system/etc/security/cacerts/目录下找到了预置的证书7651b327.1 ，其中的
+			SHA1 Fingerprint=74:2C:31:92:E6:07:E4:24:EB:45:49:54:2B:E1:BB:C5:3E:61:74:E2与抛出问题的证书一致，看到确是是根据证书的Fingerprint来进行判断的，但该问题我们无法进行修
+			改，因证书的fingerprint也是根据一定的规则生成的，修改之后证书不能使用。
+Solution:   如上修改，复测通过
+android.security.cts.ListeningPortsTest
+-- testNoListeningLoopbackTcp6Ports	
+Solution: 复测通过；若复测不通过，可以将YouTube关闭(Settings/App/All,找到YouTube，进入并设置为Disable)
+-- testNoRemotelyAccessibleListeningTcpPorts	
+Reason: android.security.cts.ListeningPortsTest$ListeningPortsAssertionError:Found port listening on addr=0.0.0.0, port=7000, UID=1021 [unknown] in /proc/net/tcp
+Solution: 复测通过
+-- testNoRemotelyAccessibleListeningUdp6Ports	
+Reason: android.security.cts.ListeningPortsTest$ListeningPortsAssertionError:
+		Found port listening on addr=::, port=546, UID=1014 [unknown] in /proc/net/udp6
+Solution: 关闭WIFI，使用UDP6协议,复测通过
+android.security.cts.PackageSignatureTest
+-- testPackageSignatures
+Reason: junit.framework.AssertionFailedError: These packages should not be signed with a well known key: [com.mediatek.GoogleOta]
+		at junit.framework.Assert.fail(Assert.java:50)	
+Solution: 可能是某个apk的签名有问题（我这里修改GoogleOta.apk签名），复测通过 
+android.security.cts.ServicePermissionsTest
+-- testDumpProtected	
+Reason: junit.framework.AssertionFailedError: dump() for backup produced a single line which didn't reference a permission; it may be leaking sensitive data.
+		at junit.framework.Assert.fail(Assert.java:50)
+Result: 谷歌waive项，但72平台项目复测能通过
+
+
+Compatibility Test Package: android.telephony ABI: armeabi-v7a
+android.telephony.cts.SmsManagerTest
+ -- testSendMessages	
+Reason: java.lang.IllegalArgumentException: Invalid destinationAddress
+		at android.telephony.SmsManager.sendTextMessage(SmsManager.java:288)
+Solution: SIM卡需要被写入自己的号码，即SIM卡能给自己发短信，复测通过
+android.telephony.cts.SmsUsageMonitorShortCodeTest
+-- testSmsUsageMonitor
+Reason: junit.framework.AssertionFailedError: country: am number: 101 expected:<1> but was:<0>
+		junit.framework.AssertionFailedError: country: am number: 102 expected:<1> but was:<0>
+		junit.framework.AssertionFailedError: country: am number: 103 expected:<1> but was:<0>
+		junit.framework.AssertionFailedError: country: am number: 123 expected:<1> but was:<0>
+		at junit.framework.Assert.fail(Assert.java:50)
+On-Line:1.在SmsUsageMonitorShortCodeTest.java文件中有此类数据：
+			new ShortCodeTest("al", "112", CATEGORY_NO_SHORT_CODE),//这里的CATEGORY_NO_SHORT_CODE为1, 而实际得到的是0所以fail了。
+		2.在SmsUsageMonitorShortCodeTest.java文件的testSmsUsageMonitor函数进行assert检查：
+			assertEquals("country:" + test.countryIso + " number:  " +test.address,test.category, monitor.checkDestination(test.address, test.countryIso));
+		monitor.checkDestination调用到SmsUsageMonitor.java文件的
+			public int checkDestination(String destAddress, String countryIso)函数
+Solution: 在alps/frameworks/opt/telephony/src/java/com/android/internal/telephony/SmsUsageMonitor.java文件中
+			public int checkDestination(String destAddress, String countryIso) { 	
+				synchronized (mSettingsObserverHandler) { 
+		后面添加
+			if(destAddress.equals("101") || destAddress.equals("102") || destAddress.equals("103")){
+               	return CATEGORY_FREE_SHORT_CODE;
+	    	}
+	    	if(destAddress.equals("123") ){
+				if(countryIso.equals("ch")){
+		    		return CATEGORY_NOT_SHORT_CODE;
+				}
+				return CATEGORY_POSSIBLE_PREMIUM_SHORT_CODE;
+	    	}
+		复测通过
+android.telephony.gsm.cts.SmsManagerTest
+-- testSendMessages	
+Reason: java.lang.IllegalArgumentException: Invalid destinationAddress
+		at android.telephony.SmsManager.sendTextMessage(SmsManager.java:288)
+Solution: SIM卡需要被写入自己的号码，即SIM卡能给自己发短信，复测通过
+
+
+Compatibility Test Package: android.webkit ABI: armeabi-v7a
+android.webkit.cts.WebSettingsTest
+-- testUserAgentString_default
+Reason: junit.framework.ComparisonFailure: expected:<LMY47D[]> but was:<LMY47D[; wv]> at junit.framework.Assert.assertEquals(Assert.java:85)
+liangshuang:由于内置了GMS包，这个是GMS issue，是因为GMS包与原生chromium lib有冲突。原则上google是有要求GMS和native browser不共用，Waiver will be granted。
+Result: 谷歌waive项
+
+
+Compatibility Test Package: com.android.cts.browserbench ABI: armeabi-v7a
+com.android.cts.browser.BrowserBenchTest
+-- testOctane	
+Reason: 'Instrumentation run failed due to 'junit.framework.AssertionFailedError''. Check device logcat for details
+Solution: 复测通过
+
+
+
+CTS新需求： 添加多用户功能
+	1. 在sagereal/mk/Project_name/ProjectConfig.mk文件中开以下宏
+		config_enableMultiUserUI = true
+		config_multiuserMaximumUsers = 8  //此宏值不小于2,
+		/*
+		  以上两个宏也可以在alps/frameworks/base/core/res/res/values/config.xml文件中直接设置默认值
+			<bool name="config_enableMultiUserUI">true</bool>
+			<integer name="config_multiuserMaximumUsers">8</integer>
+		*/
+		MTK_2SDCARD_SWAP = no
+		MTK_OWNER_SDCARD_ONLY_SUPPORT = yes
+		MTK_SHARED_SDCARD = yes
+	2. 在alps/device/sagetel/sr6572_wet_l/system.prop文件中ro值
+		ro.config.low_ram=false
+		若上面文件中没有该值，可以去alps/device/sagetel/sr6572_wet_l/device.mk文件中找到ro.config.low_ram，并设置为false
+	3. 在alps/frameworks/native/data/etc/handheld_core_hardware.xml文件中打开手机多功能系统服务
+    	<feature name="android.software.managed_users" />
+		<feature name="android.software.device_admin" />
+	4. AndroidForWork.apk is mandatory to preload on all GMS devices.  //Google App中必须包含该APK
+	注意：若要添加多用户功能，必须配置好以上4点，否则CTS测试会有15项测试不通过。
+
+
+
+
+
+梁爽总结：
+CTS中遇到camera相关fail，首先请先打灯复测相关问题，若仍fail，请按以下步骤检查一下camera的相关配置：
+1.  最大video size不超过最大picture size，最大preview size不超过最大picture size，且最大值比例差值不小于0.001
+
+2.  feature table中preview size的配置必须是2的倍数,picture size的值保证16对齐，即16的倍数，建议preview-size最大值一般不要超过屏幕的resolution
+
+3.  Kernel层配置的sensor size跟hal层配置的picture size最大值插值需大于0.03
+
+4.  feature table中的video-size尽量包含如下Resolution(分辨率)
+	176X144(QCIF), 320X240(QVGA), 352X288(CIF), 720x480(480p), 1280x720(720p), 1920x1088(1080p)
+
+5.  如果有闪光灯，必须支持闪光灯的on，off，auto；并且若camera支持ANTIBANDING_MODE_AUTO，则必须默认auto，不能默认为off。
+
+6.  使用yuv sensor，auto-exposure-lock-supported=false，CTS默认一定要支持AE lock，不支持就会failed
+
+7.  若camera不支持auto focus，需要配置focus mode为fixed， 将参数修改为：FOCUS_MODE_FIXED，并且max-num-focus-areas需要为 0 。
+	alps/vendor/mediatek/proprietary/custom/mt6572/hal/sendepfeature/gc2145mipi_yuv/config.ftbl.gc2145mipi_yuv.h
+			FTABLE_CONFIG_AS_TYPE_OF_DEFAULT_VALUES(
+				KEY_AS_(MtkCameraParameters::KEY_FOCUS_MODE),
+				SCENE_AS_DEFAULT_SCENE(
+					ITEM_AS_DEFAULT_(MtkCameraParameters::FOCUS_MODE_FIXED),
+					ITEM_AS_VALUES_(
+						MtkCameraParameters::FOCUS_MODE_FIXED,
+			)
+
+8.  需要添加MtkCameraParameters::ANTIBANDING_AUTO并默认
+	FTABLE_CONFIG_AS_TYPE_OF_DEFAULT_VALUES(
+        KEY_AS_(MtkCameraParameters::KEY_ANTIBANDING), 
+        SCENE_AS_DEFAULT_SCENE(
+            ITEM_AS_DEFAULT_(MtkCameraParameters::ANTIBANDING_AUTO), 
+            ITEM_AS_VALUES_(
+                MtkCameraParameters::ANTIBANDING_OFF, 
+                MtkCameraParameters::ANTIBANDING_50HZ, 
+                MtkCameraParameters::ANTIBANDING_60HZ, 
+                MtkCameraParameters::ANTIBANDING_AUTO, 
+            )
+        ), 
+    )
+
+9.  需要支持VSS
+    FTABLE_CONFIG_AS_TYPE_OF_USER(
+        KEY_AS_(MtkCameraParameters::KEY_VIDEO_SNAPSHOT_SUPPORTED), 
+        SCENE_AS_DEFAULT_SCENE(
+            ITEM_AS_DEFAULT_(MtkCameraParameters::TRUE), 
+        ), 
+    )
+    
+10. 若出现若干项在打灯情况下也无法通过的，请降低camera帧率测试一下
+	eg：alps/kernel-3.10/drivers/misc/mediatek/imgsensor/src/mt6572/ov5645_mipi_yuv/ov5645mipiyuv_Sensor.c
+	将：
+		pSensorInfo->CaptureDelayFrame = 3;
+		pSensorInfo->PreviewDelayFrame = 5; 
+		pSensorInfo->VideoDelayFrame = 3;     
+	改为：   
+		pSensorInfo->CaptureDelayFrame = 0;
+		pSensorInfo->PreviewDelayFrame = 0; 
+		pSensorInfo->VideoDelayFrame = 0;
+	当然也可以查看log，log中相关的关键字：
+	1.un supported
+	2.lv，其中lv代表环境亮度，至少达到63，avgY也代表环境亮度，0表示很暗，括号中的3代表camera delay的帧数，减小该帧数会使camera更快进入预览，但同时会影响camera的效果
+	...
+
+
+相关文件修改完成后可使用我之前发的快速编译指令（如下）进行编译验证
+1. 如何确定Feature Table的位置究竟在哪里？
+	vendor/mediatek/proprietary/hardware/matkcam/v1/common/paramsmgr/feature/custom/Android.mk
+    此文件是如何编译feature table静态库的makefile.
+    会有类似如下的语句：
+    ifeq ($(wildcard $(MTK_PATH_CUSTOM)/hal/sendepfeature),)
+       MY_CUST_FTABLE_PATH += $(MTK_PATH_CUSTOM_PLATFORM)/hal/sendepfeature
+    endif
+    这说明使用的是hal/sendepfeature目录里面的feature table文件。
+
+2. 快速编译查看camera的feature table，以72l为例（使用AOSP原生编译命令）：
+	a.编译：
+		touch vendor/mediatek/proprietary/hardware/mtkcam/v1/common/paramsmgr/feature/custom/custom.cpp && mmm -j24 vendor/mediatek/proprietary/hardware/mtkcam/v1/common/
+	paramsmgr/ 2>&1 | tee ft.lib.log && mmm -j24 vendor/mediatek/proprietary/platform/mt6572/hardware/mtkcam/v1/common/paramsmgr/ 2>&1 | tee so.log
+	b.生成：
+		Install: out/target/product/sr6572_wet_l/system/lib/libcam.paramsmgr.so
+	c.push
+		adb push out/target/product/sr6572_wet_l/system/lib/libcam.paramsmgr.so  system/lib
+	d.因为此动态库是mediaserver加载，用如下命令重启mediaserver来重新加载feature table:
+		如果是调试camera app, 请先关闭camera app, 避免app缓存了feature table信息导致调试不生效
+		adb shell stop media && adb shell start media
+	以上4步之后即可查看效果，无需刷机，重启或者恢复出厂设置
+
+CTS教训
+	第一个教训：修改了p-sensor校准（ueventd.rc不允许我们修改），导致CTS不过，直接影响量产时间
+	第二个教训：内部CTS测试发现了问题（不能上网，出现很多网络测试方面的fail----authtype=""，放入到手机，会导致手机不能上网），但没有引起重视，导致软件已经发给客户了
+	第三个教训：本地修改的代码考虑不完善（GPS默认高精度问题----直接修改代码而非开关），导致CTS Verifier测不过
+	第四个教训：修改ICU资源导致测试不过（修改日历的AM和PM翻译，而此部分翻译内容在ICU资源里；日历其他方面的修改也请注意）
+	第五个教训：未知来源不能勾选，否则CTS测不过，客户不同意手工修改重测的方案
+	第六个教训：不能内置证书，VSN客户常有内置证书需求，需要客户和Google商量是否放过？
+	第七个教训：如果内置多个浏览器，需要和客户商量是否设置个默认浏览器，否则CTS上网部分测不过
+	第八个教训：Gsensor如果选用2D的，会导致CTS Verifier不过，必须更换器件，比如Spice项目
+

@@ -1,0 +1,36 @@
+	1.修改x352的FileManager上导航路径的图片？？？？
+
+	解决：
+	修改
+	/home/zq/桌面/需要修改的图片/fm_blank_tab.9.png
+	/home/zq/桌面/需要修改的图片/fm_tab_unfocus.9.png
+	这两张图片就可以了
+
+	    2.Camera设置上面的设置按钮图标替换？？？
+
+	    解决：
+	    只要替换res下的ic_tab_common_setting.png图片即可
+
+	    drawable-hdpi/ic_tab_common_setting.png
+	    drawable-mdpi/ic_tab_common_setting.png
+	    drawable-sw600dp-mdpi/ic_tab_common_setting.png
+	    drawable-sw800dp-mdpi/ic_tab_common_setting.png
+	    drawable-xhdpi/ic_tab_common_setting.png
+	    drawable-xxhdpi/ic_tab_common_setting.png
+
+	3.Camera下方的设置图标替换？？？
+
+	解决：
+	只要替换res下的  ic_setting_normal.png  和  ic_setting_focus.png  这两张图片即可
+	drawable-hdpi/ic_setting_normal.png
+	drawable-mdpi/ic_setting_normal.png
+	drawable-sw600dp-mdpi/ic_setting_normal.png
+	drawable-sw800dp-mdpi/ic_setting_normal.png
+	drawable-xhdpi/ic_setting_normal.png
+	drawable-xxhdpi/ic_setting_normal.png
+
+
+通过模拟Fota升级过程发现是ContactsProvider的问题，通过ContactsProvider的上传记录发现是 facebook 同步联系人的patch修改了数据库的字段导致数据库不匹配导致的。现已去掉该patch,验证没有问题。
+
+
+SELECT _id, index_text AS suggest_text_1, _id AS suggest_shortcut_id, index_text AS snippet FROM words WHERE (index_text LIKE '%h%' AND table_to_use!=3)  OR (source_id  IN () AND table_to_use=1)  OR (source_id  IN () AND table_to_use=2)  ORDER BY snippet LIMIT 50;

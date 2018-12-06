@@ -1,0 +1,341 @@
+1.
+public class First{
+	private String str;
+	public class Contents{
+		public void getStr(){
+			System.out.println("First.str="+str);	
+		}
+	}
+}
+
+2.
+public class Test{
+	private int num;
+	public Test(){}
+	public Test(int num){
+		this.num = num;
+	}
+	private class Inner{
+		public Test getTest(){
+			return Test.this;
+		}
+		public Test newTest(){
+			return new Test();
+		}
+	}
+	public static void main(String[] args){
+		Test test = new Test(5);
+		Test.Inner inner = test.new Inner();
+		Test test2 = inner.getTest();
+		Test test3 = inner.newTest();
+		System.out.println(test2.num);		//5
+		System.out.println(test3.num);		//0
+	}
+}
+
+3.
+public class First{
+	public class Contents{
+		public void f(){
+			System.out.println("In Class First's inner Class Contents method f()");
+		}
+		public void getStr(){
+			System.out.println("First.str="+str);
+		}
+	}
+	public static void main(String[] args){
+		First first = new First();
+		First.Contents contents = first.new Contents();
+	}
+}
+
+4.
+public interface Shape{
+	public void paint();
+}
+public class Painter{
+	private class InnerShape implemtents Shape{
+		public void paint(){
+			System.out.println("painter paint() method");
+		}
+	}
+	public Shape getShape(){
+		return new InnerShape();
+	}
+	public static void main(String[] args){
+		Painter painter = new Painter();
+		Shape shape = painter.getShape();
+		shape.paint();
+	}
+}
+
+5.
+public class Main{
+	public void test(){
+		class Inner{
+			public void method(){
+				System.out.println("class in a method");
+			}
+		}
+	}
+}
+
+6.
+public class Main{
+	public Shape getShape(){
+		return new Shape(){
+			public void paint(){
+				System.out.println("painter paint() method");
+			}
+		};
+	}
+	public static void main(String[] args){
+		Painter painter = new Painter();
+		Shape shape = painter.getShape();
+		shape.paint();
+	}
+}
+public interface Shape{
+	public void paint();
+}
+
+7.
+public class B{
+	public A getA(int num){
+		return new A(num){};
+	}
+	public class A{
+		private int num;
+		public A(){}
+		public A(int num){
+			this.num = num;
+		}
+	}
+}
+
+8.
+public class B{
+	public A getA(final int num){
+		return new A(num){
+			public int getNum(){
+				return num;
+			}
+		};
+	}
+	public class A{
+		private int num;
+		public A(){}
+		public A(int num){
+			this.num = num;
+		}
+	}
+}
+
+9.
+public interface Service{
+	public void method1();
+}
+public interface ServiceFactory{
+	Service getService();
+}
+public class Implemention1 implements Service{
+	public void method1(){
+		System.out.println("In Implemention1 method method1()");		//
+	}
+	public static ServiceFactory factory = new ServiceFactory(){
+		public Service getService(){
+			return new Implemention1();
+		}
+	};
+}
+public class Implemention2 implements Service{
+	public void method1(){
+		System.out.println("in implemention2 method method1()");
+	}
+	public static ServiceFactory factory = new ServiceFactory(){
+		public Service getService(){
+			return new Implemention2();
+		}
+	};
+}
+public class Main{
+	public static void main(String[] args){
+		Implemention1.factory.getService().method1();
+		Implemention2.factory.getService().method1();
+	}
+}
+
+10.静态内部类
+public class StaticClass{
+	private int num;
+	private static int sum = 2;
+	//静态内部类
+	private static class StaticInnerClass{
+		public int getSum(){
+			return sum;	//只能访问sum,不能访问num
+		}
+	}
+}
+public class Test{
+	public static void main(String[] args){
+		StaticClass.StaticInnerClass inner = new StaticClass.StaticInnerClass();
+		inner.getSum();
+	}
+}
+
+11.内部类多继承的例子？？？？
+public interface One{
+	public void inOne();
+}
+public interface Two{
+	public void inTwo();
+}
+public class CommonClass implements One,Two{
+	public void inOne(){
+		System.out.println("CommonClass inOne() method");
+	}
+	public void inTow(){
+		System.out.println("CommonClass inTow() method");
+	}
+}
+//以上为普通类实现多个接口
+
+public abstract class Three{
+	public abstract void inThree();
+}
+public abstract class Four{
+	public abstarct void inFour();
+}
+
+public class InnerThree extends Three{
+	public void inThree(){
+		System.out.println("In Contents inThree() method");
+	}
+}
+public class InnerFour extends Four{
+	public void inFour(){
+		System.out.println("in Contents inFour() method");
+	}
+}
+//上面这个例子还不是很明白，用内部类如何实现多继承？？？
+
+12.使用内部类实现隐藏？？？
+
+解决：
+public interface Incrementable{
+	void increment();
+}
+public class Example{
+	private class InsideClass implements InterfaceTest{
+		public void test(){
+			System.out.println("这是一个测试");
+		}
+	}
+	public InterfaceTest getIn(){
+		return new InsideClass();		//这里返回了Example的私有内部类InsideClass
+	}
+}
+public class Main{
+	public static void main(String[] args){
+		Example a = new Example();
+		InterfaceTest a1 = a.getIn();		//这里根本就没有看到InterfaceTest这个类
+		a1.test();
+	}
+}
+
+13.无条件地访问外围类的所有元素？？？
+
+解决：
+public class TagBean{
+	private String name = "liutao";
+	private class InTest{
+		public InTest(){
+			System.out.println(name);
+		}
+	}
+	public void test(){
+		new InTest();
+	}
+	public static void main(String[] args){
+		TagBean bb = new TagBean();
+		bb.test();
+	}
+}
+
+14.可以实现多继承？？？？
+
+解决：
+public class Example1{
+	public String name(){
+		return "liutao";
+	}
+}
+public class Example2{
+	public int age(){
+		return 25;
+	}	
+}
+public class MainExample{
+	private class Test1 extends Example1{
+		public String name(){
+			return super.name();
+		}
+	}
+	private class Test2 extends Example2{
+		public int age(){
+			return super.age();
+		}
+	}
+	public String name(){
+		return new Test1().name();
+	}
+	public int age(){
+		return new Test2().age();
+	}
+	public static void main(String[] args){
+		MainExample me = new MainExample();
+		System.out.println("姓名："+me.name());
+		System.out.println("年龄："+me.age());
+	}
+}
+
+15.避免修改接口而实现同一个类中两种同名方法的调用？？？
+
+解决：
+public interface Incrementable{
+	void increment();
+}
+public class MyIncrement{
+	public void increment(){
+		System.out.println("Other increment()");
+	}
+	static void f(MyIncrement f){
+		f.increment();
+	}
+}
+
+//MyIncrement类中有increment()方法，Incrementable接口中也有increment()方法，会引起冲突
+//public class Callee2 extends MyIncrement implements Incrementable{
+//	public void increment(){
+//	}
+//}
+public class Callee2 extends MyIncrement{
+	private int i = 0;
+	private void incr(){
+		i++;
+		System.out.println(i);
+	}
+	private class Closure implements Incrementable{
+		public void increment(){
+			incr();
+		}
+	}
+	Incrementable getCallbackReference(){
+		return new Closure();
+	}
+	public static void main(String[] args){
+		Callee2 callee = new Callee2();
+		callee.increment();								//调用MyIncrement中的increment()方法
+		callee.getCallbackReference().increment();		//调用Incrementable中的increment()方法
+	}
+}

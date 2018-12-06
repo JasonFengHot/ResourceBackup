@@ -1,0 +1,50 @@
+	1.如何添加默认书签到Browser???
+
+	解决：
+	BrowserProvider2.java/addDefaultBookmarks
+	在Browser/res/values/strings.xml中<string-array name="bookmarks">
+
+	2.默认浏览器主页的修改？？？？
+
+	解决：
+	browser/res/values/mtk_strings.xml
+	<string name="homepage_base_site_navigation" translatable="false">http://www.google.com</string>
+	这里虽然修改了HomePage但是刚进入Browser的时候还是会跳转到http://m.plus.pl页面，后来好像就好了，不知道是怎么回事
+
+	3.修改字符串为Kazam???蓝牙，USB，about phone,wifi热点
+
+	解决：
+	蓝牙：		/mediatek/config/up07_id_fly_polish_x55/custom.conf	bluetooth.HostName = Kazam Trooper X5.5
+	wifi热点：	/mediatek/config/up07_id_fly_polish_x55/custom.conf	wlan.SSID = Kazam Trooper X5.5		//这个在什么地方显示？？？
+			/frameworks/base/wifi/java/android/net/wifi/p2p/WifiP2pService.java	getPersistedDeviceName()方法的返回值return "Kazam Trooper X5.5";
+	USB：		/kernel/drivers/usb/gadget/android.c			#define PRODUCT_STRING "Kazama Trooper 5.5"
+	About phone:	/build/target/product/up07_id_fly_polish_x55.mk		PRODUCT_MODEL  := Kazam Trooper X5.5
+										PRODUCT_BRAND  := Kazam			//这个东西在什么地方显示？？
+
+4.[bug11129]修改音量调节界面？？？
+
+解决：
+onShowVolumeChanged
+R.layout.volume_adjust_item
+
+在VolumePanel.java中有
+mShowCombinedVolumes = !mVoiceCapable && !useMasterVolume;	//这里的值貌似是在config.xml文件中加载的，直接修改默认值就可以了，但这样是绝对不可以的，因为这样会将拨号按钮给隐藏掉，切记切记~~~~~~~~~~~~~~
+if (!mShowCombinedVolumes) {
+    mMoreButton.setVisibility(View.GONE);
+    mDivider.setVisibility(View.GONE);
+} else {
+    mMoreButton.setOnClickListener(this);
+}
+
+改为
+if (!mShowCombinedVolumes) {
+    mMoreButton.setVisibility(View.VISIBLE);
+    mDivider.setVisibility(View.VISIBLE);
+    mMoreButton.setOnClickListener(this);		//这里在点击了之后如何显示VolumePreference  ??????  从Editprofile.java 跳转到 RingerVolumePreference
+} else {
+    mMoreButton.setOnClickListener(this);
+}
+
+这里如何直接跳转到“音量设置界面”？？？？？？
+
+在VolumePanel.java中的createSliders（）方法中 其他工程同上

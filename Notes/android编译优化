@@ -1,0 +1,39 @@
+1.使用ccache
+
+ccache原理：
+在第一编译的时候，ccache会把我们编译出来的c或c++文件的一些中间文件保存到.ccache文件中缓存起来，下次我们再编译的时候，ccache会把检查这个文件是否被改变 ，如果没有被改变，则会把.ccache里面保存的中间文件直接取出来用，节省了编译的时间，需要注意的是，如果我们的ccache设置的空间不够大的话，可能会导致我们的编译速度还会有所下降
+详细信息参考WCP : http://192.168.3.77:8989/wcp/webdoc/view/Pub402880cd5c5da6e7015cfd883095096d.html
+
+步骤:
+a:安装ccache : sudo apt-get install ccache
+b:配置ccache大小 : ccache -M 50G
+c:配置ccache环境变量 : 打开 ~/.bashrc, 添加 export USE_CCACHE=1
+
+2.去掉编译java的时候生成的javadoc
+
+本人经常需要编译Android整个代码。
+但是编译时间太慢， 会浪费不少时间，主要时间是system.img的时间比较长。
+无意中发现，OUT目录下 out/target/common/docs，每次编译system.img的时候都会生成400MB左右的android API帮助文档。
+这个是编译java的时候生成的javadoc 。
+于是大致看了一些编译过程，发现可以直接修改代码不生成这些文档：
+android2.3 以前
+修改如下：
+build/tools/droiddoc/src/DroidDoc.java
+private static boolean generateDocs = false;//true
+----
+android4.0 以后
+修改如下：
+external/doclava/src/com/google/doclava/Doclava.java
+private static boolean generateDocs = false;//true;
+
+3.去掉编译部分app中的test
+
+在编译部分app的时候会生成test,而这些test在我们开发的时候不会用到,所以可以去掉这些test,节省编译的时间
+目前搜集 37N 的test文件在附件 removetests.sh 脚本中,其他平台可以参考脚本中的内容进行修改
+该脚本只是把 test 的 android.mk 文件名修改为 android.mk_bak
+使用的时候可以把 removetests.sh 放到 alps 目录下执行
+例如:
+tempPath="frameworks/base/packages/DocumentsUI/tests/Android.mk";mv ${tempPath} ${tempPath}_bak;
+
+
+PS:以上方法经我自己测试验证会有一定的效果,如有问题,请大家帮忙指正,大家有别的好的办法也请分享,谢谢!

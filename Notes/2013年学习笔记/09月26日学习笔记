@@ -1,0 +1,110 @@
+	1.修改Calendar中Home Time Zone的顺序？？？？
+
+	解决：只要修改
+	packages/apps/Calendar/src/com/android/calendar/TimezoneAdapter.java
+	getAllTimezones()方法中加上一个排序的方法就可以了
+	public CharSequence[][] getAllTimezones() {
+		CharSequence[][] timeZones = new CharSequence[2][mTimezones.size()];
+		List<String> ids = new ArrayList<String>(mTimezones.keySet());
+		List<TimezoneRow> timezones = new ArrayList<TimezoneRow>(mTimezones.values());
+		Collections.sort(timezones);				//只要添加上这个排序的方法就可以了
+		int i = 0;
+		for (TimezoneRow row : timezones) {
+			timeZones[0][i] = ids.get(i);
+			timeZones[1][i++] = row.toString();
+		}
+		return timeZones;
+	}
+
+	2.修改switch的图片？？？？
+
+	解决：
+	只要修改frameworks/base/core/res/res/drawable-mdip/下的switch的相关图片就可以了
+
+	3.如何修改switch上的文字的颜色？？？
+
+	解决：
+	frameworks/base/core/com/android/widget/Switch.java中的onDraw()方法中添加	mTextPaint.setColor(Color.parseColor("#87ceeb"));就可以了
+但是这个文字的颜色不会根据switch的状态而改变？？？？？？？？？？
+
+4.switch的高度如何改变？？？？
+
+5.switch的状态图片thumb在有的界面上显示不正常？？？
+
+6.bug12016::launcher上点击了之后设置壁纸？？？
+
+解决：
+在Launcher.java上给cell1--->cell5设置监听器，找到3个设置壁纸的Action的Manifest，并且找到需要使用的wallpapers添加一个自定义的Action就行了，然后在cell的onClickListener上使用自定义的Action跳转到指定的Activity
+//给workspace上的每个页面cell设置点击监听器onClickListener
+findViewById(R.id.cell1).setOnClickListener(new View.OnClickListener(){
+	public void onClick(View v){
+		startActivity(new Intent("自定义的Action"));
+	}
+});
+
+7.如何让壁纸保持原样设置到background上？？？
+
+解决：
+static class WallpaperDrawable extends Drawable {
+	Bitmap mBitmap;
+	int mIntrinsicWidth;
+	int mIntrinsicHeight;
+	void setBitmap(Bitmap bitmap) {
+		mBitmap = bitmap;
+		if (mBitmap == null) {
+			return;
+		}
+		mIntrinsicWidth = mBitmap.getWidth();
+		mIntrinsicHeight = mBitmap.getHeight();
+	}
+	@Override
+	public void draw(Canvas canvas) {
+		if (mBitmap == null) {
+			return;
+		}
+		int width = canvas.getWidth();
+		int height = canvas.getHeight();
+		float scalew = width / (float) mIntrinsicWidth;
+		float scaleh = height / (float) mIntrinsicHeight;
+		if (scalew > 1.0 || scaleh > 1.0) {
+			float scale = scalew > scaleh ? scalew : scaleh;
+			int scaledWidth = (int) (mIntrinsicWidth * scale);
+			int scaledHeight = (int) (mIntrinsicHeight * scale);
+			int x = (width - scaledWidth) / 2;
+			int y = (height - scaledHeight) / 2;
+			Bitmap scaledBitmap = Bitmap.createScaledBitmap(mBitmap, scaledWidth, scaledHeight, true);
+			canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG));
+			canvas.drawBitmap(scaledBitmap, x, y, null);
+			scaledBitmap.recycle();
+			scaledBitmap = null;
+		} else {
+			int x = (width - mIntrinsicWidth) / 2;
+			int y = (height - mIntrinsicHeight) / 2;
+			canvas.drawBitmap(mBitmap, x, y, null);
+		}
+	}
+	@Override
+	public int getOpacity() {
+		return android.graphics.PixelFormat.OPAQUE;
+	}
+	@Override
+	public void setAlpha(int alpha) {
+	}
+	@Override
+	public void setColorFilter(ColorFilter cf) {
+	}
+}
+
+
+wallpaper_preview = findViewById(R.id.wallpaper_preview);
+Bitmap bitmap = BitmapFactory.decodeResource(getResources(), getIntent().getIntExtra("resId", -1));
+wallpaperDrawable = new WallpaperDrawable();
+wallpaperDrawable.setBitmap(bitmap);
+wallpaper_preview.setBackgroundDrawable(wallpaperDrawable);
+wallpaper_preview.setOnClickListener(new OnClickListener() {
+	@Override
+	public void onClick(View v) {
+		finish();
+	}
+});
+

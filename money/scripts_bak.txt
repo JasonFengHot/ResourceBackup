@@ -1,0 +1,294 @@
+1.Linux网络优化加速一键脚本
+wget -N --no-check-certificate "https://raw.githubusercontent.com/chiakge/Linux-NetSpeed/master/tcp.sh"; chmod +x tcp.sh;./tcp.sh
+
+
+
+
+
+2.Ubuntu一键配置脚本
+https://blog.csdn.net/rovast/article/details/49686565
+
+
+
+3.Linux 环境下的 hosts 一键部署脚本
+#!/bin/sh
+#
+# script_tool_for_linux
+#
+# Use command: `sudo sh script_tool_for_linux.sh` or
+#    `su -c 'sh script_tool_for_linux.sh'`
+# to update your hosts file.
+#
+# WARNING: the script CAN NOT replace others' hosts rules.
+#   If you have hosts rules provided by others, you may get conflict.
+#
+if [ `id -u` -eq 0 ]; then
+ curl -fLo /tmp/fetchedhosts 'https://raw.githubusercontent.com/racaljk/hosts/master/hosts'
+ sed -i '/# Copyright (c) 2014/,/# Modified hosts end/d' /etc/hosts
+
+ sed -i "s/localhost/`hostname`/g" /tmp/fetchedhosts
+
+ cat /tmp/fetchedhosts >> /etc/hosts
+ rm -f /tmp/fetchedhosts
+
+ echo 'Success.'
+else
+ echo 'Permission denied, are you root?'
+fi
+
+
+4.一键安装ghost轻博客
+https://www.itbulu.com/fast-install-ghost.html
+
+
+
+5.一键测试脚本bench.sh
+wget -qO- bench.sh | bash
+curl -Lso- bench.sh | bash
+wget -qO- 86.re/bench.sh | bash
+curl -so- 86.re/bench.sh | bash
+https://down.vpsmm.com/shell/superbench.sh
+https://github.com/teddysun/across/blob/master/bench.sh
+
+
+
+
+
+6.一键备份数据库脚本
+
+https://teddysun.com/469.html
+
+
+
+7.ftp上传一键脚本
+
+https://teddysun.com/484.html
+
+
+
+8.一键安装kms服务脚本
+
+https://teddysun.com/530.html
+
+
+
+9.Linux性能测试UnixBench一键脚本
+
+https://teddysun.com/245.html
+
+https://down.vpsmm.com/shell/unixbench.sh
+#unixbench进行跑分测试，单核和多核不同跑分
+
+
+10.Shadowsocks Python版一键安装脚本
+https://teddysun.com/342.html
+
+
+
+11.CentOS下shadowsocks-libev一键安装脚本
+https://teddysun.com/357.html
+
+
+
+12.Debian下shadowsocks-libev一键安装脚本
+https://teddysun.com/358.html
+
+
+
+13.Shadowsocks-go一键安装脚本
+https://teddysun.com/392.html
+
+
+
+14.ShadowsocksR一键安装脚本
+https://shadowsocks.be/9.html
+
+
+
+15.一键安装最新内核并开启 BBR 脚本
+https://teddysun.com/489.html
+
+https://down.vpsmm.com/shell/bbr.sh
+#一键安装并开启bbr功能，google出品的一种TCP拥塞算法，不支持openvz虚拟架构。
+
+
+16.L2TP/IPSec一键安装脚本
+
+https://teddysun.com/448.html
+
+
+
+17.LAMP一键安装脚本使用说明
+
+https://teddysun.com/410.html
+
+
+
+18.Ubuntu/Debian/Centos一键安装FTP脚本
+
+http://vpsxyz.com/archives/21
+
+
+
+19.网速测试
+
+https://down.vpsmm.com/shell/superspeed.sh
+#主要包括国内的一些节点进行专项测试，电信、联通、移动
+20.html5网速测试
+
+https://down.vpsmm.com/php/speedtest.zip
+#需要php环境，下载后解压即可运行，无须安装
+
+
+21.SS一键包4版本
+
+https://down.vpsmm.com/shell/5hadows0cks-all.sh
+#一键安装ss服务器端4合1版本，自主选择：python版、R版(推荐)、go版、libev版(省内存)。
+https://teddysun.com/486.html/comment-page-21
+
+
+
+22.锐速一键包
+
+https://down.vpsmm.com/shell/serverspeeder.sh
+#一键安装锐速破解全功能版，不支持openvz架构，来自91yun
+
+https://down.vpsmm.com/shell/serverspeeder_appex.sh
+#另一位爱好者开发的锐速一键安装脚本，开发：https://github.com/0oVicero0/serverSpeeser_Install
+
+
+23.FS一键包
+
+https://down.vpsmm.com/shell/finalspeed.sh
+#一键安装finalspeed功能，支持全系架构
+
+
+24.L2TP一键包
+
+https://down.vpsmm.com/shell/l2tp.sh
+#一键安装l2tp的v7n服务器端，输入3个指令即可
+
+
+25.mysql一键备份脚本
+
+https://down.vpsmm.com/shell/AutoBackupToFtp.sh
+#每天自动备份MYSQL及打包网站目录
+
+
+26.transfer.sh 中文一键安装脚本
+
+https://ralf.ren/1621
+
+
+
+27.腾讯云CVM服务中文一键移除脚本
+
+https://ralf.ren/1585
+
+
+
+28.阿里云服务中文一键移除脚本
+
+https://ralf.ren/1583
+
+
+
+29.WordPress + LNMP 中文一键安装脚本 HTTPS版（带自动跳转HTTPS、自动申请Let’s Encrypt SSL证书）
+
+https://ralf.ren/1572
+
+
+
+30.Debian & Ubuntu 中文一键TCP网络优化脚本（集成锐速、BBR，自动更换内核）
+
+https://ralf.ren/1556
+
+
+
+31.WordPress + LNMP 中文一键安装脚本 HTTP版
+
+https://ralf.ren/1548
+
+
+
+32.WordPress + SQLite 一键安装脚本
+
+https://ralf.ren/1254
+
+
+
+33.Debian(Ubuntu)网络安装/重装系统一键脚本
+
+https://blog.kelu.org/tech/2018/02/02/debain-ubuntu-install-script-by-moeclub.html
+
+
+
+34.Ubuntu一键配置脚本
+
+https://blog.csdn.net/rovast/article/details/49686565
+
+
+
+35.linux shell之简单一键优化脚本
+
+http://blog.51cto.com/chocolee/1424587
+
+
+
+36.锐速破解版Linux一键安装脚本
+
+https://xpsss.com/859.html
+
+
+
+37.Linux下一键http配置脚本
+
+http://www.pengqi.club/blog/264.html     httpdauto.zip
+
+
+
+38.Linux一键评测跑分脚本——ZBench
+
+http://www.geekersq.cc/archives/79
+
+
+
+39.一键优化centos脚本
+
+http://blog.chinaunix.net/uid-26495963-id-3184812.html
+
+
+
+40.linux shell之简单一键优化脚本
+
+http://blog.51cto.com/chocolee/1424587
+
+
+
+41.shell脚本一键安装redis
+
+https://blog.slogra.com/post-695.html
+
+
+
+42.V2ray一键安装脚本及V2ray使用方法
+
+https://zshttp.com/1190.html
+
+
+
+43.Linux下实现SNMP一键安装的Shell脚本linux shell
+
+http://www.yuedudg.cn/script/article/2150001.html
+
+
+
+44.安装完Ubuntu后通过shell脚本一键安装软件
+
+https://www.cnblogs.com/liutongqing/p/7896363.html
+
+
+
+45.一个用于批量下载网络图片的Shell脚本
+
+https://blog.csdn.net/tcpipstack/article/details/39257057

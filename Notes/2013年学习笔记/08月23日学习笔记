@@ -1,0 +1,66 @@
+	1.[bug](时钟)闹钟界面世界时钟Cities列表中城市名显示全为大写(Tecno反馈)????
+
+	解决：
+	上面的时钟显示在	ClockFragment.java中		main_clock_frame.xml
+	下面的时钟显示在	WorldClockAdapter.java中	world_clock_item.xml-->world_clock_label.xml中
+	这里都只要修改TextView的	style="@style/label"---->	就可以了
+
+	2.关于修改USB名称的问题？？
+
+	解决：在android.c文件中使用了以下的宏控来控制多个版本的显示名称，就不需要使用多个拷贝android文件了,只需要在android.c中直接修改就可以了
+	#ifdef UP07_POLISH_X55
+	#define PRODUCT_STRING "Kazam Trooper X5.5"
+	#elif defined(UP11_FLY_X35)
+	#define PRODUCT_STRING "Kazam Trooper X3.5"
+	#elif defined(UP22_FLY_40)
+	#define PRODUCT_STRING "Kazam Trooper X4.0"
+	#else
+	#define PRODUCT_STRING "MT65xx Android Phone"
+	#endif
+
+	3.视频通话过程中
+
+	解决：
+	InCallScreen
+	R.id.VTHighVideo		大视频
+	R.id.VTLowVideo			小视频
+	VTInCallScreen.java
+	updateVTLocalPeerDisplay(){VTInCallScreen.getInstance().setDisplay(mLowHolder,mHighHolder);}
+	VTInCallScreen.java中有setVideoQuality(int quality)方法用于设置视频通话的质量
+
+	CameraParamters参数从VTelProvider.java中的nativeGetParameters()方法中获取
+	System.loadLibrary("mtk_tv_client");//通过这个加载jni		这里所对应的.c源文件在什么地方？？？
+
+	updateVTScreen(getVTScreenMode());//这个方法貌似没什么用？？？
+	这个问题提交mtk了，并且有了答复：
+	“视频通话时,网络传输的分辨率为176x144,此分辨率大小是spec定义的大小,无法更改.所以视频通话时的像素是无法改变的.”
+
+	4.修改锁屏界面？？？？
+
+	解决：
+	frameworks/base/core/res/res/layout-port/keyguard_host_view.xml
+	frameworks/base/core/res/res/layout/keyguard_pattern_view.xml
+	keyguard_security_container
+	keyguard_bouncer_frame
+	lockPatternView
+	keyguard_pattern_view.xml
+
+	frameworks/base/core/res/res/layout-port/keyguard_host_view.xml
+	<com.android.internal.policy.impl.keyguard.KeyguardSecurityContainer
+	    android:id="@+id/keyguard_security_container"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_maxHeight="500dp"				//这里从原来的400改为500应该就可以了
+	    androidprv:layout_childType="challenge"
+	    android:padding="0dp"
+	    android:gravity="bottom|center_horizontal">
+	    <com.android.internal.policy.impl.keyguard.KeyguardSecurityViewFlipper
+		android:id="@+id/view_flipper"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:clipToPadding="false"
+		android:paddingTop="@dimen/keyguard_security_view_margin"
+		android:gravity="center">
+	    </com.android.internal.policy.impl.keyguard.KeyguardSecurityViewFlipper>
+	</com.android.internal.policy.impl.keyguard.KeyguardSecurityContainer>
+

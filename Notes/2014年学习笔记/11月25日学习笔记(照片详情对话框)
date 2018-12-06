@@ -1,0 +1,72 @@
+1.在进入Settings->More->Network Share中报错？？？？
+
+Log:
+java.lang.RuntimeException: Unable to start activity ComponentInfo{com.android.settings/com.android.settings.SubSettings}: android.content.res.Resources$NotFoundException: String resource ID #0x1040651
+	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:2338)
+	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:2390)
+	at android.app.ActivityThread.access$800(ActivityThread.java:151)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1321)
+	at android.os.Handler.dispatchMessage(Handler.java:110)
+	at android.os.Looper.loop(Looper.java:193)
+	at android.app.ActivityThread.main(ActivityThread.java:5299)
+	at java.lang.reflect.Method.invokeNative(Native Method)
+	at java.lang.reflect.Method.invoke(Method.java:515)
+	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:825)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:641)
+	at dalvik.system.NativeStart.main(Native Method)
+Caused by: android.content.res.Resources$NotFoundException: String resource ID #0x1040651
+	at android.content.res.Resources.getText(Resources.java:254)
+	at android.content.res.Resources.getString(Resources.java:340)
+	at com.android.org.chromium.content.browser.ContentViewCore.initialize(ContentViewCore.java:756)
+	at com.android.org.chromium.android_webview.AwContents.createAndInitializeContentViewCore(AwContents.java:528)
+	at com.android.org.chromium.android_webview.AwContents.setNewAwContents(AwContents.java:638)
+	at com.android.org.chromium.android_webview.AwContents.<init>(AwContents.java:607)
+	at com.android.webview.chromium.WebViewChromium.initForReal(WebViewChromium.java:252)
+	at com.android.webview.chromium.WebViewChromium.access$100(WebViewChromium.java:86)
+	at com.android.webview.chromium.WebViewChromium$1.run(WebViewChromium.java:239)
+	at com.android.webview.chromium.WebViewChromium$WebViewChromiumRunQueue.drainQueue(WebViewChromium.java:113)
+	at com.android.webview.chromium.WebViewChromium$WebViewChromiumRunQueue$1.run(WebViewChromium.java:100)
+	at com.android.org.chromium.base.ThreadUtils.runOnUiThread(ThreadUtils.java:136)
+	at com.android.webview.chromium.WebViewChromium$WebViewChromiumRunQueue.addTask(WebViewChromium.java:97)
+	at com.android.webview.chromium.WebViewChromium.init(WebViewChromium.java:236)
+	at android.webkit.WebView.<init>(WebView.java:530)
+	at android.webkit.WebView.<init>(WebView.java:497)
+	at android.webkit.WebView.<init>(WebView.java:477)
+	at android.webkit.WebView.<init>(WebView.java:466)
+	at android.webkit.WebView.<init>(WebView.java:456)
+	at com.android.settings.TetherSettings.onCreate(TetherSettings.java:206)				//这里报错？？？
+	at android.app.Fragment.performCreate(Fragment.java:1678)
+	at android.app.FragmentManagerImpl.moveToState(FragmentManager.java:859)
+	at android.app.FragmentManagerImpl.moveToState(FragmentManager.java:1062)
+	at android.app.BackStackRecord.run(BackStackRecord.java:698)
+	at android.app.FragmentManagerImpl.execPendingActions(FragmentManager.java:1447)
+	at android.app.Activity.performStart(Activity.java:5273)
+	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:2311)
+	... 11 more
+
+2.阿拉伯语翻译？？？
+
+//packages/services/Telephony/res/values-ar/mtk_strings.xml
+<string name="lable_all_outgoing">All outgoing calls</string>
+<string name="lable_all_outgoing_international">International outgoing calls</string>
+<string name="lable_all_out_except">International outgoing calls except to home PLMN</string>
+<string name="lable_all_incoming">All incoming calls</string>
+<string name="lable_incoming_calls_except">Incoming calls while roaming</string>
+<string name="deactivate_all">Cancel all</string>
+<string name="change_password">Change barring password</string>
+
+
+//packages/apps/Calendar/res/values/strings.xml
+<string name="preferences_hide_declined_title">Hide declined events</string>
+<string name="preferences_use_home_tz_title">Use home time zone</string>
+
+//packages/apps/Settings/res/values/mtk_strings.xml
+<string name="tethered_ipv6_title">Hotspot &amp; tethering settings</string>
+
+3.照相机照片详细信息的对话框在哪里显示？？？
+
+解决：
+//packages\apps\gallery2\src\com\android\gallery3d\ui\DialogDetailsView.java
+mAdapter = new DetailsAdapter(details);
+ListView detailsList = (ListView) LayoutInflater.from(mActivity.getAndroidContext()).inflate(R.layout.details_list, null, false);
+detailsList.setAdapter(mAdapter);

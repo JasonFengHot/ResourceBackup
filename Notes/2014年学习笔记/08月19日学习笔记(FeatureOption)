@@ -1,0 +1,4 @@
+1.ProjectConfig.mk文件中的宏在什么地方生成FeatureOption.java??????
+
+解决：
+/home/zq/zq/kk_h5/out/target/product/up09_tecno_h5kk/obj/JAVA_LIBRARIES/mediatek-common_intermediates/FeatureOption.java

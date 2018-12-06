@@ -1,0 +1,153 @@
+1.如何抓取系统memory使用状况	https://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ11601
+	当出现系统memory不足导致高优先级进程被kill等异常时，需要抓取一段时间内的memory使用情况.
+	一. 在使用Mali GPU平台上(mt6572 mt6582 mt6592)使用如下脚本抓取.
+	具体测试手法如下：
+	1. 先将手机时间设置成和PC一样，清除mtklog，开启mobilelog.
+	2. 双击此脚本。
+	3. 出现问题后，停止脚本(Ctrl+C)将mobilelog和D:\MemLog一起打包
+
+	脚本内容：
+	@echo off
+	set logpath1=D:\MemLog\procrank.txt
+	set logpath2=D:\MemLog\GPU_memory_usage.txt
+	set logpath4=D:\MemLog\meminfo.txt
+	set logpath5=D:\MemLog\librank.txt
+	set logdir= D:\MemLog
+	del %logdir%
+	:loop
+	echo %date%  %time%
+	echo %date%  %time% >> %logpath1%
+	adb shell procrank -u >> %logpath1%  
+	echo %date%  %time% >> %logpath2%
+	adb shell cat /proc/mali/memory_usage  >> %logpath2%
+	echo %date%  %time% >> %logpath4%
+	adb shell cat proc/meminfo  >> %logpath4% 
+	echo %date%  %time% >> %logpath5%
+	adb shell librank  >> %logpath5%
+	echo "wait 5s to next catch"
+	ping -n 5 127.0.0.1>nul
+
+	goto loop
+
+
+	二. 在非Mali GPU平台上使用如下脚本：
+
+	@echo off
+	set logpath1=D:\MemLog\procrank.txt
+	set logpath4=D:\MemLog\meminfo.txt
+	set logdir= D:\MemLog
+	del %logdir%
+	:loop
+	echo %date%  %time%
+	echo %date%  %time% >> %logpath1%
+	adb shell procrank -u >> %logpath1%  
+	echo %date%  %time% >> %logpath4%
+	adb shell cat proc/meminfo  >> %logpath4% 
+	echo "wait 5s to next catch"
+	ping -n 5 127.0.0.1>nul
+
+	goto loop
+
+	三. 当确认是某个AP进程占用memory多，需要再监控对应进程时.
+	在Mali GPU平台使用如下脚本。 
+	双击后输入对应进程的PID后开始抓取  
+
+	@echo "please input the target pid :"
+	@echo off
+	adb shell ps
+	set processid=
+	set /p processid=Please Input process id to catch:
+	@echo off
+	set logpath1=D:\MemLog\procrank.txt
+	set logpath2=D:\MemLog\GPU_memory_usage.txt
+	set logpath3=D:\MemLog\Mem-%processid%.txt
+	set logpath4=D:\MemLog\meminfo.txt
+	set logpath5=D:\MemLog\librank.txt
+	set logdir= D:\MemLog
+	del %logdir%
+	:loop
+	echo %date%  %time%
+	echo %date%  %time% >> %logpath1%
+	adb shell procrank -u >> %logpath1%  
+	echo %date%  %time% >> %logpath2%
+	adb shell cat /proc/mali/memory_usage  >> %logpath2%
+	echo %date%  %time% >> %logpath3%
+	adb shell dumpsys meminfo %processid% >> %logpath3%  
+	echo %date%  %time% >> %logpath4%
+	adb shell cat proc/meminfo  >> %logpath4% 
+	echo %date%  %time% >> %logpath5%
+	adb shell librank  >> %logpath5%
+	echo "wait 5s to next catch"
+	ping -n 5 127.0.0.1>nul
+
+	goto loop 
+
+	四. 当确认是某个AP进程占用memory多时，需要再监控对应进程时.
+	在非Mali GPU平台使用如下脚本。
+	双击后输入对应进程的PID后开始抓取 
+
+	@echo "please input the target pid :"
+	@echo off
+	adb shell ps
+	set processid=
+	set /p processid=Please Input process id to catch:
+	@echo off
+	set logpath1=D:\MemLog\procrank.txt
+	set logpath3=D:\MemLog\Mem-%processid%.txt
+	set logpath4=D:\MemLog\meminfo.txt
+	set logdir= D:\MemLog
+	del %logdir%
+	:loop
+	echo %date%  %time%
+	echo %date%  %time% >> %logpath1%
+	adb shell procrank -u >> %logpath1%  
+	echo %date%  %time% >> %logpath3%
+	adb shell dumpsys meminfo %processid% >> %logpath3% 
+	echo %date%  %time% >> %logpath4%
+	adb shell cat proc/meminfo  >> %logpath4%
+	echo "wait 5s to next catch"
+	ping -n 5 127.0.0.1>nul
+
+	goto loop  
+
+2.内存不足时查看内存使用情况的一些adb command		https://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ04354
+
+	请参考如下1)2)3)条信息，请贵司先做初步分析，若需要敝司协助，请帮忙提供下面的信息，以加快问题解决速度。
+
+	1) 使用adb shell cat /proc/meminfo 命令，查看剩余的空间还有多少，通常的系统剩余空间是: MemFree + cached
+	如下看到的系统剩余空间是：5616K + 158632K
+	cat proc/meminfo
+	MemTotal:         483724 kB
+	MemFree:            5616 kB
+	Buffers:            2732 kB
+	Cached:           158632 kB
+	SwapCached:            0 kB
+	Active:           277336 kB
+	Inactive:          83232 kB
+	Active(anon):     197452 kB
+	需要注意的是，在setting->apps->running app里面看到的剩余空间是上述MemFree + cached + background running app memory - SECOND_SERVER_MEM，具体的计算方法参考：RunningProcessView.java(/alps/package/apps/settings/src/com/android/setting/applications)里面的void refreshUi(boolean dataChanged)函数 (相关FAQ09452手机cached free memory(剩余内存)计算方法)
+
+	2) 使用adb shell procrank 命令(仅ENG版本可用)，查看有哪些app占用内存过多，请以PSS栏位为参考，重点关注自己安装的一些APK以及PSS值比较大的process
+	adb shell procrank
+	PID      Vss      Rss      Pss      Uss  cmdline
+	476   65312K   65284K   38499K   35560K  com.android.launcher
+	268   54916K   54880K   30001K   27000K  system_server
+	110   32196K   28988K   18924K   12432K  /system/bin/surfaceflinger
+	347   42400K   42320K   15445K   10704K  com.android.systemui
+
+	3) 对于2)中占用比较异常的process，可以透过 adb shell showmap [pid](仅ENG版本可用)查看具体使用情况。以system_server 为例，先adb shell ps system_server得到pid：
+	adb shell ps system_server
+	USER     PID   PPID  VSIZE  RSS     WCHAN    PC         NAME
+	system    268   111   406736 54876 ffffffff 400e9c70 S system_server
+
+	再  adb shell showmap 268查看各个.so以及 heap，stack的使用情况，做初步的判断（同样以PSS栏位参考）
+	adb shell showmap 268
+	virtual                     shared   shared  private  private
+	size      RSS      PSS    clean    dirty    clean    dirty    # object
+	-------- -------- -------- -------- -------- -------- -------- ---- ------------------------------
+	72       20       20        0        0       20        0    1 /data/dalvik-cache/system@app@SettingsProvider.apk@classes.dex
+	352      148      103       32       16       48       52   18 /data/dalvik-cache/system@framework@android.policy.jar@classes.dex
+	1348       28        8       20        0        8        0    1 /data/dalvik-cache/system@framework@apache-xml.jar@classes.dex
+	956       60       13       52        0        8        0    1 /data/dalvik-cache/system@framework@bouncycastle.jar@classes.dex
+	24        8        0        8        0        0        0    1 /data/dalvik-cache/system@framework@core-junit.jar@classes.dex
+	3292     1056      126     1012        0       44        0    1 /data/dalvik-cache/system@framework@core.jar@classes.dex

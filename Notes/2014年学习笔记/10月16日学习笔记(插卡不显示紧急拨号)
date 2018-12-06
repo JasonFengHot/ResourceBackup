@@ -1,0 +1,7 @@
+	1.在插卡的情况下某些紧急号码不显示Emergency Number????
+
+	解决：
+	mediatek/frameworks/base/op/java/com/mediatek/op/telephony/PhoneNumberExt.java		修改这个文件中的 isCustomizedEmergencyNumber()方法就行了
+	注意需要编译	mediatek/frameworks/base	而不是编译	mediatek/frameworks/base/op
+	
+	2.

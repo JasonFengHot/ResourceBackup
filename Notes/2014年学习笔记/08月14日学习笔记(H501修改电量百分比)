@@ -1,0 +1,12 @@
+1.Bug13348 修改电量百分比的图片？？？
+
+解决：
+//frameworks/base/packages/SystemUI/res/layout/status_bar.xml				//貌似只需要修改这个文件就可以了
+//frameworks/base/packages/SystemUI/res/layout/gemini_status_bar.xml
+<TextView
+    android:id="@+id/percentage"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:visibility = "gone"
+    android:paddingStart="4dip"
+    android:textAppearance="@style/TextAppearance.StatusBar.Clock"/>

@@ -1,0 +1,16 @@
+1.在VolumePanel.java中的createSliders()方法中的int plusOne = (streamType == AudioSystem.STREAM_BLUETOOTH_SCO || streamType == AudioSystem.STREAM_VOICE_CALL) ? 0 : 0;有什么用？？？
+
+2.在VolumePanel.onStopTrackingTouch()方法中的
+if((sc.streamType == AudioManager.STREAM_VOICE_CALL || sc.streamType == AudioManager.STREAM_BLUETOOTH_SCO) && seekBar.getProgress() <= 0) {
+	seekBar.setProgress(1);			//这里为什么要这样写？？？？？？？？？？
+	//mAudioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL,1,0);//这里是我加上的
+}
+
+	3.如何在View中设置字符串居中？？？？
+
+	解决：
+	Paint mPaint = new Paint();
+	mPaint.setTextAlign(Paint.Align.CENTER);
+	canvas.drawText(mPowerOffStr, 148, 40 + postion, mPaint);	//这里的148是屏幕宽度的一半
+
+4.

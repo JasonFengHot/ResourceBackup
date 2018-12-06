@@ -1,0 +1,33 @@
+1.Bug7754 名称及默认设置？？？
+
+解决：
+Default Time zone/Default city:																						//在mediatek/config/up11_ddm_a35eh/system.prop		persist.sys.timezone =
+BluetoothName:																										//在mediatek/config/up11_ddm_a35eh/custom.conf		bluetooth.HostName =
+date format:
+	在packages/apps/settings/src/com/android/settings/DateTimeSettings.java文件中有
+	private String getDateFormat() {
+		return Settings.System.getString(getContentResolver(), Settings.System.DATE_FORMAT);						//这个貌似需要自己在defaults.xml文件和DatabaseHelper.java文件中添加默认值
+	}
+12-hour format:					
+	frameworks/base/core/java/android/text/format/DateFormat.java
+	public static boolean is24HourFormat(Context context) {
+		String value = Settings.System.getString(context.getContentResolver(),Settings.System.TIME_12_24);			//从defaults.xml文件中加载 <string name="sagereal_time_12_24">12</string>	
+		...
+	}
+
+默认 Automatic time zone 选中
+	在packages/apps/settings/src/com/android/settings/DateTimeSettings.java文件中有
+	boolean autoTimeZoneEnabled = getAutoState(Settings.Global.AUTO_TIME_ZONE);										//这个在defaults.xml文件中有 <bool name="def_auto_time_zone">true</bool>
+	boolean isFirstRun = getActivity().getIntent().getBooleanExtra(EXTRA_IS_FIRST_RUN, false);
+	if (Utils.isWifiOnly(getActivity()) || isFirstRun) {
+		getPreferenceScreen().removePreference(mAutoTimeZonePref);
+		autoTimeZoneEnabled = false;
+	}
+	mAutoTimeZonePref.setChecked(autoTimeZoneEnabled);
+
+默认输入法?????
+<string name="enabled_input_methods" translatable="false">com.android.inputmethod.latin/.LatinIME;-921088104;1494081088;774684257;816242702;843948332;963984255;931682827;-889195354;-486540198;1983547218</string>	
+
+默认dictionary method:
+
+bluetooth receive path:

@@ -1,0 +1,60 @@
+//setOnKeyListener
+view.setOnKeyListener(new android.view.View.OnKeyListener() {
+    @Override
+    public boolean onKey(View v, int keyCode, android.view.KeyEvent event) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+});
+
+//判断是否在响铃
+ITelephony telephonyManager = ITelephony.Stub.asInterface(ServiceManager.checkService(Context.TELEPHONY_SERVICE));
+if(telephonyManager != null){
+    try{
+        if(telephonyManager.isRinging()){
+            telephonyManager.silenceRinger();
+            return true;
+        }
+    }catch(Exception e){
+        e.printStackTrace();
+    }
+}
+
+//模拟按键
+keyRemappingSendFakeKeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_VOLUME_UP); //模拟VOLUME_UP键按下
+keyRemappingSendFakeKeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_VOLUME_UP);   //模拟VOLUME_UP键抬起
+private long mKeyRemappingSendFakeKeyDownTime;
+private void keyRemappingSendFakeKeyEvent(int action, int keyCode) {
+    long eventTime = android.os.SystemClock.uptimeMillis();
+    if (action == KeyEvent.ACTION_DOWN) {
+        mKeyRemappingSendFakeKeyDownTime = eventTime;
+    }
+    android.view.KeyEvent keyEvent = new android.view.KeyEvent(mKeyRemappingSendFakeKeyDownTime, eventTime, action, keyCode, 0);
+    android.hardware.input.InputManager inputManager = (android.hardware.input.InputManager) getSystemService(Context.INPUT_SERVICE);
+    inputManager.injectInputEvent(keyEvent, android.hardware.input.InputManager.INJECT_INPUT_EVENT_MODE_ASYNC);
+}
+
+//监听布局的变化
+getWindow().getDecorView().addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+        //Todo
+    }
+});
+
+//ListView的左右键监听
+getListView().setOnKeyListener(new android.view.View.OnKeyListener(){
+    public boolean onKey(View v, int keyCode , KeyEvent event){
+        if(event.getAction() == KeyEvent.ACTION_UP && (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)){
+            View selectedView = getListView().getSelectedView();
+            if(selectedView != null){
+                SeekBar seekbar = (SeekBar)selectedView.findViewById(com.android.internal.R.id.seekbar);
+                seekbar.onKeyDown(keyCode, new KeyEvent(KeyEvent.ACTION_DOWN, keyCode));
+                seekbar.onKeyUp(keyCode, new KeyEvent(KeyEvent.ACTION_UP, keyCode));
+                return true;
+            }
+        }
+        return false;
+    }
+});
+
+

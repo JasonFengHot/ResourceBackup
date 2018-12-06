@@ -1,0 +1,122 @@
+添加 test 分区(参考MTK文档《Partition_Layout_Introduction_and_Customization_L_AOSP.pdf》)
+	device/mediatek/build/build/tools/ptgen/MT6735M/partition_table_MT6735M.xls
+
+没有权限？？
+1) Comment out the code to start persistence service, then use adb shell to check the permission and ownership of persistent partition (/dev/block/xxx…) and its mounted parent path (/persdata) and current path (/persdata/absolute) via “mount” and “ls -alZ".  The output can tell you if ownership and permission is correct or not.
+
+2) Turn SELinux from enforcing to permissive.  If this can let device boot success and access partition correctly, it suggests that SELinux policy is not integrated success.  If still cannot success, that means something still wrong in ownership and permission in file systems.  Back to option 1 to check.
+
+//这里的 mmcblk0p17 可以通过 adb shell ls -l /dev/block/platform/mtk-msdc.0/by-name 命令查看
+lrwxrwxrwx root     root              2015-01-01 08:13 boot -> /dev/block/mmcblk0p7
+lrwxrwxrwx root     root              2015-01-01 08:13 cache -> /dev/block/mmcblk0p22
+lrwxrwxrwx root     root              2015-01-01 08:13 expdb -> /dev/block/mmcblk0p10
+lrwxrwxrwx root     root              2015-01-01 08:13 flashinfo -> /dev/block/mmcblk0p24
+lrwxrwxrwx root     root              2015-01-01 08:13 frp -> /dev/block/mmcblk0p18
+lrwxrwxrwx root     root              2015-01-01 08:13 keystore -> /dev/block/mmcblk0p14
+lrwxrwxrwx root     root              2015-01-01 08:13 lk -> /dev/block/mmcblk0p5
+lrwxrwxrwx root     root              2015-01-01 08:13 logo -> /dev/block/mmcblk0p9
+lrwxrwxrwx root     root              2015-01-01 08:13 metadata -> /dev/block/mmcblk0p20
+lrwxrwxrwx root     root              2015-01-01 08:13 nvdata -> /dev/block/mmcblk0p19
+lrwxrwxrwx root     root              2015-01-01 08:13 nvram -> /dev/block/mmcblk0p2
+lrwxrwxrwx root     root              2015-01-01 08:13 oemkeystore -> /dev/block/mmcblk0p12
+lrwxrwxrwx root     root              2015-01-01 08:13 para -> /dev/block/mmcblk0p6
+lrwxrwxrwx root     root              2015-01-01 08:13 proinfo -> /dev/block/mmcblk0p1
+lrwxrwxrwx root     root              2015-01-01 08:13 protect1 -> /dev/block/mmcblk0p3
+lrwxrwxrwx root     root              2015-01-01 08:13 protect2 -> /dev/block/mmcblk0p4
+lrwxrwxrwx root     root              2015-01-01 08:13 recovery -> /dev/block/mmcblk0p8
+lrwxrwxrwx root     root              2015-01-01 08:13 seccfg -> /dev/block/mmcblk0p11
+lrwxrwxrwx root     root              2015-01-01 08:13 secro -> /dev/block/mmcblk0p13
+lrwxrwxrwx root     root              2015-01-01 08:13 system -> /dev/block/mmcblk0p21
+lrwxrwxrwx root     root              2015-01-01 08:13 tee1 -> /dev/block/mmcblk0p15
+lrwxrwxrwx root     root              2015-01-01 08:13 tee2 -> /dev/block/mmcblk0p16
+
+lrwxrwxrwx root     root              2015-01-01 08:13 test -> /dev/block/mmcblk0p17
+
+lrwxrwxrwx root     root              2015-01-01 08:13 userdata -> /dev/block/mmcblk0p23
+
+	alps/device/mediatek/mt6735/init.mt6735.rc
+		# add by zhangqi 2015/07/10:begin
+		#For Absolute Persistence Partition
+			mkdir /persdata 0750 system system
+			mkdir /persdata/absolute 0750 system system
+			chown system system /persdata
+			chmod 0750 /persdata
+			chown system system /persdata/absolute
+			chmod 0750 /persdata/absolute
+		# update to the use the correct /dev/block partition number
+			wait /dev/block/mmcblk0p17/by-name/test
+			check_fs /dev/block/mmcblk0p17/by-name/test ext4
+			mount ext4 /dev/block/mmcblk0p17/by-name/test /persdata/absolute nosuid nodev barrier=1
+
+		# if SE linux is enabled, this command is also required 
+			restorecon_recursive /persdata/absolute
+		# add by zhangqi 2015/07/10:end
+		
+		# add by zhangqi 2015/07/10:begin
+			exec /system/bin/chmod 0660 /dev/block/platform/mtk-msdc.0/by-name/test
+			exec /system/bin/chown root:system /dev/block/platform/mtk-msdc.0/by-name/test
+		# add by zhangqi 2015/07/10:end
+		
+		# add by zhangqi 2015/07/10:begin
+			chown system system /persdata/absolute
+			chmod 0750 /persdata/absolute
+		# add by zhangqi 2015/07/10:end
+
+	//下面这两个文件也要参照上面的修改方法修改，否则会导致写码写不进去，工程模式测试失败等问题，切记，切记！！！！！！！！！！
+	alps/device/mediatek/mt6735/meta_init.rc
+	alps/device/mediatek/mt6735/factory_init.rc
+	
+挂载test分区
+	alps/device/sagetel/sr6735m_35gu_l/fstab.mt6735
+		# Bug35049 zhangqi modified for absolute function 2015/07/16:begin
+		/dev/block/platform/mtk-msdc.0/by-name/test  /persdata/absolute  ext4  noatime,nosuid,nodev,noauto_da_alloc,discard  wait,check,autoformat
+		# Bug35049 zhangqi modified for absolute function 2015/07/16:end
+	
+如何检查分区是否已挂载：
+	adb shell df
+		Filesystem               Size     Used     Free   Blksize
+		/dev                   463.1M    68.0K   463.0M   4096
+		/sys/fs/cgroup         463.1M    12.0K   463.1M   4096
+		/mnt/asec              463.1M     0.0K   463.1M   4096
+		/mnt/obb               463.1M     0.0K   463.1M   4096
+		/mnt/media_rw          463.1M     0.0K   463.1M   4096
+		/storage/usbotg        463.1M     0.0K   463.1M   4096
+		/system                  2.4G     1.0G     1.3G   4096
+		/data                    4.1G     1.8G     2.3G   4096
+		/cache                 387.4M   552.0K   386.9M   4096
+		/protect_f               5.8M    60.0K     5.8M   4096
+		/protect_s               5.8M    56.0K     5.8M   4096
+		
+		/persdata/absolute      59.0M   436.0K    58.6M   4096
+		
+		/nvdata                 27.5M     2.2M    25.3M   4096
+		/mnt/cd-rom              1.2M     1.2M     0.0K   2048
+		/storage/sdcard0         4.0G     1.8G     2.2G   4096
+
+	adb shell mount
+		rootfs / rootfs ro,seclabel 0 0
+		tmpfs /dev tmpfs rw,seclabel,nosuid,relatime,mode=755 0 0
+		devpts /dev/pts devpts rw,seclabel,relatime,mode=600 0 0
+		proc /proc proc rw,relatime 0 0
+		sysfs /sys sysfs rw,seclabel,relatime 0 0
+		debugfs /sys/kernel/debug debugfs rw,seclabel,relatime 0 0
+		selinuxfs /sys/fs/selinux selinuxfs rw,relatime 0 0
+		none /acct cgroup rw,relatime,cpuacct 0 0
+		none /sys/fs/cgroup tmpfs rw,seclabel,relatime,mode=750,gid=1000 0 0
+		tmpfs /mnt/asec tmpfs rw,seclabel,relatime,mode=755,gid=1000 0 0
+		tmpfs /mnt/obb tmpfs rw,seclabel,relatime,mode=755,gid=1000 0 0
+		none /dev/cpuctl cgroup rw,relatime,cpu 0 0
+		tmpfs /mnt/media_rw tmpfs rw,seclabel,relatime,mode=755,uid=1000,gid=1000 0 0
+		tmpfs /storage/usbotg tmpfs rw,seclabel,relatime,mode=755,uid=1000,gid=1000 0 0
+		/dev/block/platform/mtk-msdc.0/by-name/system /system ext4 ro,seclabel,relatime,data=ordered 0 0
+		/dev/block/platform/mtk-msdc.0/by-name/userdata /data ext4 rw,seclabel,nosuid,nodev,noatime,discard,noauto_da_alloc,resuid=10010,data=ordered 0 0
+		/dev/block/platform/mtk-msdc.0/by-name/cache /cache ext4 rw,seclabel,nosuid,nodev,noatime,discard,noauto_da_alloc,data=ordered 0 0
+		/dev/block/platform/mtk-msdc.0/by-name/protect1 /protect_f ext4 rw,seclabel,nosuid,nodev,noatime,nodelalloc,noauto_da_alloc,commit=1,data=ordered 0 0
+		/dev/block/platform/mtk-msdc.0/by-name/protect2 /protect_s ext4 rw,seclabel,nosuid,nodev,noatime,nodelalloc,noauto_da_alloc,commit=1,data=ordered 0 0
+		
+		/dev/block/platform/mtk-msdc.0/by-name/test /persdata/absolute ext4 rw,seclabel,nosuid,nodev,noatime,discard,noauto_da_alloc,data=ordered 0 0
+		
+		/dev/block/platform/mtk-msdc.0/by-name/nvdata /nvdata ext4 rw,seclabel,nosuid,nodev,noatime,discard,noauto_da_alloc,data=ordered 0 0
+		/dev/block/loop0 /mnt/cd-rom iso9660 ro,relatime 0 0
+		adb /dev/usb-ffs/adb functionfs rw,relatime 0 0
+		/dev/fuse /storage/sdcard0 fuse rw,nosuid,nodev,noexec,relatime,user_id=1023,group_id=1023,default_permissions,allow_other 0 0

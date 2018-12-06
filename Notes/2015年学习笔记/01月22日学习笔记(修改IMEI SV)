@@ -1,0 +1,63 @@
+	1.全局对话框如何监听 KeyEvent.KEYCODE_HOME 按键事件？？？
+
+	解决：
+	AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+	Dialog dialog = builder.create();
+	dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);			//设置对话框为全局对话框
+	dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_HOMEKEY_DISPATCHED);	//设置对话框可以监听按钮的事件，根据PhoneWindowManager中可以看出来
+	dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+		public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+			return false;
+		}
+	});
+	dialog.show();
+
+	2.如何修改IMEI SV ??????
+
+	解决：
+	如何修改IMEI SV
+	IMEI SV通常保存在Modem中，可以通过下面几个方式来修改默认的:
+	a.IMEI SV 的修改，可以通过AT COMMAND ：AT+EGMR=1,9,”00”;
+	b.在modem SW 修改SV 的默认值的方法:
+		custom/service/nvram/nvram_data_items.c
+		nvram_data_items.c 中 nvram_sys_cache[] SYS_CACHE_ENTRY(NVRAM_SYS_SVN, NVRAM_APP_RESERVED, KAL_FALSE, "NVRAM_SYS_SVN", 0x87, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00),
+	另外，关于IMEI /IMEI SV 等基本信息可以参考DMS 文档：IMEI and SVN Guide
+
+	3.Bug27890 [共性问题]修改通过短信分享StopWatch没有显示冒号？？？
+
+	解决：
+	//packages/apps/DeskClock/src/com/android/deskclock/stopwatch/Stopwatches.java
+	public static String getTimeText(Context context, long time, int lap) {
+		if (time < 0) {
+		    time = 0;
+		}
+		String[] formats;
+		if (lap != NO_LAP_NUMBER) {
+		    formats = context.getResources().getStringArray(R.array.shared_laps_format_set);
+		} else {
+		    formats = context.getResources().getStringArray(R.array.stopwatch_format_set);
+		}
+		char decimalSeparator = DecimalFormatSymbols.getInstance().getDecimalSeparator();
+		int formatIndex;
+		long hundreds, seconds, minutes, hours;
+		seconds = time / 1000;
+		hundreds = (time - seconds * 1000) / 10;
+		minutes = seconds / 60;
+		seconds = seconds - minutes * 60;
+		hours = minutes / 60;
+		minutes = minutes - hours * 60;
+		if (hours >= 100) {
+			formatIndex = 4;
+		} else if (hours >= 10) {
+		    formatIndex = 3;
+		} else if (hours > 0) {
+			formatIndex = 2;
+		} else if (minutes >= 10) {
+			formatIndex = 1;
+		} else {
+			formatIndex = 0;
+		}
+		return String.format(formats[formatIndex], hours, minutes, seconds, hundreds, decimalSeparator, lap);	//这里会将所需要的字符串格式化为短信中的字符串
+	}
+	//packages/apps/DeskClock/res/values/strings.xml
+	<xliff:g id="lap">%6$d</xliff:g><xliff:g id="decimal_separator">%5$c</xliff:g> &#x200E;<xliff:g id="M">%2$d</xliff:g>:<xliff:g id="S">%3$02d</xliff:g><xliff:g id="decimal_separator">%5$c</xliff:g><xliff:g id="D">%4$02d</xliff:g>			//把这里原来的&#x200E;改为:即可

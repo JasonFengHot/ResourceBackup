@@ -1,0 +1,141 @@
+1.Bug4269 有未接来电或短信时，界面下方拨号图标和短信图标上没有未接个数显示？？？？
+
+解决：
+在Launcher3/src/com/android/launcher3/文件夹下添加 MTKUnreadLoader 类，并添加其他相关文件
+在BubbleTextView.java的draw(Canvas canvas)方法中添加  MTKUnreadLoader.drawUnreadEventIfNeed(canvas, this);
+在哪些地方重新设置ItemInfo的unreadNum？？？？？
+
+MTKUnreadLoader.drawUnreadEventIfNeed(canvas, this);        //这里的this中带有ItemInfo信息
+
+BubbleTextView.java
+public void applyFromShortcutInfo(ShortcutInfo info, IconCache iconCache) {
+    Bitmap b = info.getIcon(iconCache);
+    LauncherAppState app = LauncherAppState.getInstance();
+    DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+    setCompoundDrawables(null,Utilities.createIconDrawable(b), null, null);
+    setCompoundDrawablePadding((int) ((grid.folderIconSizePx - grid.iconSizePx) / 2f));
+    setText(info.title);
+    setTag(info);
+}
+
+Launcher.java
+View createShortcut(int layoutResId, ViewGroup parent, ShortcutInfo info) {                //在哪里调用这个方法？？？？在Workspace的
+    BubbleTextView favorite = (BubbleTextView) mInflater.inflate(layoutResId, parent, false);
+    favorite.applyFromShortcutInfo(info, mIconCache);                        //这里调用BubbletTextView中的方法
+    favorite.setOnClickListener(this);
+    favorite.setOnLongClickListener(this);
+    return favorite;
+}
+
+Workspace.java
+void addApplicationShortcut(ShortcutInfo info, CellLayout target, long container, int screen, int cellX, int cellY, boolean insertAtFirst, int intersectX, int intersectY) {    //在哪里调用这个方法？？？
+    View view = mLauncher.createShortcut(R.layout.application, target, (ShortcutInfo) info);    //在这里调用createShortcut()方法
+    final int[] cellXY = new int[2];
+    target.findCellForSpanThatIntersects(cellXY, 1, 1, intersectX, intersectY);
+    addInScreen(view, container, screen, cellXY[0], cellXY[1], 1, 1, insertAtFirst);
+    LauncherModel.addOrMoveItemInDatabase(mLauncher, info, container, screen, cellXY[0],cellXY[1]);
+}
+
+Launcher.java
+void completeAddApplication(Intent data, long container, int screen, int cellX, int cellY) {
+    final int[] cellXY = mTmpAddItemCellCoordinates;
+    final CellLayout layout = getCellLayout(container, screen);
+    if (cellX >= 0 && cellY >= 0) {
+        cellXY[0] = cellX;
+        cellXY[1] = cellY;
+    } else if (!layout.findCellForSpan(cellXY, 1, 1)) {
+        showOutOfSpaceMessage(isHotseatLayout(layout));
+        return;
+    }
+    final ShortcutInfo info = mModel.getShortcutInfo(getPackageManager(), data, this);                            //在这里生成ShortcutInfo????
+    if (info != null) {
+        info.setActivity(data.getComponent(), Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+        info.container = ItemInfo.NO_ID;
+        mWorkspace.addApplicationShortcut(info, layout, container, screen, cellXY[0], cellXY[1],isWorkspaceLocked(), cellX, cellY);        //在这里调用completeAddApplication()方法
+    } else {
+        Log.e(TAG, "Couldn't find ActivityInfo for selected application: " + data);
+    }
+}
+
+LauncherMode.java
+public ShortcutInfo getShortcutInfo(PackageManager manager, Intent intent, Context context,Cursor c, int iconIndex, int titleIndex, HashMap<Object, CharSequence> labelCache){
+    
+}
+
+Workspace.java
+void updateShortcuts(ArrayList<ApplicationInfo> apps) {                            //在哪里调用这个方法？？？？
+    ArrayList<ShortcutAndWidgetContainer> childrenLayouts = getAllShortcutAndWidgetContainers();
+    for (ShortcutAndWidgetContainer layout: childrenLayouts) {
+        int childCount = layout.getChildCount();
+        for (int j = 0; j < childCount; j++) {
+            final View view = layout.getChildAt(j);
+            Object tag = view.getTag();
+            if (tag instanceof ShortcutInfo) {
+                ShortcutInfo info = (ShortcutInfo) tag;
+                // We need to check for ACTION_MAIN otherwise getComponent() might
+                // return null for some shortcuts (for instance, for shortcuts to
+                // web pages.)
+                final Intent intent = info.intent;
+                final ComponentName name = intent.getComponent();
+                if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION && Intent.ACTION_MAIN.equals(intent.getAction()) && name != null) {
+                    final int appCount = apps.size();
+                    for (int k = 0; k < appCount; k++) {
+                        ApplicationInfo app = apps.get(k);
+                        if (app.componentName.equals(name)) {
+                            BubbleTextView shortcut = (BubbleTextView) view;
+                            info.updateIcon(mIconCache);
+                            info.title = app.title.toString();
+                            shortcut.applyFromShortcutInfo(info, mIconCache);            //这里调用BubbletTextView中的方法
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+    2.下拉栏中的Hotspot不会随语言改变而变化？？？
+
+    解决：
+    在QuickSettingsConnectionModel.java的updateResources()方法中添加如下代码即可
+    public void updateResources() {
+        ...
+        //zhangqi modified begin
+        TextView wifihotText = (TextView)mWifihotTileView.findViewById(R.id.wifihot_textview);
+        wifihotText.setText(R.string.wifihot);
+        //zhangqi modified end
+        ...
+    }
+
+3.
+Workspace.java
+public void updateShortcutsAndFoldersUnread() {
+    ...
+    info.unreadNum = MTKUnreadLoader.getUnreadNumberOfComponent(componentName);            //在这里设置unreadNum，这个已添加
+    ...
+}
+
+Workspace.java
+public void updateComponentUnreadChanged(ComponentName component, int unreadNum) {}            //在这个方法中设置unreadNum
+Launcher.java
+public void bindComponentUnreadChanged(final ComponentName component, final int unreadNum) {}        //在这个方法中调用上面的方法
+MTKUnreadLoader.java
+public void onReceiver(){
+    callbacks.bindComponentUnreadChanged(componentName, unreadNum);                    //在这里调用上面的方法？？？？    这个广播在哪里发送？？？？
+}
+
+
+ConversationList.java
+mUnreadConvCount.setText(count > 0 ? Integer.toString(count) : null);                    //未读消息文本框
+//开始查询未读消息数量
+mBackgroundQueryHandler.startQuery(UNREAD_MESSAGES_QUERY_TOKEN, null,wpMessagesUri, WP_PROJECTION, Threads.READ + "=0", null, null);    //WPMessageActivity
+Conversation.startQuery(mQueryHandler, UNREAD_THREADS_QUERY_TOKEN, "allunread");            //ConversationList
+//查询完成
+protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+    //在这里设置未读消息数量
+    mUnreadConvCount.setText(count > 0 ? Integer.toString(cursor.getCount()) : null);
+}
+
+
+4.明天再看看JB上的Launcher未读消息气泡是怎么做的？？未读消息数量是如何获取的？？？

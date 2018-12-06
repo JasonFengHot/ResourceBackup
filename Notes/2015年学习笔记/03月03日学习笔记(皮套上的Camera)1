@@ -1,0 +1,54 @@
+	1.先打开FlashLight，再合上皮套，报错？？？最好使用AIDL调用FlashLight的接口
+
+	解决：
+	已使用AIDL实现
+
+2.如何再锁屏界面添加Camera????
+
+	3.在打开FlashLight应用的情况下，合上皮套，关闭闪关灯，再打开皮套解锁，FlashLight应用闪关灯的状态和实际不一致？？？
+
+	解决：
+	注册一个广播接收器，接收皮套的打开和关闭的广播就可以了，具体代码如下
+	registerReceiver(mReceiver, new IntentFilter(android.content.LidManager.ACTION_LID_STATE_CHANGED));
+
+	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (intent != null && android.content.LidManager.ACTION_LID_STATE_CHANGED.equals(intent.getAction())) {
+				if(mService != null){
+					try{
+						mCameraOn = mService.isFlashLightOn();
+						setBackgroundOn(mCameraOn);
+					}catch(RemoteException e){
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	};
+
+4.皮套上的闪关灯和FlashLight应用强度测试会偶尔出现报错？？？
+
+at com.sagereal.flashlight.FlashLightService$FlashLightBinder.setFlashLightOn(FlashLightService.java:24)
+at com.sagereal.flashlight.FlashLightActivity.openFlashLight(FlashLightActivity.java:70)
+at com.sagereal.flashlight.FlashLightActivity.access$100(FlashLightActivity.java:18)
+at com.sagereal.flashlight.FlashLightActivity$2.onClick(FlashLightActivity.java:55)
+
+5.先打开Camera再合上皮套，皮套上的FlashLight和Camera都不起作用？？？
+
+	6.在退出FlashLight应用的时候会出现闪光灯闪一下的现象？？？
+
+	解决：
+	是我自己的失误，只要把FlashLightService.java 中的setFlashLightOn()方法中关闭闪关灯的方法修改一下就可以了
+	//原来是
+	mParameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+	//改为如下即可
+	mParameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+
+7.有时候FlashLight的闪关灯打开了，合上皮套之后皮套上的闪关灯状态显示不对？？？
+
+8.在录像的时候，如何将预览的SurfaceView往上移？？？
+
+9.如何将 shutter_button 往上移？？？
+
+10.

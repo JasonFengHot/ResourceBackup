@@ -1,0 +1,87 @@
+1.如何修改Dialog的坐标？？？？
+
+Window window = mDialog.getWindow();
+window.setGravity(Gravity.TOP);
+LayoutParams lp = window.getAttributes();
+lp.y = mContext.getResources().getDimensionPixelOffset(com.android.internal.R.dimen.volume_panel_top);
+window.setAttributes(lp);
+
+2.01-02 00:34:38.756: D/AudioProfileManager(1731): setActiveProfile: profileKey = mtk_audioprofile_meeting
+
+private final AudioProfileListener mRingerModeListener = new AudioProfileListener() {
+        @Override
+        public void onRingerModeChanged(int newRingerMode) {
+            int ringerMode = mAudioManager.getRingerMode();
+            if (ringerMode != newRingerMode) {
+                Log.d(TAG, "onRingerModeChanged: ringermode is not latest: new = " + newRingerMode + ", latest = " + ringerMode);
+            }
+            if (ringerMode == mRingerMode) {
+                Log.d(TAG, "onRingerModeChanged with same ringerMode = " + ringerMode);
+            } else {
+                mRingerMode = ringerMode;
+
+                // Only when ringermode has been change by other app, we should change profile.
+                if (mExt.onRingerModeChanged(ringerMode)) {
+                    return;
+                }
+
+                Scenario activeScenario = AudioProfileManager.getScenario(mActiveProfileKey);
+                Log.d(TAG, "onRingerModeChanged: ringermode changed by other app, change profile! ringerMode = " + ringerMode);
+
+                switch (ringerMode) {
+                    case AudioManager.RINGER_MODE_SILENT:
+                        // RingerMode has been changed to be silent, if profile is not
+                        // silent, set active to silent.
+                        if (!Scenario.SILENT.equals(activeScenario)) {
+                            Log.v(TAG, "RingerMode change to SILENT, change profile to silent");
+                            setActiveProfile(mPredefinedKeys.get(Scenario.SILENT.ordinal()), false);
+                        }
+                        break;
+
+                    case AudioManager.RINGER_MODE_VIBRATE:
+                        // RingerMode has been changed to be vibrate, if profile is not
+                        // meeting, set active to meeting.
+                        if (!Scenario.MEETING.equals(activeScenario)) {
+                            Log.v(TAG, "RingerMode change to VIBRATE, change profile to meeting!");
+                            setActiveProfile(mPredefinedKeys.get(Scenario.MEETING.ordinal()), false);
+                        }
+                        break;
+
+                    case AudioManager.RINGER_MODE_NORMAL:
+                        // RingerMode has been changed to be normal, if profile is silent
+                        // or meeting, set active to last active profile.
+                        if (Scenario.SILENT.equals(activeScenario) || Scenario.MEETING.equals(activeScenario)) {
+                            Log.v(TAG, "RingerMode change to NORMAL, change profile to last active profile!");
+                            int systemVolume = mAudioManager.getStreamVolume(AudioProfileManager.STREAM_RING);
+                            syncRingerVolumeToProfile(mLastActiveProfileKey, systemVolume);
+                            setActiveProfile(mLastActiveProfileKey, false);
+                        }
+                        break;
+
+                    default:
+                        Log.e(TAG, "undefined RingerMode!");
+                        break;
+                }
+            }
+        }
+    };
+mAudioManager.listenRingerModeAndVolume(mRingerModeListener, AudioProfileListener.LISTEN_RINGERMODE_CHANGEG);
+
+3.如何监听AudioProfile情景模式的变化？？？？
+
+已提MTK，ALPS01105477
+
+4.
+5457
+10-17 19:56:43.103  1077  3775 I DownloadThread: start run download thread
+10-17 19:56:43.106   549  1001 D IPCThreadState: [DN #5] BR_CLEAR_DEATH_NOTIFICATION_DONE cookie 0x571b7a10
+10-17 19:56:43.115  3703  3703 V Provider/Settings:  from settings cache , name = tts_default_locale , value = null
+10-17 19:56:43.115   549   900 D IPCThreadState: [DN #5] BR_CLEAR_DEATH_NOTIFICATION_DONE cookie 0x57af5948
+10-17 19:56:43.120   549   549 V NotificationService: enqueueNotificationInternal: pkg=com.android.providers.downloads id=0 notification=Notification(pri=0 contentView=com.android.providers.downloads/0x1090092 vibrate=null sound=null defaults=0x0 flags=0x2 kind=[null])
+10-17 19:56:43.121   549   549 V NotificationService: notifications are enabled for com.android.providers.downloads
+10-17 19:56:43.122   549   549 V NotificationService: Assigned score=0 to Notification(pri=0 contentView=com.android.providers.downloads/0x1090092 vibrate=null sound=null defaults=0x0 flags=0x2 kind=[null])
+
+
+5.和客户沟通了之后，客户说就是这个样子的
+正在想办法优化关机重启滑动效果
+对话框坐标，飞行模式切换的时候会重启重启，状态切换延迟问题已修改，目前正在想办法优化关机重启滑动效果
