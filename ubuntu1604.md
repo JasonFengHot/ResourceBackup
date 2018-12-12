@@ -200,6 +200,29 @@ SUBSYSTEM=="usb", ATTRS{idVendor}=="0e8d", ATTRS{idProduct}=="201c",MODE="0666"
 sudo chmod a+x /etc/udev/rules.d/51-android.rules
 ```
 
+# 安装sqlite3可视化工具
+``` bash
+sudo apt-get install sqlite3
+sudo apt-get install sqlitebrowser
+sudo apt-get install sqliteman
+.database
+.tables
+.schema
+.dump table_name
+.separator :
+.mode column
+.width 2
+.show
+.help
+.quit
+.exit
+
+create table student_info(stu_no interger primary key, name text);
+Insert into student_info(stu_no, name) values(0001, alex);
+update student_info set stu_no=0001, name=hence where stu_no=0001;
+delete from student_info where stu_no=0001;
+select * from table_name;
+```
 
 # 安装SourceInSight
 用wine安装 sourceinsight.exe

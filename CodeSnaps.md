@@ -579,6 +579,14 @@ public class CustomDialog extends AlertDialog {
 }
 ```
 
+# 隐藏toolbar上的 NavigationView
+``` Java
+Toolbar mToolbar = (Toolbar) findViewById(com.android.internal.R.id.action_bar);
+if (mToolbar != null) {
+    mToolbar.getNavigationView().setVisibility(View.GONE);
+}
+```
+
 # PreferenceActivity的使用
 ``` Java
 public class Setting extends PreferenceActivity {
@@ -1126,6 +1134,12 @@ public void onAttachedToWindow() {
         setStatusBarColor(SettingsActivity.this, android.graphics.Color.parseColor("#3A96FE"));
     }
 }
+```
+
+# 修改状态栏高度
+frameworks/base/core/res/res/values/dimens.xml
+``` Java
+<dimen name="status_bar_height">48dp</dimen>
 ```
 
 # 获取状态栏高度
