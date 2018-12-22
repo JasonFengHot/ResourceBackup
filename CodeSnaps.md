@@ -887,11 +887,18 @@ try {
 
 # 文字根据状态更改颜色的Selector模板
 ``` Xml
+<?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:color="#53c1bd" android:state_selected="true"/>
     <item android:color="#53c1bd" android:state_focused="true"/>
     <item android:color="#53c1bd" android:state_pressed="true"/>
     <item android:color="#777777"/>
+</selector>
+
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:state_selected="true" android:color="@color/software_textColor_selected"></item>
+    <item android:state_selected="false" android:color="@color/software_textColor_unselected"></item>
 </selector>
 ```
 

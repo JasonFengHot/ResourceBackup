@@ -454,6 +454,11 @@ sudo make install
 git clone git@github.com:MegatronKing/SVG-Android.git
 ```
 
+# 安装FBReader电子书阅读器
+``` bash
+sudo apt-get install fbreader
+```
+
 # 下载反编译工具jadx
 ``` bash
 git@github.com:skylot/jadx.git
@@ -466,6 +471,24 @@ sudo add-apt-repository ppa:gnome3-team/gnome3
 sudo apt update
 sudo apt install gnome gnome-shell
 ```
+
+# 下载安装配置MailSprint
+``` xml
+https://getmailspring.com/download
+
+IMAP
+imap.sagereal.com
+
+```
+
+# 安装pdf阅读器
+``` bash
+sudo apt-get install okular
+```
+
+
+# 安装字体
+sudo apt-get install fonts-droid ttf-wqy-zenhei ttf-wqy-microhei fonts-arphic-ukai fonts-arphic-uming
 
 # 卸载libreoffice
 ``` bash
@@ -554,3 +577,15 @@ Aborted (core dumped)
 
 解决方法：
 ```
+
+
+# mtk密码
+PDF File open password:
+1498169196(第一个密码)
+3692842215(若第一个密码失效,可以试一试这个)
+2894058698
+3627735875
+
+部分旧的文档，需要使用密码：
+1977051217
+
