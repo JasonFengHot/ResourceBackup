@@ -395,7 +395,9 @@ download the latest version from official website       //https://music.163.com/
 
 
 # 安装wechat
+``` bash
 wget https://github.com/geeeeeeeeek/electronic-wechat/releases/download/V2.0/linux-x64.tar.gz
+```
 
 
 # 安装VLC播放器
@@ -414,9 +416,11 @@ sudo apt-get install fonts-wqy-microhei
 ```
 
 # 安装 matcha 主题
+``` bash
 sudo add-apt-repository ppa:ryu0/aesthetics
 sudo apt-get update
-sudo apt install matcha-theme
+sudo apt-get install matcha-theme
+```
 
 # 安装 flatabulous 主题(主题可以到　https://www.gnome-look.org/　网站上搜索下载，目前使用Canta theme挺不错)
 ``` bash
@@ -477,15 +481,71 @@ sudo apt install gnome gnome-shell
 https://getmailspring.com/download
 
 IMAP
-imap.sagereal.com
+mail.sagereal.com　 143
+SMTP
+smtp.sagereal.com  25
 
+QQ
+IMAP
+imap.qq.com  993  SSL
+SMTP
+smtp.qq.com  465  SSL
 ```
+
+# 安装gitbook
+``` bash
+sudo npm i -g gitbook gitbook-cli
+//本地进入到本项目根目录
+gitbook install
+//gitbool install的时候报如下错误
+/usr/bin/env: node: No such file or directory
+sudo ln -s /usr/bin/nodejs /usr/bin/node
+gitbook serve 　　　　//运行网站
+```
+
+# SimpleNote(笔记)
+``` bash
+download the latest version from https://simplenote.com/
+sudo dpkg -i xxx.deb
+```
+
+
+# TestDisk(恢复数据用)
+``` bash
+download the latest version from https://www.cgsecurity.org/wiki/TestDisk_Download
+```
+
+# Stacer(卸载软件和数据用)
+download the latest version from https://github.com/oguzhaninan/Stacer
+sudo dpkg -i xxx.deb
 
 # 安装pdf阅读器
 ``` bash
 sudo apt-get install okular
 ```
 
+# DropBox(网盘)
+download the latest version from https://www.dropbox.com/install
+sudo dpkg -i xxx.deb
+
+
+# Telegram
+sudo add-apt-repository ppa:atareao/telegram
+sudo apt-get update
+sudo apt-get install telegram
+
+sudo apt-get remove telegram
+
+# 压缩工具
+sudo apt-get install 7zip unrar zip unzip
+
+# filezilla(FTP客户端)
+sudo apt-get install filezilla
+
+# peek(屏幕录制)
+sudo add-apt-repository ppa:peek-developers/stable
+sudo apt-get update
+sudo apt-get install peek
 
 # 安装字体
 sudo apt-get install fonts-droid ttf-wqy-zenhei ttf-wqy-microhei fonts-arphic-ukai fonts-arphic-uming
@@ -533,14 +593,19 @@ for i in $(seq 500) ; do  /usr/bin/beep -f 300.7 -r 2 -d 100 -l 400; /bin/sleep 
 ```
 
 # 安装pip
+``` bash
 sudo apt-get install python-pip
 sudo pip --proxy 127.0.0.1:8118 install --upgrade pip
+```
 
 # 安装wechat_sender
+``` bash
 sudo pip --proxy 127.0.0.1:8118 install wechat_sender
+```
 
 # 终端发送邮件
 [配置方法](https://blog.csdn.net/chijiaodaxie/article/details/77893464)
+``` bash
 sudo apt-get install mailutils
 mail -s "Test email from ubuntu server!" 356480127@qq.com <<< 'Here is the message body.'
 strings `which mail` | grep '\.rc' 　　　　//查找 mail 的配置文件，添加如下信息
@@ -549,7 +614,7 @@ set smtp=smtp.qq.com
 set smtp-auth-user=zq
 set smtp-auth-password=a356480127
 set smtp-auth=login
-
+```
 
 # 如何通过代理链接ssh服务器
 ``` bash
@@ -579,7 +644,7 @@ Aborted (core dumped)
 ```
 
 
-# mtk密码
+# MTK文档密码
 PDF File open password:
 1498169196(第一个密码)
 3692842215(若第一个密码失效,可以试一试这个)
@@ -589,3 +654,7 @@ PDF File open password:
 部分旧的文档，需要使用密码：
 1977051217
 
+
+# MTK eservice密码
+zhangzhefeng@sagereal.com
+sagereal%2018

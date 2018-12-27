@@ -52,7 +52,7 @@ button.setOnClickListener(new View.OnClickListener(){
 
 # OnKeyListener
 ``` Java
-button.setOnKeyListener(new OnKeyListener() {
+button.setOnKeyListener(new View.OnKeyListener() {
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         return false;
@@ -65,12 +65,12 @@ button.setOnKeyListener(new OnKeyListener() {
 mDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
     @Override
     public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-        if(event.getAction() == KeyEvent.ACTION_UP){
-            if(keyCode == KeyEvent.KEYCODE_STAR){
+        if (event.getAction() == KeyEvent.ACTION_UP) {
+            if (keyCode == KeyEvent.KEYCODE_STAR) {
                 keyRemappingSendFakeKeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_VOLUME_DOWN);
                 keyRemappingSendFakeKeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_VOLUME_DOWN);
                 return true;
-            }else if(keyCode == KeyEvent.KEYCODE_POUND || keyCode == KeyEvent.KEYCODE_DEL){
+            } else if (keyCode == KeyEvent.KEYCODE_POUND || keyCode == KeyEvent.KEYCODE_DEL) {
                 keyRemappingSendFakeKeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_VOLUME_UP);
                 keyRemappingSendFakeKeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_VOLUME_UP);
                 return true;
@@ -155,11 +155,11 @@ getWindow().getDecorView().addOnLayoutChangeListener(new View.OnLayoutChangeList
 
 # ListView上seekbar的按键监听
 ``` Java
-getListView().setOnKeyListener(new android.view.View.OnKeyListener(){
-    public boolean onKey(View v, int keyCode , KeyEvent event){
-        if(event.getAction() == KeyEvent.ACTION_UP && (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)){
+getListView().setOnKeyListener(new android.view.View.OnKeyListener() {
+    public boolean onKey(View v, int keyCode , KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_UP && (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)) {
             View selectedView = getListView().getSelectedView();
-            if(selectedView != null){
+            if (selectedView != null) {
                 SeekBar seekbar = (SeekBar)selectedView.findViewById(com.android.internal.R.id.seekbar);
                 seekbar.onKeyDown(keyCode, new KeyEvent(KeyEvent.ACTION_DOWN, keyCode));
                 seekbar.onKeyUp(keyCode, new KeyEvent(KeyEvent.ACTION_UP, keyCode));
@@ -173,7 +173,7 @@ getListView().setOnKeyListener(new android.view.View.OnKeyListener(){
 
 # 监听音量的变化
 ``` Java
-mAudioManager.listenRingerModeAndVolume(new AudioProfileListener(){
+mAudioManager.listenRingerModeAndVolume(new AudioProfileListener() {
     public void onRingerVolumeChanged(int oldVolume, int newVolume, String extra) {
         android.util.Log.e("listenRingerModeAndVolume", "StatusBarWindowView->onRingerVolumeChanged("+oldVolume+","+newVolume+")");
         seekbar_volume.setProgress(mAudioManager.getStreamVolume(AudioManager.STREAM_RING));
@@ -183,7 +183,7 @@ mAudioManager.listenRingerModeAndVolume(new AudioProfileListener(){
 
 # 监听sim状态的变化
 ``` Java
-mTelephonyManager = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
+TelephonyManager mTelephonyManager = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
 mTelephonyManager.listen(mPhoneServiceListener, PhoneStateListener.LISTEN_SERVICE_STATE);
 private PhoneStateListener mPhoneServiceListener = new PhoneStateListener() {
     @Override
@@ -236,7 +236,6 @@ msg.what = 1;
 msg.arg1 = 0x777;
 msg.obj = new Object();
 mHandler.sendMessage(msg);
-
 ```
 
 # 通过handler处理长按的消息
@@ -252,9 +251,18 @@ new Thread(new Runnable() {
 # try-catch模板
 ``` Java
 try {
+    Object mObject = null;
+    mObject.toString();
 } catch (Exception e) {
     e.printStackTrace();
+    android.util.Log.e("NullPointerInsertion", "" + e);
 }
+```
+
+
+# 滚动条不消失
+``` xml
+android:fadeScrollbars="false"
 ```
 
 # apn-conf.xml 文件中各个参数的含义
@@ -310,10 +318,12 @@ View mView = findViewById(id);
 ```
 
 # 启动service
+``` Java
 Intent intent = new Intent("xxx");
 intent.setPackage("xxx");
 intent.setComponent(new ComponentName("aaa", "bbb"));
 startService(intent);
+```
 
 # 绑定service bindService
 ``` Java
@@ -424,6 +434,28 @@ registerReceiver(mMasterResetReciever, new IntentFilter("oms.action.MASTERRESET"
 textView.setTextColor(android.graphics.Color.parseColor("#0096ff"));
 ```
 
+# 反色相关代码(color inversion)
+``` Java
+ACCESSIBILITY_DISPLAY_INVERSION_ENABLED
+
+framework/base/java/com/android/internal/hardware/AmbientDisplayConfiguration.java:        return boolSettingDefaultOff(Settings.Secure.ACCESSIBILITY_DISPLAY_INVERSION_ENABLED, user);
+framework/base/java/android/provider/Settings.java:        public static final String ACCESSIBILITY_DISPLAY_INVERSION_ENABLED =
+framework/base/java/android/provider/Settings.java:            ACCESSIBILITY_DISPLAY_INVERSION_ENABLED,
+framework/base/java/android/provider/Settings.java:            INSTANT_APP_SETTINGS.add(ACCESSIBILITY_DISPLAY_INVERSION_ENABLED);
+framework/base/accessibility/java/com/android/server/accessibility/AccessibilityManagerService.java:                Settings.Secure.ACCESSIBILITY_DISPLAY_INVERSION_ENABLED);
+framework/base/accessibility/java/com/android/server/accessibility/DisplayAdjustmentUtils.java:                    Secure.ACCESSIBILITY_DISPLAY_INVERSION_ENABLED, 0, userId) != 0;
+framework/base/core/java/com/android/server/wm/WindowManagerService.java:                Settings.Secure.getUriFor(Settings.Secure.ACCESSIBILITY_DISPLAY_INVERSION_ENABLED);
+framework/base/core/java/com/android/server/wm/WindowManagerService.java:                    Settings.Secure.ACCESSIBILITY_DISPLAY_INVERSION_ENABLED, 0, currentUserId);
+```
+
+# 更新界面显示
+``` Java
+try {
+    mActivityManager.updateConfiguration(null);
+} catch (RemoteException e) {
+}
+```
+
 # 给apk签名
 
 # Android.mk模板(各个属性的含义)
@@ -488,10 +520,10 @@ getContentResolver().registerContentObserver(android.provider.Settings.System.ge
 
 # Toast
 ``` Java
-android.widget.Toast.makeText(getContext(), "", android.widget.Toast.LENGTH_SHORT).show();
+android.widget.Toast.makeText(getContext(), "", 2000).show();
 ```
 
-高级版
+# Toast高级版
 ``` Java
 private Toast mToast;
 public void showToast(String msg){
@@ -505,10 +537,15 @@ public void showToast(String msg){
 }
 ```
 
+# Toast自定义版
+
+# Toast开源库
+
+
 
 # Dialog模板
 ``` Java
-Dialog mDialog = new Dialog(Launcher.this, R.style.dialog_theme);
+Dialog mDialog = new Dialog(this, R.style.dialog_theme);
 View dialogView = LayoutInflater.from(Launcher.this).inflate(R.layout.dialog_first_run, null);
 View btn_cling = dialogView.findViewById(R.id.btn_cling);
 btn_cling.setOnClickListener(new OnClickListener(){
@@ -600,13 +637,13 @@ public class Setting extends PreferenceActivity {
 ``` xml
 Setting.xml:
 <Preference
-android:key="seting2"
-android:title="@string/seting2"
-android:summary="@string/seting2"/>
-android:key="seting1" 
-android:title="@string/seting1" 
-android:summaryOff="@string/seting1summaryOff" 
-android:summaryOn="@stringseting1summaryOff"/>
+    android:key="seting2"
+    android:title="@string/seting2"
+    android:summary="@string/seting2"/>
+    android:key="seting1" 
+    android:title="@string/seting1" 
+    android:summaryOff="@string/seting1summaryOff" 
+    android:summaryOn="@stringseting1summaryOff"/>
 ```
 
 # 通话录音之前播放DTMF声音通知对方
@@ -754,7 +791,7 @@ mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
 });
 ```
 
-# 判断viewPager的滑动方向
+# 判断ViewPager的滑动方向
 ``` Java
 vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
     float lastPositionOffset = 0L;
@@ -783,7 +820,6 @@ vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 ``` Java
 /**
  * 根据当前的百分比 计算两个颜色之间的值
- *
  * @param fraction 分值
  * @param startValue 开始颜色
  * @param endValue 结束颜色
@@ -826,7 +862,6 @@ public static Integer evaluate(float fraction, Integer startValue, Integer endVa
 Bitmap bitmap = BitmapFactory.decodeResource(R.drawable.ic_launcher);
 ```
 
-
 # HttpClient
 ``` Java
 DefaultHttpClient httpClient = new DefaultHttpClient(); 
@@ -858,7 +893,6 @@ try {
     }
 }
 ```
-
 
 # Shape的模板
 ``` Java
@@ -902,7 +936,13 @@ try {
 </selector>
 ```
 
-# 背景色根据状态更改颜色的selector模板
+``` Java
+//通过代码调用颜色selector
+ColorStateList　mTextColor = getResources().getColorStateList(com.android.internal.R.color.item_text_color_selector);
+int color = mTextColor.getColorForState(getDrawableState(), 0);
+```
+
+# 背景色根据状态更改颜色的Selector模板
 ``` Xml
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true">
@@ -926,6 +966,11 @@ try {
         </shape>
     </item>
 </selector>
+```
+
+``` Java
+//通过代码调用背景色selector
+Drawable selector = getResources().getDrawable(com.android.internal.R.drawable.item_background_selector);
 ```
 
 # 设置Activity透明
@@ -971,7 +1016,6 @@ getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 ``` Java
 android.provider.Settings.System.putInt(getContentResolver(), "show_touches", 1);
 ```
-
 
 # px-dp转换
 ``` Java
@@ -1120,28 +1164,37 @@ public static void goHome(Context context) {
 
 # 设置状态栏的颜色
 ``` Java
-private static void setStatusBarColor(Activity activity, int statusColor) {
-    Window window = activity.getWindow();
-    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//需要在Android.mk文件中添加v4包的支持
+protected void setStatusBarColor(int statusColor) {
+    android.view.Window window = getWindow();
+    window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+    window.addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
     window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
     window.setStatusBarColor(statusColor);
-    ViewGroup mContentView = (ViewGroup) window.findViewById(Window.ID_ANDROID_CONTENT);
+    android.view.ViewGroup mContentView = (android.view.ViewGroup) window.findViewById(android.view.Window.ID_ANDROID_CONTENT);
     View mChildView = mContentView.getChildAt(0);
     if (mChildView != null) {
-        ViewCompat.setFitsSystemWindows(mChildView, false);
-        ViewCompat.requestApplyInsets(mChildView);
+        android.support.v4.view.ViewCompat.setFitsSystemWindows(mChildView, false);
+        android.support.v4.view.ViewCompat.requestApplyInsets(mChildView);
     }
+    // set statusbar light mode
+    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 }
 
 //使用方法
 public void onAttachedToWindow() {
     super.onAttachedToWindow();
     if("com.android.settings.Settings".equalsIgnoreCase(getClass().getName())){
-        setStatusBarColor(SettingsActivity.this, android.graphics.Color.parseColor("#3A96FE"));
+        setStatusBarColor(android.graphics.Color.parseColor("#3A96FE"));
     }
 }
 ```
+
+# 通过style设置状态栏颜色
+``` xml
+<item name="android:windowLightStatusBar">true</item>
+```
+
 
 # 修改状态栏高度
 frameworks/base/core/res/res/values/dimens.xml

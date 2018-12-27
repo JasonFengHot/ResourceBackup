@@ -1,76 +1,12 @@
 	# framework/base
 ./mk -ud VF292_EF2921_DORO7030 mm external/protobuf/;notice "Compile_protobuf_success!";
-adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm frameworks/base/;adb remount;adb push out/target/product/k39tv1_bsp_512/system/framework/framework.jar system/framework;notice "Compile_framework-base_success!";
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-legacy-test.oat system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-legacy-test.art system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-apache-xml.oat system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-legacy-test.vdex system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-bouncycastle.art system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-bouncycastle.oat system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-ext.art system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-bouncycastle.vdex system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-apache-xml.art system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-apache-xml.vdex system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-ext.oat system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-ext.vdex system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-framework.art system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-framework.oat system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-framework.vdex system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-telephony-common.art system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-telephony-common.oat system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-telephony-common.vdex system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-voip-common.art system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-voip-common.oat system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-ims-common.art system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-ims-common.oat system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-voip-common.vdex system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-org.apache.http.legacy.boot.art system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-android.hidl.base-V1.0-java.art system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-ims-common.vdex system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-org.apache.http.legacy.boot.oat system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-org.apache.http.legacy.boot.vdex system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-android.hidl.base-V1.0-java.oat system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-android.hidl.base-V1.0-java.vdex system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-android.hidl.manager-V1.0-java.art system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-android.hidl.manager-V1.0-java.oat system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-android.hidl.manager-V1.0-java.vdex system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-mediatek-common.art system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-mediatek-common.oat system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-mediatek-common.vdex system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-mediatek-framework.art system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-mediatek-framework.oat system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-mediatek-framework.vdex system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-mediatek-telephony-common.art system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-mediatek-telephony-common.oat system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-mediatek-telephony-common.vdex system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-core-libart.art system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-core-libart.oat system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-mediatek-telephony-base.art system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-mediatek-telephony-base.oat system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-mediatek-telephony-base.vdex system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-mediatek-ims-common.art system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-mediatek-ims-common.oat system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-mediatek-ims-common.vdex system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-mediatek-telecom-common.art system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-mediatek-telecom-common.oat system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-mediatek-telecom-common.vdex system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot.oat system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-core-libart.vdex system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-conscrypt.art system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-conscrypt.oat system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-okhttp.art system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-okhttp.vdex system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-conscrypt.vdex system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot-okhttp.oat system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot.vdex system/framework/arm/;
-adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot.art system/framework/arm/;
-notice "push_framework-base_success!";adb reboot;
+adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm frameworks/base/;cat mm_build.log | grep "build completed successfully";if [ $? -ne 0 ] ;then   notice "framework_base_build_failure"; else adb remount;adb push out/target/product/k39tv1_bsp_512/system/framework/framework.jar system/framework;adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot* system/framework/arm/;adb reboot;notice "framework_base_build_success!";fi
     # service
-adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm frameworks/base/services/;adb push out/target/product/k39tv1_bsp_512/system/framework/services.jar system/framework/;notice "framework-service_compiled_success!";
+adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm frameworks/base/services/;cat mm_build.log | grep "build completed successfully";if [ $? -ne 0 ] ;then notice "framework_res_build_failure"; else adb remount;adb push out/target/product/k39tv1_bsp_512/system/framework/services.jar system/framework/;adb reboot;notice "framework-service_compiled_success!";fi
 	# frameworks/base/core/res
-adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm frameworks/base/core/res/;adb remount;adb push out/target/product/k39tv1_bsp_512/system/framework/framework-res.apk system/framework;notice "framework-res_compiled_success!";
+adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm frameworks/base/core/res/;cat mm_build.log | grep "build completed successfully";if [ $? -ne 0 ] ;then notice "framework_res_build_failure"; else adb remount;adb push out/target/product/k39tv1_bsp_512/system/framework/framework-res.apk system/framework;notify-send "framework_res_build_success";mocp -l /home/zq/sounds/ring3.ogg;adb reboot;fi
 	# SystemUI
-adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm vendor/mediatek/proprietary/packages/apps/SystemUI/;adb remount;adb remount;adb push out/target/product/k39tv1_bsp_512/system/priv-app/MtkSystemUI/MtkSystemUI.apk system/priv-app/MtkSystemUI/;adbkill com.android.systemui;notice "SystemUI_compiled_success!";
+adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm vendor/mediatek/proprietary/packages/apps/SystemUI/;adb remount;adb push out/target/product/k39tv1_bsp_512/system/priv-app/MtkSystemUI/MtkSystemUI.apk system/priv-app/MtkSystemUI/;adbkill com.android.systemui;notice "SystemUI_compiled_success!";
 	# Dialer
 adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm vendor/mediatek/proprietary/packages/apps/Dialer/;adb remount;adb push out/target/product/k39tv1_bsp_512/system/priv-app/MtkDialer/MtkDialer.apk system/priv-app/MtkDialer/;adb shell pm clear com.android.dialer;notice "Dialer_compiled_success!";
 	# Contacts
@@ -82,7 +18,7 @@ adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm packages/apps/Browser/;ad
 	# Mms 需要先编 Browser
 adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm vendor/mediatek/proprietary/packages/apps/Mms/;adb remount;adb push out/target/product/k39tv1_bsp_512/system/priv-app/MtkMms/MtkMms.apk system/priv-app/MtkMms/;adbkill com.android.mms;notice "Mms_compiled_success!";
 	# MtkDeskClock
-./mk -ud VF292_EF2921_DORO7030 mm frameworks/support/v7/;notice "Contacts_compiled_success!";
+./mk -ud VF292_EF2921_DORO7030 mm frameworks/support/v7/;notice "framework_v7_success!";
 adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm vendor/mediatek/proprietary/packages/apps/DeskClock/;adb remount;adb push out/target/product/k39tv1_bsp_512/system/app/MtkDeskClock/MtkDeskClock.apk system/app/MtkDeskClock/;adbkill com.android.deskclock;notice "MtkDeskClock_compiled_success!";
 	# Launcher3Go
 adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm packages/apps/Launcher3/;adb remount;adb push out/target/product/k39tv1_bsp_512/system/priv-app/Launcher3Go/Launcher3Go.apk system/priv-app/Launcher3Go/Launcher3Go.apk;adb shell pm clear com.android.launcher3;notice "Launcher3Go_compiled_success!";
@@ -99,7 +35,8 @@ adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm vendor/mediatek/proprieta
     # SettingsLib
 ./mk -ud VF292_EF2921_DORO7030 mm vendor/mediatek/proprietary/packages/apps/SettingsLib/;notice "SettingsLib_compiled_success!";
 	# MtkSettings
-adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm vendor/mediatek/proprietary/packages/apps/MtkSettings/;adb remount;adb push out/target/product/k39tv1_bsp_512/system/priv-app/MtkSettings/MtkSettings.apk system/priv-app/MtkSettings/;adb shell pm clear com.android.settings;notice "MtkSettings_compiled_success!";
+./mk -ud VF292_EF2921_DORO7030 mm frameworks/support/v7/;notice "framework_v7_success!";
+adb root;adb remount;adb shell pm clear com.android.settings;./mk -ud VF292_EF2921_DORO7030 mm vendor/mediatek/proprietary/packages/apps/MtkSettings/;adb remount;adb push out/target/product/k39tv1_bsp_512/system/priv-app/MtkSettings/MtkSettings.apk system/priv-app/MtkSettings/;adb shell am start -n com.android.settings/.Settings;notice "MtkSettings_compiled_success!";
     # SettingsProvider
 adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm vendor/mediatek/proprietary/packages/apps/SettingsProvider/;adb remount;adb push out/target/product/k39tv1_bsp_512/system/priv-app/MtkSettingsProvider/MtkSettingsProvider.apk system/priv-app/MtkSettingsProvider/;adbkill com.android.providers.settings;notice "SettingsProvider_compiled_success!";
 	# Music
@@ -129,7 +66,7 @@ adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm vendor/mediatek/proprieta
     # PackageIntaller 需要去掉Android.mk中的 LOCAL_JAVA_LIBRARIES := mediatek-cta
 adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm vendor/mediatek/proprietary/packages/apps/PackageInstaller/;adb remount;adb push out/target/product/k39tv1_bsp_512/system/priv-app/MtkPackageInstaller/MtkPackageInstaller.apk system/priv-app/MtkPackageInstaller/;notice "PackageIntaller_compiled_success!";
     # MediaProvider
-adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm vendor/mediatek/proprietary/packages/providers/MediaProvider/;adb remount;adb remount;adb push out/target/product/k39tv1_bsp_512/system/priv-app/MtkMediaProvider/ system/priv-app/MtkMediaProvider/;adb shell am force-stop com.android.providers.media;notice "MediaProvider_compiled_success!";
+adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm vendor/mediatek/proprietary/packages/providers/MediaProvider/;adb remount;adb remount;adb push out/target/product/k39tv1_bsp_512/system/priv-app/MtkMediaProvider/MtkMediaProvider.apk system/priv-app/MtkMediaProvider/;adbkill com.android.providers.media;notice "MediaProvider_compiled_success!";
     # SageRealIME
 adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm vendor/mediatek/proprietary/packages/inputmethods/SageRealIME/;adb remount;adb push out/target/product/k39tv1_bsp_512/system/app/SageRealIME/SageRealIME.apk system/app/SageRealIME/;notice "SageRealIME_compiled_success!";
     # wifi-service
