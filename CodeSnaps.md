@@ -1,3 +1,8 @@
+在注释中添加生效的路径
+研究输入法
+把培训做成视频
+
+
 # mtk开发论坛
 http://bbs.16rd.com/forum-263-1.html
 
@@ -20,6 +25,8 @@ sudo update-alternatives --config javac
 操作json的包
 jsoup
 爬虫的包
+
+# 整理语言列表
 
 # 常用缩写的意思(单开一个)
 
@@ -44,17 +51,17 @@ https://github.com/GcsSloop/AndroidNote?utm_source=gold_browser_extension
 
 # OnClickListener
 ``` Java
-button.setOnClickListener(new View.OnClickListener(){
-    public void onClick(View v) {
+button.setOnClickListener(new android.view.View.OnClickListener(){
+    public void onClick(android.view.View v) {
     }
 });
 ```
 
 # OnKeyListener
 ``` Java
-button.setOnKeyListener(new View.OnKeyListener() {
+button.setOnKeyListener(new android.view.View.OnKeyListener() {
     @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
+    public boolean onKey(android.view.View v, int keyCode, android.view.KeyEvent event) {
         return false;
     }
 });
@@ -62,9 +69,9 @@ button.setOnKeyListener(new View.OnKeyListener() {
 
 # 对话框的按键监听
 ``` Java
-mDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+mDialog.setOnKeyListener(new android.content.DialogInterface.OnKeyListener() {
     @Override
-    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+    public boolean onKey(android.content.DialogInterface dialog, int keyCode, android.view.KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_UP) {
             if (keyCode == KeyEvent.KEYCODE_STAR) {
                 keyRemappingSendFakeKeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_VOLUME_DOWN);
@@ -83,9 +90,9 @@ mDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
 
 # OnFocusChangeListener
 ``` Java
-view.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+view.setOnFocusChangeListener(new android.view.View.OnFocusChangeListener() {
     @Override
-    public void onFocusChange(View v, boolean hasFocus) {
+    public void onFocusChange(android.view.View v, boolean hasFocus) {
         if (hasFocus) {
         } else {
         }
@@ -95,9 +102,9 @@ view.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
 # onLongClickListener
 ``` Java
-view.setOnLongClickListener(new OnLongClickListener() {
+view.setOnLongClickListener(new android.view.View.OnLongClickListener() {
     @Override
-    public boolean onLongClick(View v) {
+    public boolean onLongClick(android.view.View v) {
         return false;
     }
 });
@@ -105,9 +112,9 @@ view.setOnLongClickListener(new OnLongClickListener() {
 
 # onLayoutChangeListener 监听布局的变化
 ``` Java
-getListView().addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+getListView().addOnLayoutChangeListener(new android.view.View.OnLayoutChangeListener() {
     @Override
-    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+    public void onLayoutChange(android.view.View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
         LinearLayoutManager llm = getLayoutManager();
         if (llm != null) {
             if (position >= 0) {
@@ -123,16 +130,16 @@ getListView().addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
 
 # ListView onItemClickListener
 ``` Java
-mListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+mListView.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener(){
+    public void onItemClick(android.widget.AdapterView<?> parent, android.view.View view, int position, long id){
     }
 });
 ```
 
 # CheckBox.setOnCheckedChangeListener
 ``` Java
-mSwitch.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+mSwitch.setOnCheckedChangeListener(new android.widget.CompoundButton.OnCheckedChangeListener(){
+    public void onCheckedChanged(android.widget.CompoundButton compoundButton, boolean isChecked) {
         if (isChecked) {
         } else {
         }
@@ -142,10 +149,10 @@ mSwitch.setOnCheckedChangeListener(new OnCheckedChangeListener(){
 
 # 监听全局布局的变化
 ``` Java
-getWindow().getDecorView().addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+getWindow().getDecorView().addOnLayoutChangeListener(new android.view.View.OnLayoutChangeListener() {
+    public void onLayoutChange(android.view.View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
         TextView search_src_text = (TextView) findViewById(getResources().getIdentifier("android:id/search_src_text", null, null));
-        if(search_src_text != null){
+        if (search_src_text != null) {
             search_src_text.setTextColor(android.graphics.Color.parseColor("#ffffff"));
             setTextCursorColor(search_src_text, 0xffffffff);
         }
@@ -278,6 +285,11 @@ mAudioManager.listenRingerModeAndVolume(new AudioProfileListener(){
         }
     }
 }, AudioProfileListener.LISTEN_RINGERMODE_CHANGED);
+```
+
+# setTextSize
+``` Java
+setTextSize(android.util.TypedValue.COMPLEX_UNIT_DIP, 21.0f);
 ```
 
 # 调节情景模式
@@ -938,8 +950,9 @@ try {
 
 ``` Java
 //通过代码调用颜色selector
-ColorStateList　mTextColor = getResources().getColorStateList(com.android.internal.R.color.item_text_color_selector);
-int color = mTextColor.getColorForState(getDrawableState(), 0);
+ColorStateList mTintColor = getContext().getResources().getColorStateList(com.android.internal.R.color.item_text_color_selector);
+int color = mTintColor.getColorForState(getDrawableState(), 0);
+mTrackDrawable.setTintList(mTintColor);
 ```
 
 # 背景色根据状态更改颜色的Selector模板
