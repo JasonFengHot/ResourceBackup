@@ -205,6 +205,8 @@ sudo chmod a+x /etc/udev/rules.d/51-android.rules
 sudo apt-get install sqlite3
 sudo apt-get install sqlitebrowser
 sudo apt-get install sqliteman
+
+//常用指令
 .database
 .tables
 .schema
@@ -221,7 +223,7 @@ create table student_info(stu_no interger primary key, name text);
 Insert into student_info(stu_no, name) values(0001, alex);
 update student_info set stu_no=0001, name=hence where stu_no=0001;
 delete from student_info where stu_no=0001;
-select * from table_name;
+select * from student_info;
 ```
 
 # 安装SourceInSight
@@ -248,6 +250,9 @@ alias adbkill='_adbkill(){ adb shell kill `adb shell ps | grep $1 | awk {'\''pri
 # privoxy:
 ``` bash
 sudo apt-get install privoxy
+
+//如果无法上网，需要重启privoxy
+sudo /etc/init.d/privoxy restart
 ```
 
 #### /etc/privoxy/config
@@ -334,13 +339,17 @@ sudo dpkg -i 下载文件
 download   Oracle_VM_VirtualBox_Extension_Pack-5.2.20-125813.vbox-extpack
 sudo usermod -a -G vboxusers xyz
 
-a:下载安装notes,foxmail(记得备份替换foxmail7.2/storage/***@sagereal.com)
+a:下载安装notes,　foxmail(记得备份替换foxmail7.2/storage/***@sagereal.com)
 b:下载安装RTX
 c:下载安装QQ
 d:安装驱动	Driver_Auto_Installer_EXE_v1.1352.00
 e:配置刷机工具
 f:安装搜狗输入法
 g:配置打印机
+开始->设备和打印机->添加打印机->添加网络、无线或Bluetooth打印机->我需要的打印机不在列表中->使用TCP/IP地址或主机名添加打印机
+设备类型：TCP/IP设备
+主机名或IP地址：192.168.3.101
+端口名称：192.168.3.101
 
 
 # 安装bcompare
@@ -476,7 +485,7 @@ sudo apt update
 sudo apt install gnome gnome-shell
 ```
 
-# 下载安装配置MailSprint
+# 下载安装配置MailSpring
 ``` xml
 https://getmailspring.com/download
 
@@ -539,10 +548,10 @@ sudo apt-get remove telegram
 # 压缩工具
 sudo apt-get install 7zip unrar zip unzip
 
-# filezilla(FTP客户端)
+# FileZilla(FTP客户端)
 sudo apt-get install filezilla
 
-# peek(屏幕录制)
+# Peek(屏幕录制)
 sudo add-apt-repository ppa:peek-developers/stable
 sudo apt-get update
 sudo apt-get install peek
@@ -550,19 +559,23 @@ sudo apt-get install peek
 # 安装字体
 sudo apt-get install fonts-droid ttf-wqy-zenhei ttf-wqy-microhei fonts-arphic-ukai fonts-arphic-uming
 
-# 卸载libreoffice
+# Calibre(kindle电子书管理工具)
+到官网下载最新的版本手动安装
+sudo mkdir -p /opt/calibre && sudo rm -rf /opt/calibre/* && sudo tar xvf calibre-3.37.0-x86_64.txz -C /opt/calibre && sudo /opt/calibre/calibre_postinstall
+
+# 卸载 LibreOffice
 ``` bash
 sudo apt-get remove libreoffice-common
 ```
 
-# 卸载firefox
+# 卸载FireFox
 ``` bash
 sudo apt-get purge firefox
 ```
 
 # 卸载一些不常用的软件(不建议)
 ``` bash
-sudo apt-get remove thunderbird totem rhythmbox empathy brasero simple-scan gnome-mahjongg aisleriot onboard deja-dup gnome-mines cheese transmission-common gnome-orca webbrowser-app gnome-sudoku  landscape-client-ui-install
+sudo apt-get remove thunderbird totem rhythmbox empathy brasero simple-scan gnome-mahjongg aisleriot onboard deja-dup gnome-mines cheese transmission-common gnome-orca webbrowser-app gnome-sudoku landscape-client-ui-install
 ```
 
 # 安装gnome桌面通知

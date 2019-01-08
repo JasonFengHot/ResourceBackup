@@ -1,7 +1,7 @@
 在注释中添加生效的路径
 研究输入法
 把培训做成视频
-
+lint怎么用？
 
 # mtk开发论坛
 http://bbs.16rd.com/forum-263-1.html
@@ -43,6 +43,10 @@ https://github.com/mzlogin/awesome-adb
 qgit
 vscode
 
+
+# android:duplicateParentState 属性详解
+https://blog.csdn.net/sodino/article/details/8809778
+
 # Android进阶学习网站
 https://github.com/lizhangqu/CoreLink
 https://github.com/GcsSloop/AndroidNote?utm_source=gold_browser_extension
@@ -51,7 +55,8 @@ https://github.com/GcsSloop/AndroidNote?utm_source=gold_browser_extension
 
 # OnClickListener
 ``` Java
-button.setOnClickListener(new android.view.View.OnClickListener(){
+button.setOnClickListener(new android.view.View.OnClickListener() {
+    @Override
     public void onClick(android.view.View v) {
     }
 });
@@ -151,7 +156,7 @@ mSwitch.setOnCheckedChangeListener(new android.widget.CompoundButton.OnCheckedCh
 ``` Java
 getWindow().getDecorView().addOnLayoutChangeListener(new android.view.View.OnLayoutChangeListener() {
     public void onLayoutChange(android.view.View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-        TextView search_src_text = (TextView) findViewById(getResources().getIdentifier("android:id/search_src_text", null, null));
+        android.widget.TextView search_src_text = (android.widget.TextView) findViewById(getResources().getIdentifier("android:id/search_src_text", null, null));
         if (search_src_text != null) {
             search_src_text.setTextColor(android.graphics.Color.parseColor("#ffffff"));
             setTextCursorColor(search_src_text, 0xffffffff);
@@ -163,13 +168,13 @@ getWindow().getDecorView().addOnLayoutChangeListener(new android.view.View.OnLay
 # ListView上seekbar的按键监听
 ``` Java
 getListView().setOnKeyListener(new android.view.View.OnKeyListener() {
-    public boolean onKey(View v, int keyCode , KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_UP && (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT)) {
-            View selectedView = getListView().getSelectedView();
+    public boolean onKey(android.view.View v, int keyCode , android.view.KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_UP && (keyCode == android.view.KeyEvent.KEYCODE_DPAD_LEFT || keyCode == android.view.KeyEvent.KEYCODE_DPAD_RIGHT)) {
+            android.view.View selectedView = getListView().getSelectedView();
             if (selectedView != null) {
-                SeekBar seekbar = (SeekBar)selectedView.findViewById(com.android.internal.R.id.seekbar);
-                seekbar.onKeyDown(keyCode, new KeyEvent(KeyEvent.ACTION_DOWN, keyCode));
-                seekbar.onKeyUp(keyCode, new KeyEvent(KeyEvent.ACTION_UP, keyCode));
+                android.widget.SeekBar seekbar = (android.widget.SeekBar)selectedView.findViewById(com.android.internal.R.id.seekbar);
+                seekbar.onKeyDown(keyCode, new android.view.KeyEvent(android.view.KeyEvent.ACTION_DOWN, keyCode));
+                seekbar.onKeyUp(keyCode, new android.view.KeyEvent(android.view.KeyEvent.ACTION_UP, keyCode));
                 return true;
             }
         }
@@ -190,7 +195,7 @@ mAudioManager.listenRingerModeAndVolume(new AudioProfileListener() {
 
 # 监听sim状态的变化
 ``` Java
-TelephonyManager mTelephonyManager = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
+android.telephony.TelephonyManager mTelephonyManager = (android.telephony.TelephonyManager)getSystemService(TELEPHONY_SERVICE);
 mTelephonyManager.listen(mPhoneServiceListener, PhoneStateListener.LISTEN_SERVICE_STATE);
 private PhoneStateListener mPhoneServiceListener = new PhoneStateListener() {
     @Override
@@ -399,6 +404,11 @@ android:ellipsize="marquee" 　　　//跑马灯跑动的几个条件, selected=
 <item name="android:actionBarStyle">@style/ActionBarStyle</item>
 <item name="android:selectableItemBackground">@*android:drawable/item_background_holo_dark</item>
 <item name="android:textColorSecondary">#ffffff</item>
+```
+
+# 修改actionbar的颜色
+``` Java
+window.getDecorView().findViewById(com.android.internal.R.id.action_bar_container).setBackgroundColor(android.graphics.Color.parseColor("#ffffff"));
 ```
 
 # 发送广播

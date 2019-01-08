@@ -1,13 +1,12 @@
-Redmine #152609 : [bug][email]email中调出菜单，高亮可移动到设置选项的下边
+Redmine #157073 : [客户反馈]facebook 无登入提示框，一直loading
 Submitter:
     zhangqi
 Checker:
     liangshuang
 Files:
-    M:alps/vendor/mediatek/proprietary/packages/apps/Email/UnifiedEmail/src/com/android/mail/browse/MessageHeaderView.java
-    M:alps/vendor/mediatek/proprietary/packages/apps/Email/UnifiedEmail/src/com/android/mail/ui/AbstractActivityController.java
-    M:alps/vendor/mediatek/proprietary/packages/apps/Email/UnifiedEmail/res/layout/conversation_message_header.xml
+    M:alps/bionic/libc/netbsd/net/getaddrinfo.c
+    M:sagereal/mk/UP249_XB52U_Tmcell_Dominica/ProjectConfig.mk
 Comment:
-    Email中调出菜单，高亮不可以移动到设置选项的下边
+    强制使用ipv4来连接facebook相关服务器
 Date:
-    2018/11/03
+    2019/01/08

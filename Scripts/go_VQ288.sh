@@ -4,16 +4,21 @@ adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm frameworks/base/;cat mm_b
     # service
 adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm frameworks/base/services/;cat mm_build.log | grep "build completed successfully";if [ $? -ne 0 ] ;then notice "framework_service_compiled_failure"; else adb remount;adb push out/target/product/k39tv1_bsp_512/system/framework/services.jar system/framework/;adb reboot;notice "framework_service_compiled_success!";fi
 	# frameworks/base/core/res
-adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm frameworks/base/core/res/;cat mm_build.log | grep "build completed successfully";if [ $? -ne 0 ] ;then notice "framework_res_build_failure"; else adb remount;adb push out/target/product/k39tv1_bsp_512/system/framework/framework-res.apk system/framework;notice "framework_res_build_success";adb reboot;fi
+adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm frameworks/base/core/res/;cat mm_build.log | grep "build completed successfully";if [ $? -ne 0 ] ;then notice "framework_res_build_failure"; else adb remount;adb push out/target/product/k39tv1_bsp_512/system/framework/framework-res.apk system/framework;notice "framework_res_build_success";fi
 	# SystemUI
 adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm vendor/mediatek/proprietary/packages/apps/SystemUI/;cat mm_build.log | grep "build completed successfully";if [ $? -ne 0 ] ;then notice "SystemUI_build_failure"; else adb remount;adb push out/target/product/k39tv1_bsp_512/system/priv-app/MtkSystemUI/MtkSystemUI.apk system/priv-app/MtkSystemUI/;adbkill com.android.systemui;notice "SystemUI_compiled_success!";fi
     # SettingsLib
 ./mk -ud VF292_EF2921_DORO7030 mm vendor/mediatek/proprietary/packages/apps/SettingsLib/;notice "SettingsLib_compiled_success!";
+    # v7
+./mk -ud VF292_EF2921_DORO7030 mm frameworks/support/v7/;notice "framework_v7_compiled_success!";
+    # v14
+./mk -ud VF292_EF2921_DORO7030 mm frameworks/support/v14/;notice "framework_v14_compiled_success!";
 	# MtkSettings
-./mk -ud VF292_EF2921_DORO7030 mm frameworks/support/v7/;notice "framework_v7_success!";
 adb root;adb remount;adb shell pm clear com.android.settings;./mk -ud VF292_EF2921_DORO7030 mm vendor/mediatek/proprietary/packages/apps/MtkSettings/;cat mm_build.log | grep "build completed successfully";if [ $? -ne 0 ] ;then notice "MtkSettings_compiled_failure"; else adb remount;adb push out/target/product/k39tv1_bsp_512/system/priv-app/MtkSettings/MtkSettings.apk system/priv-app/MtkSettings/;adb shell am start -n com.android.settings/.Settings;notice "MtkSettings_compiled_success!";fi
+    # DateTimePicker
+./mk -ud VF292_EF2921_DORO7030 mm vendor/mediatek/proprietary/frameworks/opt/datetimepicker/;notice "DateTimePicker_compiled_success!";
 	# Mms 需要先编 Browser
-./mk -ud VF292_EF2921_DORO7030 mm frameworks/support/v7/;notice "framework_v7_success!";
+./mk -ud VF292_EF2921_DORO7030 mm frameworks/support/v7/;notice "framework_v7_compiled_success!";
 adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm vendor/mediatek/proprietary/packages/apps/Mms/;cat mm_build.log | grep "build completed successfully";if [ $? -ne 0 ] ;then notice "Mms_compiled_failure"; else adb remount;adb push out/target/product/k39tv1_bsp_512/system/priv-app/MtkMms/MtkMms.apk system/priv-app/MtkMms/;adbkill com.android.mms;notice "Mms_compiled_success!";fi
 	# Dialer
 adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm vendor/mediatek/proprietary/packages/apps/Dialer/;cat mm_build.log | grep "build completed successfully";if [ $? -ne 0 ] ;then notice "Dialer_compiled_failure"; else adb remount;adb push out/target/product/k39tv1_bsp_512/system/priv-app/MtkDialer/MtkDialer.apk system/priv-app/MtkDialer/;adb shell pm clear com.android.dialer;notice "Dialer_compiled_success!";fi
@@ -116,9 +121,25 @@ android.util.Log.e("zhangqi0000", "Workspace-->workspaceToOverview");
     # adb logcat
 adb logcat -c && adb logcat -G 200M && adb logcat | grep "zhangqi8888"
 
+    # adbrestart server
+sudo adb kill-server && sudo adb start-server
+
 
 git push origin HEAD:refs/for/dev_MyOS_Doro
 
+android:duplicateParentState="true"
 
 
+android:tint="@*android:color/item_text_color_selector"
 
+setTintList(getContext().getResources().getColorStateList(com.android.internal.R.color.item_text_color_selector));
+
+setBackground(getResources().getDrawable(com.android.internal.R.drawable.item_background_selector));
+
+<!--Redmine158992 zhangqi modified for Settings/Connected devices/USB 2019/01/07:begin-->
+
+
+如何判断某个模块没有发生变化？
+如何在程序中执行脚本？QT？
+如何在已编译过的代码中获取项目名称？和project名称
+把lint功能整合进来
