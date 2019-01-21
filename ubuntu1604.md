@@ -324,9 +324,38 @@ Beautify：代码高亮
 Terminal：直接唤起终端
 Project Manager：多个项目切换
 Auto Close Tag：标签自动闭合（其实我觉得可以内置的）
+ext install emmanuelbeziat.vscode-great-icons
+ext install Equinusocio.vsc-material-theme
+ext install dracula-theme.theme-dracula
+ext install Shan.code-settings-sync     vscode-settings-sync token:40de813e6082287da381530a5fc19f7dddb3133d
+ext install IBM.output-colorizer
+ext install donjayamanne.githistory
+ext install oderwat.indent-rainbow
+ext install felipecaputo.git-project-manager
+ext install formulahendry.code-runner
+ext install CoenraadS.bracket-pair-colorizer
 
-向上向下复制一行： Shift+Alt+Up 或 Shift+Alt+Down 注释代码: cmd + /切换侧边栏: cmd + b文件夹中查找: cmd + shift + f查找替换: cmd + shift + h重构代码: fn + F2 代码格式化: Shift+Alt+F，或 Ctrl+Shift+P 后输入 format codeCtrl+P 模式: (Mac 是 CMD+P)直接输入文件名，快速打开文件> 显示并运行命令: 跳转到行数，也可以Ctrl+G直接进入(Mac 是 CMD+G)@ 跳转到symbol（搜索变量或者函数），也可以Ctrl+Shift+O直接进入@: 根据分类跳转symbol，查找属性或函数，也可以Ctrl+Shift+O后输入:进入# 根据名字查找symbol，也可以Ctrl+T
+快捷键
 
+代码片段
+$HOME/.config/Code/User/snippets/(language).json
+
+安装Java Imports Snippets
+```
+F1 -> ext install tushortz.java-imports-snippets
+
+//常用代码片段
+class --> To trigger a class definition statement
+main --> To auto-complete main method
+method to trigger a normal method with return capability
+pe or serr --> To trigger error printing to the console
+pl or sout --> To trigger printing to the console
+try --> To trigger a try/catch clause
+void --> To trigger a void method declaration
+
+//手动添加代码片段
+https://code.visualstudio.com/docs/editor/userdefinedsnippets
+```
 
 # 安装ubuntu flashtool
 sudo apt-get remove modemmanager
