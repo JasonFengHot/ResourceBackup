@@ -198,6 +198,8 @@ ssh-keygen -t rsa
 sudo gedit /etc/udev/rules.d/51-android.rules
 SUBSYSTEM=="usb", ATTRS{idVendor}=="0e8d", ATTRS{idProduct}=="201c",MODE="0666"
 sudo chmod a+x /etc/udev/rules.d/51-android.rules
+//驱动重新加载
+sudo /etc/init.d/udev restart
 ```
 
 # 安装sqlite3可视化工具
@@ -241,6 +243,22 @@ export PATH=/home/xyz/Android/Sdk/tools:$PATH
 
 # 禁止USB自动弹出
 gsettings set org.gnome.desktop.media-handling automount-open false
+
+
+# 去掉开机启动显示：System program problem detected
+sudo gedit /etc/default/apport
+将enabled=1改为enabled=0保存退出即可
+
+# 写脚本是通过管道自动输入密码或者指令:
+echo '你的密码' | sudo -S 执行命令
+echo '指令' | sudo -S 执行命令
+
+
+# 安装Qt开发工具
+download the latest version from http://download.qt.io/archive/qt/
+chmod +x qt-opensource-linux-x64-5.12.0.run
+./qt-opensource-linux-x64-5.12.0.run
+sudo apt-get install libgl1-mesa-dev    #否则在运行的时候会报错 can't find -lGL error
 
 
 # 链接adbkill
@@ -295,9 +313,23 @@ https://www.eclipse.org/downloads/download.php?file=/oomph/epp/2018-09/R/eclipse
 配置eclipse的格式化模板
 
 # 安装VSCode
-download the latest version from official website
+download the latest version from official website　　https://code.visualstudio.com/
 
-安装ubuntu flashtool
+https://zhuanlan.zhihu.com/p/34989844
+设置vscode为默认编辑器
+xdg-mime default code.desktop text/plain
+sudo update-alternatives --set editor /usr/bin/code
+必备插件
+Beautify：代码高亮
+Terminal：直接唤起终端
+Project Manager：多个项目切换
+Auto Close Tag：标签自动闭合（其实我觉得可以内置的）
+
+向上向下复制一行： Shift+Alt+Up 或 Shift+Alt+Down 注释代码: cmd + /切换侧边栏: cmd + b文件夹中查找: cmd + shift + f查找替换: cmd + shift + h重构代码: fn + F2 代码格式化: Shift+Alt+F，或 Ctrl+Shift+P 后输入 format codeCtrl+P 模式: (Mac 是 CMD+P)直接输入文件名，快速打开文件> 显示并运行命令: 跳转到行数，也可以Ctrl+G直接进入(Mac 是 CMD+G)@ 跳转到symbol（搜索变量或者函数），也可以Ctrl+Shift+O直接进入@: 根据分类跳转symbol，查找属性或函数，也可以Ctrl+Shift+O后输入:进入# 根据名字查找symbol，也可以Ctrl+T
+
+
+# 安装ubuntu flashtool
+sudo apt-get remove modemmanager
 
 # 安装nodejs
 ``` bash
@@ -312,6 +344,15 @@ npm config set https-proxy http://username:password@server:port
 ``` bash
 sudo npm install hexo-cli -g
 ```
+
+
+# 安装xmind
+download the latest version from https://www.xmind.net/download/xmind8/
+直接解压打开arm64下的可执行程序即可
+
+# 安装freemind
+sudo snap install freemind
+
 
 # 安装sogou输入法
 http://pinyin.sogou.com/linux    download the latest sogou ime
@@ -376,14 +417,27 @@ sudo apt-get install gnome-session-flashback
 
 # 把launcher设置到底部
 ``` bash
-gsettings set com.canonical.Unity.Launcher launcher-position Bottom
+gsettings set com.canonical.Unity.Launcher launcher-position Bottom  // Left为左边
 ```
+
+# 将某个文档中的jack字符串替换为tom
+sed -i "s/jack/tom/g" test.txt
+
 
 # 安装chrome()
 download the latest version from official website
 ``` bash
 google-chrome-stable --proxy-server="127.0.0.1:8118" &
 ```
+
+# 解决Ubuntu无法从外部应用启动Chrome打开链接的问题
+https://blog.csdn.net/Artprog/article/details/71076111
+打开文件：gedit ~/.local/share/applications/google-chrome.desktop 
+找到下面这行: 
+Exec=/opt/google/chrome/chrome
+在末尾添加一个空格和%U: 
+Exec=/opt/google/chrome/chrome %U
+然后保存文件即可。
 
 # 安装markdown阅读器 typora
 ``` bash
@@ -671,3 +725,50 @@ PDF File open password:
 # MTK eservice密码
 zhangzhefeng@sagereal.com
 sagereal%2018
+
+# 修改hosts文件立马生效
+sudo /etc/init.d/networking restart
+
+
+# 如何配置git自动上传？？？？
+
+
+# 配置gedit
+https://lujun9972.github.io/blog/2018/04/23/%E7%A8%8B%E5%BA%8F%E5%91%98%E4%BD%BF%E7%94%A8%E7%9A%84gedit%E9%85%8D%E7%BD%AE/
+https://help.gnome.org/users/gedit/stable/index.html.zh_CN
+//安装第三方插件
+https://wiki.gnome.org/Apps/Gedit/ThirdPartyPlugins_v3.14
+
+//插件安装路径
+~/.local/share/gedit/plugins/
+
+调出嵌入终端 Ctrl+F9(View -> Bottom panel)
+Preferences->Editor->Enable automatic indentation 自动缩进
+
+CTRL+F9 调出内置终端
+CTRL+M  注释
+CTRL+SHIFT+M 反注释
+
+配置代码片段
+manage snippets
+
+
+# 安装参数配置工具
+sudo apt-get install dconf-editor
+org.gnome.gedit
+
+
+
+
+# TodoList
+notice 修改成功和失败时候的铃声的图标
+如何判断某个模块没有发生变化？
+如何在程序中执行脚本？QT？
+如何在已编译过的代码中获取项目名称？和project名称？
+把lint功能整合进来？
+如何检测手机是否开机？
+在注释中添加生效的路径
+研究输入法
+把培训做成视频
+lint怎么用？？？？？？？？？
+整理bug并归类？？？？？？？

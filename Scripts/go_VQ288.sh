@@ -1,5 +1,6 @@
-	# framework/base
+    # protobuf
 ./mk -ud VF292_EF2921_DORO7030 mm external/protobuf/;notice "protobuf_compiled_success!";
+	# framework/base
 adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm frameworks/base/;cat mm_build.log | grep "build completed successfully";if [ $? -ne 0 ] ;then   notice "framework_base_build_failure"; else adb remount;adb push out/target/product/k39tv1_bsp_512/system/framework/framework.jar system/framework;adb push out/target/product/k39tv1_bsp_512/system/framework/arm/boot* system/framework/arm/;adb reboot;notice "framework_base_build_success!";fi
     # service
 adb root;adb remount;./mk -ud VF292_EF2921_DORO7030 mm frameworks/base/services/;cat mm_build.log | grep "build completed successfully";if [ $? -ne 0 ] ;then notice "framework_service_compiled_failure"; else adb remount;adb push out/target/product/k39tv1_bsp_512/system/framework/services.jar system/framework/;adb reboot;notice "framework_service_compiled_success!";fi
@@ -129,8 +130,13 @@ git push origin HEAD:refs/for/dev_MyOS_Doro
 
 android:duplicateParentState="true"
 
+view.setDuplicateParentStateEnabled(true);
+
 
 android:tint="@*android:color/item_text_color_selector"
+
+
+ColorStateList.valueOf(0x00000000);
 
 setTintList(getContext().getResources().getColorStateList(com.android.internal.R.color.item_text_color_selector));
 
@@ -139,7 +145,9 @@ setBackground(getResources().getDrawable(com.android.internal.R.drawable.item_ba
 <!--Redmine158992 zhangqi modified for Settings/Connected devices/USB 2019/01/07:begin-->
 
 
+notice 修改成功和失败时候的铃声的图标
 如何判断某个模块没有发生变化？
 如何在程序中执行脚本？QT？
-如何在已编译过的代码中获取项目名称？和project名称
-把lint功能整合进来
+如何在已编译过的代码中获取项目名称？和project名称？
+把lint功能整合进来？
+如何检测手机是否开机？

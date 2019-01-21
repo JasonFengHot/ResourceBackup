@@ -1,7 +1,8 @@
 在注释中添加生效的路径
 研究输入法
 把培训做成视频
-lint怎么用？
+lint怎么用？？？？？？？？？
+整理bug并归类？？？？？？？
 
 # mtk开发论坛
 http://bbs.16rd.com/forum-263-1.html
@@ -43,9 +44,13 @@ https://github.com/mzlogin/awesome-adb
 qgit
 vscode
 
+# 打印当前所使用的类名、方法名、行号
+android.util.Log.e("zhangqi8888", Thread.currentThread().getStackTrace()[2].getMethodName()+"  "+Thread.currentThread().getStackTrace()[2].getMethodName()+"  "+Thread.currentThread().getStackTrace()[2].getLineNumber());
+
 
 # android:duplicateParentState 属性详解
 https://blog.csdn.net/sodino/article/details/8809778
+setDuplicateParentStateEnabled(true)
 
 # Android进阶学习网站
 https://github.com/lizhangqu/CoreLink
@@ -58,6 +63,7 @@ https://github.com/GcsSloop/AndroidNote?utm_source=gold_browser_extension
 button.setOnClickListener(new android.view.View.OnClickListener() {
     @Override
     public void onClick(android.view.View v) {
+        android.util.Log.e("zhangqi8888", "onClick(1) view:" + view);
     }
 });
 ```
@@ -67,6 +73,13 @@ button.setOnClickListener(new android.view.View.OnClickListener() {
 button.setOnKeyListener(new android.view.View.OnKeyListener() {
     @Override
     public boolean onKey(android.view.View v, int keyCode, android.view.KeyEvent event) {
+        if (keyCode == android.view.KeyEvent.ACTION_DOWN) {
+            if (event.getAction() == android.view.KeyEvent.KEYCODE_DPAD_DOWN) {
+                android.util.Log.e("zhangqi8888", "onKey(1111) event:" + event);
+                return true;
+            }
+        }
+        android.util.Log.e("zhangqi8888", "onKey(2222) event:" + event);
         return false;
     }
 });
@@ -98,6 +111,7 @@ mDialog.setOnKeyListener(new android.content.DialogInterface.OnKeyListener() {
 view.setOnFocusChangeListener(new android.view.View.OnFocusChangeListener() {
     @Override
     public void onFocusChange(android.view.View v, boolean hasFocus) {
+        android.util.Log.e("zhangqi8888", "onFocusChange(1) v:" + v + " hasFocus:" + hasFocus);
         if (hasFocus) {
         } else {
         }
@@ -110,6 +124,7 @@ view.setOnFocusChangeListener(new android.view.View.OnFocusChangeListener() {
 view.setOnLongClickListener(new android.view.View.OnLongClickListener() {
     @Override
     public boolean onLongClick(android.view.View v) {
+        android.util.Log.e("zhangqi8888", "onLongClick() v:" + v);
         return false;
     }
 });
@@ -120,15 +135,7 @@ view.setOnLongClickListener(new android.view.View.OnLongClickListener() {
 getListView().addOnLayoutChangeListener(new android.view.View.OnLayoutChangeListener() {
     @Override
     public void onLayoutChange(android.view.View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-        LinearLayoutManager llm = getLayoutManager();
-        if (llm != null) {
-            if (position >= 0) {
-                View mView = llm.findViewByPosition(position);
-                if (mView != null) {
-                    mView.requestFocus();
-                }
-            }
-        }
+        android.util.Log.e("zhangqi8888", "onLayoutChangeListener(1)" + v);
     }
 });
 ```
@@ -137,6 +144,7 @@ getListView().addOnLayoutChangeListener(new android.view.View.OnLayoutChangeList
 ``` Java
 mListView.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener(){
     public void onItemClick(android.widget.AdapterView<?> parent, android.view.View view, int position, long id){
+        android.util.Log.e("zhangqi8888", "onItemClick(1)" + view);
     }
 });
 ```
@@ -145,6 +153,7 @@ mListView.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListe
 ``` Java
 mSwitch.setOnCheckedChangeListener(new android.widget.CompoundButton.OnCheckedChangeListener(){
     public void onCheckedChanged(android.widget.CompoundButton compoundButton, boolean isChecked) {
+        android.util.Log.e("zhangqi8888", "onCheckedChanged(0)" + isChecked);
         if (isChecked) {
         } else {
         }
@@ -231,8 +240,9 @@ private PhoneStateListener mPhoneServiceListener = new PhoneStateListener() {
 
 # Handler handleMessage
 ``` Java
-private Handler mHandler = new Handler() {
-    public void handleMessage(Message msg) {
+private android.os.Handler mHandler = new android.os.Handler() {
+    public void handleMessage(android.os.Message msg) {
+        android.util.Log.e("zhangqi8888", "handleMessage(1)" + msg.what);
         switch (msg.what) {
             case 1:
                 break;
@@ -250,12 +260,19 @@ msg.obj = new Object();
 mHandler.sendMessage(msg);
 ```
 
-# 通过handler处理长按的消息
+# 通过handler处理长按的消息？？？？
 
 # 启动线程
 ``` Java
 new Thread(new Runnable() {
     public void run() {
+        try {
+            Thread.sleep(1000);
+            android.util.Log.e("zhangqi8888", "new Thread(1)");
+        } catch(Exception e) {
+            android.util.Log.e("zhangqi8888", "new Thread(2) exception:" + e, e);
+            e.printStackTrace();
+        }
     }
 }).start();
 ```
@@ -267,7 +284,7 @@ try {
     mObject.toString();
 } catch (Exception e) {
     e.printStackTrace();
-    android.util.Log.e("NullPointerInsertion", "" + e);
+    android.util.Log.e("zhangqi8888", "NPE:" + e, e);
 }
 ```
 
@@ -277,7 +294,7 @@ try {
 android:fadeScrollbars="false"
 ```
 
-# apn-conf.xml 文件中各个参数的含义
+# apn-conf.xml 文件中各个参数的含义？？？？
 
 # listenRingerModeAndVolume 监听情景模式的变化
 ``` Java
@@ -440,15 +457,12 @@ notMgr.notify(id, n);
 
 # 动态注册监听广播
 ``` Java
-private BroadcastReceiver mMasterResetReciever = new BroadcastReceiver() {
-    public void onReceive(Context context, Intent intent){
+registerReceiver(new android.content.BroadcastReceiver() {
+    public void onReceive(android.content.Context context, android.content.Intent intent){
         String action = intent.getAction();
-        if("oms.action.MASTERRESET".equals(action)){
-            RecoverDefaultConfig();
-        }
+        android.util.Log.e("zhangqi8888", "onReceive()" + action);
     }
-};
-registerReceiver(mMasterResetReciever, new IntentFilter("oms.action.MASTERRESET"));
+}, new android.content.IntentFilter("$1"));
 ```
 
 # 颜色解析
@@ -497,11 +511,11 @@ include $(BUILD_PACKAGE)
 include $(call all-makefiles-under,$(LOCAL_PAT))
 ```
 
-# AndroidManifest中的模板
-## Activity模板
-## Service模板
-## Receiver模板
-## ContentProvider模板
+# AndroidManifest中的模板？？？？
+## Activity模板？？？？
+## Service模板？？？？
+## Receiver模板？？？？
+## ContentProvider模板？？？？
 ## 常用权限
 ``` xml
 //T卡读写权限
@@ -536,6 +550,7 @@ getContentResolver().registerContentObserver(android.provider.Settings.System.ge
     @Override
     public void onChange(boolean selfChange, android.net.Uri uri) {
         super.onChange(selfChange, uri);
+        android.util.Log.e("zhangqi8888", "onChange()" + uri);
     }
 });
 ```
@@ -582,18 +597,20 @@ mDialog.show();
 
 # AlertDialog模板
 ``` Java
-AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+android.app.AlertDialog.Builder builder = new android.app..AlertDialog.Builder(mContext);
 builder.setTitle("Title");
 builder.setMessage("Message");
 builder.setIconAttribute(android.R.attr.alertDialogIcon)
-builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+builder.setPositiveButton("ok", new android.ontent.DialogInterface.OnClickListener() {
 	@Override
-	public void onClick(DialogInterface dialog, int which) {
+	public void onClick(android.ontent.DialogInterface dialog, int which) {
+	    android.util.Log.e("zhangqi8888", "AlertDialog->onClick(positive)->");
 	}
 });
 builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
 	@Override
-	public void onClick(DialogInterface dialog, int which) {
+	public void onClick(android.ontent.DialogInterface dialog, int which) {
+	    android.util.Log.e("zhangqi8888", "AlertDialog->onClick(negative)->");
 	}
 });
 builder.create().show();
@@ -1441,7 +1458,7 @@ public static String getNetworkTypeName(int type) {
 
 # 判断当前手机的网络类型(WIFI还是2,3,4G)
 ``` Java
-public static int getNetWorkStatus(Context context) {
+public static int getNetworkStatus(Context context) {
     int netWorkType = Constants.NETWORK_CLASS_UNKNOWN;
 
     ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -2280,14 +2297,11 @@ public static void UnZipFolder(String zipFileString, String outPathString) throw
     while ((zipEntry = inZip.getNextEntry()) != null) {
         szName = zipEntry.getName();
         if (zipEntry.isDirectory()) {
-
             // get the folder name of the widget
             szName = szName.substring(0, szName.length() - 1);
             java.io.File folder = new java.io.File(outPathString + java.io.File.separator + szName);
             folder.mkdirs();
-
         } else {
-
             java.io.File file = new java.io.File(outPathString + java.io.File.separator + szName);
             file.createNewFile();
             // get the output stream of the file
@@ -2407,7 +2421,7 @@ public static final void expandStatusBar(Context ctx) {
 
 # 计算字宽
 ``` Java
-public static float GetTextWidth(String text, float Size) {
+public static float getTextWidth(String text, float Size) {
     TextPaint FontPaint = new TextPaint();
     FontPaint.setTextSize(Size);
     return FontPaint.measureText(text);
@@ -2424,10 +2438,12 @@ BitmapDrawable bmd = new BitmapDrawable(resizedBitmap);
 ```
 
 # 格式化string.xml 中的字符串
-``` Java
+``` xml
 // in strings.xml..
 <string name="my_text">Thanks for visiting %s. You age is %d!</string>
+```
 
+``` Java
 // and in the java code:
 String.format(getString(R.string.my_text), "oschina", 33);
 ```
@@ -2521,7 +2537,7 @@ private ComponentName getTopActivity() {
     }
 }
 
-//判断facebook是否在栈顶
+// 判断facebook是否在栈顶
 private boolean isFaceBookLiteTop(){
     ComponentName topActivity = getTopActivity();
 	String packageName = "";
@@ -2534,6 +2550,23 @@ private boolean isFaceBookLiteTop(){
 		return true;
 	}
 	return false;
+}
+
+
+// L之后的方法
+public static boolean isAppRunningForeground(Context context){
+    ActivityManager activityManager = (ActivityManager) context.getSystemService(Service.ACTIVITY_SERVICE);
+    List<ActivityManager.RunningAppProcessInfo> runningAppProcessInfoList = activityManager.getRunningAppProcesses();
+    if (runningAppProcessInfoList==null){
+        return false;
+    }
+    for (ActivityManager.RunningAppProcessInfo processInfo : runningAppProcessInfoList) {
+        if (processInfo.processName.equals(context.getPackageName())
+                && processInfo.importance==ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND){
+            return true;
+        }
+    }
+    return false;
 }
 ```
 
@@ -2795,13 +2828,13 @@ private StateListDrawable getStateDrawable(Context context, int normalId, int fo
 btn_state.setBackground(getStateDrawable(mContext, R.drawable.dialog_button_normal, R.drawable.dialog_button_focused, R.drawable.dialog_button_pressed));
 ```
 
-# 模拟鼠标点击
+# 模拟鼠标点击？？？？
 
-# 模拟鼠标长按
+# 模拟鼠标长按？？？？
 
-# 模拟滑动
+# 模拟滑动？？？？
 
-# 模拟按键事件
+# 模拟按键事件？？？？
 ``` Java
 //方法a
 new EditText(context).onKeyDown(keyCode, new KeyEvent(KeyEvent.ACTION_DOWN, keyCode));	//模拟按键的点击事件,这里必须需要一个EditText才可以
@@ -2914,6 +2947,13 @@ public View onInterceptFocusSearch(View focused, int direction) {
 ---------------------------------- 17-3-20 ----------------------------------
 
 
+# SRLauncher修改图片之后，部分图片不生效
+在 Android.mk 文件中看到有 LOCAL_USE_AAPT2 := true　，说明是用AAPT2来编译链接资源的，把这个去掉用aapt去编译即可
+因为 AAPT2 不会重新编译生成 SRLauncher_intermediates，而 AAPT 就会重新生成
+
+The main idea behind AAPT2, apart from new features, is that it divides the 'package' step into two: 'compile' and 'link'. It improves performance, since if only one file changes, you only need to recompile that one file and link all the intermediate files with the 'link' command.
+
+https://fucknmb.com/2018/10/05/%E5%86%8D%E8%B0%88aapt2%E8%B5%84%E6%BA%90%E5%88%86%E5%8C%BA/
 
 
 
@@ -2923,6 +2963,9 @@ public View onInterceptFocusSearch(View focused, int direction) {
 
 
 
+# tint 着色器的原理和使用方法
+http://yifeng.studio/2017/03/30/android-tint/
+mMessageListItem.setBackgroundTintList(android.content.res.ColorStateList.valueOf(0x00000000));
 
 
 
@@ -2930,10 +2973,5 @@ public View onInterceptFocusSearch(View focused, int direction) {
 
 
 
-
-
-
-
-
-
-
+# Android 利用 <activity-alias> 动态改变 App 桌面图标
+http://yifeng.studio/2016/12/30/android-change-app-launcher-icon-dynamically/
