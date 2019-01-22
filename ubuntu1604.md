@@ -961,7 +961,7 @@ crontab -e
 3,15 * * * * command
 
 //每天23:59执行
-59 23 * * * cd ~/github/MyResources;git add .;git commit -m "update";git push origin master
+59 23 * * * cd ~/github/MyResources;git add .;git commit -m "update automatically";git push origin master
 
 //查看定时任务列表
 crontab -l
