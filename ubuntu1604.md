@@ -342,6 +342,7 @@ export https_proxy=http://127.0.0.1:8118/
 
 ``` bash
 sudo apt-get install ccache
+export USE_CCACHE=1
 ```
 
 ## 安装 ShadowSocks-qt5
@@ -957,10 +958,7 @@ crontab -e
 //每分钟执行一次播放音乐的任务
 * * * * * mocp -l /home/zq/sounds/ring3.ogg
 
-//每小时的第3和第15分钟执行
-3,15 * * * * command
-
-//每天23:59执行
+//每天23:59定时更新MyResources中的修改到github服务器
 59 23 * * * cd ~/github/MyResources;git add .;git commit -m "update automatically";git push origin master
 
 //查看定时任务列表
@@ -987,6 +985,6 @@ notice 修改成功和失败时候的铃声的图标
 把培训做成视频
 lint怎么用？？？？？？？？？
 整理bug并归类？？？？？？？最好能整理成一个树（思维导图）
-如何配置git自动上传？？？？
 如何通过命令或工具把PC上的通知发送到手机上？？？
+如何检测是否插入了usb？？
 ```

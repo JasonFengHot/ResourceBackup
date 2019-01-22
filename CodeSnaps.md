@@ -167,7 +167,7 @@ getWindow().getDecorView().addOnLayoutChangeListener(new android.view.View.OnLay
     public void onLayoutChange(android.view.View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
         android.widget.TextView search_src_text = (android.widget.TextView) findViewById(getResources().getIdentifier("android:id/search_src_text", null, null));
         if (search_src_text != null) {
-            search_src_text.setTextColor(android.graphics.Color.parseColor("#ffffff"));
+            search_src_text.setTextColor(0xffffffff);
             setTextCursorColor(search_src_text, 0xffffffff);
         }
     }
@@ -255,7 +255,8 @@ private android.os.Handler mHandler = new android.os.Handler() {
 //sendMessage
 Message msg = mHandler.obtainMessage(1);
 msg.what = 1;
-msg.arg1 = 0x777;
+msg.arg1 = 2;
+msg.arg2 = 3;
 msg.obj = new Object();
 mHandler.sendMessage(msg);
 ```
@@ -655,6 +656,21 @@ public class CustomDialog extends AlertDialog {
 }
 ```
 
+# showProgressDialog
+``` Java
+android.app.ProgressDialog mProgressDialog = new android.app.ProgressDialog(this);
+mProgressDialog.setProgressStyle(android.app.ProgressDialog.STYLE_HORIZONTAL);
+mProgressDialog.setTitle("MyTitle");
+//mDialog.setIcon(R.drawable.icon);
+mProgressDialog.setMessage("This is a progress example!");
+mProgressDialog.setMax(100);
+mProgressDialog.setProgress(0);
+//mDialog.setSecondaryProgress(50);
+mProgressDialog.setIndeterminate(false);
+mProgressDialog.setCancelable(true);
+mProgressDialog.show();
+```
+
 # 隐藏toolbar上的 NavigationView
 ``` Java
 Toolbar mToolbar = (Toolbar) findViewById(com.android.internal.R.id.action_bar);
@@ -934,7 +950,7 @@ try {
 ```
 
 # Shape的模板
-``` Java
+``` xml
 <?xml version="1.0" encoding="utf-8"?>
 <!-- android:shape指定形状类型，默认为rectangle -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"　android:shape="rectangle">
@@ -955,6 +971,48 @@ try {
         android:color="@android:color/darker_gray"
         android:dashGap="4dp"
         android:dashWidth="4dp" />
+</shape>
+```
+
+## Shape(圆)
+
+``` xml
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval"
+    android:useLevel="false">
+
+    <solid android:color="#c6c6c6" />
+    <size
+        android:width="50dp"
+        android:height="50dp" />
+</shape>
+```
+
+## 带圆角的矩形
+
+``` xml
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#b2b2b2" />
+    <size
+        android:width="50dp"
+        android:height="30dp" />
+    <corners android:radius="5dp" />
+</shape>
+```
+
+##　带圆角的矩形边框
+
+``` xml
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <stroke
+        android:width="1dp"
+        android:color="#ff5a85" />
+    <size
+        android:width="50dp"
+        android:height="30dp" />
+    <corners android:radius="5dp" />
 </shape>
 ```
 
@@ -2230,6 +2288,17 @@ public static String texToIp(String ips) {
 }
 ```
 
+## 利用反射机制，获取drawable文件夹下的图片名称
+``` Java
+Field[] fields = R.drawable.class.getDeclaredFields();
+for(Field field:fields){
+    if(!"icon".equals(field.getName())){
+        sb.append(field.getName() + "\t");
+    }
+    }
+mTextView.setText(sb.toString());
+```
+
 # 文件夹排序
 ``` Java
 public static void sortFiles(File[] files) {
@@ -2271,6 +2340,11 @@ public static void sendNotification(Context context, String title, String messag
 # 通过代码设置TextView的样式
 ``` Java
 new TextView(new ContextThemeWrapper(this, R.style.text_style));
+```
+
+# 通过html设置TextView中内容的样式
+``` Java
+tv.setText(Html.fromHtml("<font color="#ff0000">红色</font>其它颜色"));
 ```
 
 # WebView保留缩放功能但隐藏缩放控件
@@ -2975,3 +3049,63 @@ mMessageListItem.setBackgroundTintList(android.content.res.ColorStateList.valueO
 
 # Android 利用 <activity-alias> 动态改变 App 桌面图标
 http://yifeng.studio/2016/12/30/android-change-app-launcher-icon-dynamically/
+
+## 单例模板
+
+``` Java
+private volatile static $classname$ instance;
+public static $classname$ getInstance() {
+    if (instance == null) {
+        synchronized ($classname$.class) {
+            if (instance == null) {
+                instance = new $classname$();
+            }
+        }
+    }
+    return instance;
+}
+```
+
+## 防止内存泄漏的Handler模板
+
+``` Java
+private static class OkHandler extends android.os.Handler {
+    private java.lang.ref.WeakReference<$classname$> activityWeakReference;
+    public OkHandler($classname$ activity) {
+        activityWeakReference = new java.lang.ref.WeakReference<$classname$>(activity);
+    }
+    @Override
+    public void handleMessage(android.os.Message msg) {
+        $classname$ activity = activityWeakReference.get();
+        if (activity != null) {
+
+        }
+    }
+}
+```
+
+## TAG模板
+
+``` Java
+private static final String TAG = $className$.class.getSimpleName();
+```
+
+## Adapter模板(ListView+GridView)？？？
+
+## Adapter模板(RecyclerView)
+
+## startActivity模板
+
+## sendBroadcast模板
+
+## startService模板
+
+## SharedPreference模板
+
+## Bitmap模板
+
+## Http模板
+
+## Notification模板
+
+## File操作模板
