@@ -604,7 +604,7 @@ sudo apt-get install gnome-tweak-tool
 ## 安装字体
 
 ``` bash
-sudo apt-get install fonts-wqy-microhei
+sudo apt-get install fonts-wqy-microhei fonts-droid ttf-wqy-zenhei ttf-wqy-microhei fonts-arphic-ukai fonts-arphic-uming
 ```
 
 ## 安装 matcha 主题
@@ -766,12 +766,6 @@ sudo apt-get install filezilla
 sudo add-apt-repository ppa:peek-developers/stable
 sudo apt-get update
 sudo apt-get install peek
-```
-
-## 安装字体
-
-``` bash
-sudo apt-get install fonts-droid ttf-wqy-zenhei ttf-wqy-microhei fonts-arphic-ukai fonts-arphic-uming
 ```
 
 ## Calibre(kindle电子书管理工具)
