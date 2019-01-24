@@ -284,11 +284,10 @@ sudo gedit /etc/default/apport
 将enabled=1改为enabled=0保存退出即可
 ```
 
-## 写脚本是通过管道自动输入密码或者指令:
+## 写脚本是通过管道自动输入密码或者指令
 
 ``` bash
 echo '你的密码' | sudo -S 执行命令
-echo '指令' | sudo -S 执行命令
 ```
 
 ## 安装Qt开发工具
@@ -296,8 +295,8 @@ echo '指令' | sudo -S 执行命令
 ``` bash
 download the latest version from http://download.qt.io/archive/qt/
 chmod +x qt-opensource-linux-x64-5.12.0.run
-./qt-opensource-linux-x64-5.12.0.run
 sudo apt-get install libgl1-mesa-dev    #否则在运行的时候会报错 can't find -lGL error
+./qt-opensource-linux-x64-5.12.0.run
 ```
 
 ## 链接adbkill
@@ -937,6 +936,12 @@ sudo apt-get install dconf-editor
 org.gnome.gedit
 ```
 
+## 在线TTF字体编辑器
+
+[在线TTF字体编辑器](http://fontstore.baidu.com/static/editor/index.html)
+
+[Github源码](https://github.com/ecomfe/fonteditor)
+
 ## crontab定时任务
 
 ``` bash
@@ -968,17 +973,20 @@ sudo service cron restart
 ## TodoList
 
 ``` bash
-notice 修改成功和失败时候的铃声的图标
+notice 修改成功和失败时候的铃声和图标
 如何判断某个模块没有发生变化？
 如何在程序中执行脚本？QT？
 如何在已编译过的代码中获取项目名称？和project名称？
 把lint功能整合进来？
 如何检测手机是否开机？
 在注释中添加生效的路径（如：Settings/Display/Auto-rotate screen）,方便别人查看验证
-研究输入法
+研究开发输入法
 把培训做成视频
 lint怎么用？？？？？？？？？
 整理bug并归类？？？？？？？最好能整理成一个树（思维导图）
 如何通过命令或工具把PC上的通知发送到手机上？？？
 如何检测是否插入了usb？？
+研究HierarchyView的工作原理
+adb remount 之后如何判断是否成功？
+
 ```
