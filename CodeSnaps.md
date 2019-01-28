@@ -33,24 +33,33 @@ jsoup
 
 # 常用默认值的修改(单开一个)
 
+# 常用sql语句
+
 # 常用库(AndroidStudio)
 
 # 常用adb命令
-https://github.com/mzlogin/awesome-adb
+
+[awesome-adb](https://github.com/mzlogin/awesome-adb)
 
 # 常用git命令
 
 # 常用工具安装
+
 qgit
 vscode
 
 # 打印当前所使用的类名、方法名、行号
-android.util.Log.e("zhangqi8888", Thread.currentThread().getStackTrace()[2].getMethodName()+"  "+Thread.currentThread().getStackTrace()[2].getMethodName()+"  "+Thread.currentThread().getStackTrace()[2].getLineNumber());
 
+``` bash
+android.util.Log.e("zhangqi8888", Thread.currentThread().getStackTrace()[2].getMethodName()+"  "+Thread.currentThread().getStackTrace()[2].getMethodName()+"  "+Thread.currentThread().getStackTrace()[2].getLineNumber());
+```
 
 # android:duplicateParentState 属性详解
-https://blog.csdn.net/sodino/article/details/8809778
+
+[android:duplicateParentState](https://blog.csdn.net/sodino/article/details/8809778)
+``` Java
 setDuplicateParentStateEnabled(true)
+```
 
 # Android进阶学习网站
 https://github.com/lizhangqu/CoreLink

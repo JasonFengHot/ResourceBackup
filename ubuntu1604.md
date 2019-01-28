@@ -988,5 +988,7 @@ lint怎么用？？？？？？？？？
 如何检测是否插入了usb？？
 研究HierarchyView的工作原理
 adb remount 之后如何判断是否成功？
-
+开发vscode上的脚本，android snippets
+开发chrome脚本
+git push 之后延时10秒左右发送一个通知提示可以查看gerrit？？？
 ```
