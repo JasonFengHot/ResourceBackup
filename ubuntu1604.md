@@ -337,6 +337,13 @@ export http_proxy=http://127.0.0.1:8118/
 export https_proxy=http://127.0.0.1:8118/
 ```
 
+## 安装proxychains
+
+``` bash
+sudo apt-get install proxychains
+
+```
+
 ## 安装ccache
 
 ``` bash
