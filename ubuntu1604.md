@@ -344,11 +344,29 @@ sudo apt-get install proxychains
 
 ```
 
+## 配置Shadowsocks PAC全局代理
+
+[PAC](https://www.litcc.com/2016/12/29/Ubuntu16-shadowsocks-pac/index.html)
+
+``` bash
+sudo apt-get install python-pip
+sudo pip install genpac
+pip install --upgrade genpac
+genpac --pac-proxy "SOCKS5 127.0.0.1:1080" --gfwlist-proxy="SOCKS5 127.0.0.1:1080" --gfwlist-url=https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt --output="autoproxy.pac"
+```
+
 ## 安装ccache
 
 ``` bash
 sudo apt-get install ccache
 export USE_CCACHE=1
+```
+
+## ShadowSocks服务器一键安装脚本
+
+``` bash
+wget --no-check-certificate https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocksR.sh && chmod +x shadowsocksR.sh && ./shadowsocksR.sh 2>&1 | tee shadowsocksR.log
+wget --no-check-certificate https://raw.githubusercontent.com/iMeiji/shadowsocks_install/master/shadowsocks-go.sh && chmod +x shadowsocks-go.sh
 ```
 
 ## 安装 ShadowSocks-qt5
