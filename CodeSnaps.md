@@ -1047,6 +1047,9 @@ try {
 ColorStateList mTintColor = getContext().getResources().getColorStateList(com.android.internal.R.color.item_text_color_selector);
 int color = mTintColor.getColorForState(getDrawableState(), 0);
 mTrackDrawable.setTintList(mTintColor);
+
+ImageView imageView = new ImageView(mContext);
+imageView.setImageTintList(mTintColor);
 ```
 
 # 背景色根据状态更改颜色的Selector模板
