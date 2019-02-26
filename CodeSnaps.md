@@ -555,6 +555,7 @@ android.os.SystemProperties.get("ro.build.type", "null");
 # persist值的保存读取？权限问题
 
 # ContentObserver监听某个数据库的值
+
 ``` Java
 getContentResolver().registerContentObserver(android.provider.Settings.System.getUriFor(android.provider.Settings.System.AIRPLANE_MODE_ON), false, new android.database.ContentObserver(new android.os.Handler()) {
     @Override
@@ -566,11 +567,13 @@ getContentResolver().registerContentObserver(android.provider.Settings.System.ge
 ```
 
 # Toast
+
 ``` Java
 android.widget.Toast.makeText(getContext(), "", 2000).show();
 ```
 
 # Toast高级版
+
 ``` Java
 private Toast mToast;
 public void showToast(String msg){
@@ -588,9 +591,8 @@ public void showToast(String msg){
 
 # Toast开源库
 
-
-
 # Dialog模板
+
 ``` Java
 Dialog mDialog = new Dialog(this, R.style.dialog_theme);
 View dialogView = LayoutInflater.from(Launcher.this).inflate(R.layout.dialog_first_run, null);
@@ -606,29 +608,30 @@ mDialog.show();
 ```
 
 # AlertDialog模板
+
 ``` Java
 android.app.AlertDialog.Builder builder = new android.app..AlertDialog.Builder(mContext);
 builder.setTitle("Title");
 builder.setMessage("Message");
 builder.setIconAttribute(android.R.attr.alertDialogIcon)
 builder.setPositiveButton("ok", new android.ontent.DialogInterface.OnClickListener() {
-	@Override
-	public void onClick(android.ontent.DialogInterface dialog, int which) {
-	    android.util.Log.e("zhangqi8888", "AlertDialog->onClick(positive)->");
-	}
+    @Override
+    public void onClick(android.ontent.DialogInterface dialog, int which) {
+        android.util.Log.e("zhangqi8888", "AlertDialog->onClick(positive)->");
+    }
 });
 builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-	@Override
-	public void onClick(android.ontent.DialogInterface dialog, int which) {
-	    android.util.Log.e("zhangqi8888", "AlertDialog->onClick(negative)->");
-	}
+    @Override
+    public void onClick(android.ontent.DialogInterface dialog, int which) {
+        android.util.Log.e("zhangqi8888", "AlertDialog->onClick(negative)->");
+    }
 });
 builder.create().show();
 ```
 
 # 全局对话框
-使用 Application 作为 Dialog 的 Context
-将对话框的window类型设置为 WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
+
+使用 Application 作为 Dialog 的 Context 将对话框的window类型设置为 WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
 ``` Java
 AlertDialog.Builder builder = new AlertDialog.Builder(mApplicationContext);
 ...
@@ -642,6 +645,7 @@ alertDialog.show();
 ```
 
 # AlertDialog状态不变黑
+
 ``` Java
 public class CustomDialog extends AlertDialog {
     public CustomDialog(@NonNull Context context) {
@@ -666,6 +670,7 @@ public class CustomDialog extends AlertDialog {
 ```
 
 # showProgressDialog
+
 ``` Java
 android.app.ProgressDialog mProgressDialog = new android.app.ProgressDialog(this);
 mProgressDialog.setProgressStyle(android.app.ProgressDialog.STYLE_HORIZONTAL);
@@ -681,6 +686,7 @@ mProgressDialog.show();
 ```
 
 # 隐藏toolbar上的 NavigationView
+
 ``` Java
 Toolbar mToolbar = (Toolbar) findViewById(com.android.internal.R.id.action_bar);
 if (mToolbar != null) {
@@ -689,6 +695,7 @@ if (mToolbar != null) {
 ```
 
 # PreferenceActivity的使用
+
 ``` Java
 public class Setting extends PreferenceActivity {
     public void onCreate(Bundle savedInstanceState) {
@@ -711,12 +718,14 @@ Setting.xml:
 ```
 
 # 通话录音之前播放DTMF声音通知对方
+
 ``` Java
 CallCommandClient.getInstance().playDtmfTone('9', true);
 CallCommandClient.getInstance().stopDtmfTone();
 ```
 
 # 按键转发
+
 ``` Java
 import android.view.KeyEvent;
 
@@ -745,15 +754,15 @@ mEditTextFrequency.setOnKeyListener(new View.OnKeyListener() {
 });
 ```
 
-
-
 # 去掉状态栏
+
 ``` Java
 //注意在setContentView()之前调用，否则无效。
 requestWindowFeature(Window.FEATURE_NO_TITLE);
 ```
 
 # 设置窗口格式为半透明
+
 ``` Java
 getWindow().setFormat(PixelFormat.TRANSLUCENT);
 ```
@@ -3094,6 +3103,13 @@ private static class OkHandler extends android.os.Handler {
         }
     }
 }
+```
+
+## 获取电池电量
+
+``` Java
+android.os.BatteryManager batteryManager = (android.os.BatteryManager)getSystemService("batterymanager");
+int battery = batteryManager.getIntProperty(4);//BATTERY_PROPERTY_CAPACITY = 4
 ```
 
 ## TAG模板
