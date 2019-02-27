@@ -5,19 +5,23 @@ lint怎么用？？？？？？？？？
 整理bug并归类？？？？？？？
 
 # mtk开发论坛
+
 http://bbs.16rd.com/forum-263-1.html
 
 # 常用Base类
+
 BaseActivity
 BaseAdapter
 BaseFragment
 
 # 常用工具类
+
 https://github.com/Blankj/AndroidUtilCode/blob/master/utilcode/README-CN.md
 https://github.com/BolexLiu/DevNote
 文件操作工具类
 
 # 更新jdk版本
+
 sudo update-alternatives --config java
 sudo update-alternatives --config javac
 
@@ -57,6 +61,7 @@ android.util.Log.e("zhangqi8888", Thread.currentThread().getStackTrace()[2].getM
 # android:duplicateParentState 属性详解
 
 [android:duplicateParentState](https://blog.csdn.net/sodino/article/details/8809778)
+
 ``` Java
 setDuplicateParentStateEnabled(true)
 ```
