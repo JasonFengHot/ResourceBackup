@@ -14,7 +14,7 @@ export PATH
 # TODO : 如何判断下面的这些基础命令是否存在？
 # adb, mocp,
 
-# TODO : 如何判断要编译的项目是否包含widevine
+# TODO : 如何判断要编译的项目是否包含widevine？
 
 # TODO : 如何判断某个模块没有发生变化？
 
@@ -34,6 +34,10 @@ export PATH
 
     # TODO : 如何终止脚本执行？
     ## exit 0;
+
+# TODO : new 完之后把软件直接拷贝到31上？
+
+# TODO : 
 
 
 remount(){
@@ -201,8 +205,8 @@ make(){
         ./mk -ud $new_project mm frameworks/base/data/fonts/
         moduleType=3
     elif [ $module == "new" ] ; then
-        ./mk -ud $new_project new
-        moduleType=3
+        ./mk -ud $new_project new && ./mk -ud $new_project sign-image
+        exit 0;
     else 
         notice 'Unknown_module!!!';
         exit 0;

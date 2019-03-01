@@ -365,7 +365,7 @@ export USE_CCACHE=1
 ## ShadowSocks服务器一键安装脚本
 
 ``` bash
-wget --no-check-certificate https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocksR.sh && chmod +x shadowsocksR.sh && ./shadowsocksR.sh 2>&1 | tee shadowsocksR.log
+#wget --no-check-certificate https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocksR.sh && chmod +x shadowsocksR.sh && ./shadowsocksR.sh 2>&1 | tee shadowsocksR.log
 wget --no-check-certificate https://raw.githubusercontent.com/iMeiji/shadowsocks_install/master/shadowsocks-go.sh && chmod +x shadowsocks-go.sh
 ```
 
@@ -518,7 +518,7 @@ sudo usermod -a -G vboxusers xyz
 a:下载安装notes,　foxmail(记得备份替换foxmail7.2/storage/***@sagereal.com)
 b:下载安装RTX
 c:下载安装QQ
-d:安装驱动	Driver_Auto_Installer_EXE_v1.1352.00
+d:安装驱动 Driver_Auto_Installer_EXE_v1.1352.00
 e:配置刷机工具
 f:安装搜狗输入法
 g:配置打印机
