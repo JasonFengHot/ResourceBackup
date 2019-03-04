@@ -54,7 +54,7 @@ notice(){
 module=$1;
 new_project=`cat sagereal_build.log | grep "new_project" | awk '{print $2}'`;
 target_project=`cat sagereal_build.log | grep "sagereal_target_project" | awk '{print $2}'`;
-adb shell settings put system screen_off_timeout 1800000
+adb shell settings put system screen_off_timeout 1800000;
 remount
 
 # type 1: vendor/mediatek/proprietary/packages/apps/*
@@ -154,6 +154,9 @@ make(){
     elif [ $module == "Browser" ] ; then
         ./mk -ud $new_project mm packages/apps/Browser/
         process=com.android.browser;
+    elif [ $module == "MtkBrowser" ] ; then
+        ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Browser/
+        process=com.android.browser;
     elif [ $module == "Launcher3Go" ] ; then
         ./mk -ud $new_project mm packages/apps/Launcher3/
         process=com.android.launcher3;
@@ -204,8 +207,11 @@ make(){
     elif [ $module == "fonts" ] ; then
         ./mk -ud $new_project mm frameworks/base/data/fonts/
         moduleType=3
-    elif [ $module == "new" ] ; then
+    elif [[ $module == "new" || $module == "n" ]] ; then
         ./mk -ud $new_project new && ./mk -ud $new_project sign-image
+        exit 0;
+    elif [[ $module == "remake" || $module == "r" ]] ; then
+        ./mk -ud $new_project clone && ./mk -ud $new_project r
         exit 0;
     else 
         notice 'Unknown_module!!!';
@@ -236,19 +242,19 @@ push(){
                 adb push out/target/product/$target_project/system/framework/framework.jar system/framework/;
                 adb push out/target/product/$target_project/system/framework/arm/boot* system/framework/arm/;
                 # service
-                adb push out/target/product/$target_project/system/framework/services.jar system/framework/;
-                adb push out/target/product/$target_project/system/framework/oat/arm/services.* system/framework/oat/arm/;
+                # adb push out/target/product/$target_project/system/framework/services.jar system/framework/;
+                # adb push out/target/product/$target_project/system/framework/oat/arm/services.* system/framework/oat/arm/;
                 # wifi-service
-                adb push out/target/product/$target_project/system/framework/wifi-service.jar system/framework;
-                adb push out/target/product/$target_project/system/framework/wifi-service.jar.prof system/framework/wifi-service.jar.prof;
-                adb push out/target/product/$target_project/system/framework/oat/arm/wifi-service.odex system/framework/oat/arm/;
-                adb push out/target/product/$target_project/system/framework/oat/arm/wifi-service.art system/framework/oat/arm/;
-                adb push out/target/product/$target_project/system/framework/oat/arm/wifi-service.vdex system/framework/oat/arm/;
+                # adb push out/target/product/$target_project/system/framework/wifi-service.jar system/framework;
+                # adb push out/target/product/$target_project/system/framework/wifi-service.jar.prof system/framework/wifi-service.jar.prof;
+                # adb push out/target/product/$target_project/system/framework/oat/arm/wifi-service.odex system/framework/oat/arm/;
+                # adb push out/target/product/$target_project/system/framework/oat/arm/wifi-service.art system/framework/oat/arm/;
+                # adb push out/target/product/$target_project/system/framework/oat/arm/wifi-service.vdex system/framework/oat/arm/;
                 # SettingsProvider
-                adb push out/target/product/$target_project/system/priv-app/MtkSettingsProvider/MtkSettingsProvider.apk system/priv-app/MtkSettingsProvider/;
-                adb push out/target/product/$target_project/system/priv-app/MtkSettingsProvider/oat/arm/MtkSettingsProvider.odex system/priv-app/MtkSettingsProvider/oat/arm/;
-                adb push out/target/product/$target_project/system/priv-app/MtkSettingsProvider/oat/arm/MtkSettingsProvider.vdex system/priv-app/MtkSettingsProvider/oat/arm/;
-                adb reboot;
+                # adb push out/target/product/$target_project/system/priv-app/MtkSettingsProvider/MtkSettingsProvider.apk system/priv-app/MtkSettingsProvider/;
+                # adb push out/target/product/$target_project/system/priv-app/MtkSettingsProvider/oat/arm/MtkSettingsProvider.odex system/priv-app/MtkSettingsProvider/oat/arm/;
+                # adb push out/target/product/$target_project/system/priv-app/MtkSettingsProvider/oat/arm/MtkSettingsProvider.vdex system/priv-app/MtkSettingsProvider/oat/arm/;
+                # adb reboot;
             elif [ $module == "services" ] ; then
                 adb push out/target/product/$target_project/system/framework/services.jar system/framework/;
                 adb push out/target/product/$target_project/system/framework/oat/arm/services.* system/framework/oat/arm/;
