@@ -1,7 +1,7 @@
 #!/bin/bash
 
-PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
-export PATH
+#PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
+#export PATH
 
 # TODO : remove tests files
 
@@ -73,6 +73,7 @@ make(){
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/MtkSettings/;
         process=com.android.settings;
     elif [ $module == "MtkSystemUI" ] ; then
+        rm vendor/mediatek/proprietary/packages/apps/SystemUI/tests/Android.mk;
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/SystemUI/;
         process=com.android.systemui;
     elif [ $module == "MtkDeskClock" ] ; then
@@ -113,6 +114,9 @@ make(){
     elif [ $module == "MtkCalendar" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Calendar/
         process=com.android.calendar;
+    elif [ $module == "MtkGallery2" ] ; then
+        ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Gallery2/
+        process=com.android.gallery3d;
     elif [ $module == "EngineerMode" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/EngineerMode/
         process=com.mediatek.engineermode;
@@ -147,15 +151,15 @@ make(){
     elif [ $module == "Omacp" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Omacp/
         process=com.mediatek.omacp;
+    elif [ $module == "MtkBrowser" ] ; then
+        ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Browser/
+        process=com.android.browser;
 
 
 
 
     elif [ $module == "Browser" ] ; then
-        ./mk -ud $new_project mm packages/apps/Browser/
-        process=com.android.browser;
-    elif [ $module == "MtkBrowser" ] ; then
-        ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Browser/
+        ./mk -ud $new_project mm packages/apps/Browser/;
         process=com.android.browser;
     elif [ $module == "Launcher3Go" ] ; then
         ./mk -ud $new_project mm packages/apps/Launcher3/
@@ -254,14 +258,16 @@ push(){
                 # adb push out/target/product/$target_project/system/priv-app/MtkSettingsProvider/MtkSettingsProvider.apk system/priv-app/MtkSettingsProvider/;
                 # adb push out/target/product/$target_project/system/priv-app/MtkSettingsProvider/oat/arm/MtkSettingsProvider.odex system/priv-app/MtkSettingsProvider/oat/arm/;
                 # adb push out/target/product/$target_project/system/priv-app/MtkSettingsProvider/oat/arm/MtkSettingsProvider.vdex system/priv-app/MtkSettingsProvider/oat/arm/;
-                # adb reboot;
+                adb reboot;
             elif [ $module == "services" ] ; then
                 adb push out/target/product/$target_project/system/framework/services.jar system/framework/;
                 adb push out/target/product/$target_project/system/framework/oat/arm/services.* system/framework/oat/arm/;
+                adb reboot;
             elif [ $module == "fres" ] ; then
                 adb push out/target/product/$target_project/system/framework/framework-res.apk system/framework/;
             elif [ $module == "mres" ] ; then
                 adb push out/target/product/$target_project/system/framework/mediatek-res/mediatek-res.apk system/framework/mediatek-res/;
+                adb reboot;
             elif [ $module == "Music" ] ; then
                 adb push out/target/product/$target_project/vendor/app/MusicBspPlus/MusicBspPlus.apk vendor/app/MusicBspPlus/;
             elif [ $module == "mediatek-cta" ] ; then
@@ -275,7 +281,9 @@ push(){
                 adb push out/target/product/$target_project/system/framework/oat/arm/wifi-service.odex system/framework/oat/arm/;
                 adb push out/target/product/$target_project/system/framework/oat/arm/wifi-service.art system/framework/oat/arm/;
                 adb push out/target/product/$target_project/system/framework/oat/arm/wifi-service.vdex system/framework/oat/arm/;
+                adb reboot;
             fi
+            adb logcat -c && adb logcat -G 200M && adb logcat | grep "zhangqi8888";
         fi
         # kill process
         if [ ! -z $process ] ; then
