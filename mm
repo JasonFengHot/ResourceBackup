@@ -204,14 +204,15 @@ make(){
     module=$1;
     if [ $module == "MtkSettings" ] ;then
         adb shell pm clear com.android.settings;
-        ./mk -ud $new_project mm frameworks/support/v7/;
-        ./mk -ud $new_project mm frameworks/support/v14/;
-        ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/SettingsLib/;
+        #./mk -ud $new_project mm frameworks/support/v7/;
+        #./mk -ud $new_project mm frameworks/support/v14/;
+        #./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/SettingsLib/;
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/MtkSettings/;
         process=com.android.settings;
         moduleType=1;
+    elif [ $module == "MtkSettingsLib" ] ; then
+        ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/SettingsLib/;
     elif [ $module == "MtkSystemUI" ] ; then
-        rm vendor/mediatek/proprietary/packages/apps/SystemUI/tests/Android.mk;
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/SystemUI/;
         process=com.android.systemui;
         moduleType=1;

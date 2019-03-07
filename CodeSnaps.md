@@ -134,6 +134,7 @@ view.setOnFocusChangeListener(new android.view.View.OnFocusChangeListener() {
 ```
 
 # onLongClickListener
+
 ``` Java
 view.setOnLongClickListener(new android.view.View.OnLongClickListener() {
     @Override
@@ -145,6 +146,7 @@ view.setOnLongClickListener(new android.view.View.OnLongClickListener() {
 ```
 
 # onLayoutChangeListener 监听布局的变化
+
 ``` Java
 getListView().addOnLayoutChangeListener(new android.view.View.OnLayoutChangeListener() {
     @Override
@@ -155,6 +157,7 @@ getListView().addOnLayoutChangeListener(new android.view.View.OnLayoutChangeList
 ```
 
 # ListView onItemClickListener
+
 ``` Java
 mListView.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener(){
     public void onItemClick(android.widget.AdapterView<?> parent, android.view.View view, int position, long id){
@@ -164,6 +167,7 @@ mListView.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListe
 ```
 
 # CheckBox.setOnCheckedChangeListener
+
 ``` Java
 mSwitch.setOnCheckedChangeListener(new android.widget.CompoundButton.OnCheckedChangeListener(){
     public void onCheckedChanged(android.widget.CompoundButton compoundButton, boolean isChecked) {
@@ -176,6 +180,7 @@ mSwitch.setOnCheckedChangeListener(new android.widget.CompoundButton.OnCheckedCh
 ```
 
 # 监听全局布局的变化
+
 ``` Java
 getWindow().getDecorView().addOnLayoutChangeListener(new android.view.View.OnLayoutChangeListener() {
     public void onLayoutChange(android.view.View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
@@ -189,6 +194,7 @@ getWindow().getDecorView().addOnLayoutChangeListener(new android.view.View.OnLay
 ```
 
 # ListView上seekbar的按键监听
+
 ``` Java
 getListView().setOnKeyListener(new android.view.View.OnKeyListener() {
     public boolean onKey(android.view.View v, int keyCode , android.view.KeyEvent event) {
