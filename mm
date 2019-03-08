@@ -38,7 +38,12 @@
 
 # TODO : new 完之后把软件直接拷贝到31上？
 
-# TODO : 
+# TODO : 如何监听手机的重启
+
+# TODO : 如何监听USB的插拔状态
+
+# 按power键无法返回到home，是因为开机向导没有过完
+# adb shell settings put secure user_setup_complete 1
 
 
 
