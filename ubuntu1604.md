@@ -682,6 +682,12 @@ sudo make install
 git clone git@github.com:MegatronKing/SVG-Android.git
 ```
 
+## SVG转换成android的xml文件
+
+``` bash
+https://pan.baidu.com/s/1bp9HANH?errno=0&errmsg=Auth%20Login%20Sucess&&bduss=&ssnerror=0&traceid=
+```
+
 ## 安装FBReader电子书阅读器
 
 ``` bash

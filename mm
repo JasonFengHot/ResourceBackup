@@ -7,6 +7,7 @@
     ## find . -name "Android.mk" | grep "/tests/Android.mk" > tests.txt
 
 # TODO : 怎么判断是哪个平台的代码？KK, L, M, N, O, P？
+# PLATFORM_VERSION
 
     # TODO : 怎么判断这个脚本已经放在 alps 目录下了？
     ## 判断 mk 文件是否存在
@@ -27,11 +28,15 @@
 
 # TODO : new 完之后发送一封邮件到指定邮箱
 
+# TODO : new 完之后直接模块编译一下几个比较常用的并比较耗时的模块？framework,fres,MtkSystemUI,MtkSettings
+
 # TODO : 记录下开始的时间和结束的时间
 
 # TODO : 如何添加 -t -m -p 等开关？
 
 # TODO : 如果 $1 是空的怎么办？如何判断输入的参数是否为空？
+
+# TODO : 自动加宏功能？
 
     # TODO : 如何终止脚本执行？
     ## exit 0;
@@ -41,6 +46,20 @@
 # TODO : 如何监听手机的重启
 
 # TODO : 如何监听USB的插拔状态
+
+# TODO : 一键签名脚本
+
+#####################################################
+
+# TODO : ERP管理系统
+
+# TODO : 自动登录签到系统
+
+# TODO : 微信读书刷分系统
+
+# TODO : 微信群发系统
+
+# TODO : 
 
 # 按power键无法返回到home，是因为开机向导没有过完
 # adb shell settings put secure user_setup_complete 1
@@ -69,7 +88,7 @@ removetests(){
     removetest vendor/mediatek/proprietary/packages/providers/ApplicationsProvider/tests/Android.mk
     removetest vendor/mediatek/proprietary/packages/providers/DownloadProvider/tests/Android.mk
     removetest vendor/mediatek/proprietary/packages/providers/ContactsProvider/tests/Android.mk
-    removetest vendor/mediatek/proprietary/packages/apps/Camera2/tests/Android.mk
+    #removetest vendor/mediatek/proprietary/packages/apps/Camera2/tests/Android.mk
     removetest vendor/mediatek/proprietary/packages/apps/CalendarImporter/tests/Android.mk
     removetest vendor/mediatek/proprietary/packages/apps/MtkSettings/tests/Android.mk
     removetest vendor/mediatek/proprietary/packages/apps/SystemUI/tests/Android.mk
@@ -146,7 +165,7 @@ removetests(){
     removetest frameworks/opt/calendar/tests/Android.mk
     removetest frameworks/opt/vcard/tests/Android.mk
     removetest frameworks/opt/chips/tests/Android.mk
-    removetest frameworks/av/drm/mediacas/plugins/clearkey/tests/Android.mk
+    #removetest frameworks/av/drm/mediacas/plugins/clearkey/tests/Android.mk
     removetest frameworks/av/media/libmediaplayerservice/tests/Android.mk
     removetest frameworks/av/media/libaaudio/tests/Android.mk
     removetest frameworks/av/media/libstagefright/codec2/tests/Android.mk
@@ -170,7 +189,7 @@ removetests(){
     removetest frameworks/base/packages/ExtServices/tests/Android.mk
     removetest frameworks/base/packages/PrintSpooler/tests/Android.mk
     removetest frameworks/base/packages/SystemUI/tests/Android.mk
-    removetest frameworks/base/packages/Shell/tests/Android.mk
+    #removetest frameworks/base/packages/Shell/tests/Android.mk
     removetest frameworks/base/packages/WAPPushManager/tests/Android.mk
     removetest frameworks/base/packages/Osu2/tests/Android.mk
     removetest frameworks/base/packages/SettingsLib/tests/Android.mk

@@ -1293,6 +1293,7 @@ public static void goHome(Context context) {
 ```
 
 # 设置状态栏的颜色
+
 ``` Java
 //需要在Android.mk文件中添加v4包的支持
 protected void setStatusBarColor(int statusColor) {
@@ -1320,7 +1321,22 @@ public void onAttachedToWindow() {
 }
 ```
 
+# 设置状态栏透明
+
+``` Java
+//方法1
+setStatusBarColor(android.graphics.Color.parseColor("#00000000"));
+
+//方法2
+WindowManager.LayoutParams localLayoutParams = getWindow().getAttributes();
+LayoutParams.flags = (WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | localLayoutParams.flags);
+
+//方法3(貌似没效果)
+<item name="android:windowTranslucentStatus">true</item>
+```
+
 # 通过style设置状态栏颜色
+
 ``` xml
 <item name="android:windowLightStatusBar">true</item>
 ```
@@ -3152,3 +3168,10 @@ private static final String TAG = $className$.class.getSimpleName();
 ## 阿拉伯语相关问题修改？
 
 ## 
+
+## HighContrastText
+
+``` Java
+View.java
+canvas.setHighContrastText(mAttachInfo.mHighContrastText);
+```
