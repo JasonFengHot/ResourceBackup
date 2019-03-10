@@ -3175,3 +3175,13 @@ private static final String TAG = $className$.class.getSimpleName();
 View.java
 canvas.setHighContrastText(mAttachInfo.mHighContrastText);
 ```
+
+## 通过代码修改字体颜色的另外一种方法
+
+``` Java
+setSpan(new ForegroundColorSpan(android.graphics.Color.parseColor("#0096ff")), before, buf.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+```
+
+# 39go默认壁纸
+
+device/mediatek/common/overlay/ago/frameworks/base/core/res/res/drawable-nodpi/default_wallpaper.jpg
