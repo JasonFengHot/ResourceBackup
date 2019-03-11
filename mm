@@ -343,7 +343,10 @@ make(){
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Browser/
         process=com.android.browser;
         moduleType=1;
-
+    elif [ $module == "MtkWallpaperPicker" ] ; then
+        ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/WallpaperPicker/
+        process=com.android.wallpaperpicker;
+        moduleType=1;
 
 
 

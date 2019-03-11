@@ -395,6 +395,11 @@ https://www.eclipse.org/downloads/download.php?file=/oomph/epp/2018-09/R/eclipse
 配置快捷键
 配置eclipse用4个空格代替tab??
 配置eclipse的格式化模板
+
+安装fx插件
+http://download.eclipse.org/efxclipse/updates-released/2.3.0/site
+
+安装JavaFX Scene Builder
 ```
 
 ## 安装VSCode
