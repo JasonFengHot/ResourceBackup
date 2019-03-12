@@ -399,7 +399,18 @@ https://www.eclipse.org/downloads/download.php?file=/oomph/epp/2018-09/R/eclipse
 安装fx插件
 http://download.eclipse.org/efxclipse/updates-released/2.3.0/site
 
-安装JavaFX Scene Builder
+fxjava的jar包
+https://github.com/qweasdzxcpoi/JavaFX/blob/master/jfxrt.jar
+
+
+问题：Graphics Device initialization failed for :  es2, sw
+解决：sudo apt-get install openjfx
+
+问题：Gtk-WARNING **: Unable to locate theme engine in module_path: "adwaita",
+解决：sudo apt install gnome-themes-standard
+
+安装配置JavaFX Scene Builder
+/opt/JavaFXSceneBuilder2.0/
 ```
 
 ## 安装VSCode
