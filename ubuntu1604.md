@@ -68,7 +68,7 @@ a:系统推荐使用 perl5.10.1
 sudo apt-get install perlbrew
 perlbrew install 5.10.1 //这里会提示失败，因为perlbrew下载包的时候没有走代理，需要先用wget把perl的安装包下载下载，再安装
 wget http://www.cpan.org/src/5.0/perl-5.10.1.tar.bz2
-perlbrew --notest install /home/zq/http://www.cpan.org/src/5.0/perl-5.10.1.tar.bz2 //这里必须使用绝对路径，否则安装不上
+perlbrew --notest install /home/zq/perl-5.10.1.tar.bz2 //这里必须使用绝对路径，否则安装不上
 
 需要更新gcc的版本为4.8.1
 

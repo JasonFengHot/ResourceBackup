@@ -414,7 +414,9 @@ make(){
         ./mk -ud $new_project mm frameworks/base/data/fonts/
         moduleType=3
     elif [[ $module == "new" || $module == "n" ]] ; then
+        removetests;
         ./mk -ud $new_project new && ./mk -ud $new_project sign-image
+        notice "make_new_success!!!"
         exit 0;
     elif [[ $module == "remake" || $module == "r" ]] ; then
         ./mk -ud $new_project clone && ./mk -ud $new_project r
