@@ -39,7 +39,7 @@
 # TODO : 自动加宏功能？
 
     # TODO : 如何终止脚本执行？
-    ## exit 0;
+    ## exit 0;//失败退出
 
 # TODO : new 完之后把软件直接拷贝到31上？
 
@@ -48,6 +48,8 @@
 # TODO : 如何监听USB的插拔状态
 
 # TODO : 一键签名脚本
+
+# TODO : 如何通过脚本修改文件中的内容？
 
 #####################################################
 
@@ -295,6 +297,7 @@ make(){
         process=com.android.gallery3d;
         moduleType=1;
     elif [ $module == "EngineerMode" ] ; then
+        notice "要先mmma"
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/EngineerMode/
         process=com.mediatek.engineermode;
         moduleType=1;
@@ -384,6 +387,14 @@ make(){
 
 
     elif [ $module == "framework" ] ; then
+        cat frameworks/base/Android.mk | grep "platformprotos"
+        if [ $? -ne 0 ] ; then
+            echo "no_have_platformprotos";
+        else
+            notice "You_should_modify_Android_mk_first!!!";
+            code frameworks/base/Android.mk;
+            exit 0
+        fi
         ./mk -ud $new_project mm frameworks/base/
         moduleType=3
     elif [ $module == "services" ] ; then
