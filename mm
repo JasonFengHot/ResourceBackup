@@ -403,6 +403,9 @@ make(){
     elif [ $module == "fres" ] ; then
         ./mk -ud $new_project mm frameworks/base/core/res/
         moduleType=3
+    elif [ $module == "v7" ] ; then
+        ./mk -ud $new_project mm frameworks/support/v7
+        moduleType=3
     elif [ $module == "protobuf" ] ; then
         ./mk -ud $new_project mm external/protobuf/
         moduleType=3
