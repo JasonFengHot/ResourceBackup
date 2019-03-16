@@ -309,8 +309,8 @@ try {
 }
 ```
 
-
 # 滚动条不消失
+
 ``` xml
 android:fadeScrollbars="false"
 ```
@@ -318,6 +318,7 @@ android:fadeScrollbars="false"
 # apn-conf.xml 文件中各个参数的含义？？？？
 
 # listenRingerModeAndVolume 监听情景模式的变化
+
 ``` Java
 mAudioManager.listenRingerModeAndVolume(new AudioProfileListener(){
     public void onRingerModeChanged(int ringerMode) {
@@ -331,11 +332,13 @@ mAudioManager.listenRingerModeAndVolume(new AudioProfileListener(){
 ```
 
 # setTextSize
+
 ``` Java
 setTextSize(android.util.TypedValue.COMPLEX_UNIT_DIP, 21.0f);
 ```
 
 # 调节情景模式
+
 ``` Java
 AudioProfileManager mProfileManager = (AudioProfileManager) mContext.getSystemService(Context.AUDIOPROFILE_SERVICE);
 if(indexToRingerMode(index) == AudioManager.RINGER_MODE_NORMAL){
@@ -350,29 +353,34 @@ if(indexToRingerMode(index) == AudioManager.RINGER_MODE_NORMAL){
 ```
 
 # onKeyDown / onKeyUp
+
 ``` Java
 @Override
 public boolean onKeyDown(int keyCode, android.view.KeyEvent event) {
-	return super.onKeyDown(keyCode, event);
+    return super.onKeyDown(keyCode, event);
 }
 @Override
 public boolean onKeyUp(int keyCode, android.view.KeyEvent event) {
-	return super.onKeyUp(keyCode, event);
+    return super.onKeyUp(keyCode, event);
 }
 ```
 
 # 下拉通知栏
+
 ``` Java
 ((android.app.StatusBarManager)getSystemService("statusbar")).expandNotificationsPanel();
 ```
 
 # 获取View的几种方法
+
 ``` Java
+//通过id的名称获取id
 int id = getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
 View mView = findViewById(id);
 ```
 
 # 启动service
+
 ``` Java
 Intent intent = new Intent("xxx");
 intent.setPackage("xxx");
@@ -381,6 +389,7 @@ startService(intent);
 ```
 
 # 绑定service bindService
+
 ``` Java
 mContext.bindService(new Intent("android.intent.action.START_MMS_SETTINGS_SERVICE_AIDL"), conn, Service.BIND_AUTO_CREATE);
 ```
@@ -388,6 +397,7 @@ mContext.bindService(new Intent("android.intent.action.START_MMS_SETTINGS_SERVIC
 # 用代码写LinearLayout
 
 # 常用View控件的xml模板
+
 ``` xml
 <ImageView
     android:id="@+id/delete"
@@ -433,6 +443,7 @@ mContext.bindService(new Intent("android.intent.action.START_MMS_SETTINGS_SERVIC
 ```
 
 # 常用属性
+
 ``` xml
 android:focusable="true"
 android:focusableInTouchMode="true"
@@ -445,17 +456,21 @@ android:ellipsize="marquee" 　　　//跑马灯跑动的几个条件, selected=
 ```
 
 # 修改actionbar的颜色
+
 ``` Java
 window.getDecorView().findViewById(com.android.internal.R.id.action_bar_container).setBackgroundColor(android.graphics.Color.parseColor("#ffffff"));
 ```
 
 # 发送广播
+
 ``` Java
 sendBroadcast(new Intent(""));
 ```
 
 # 发送通知模板Notification
+
 https://blog.csdn.net/lilu_leo/article/details/6608101
+
 ``` Java
 NotificationManager notMgr = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
 Notification n = new Notification();
@@ -477,6 +492,7 @@ notMgr.notify(id, n);
 ```
 
 # 动态注册监听广播
+
 ``` Java
 registerReceiver(new android.content.BroadcastReceiver() {
     public void onReceive(android.content.Context context, android.content.Intent intent){
@@ -487,11 +503,14 @@ registerReceiver(new android.content.BroadcastReceiver() {
 ```
 
 # 颜色解析
+
 ``` Java
 textView.setTextColor(android.graphics.Color.parseColor("#0096ff"));
+textView.setTextColor(0x0000ff00);
 ```
 
 # 反色相关代码(color inversion)
+
 ``` Java
 ACCESSIBILITY_DISPLAY_INVERSION_ENABLED
 
@@ -506,6 +525,7 @@ framework/base/core/java/com/android/server/wm/WindowManagerService.java:       
 ```
 
 # 更新界面显示
+
 ``` Java
 try {
     mActivityManager.updateConfiguration(null);
@@ -516,6 +536,7 @@ try {
 # 给apk签名
 
 # Android.mk模板(各个属性的含义)
+
 ``` Makefile
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
@@ -532,12 +553,7 @@ include $(BUILD_PACKAGE)
 include $(call all-makefiles-under,$(LOCAL_PAT))
 ```
 
-# AndroidManifest中的模板？？？？
-## Activity模板？？？？
-## Service模板？？？？
-## Receiver模板？？？？
-## ContentProvider模板？？？？
-## 常用权限
+## 常用权限????TODO
 ``` xml
 //T卡读写权限
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -1583,7 +1599,8 @@ public static int getNetworkStatus(Context context) {
 }
 ```
 
-# 启动App默认的Activity
+## 启动App默认的Activity
+
 ``` Java
 public static void startApkActivity(final Context ctx, String packageName) {
     PackageManager pm = ctx.getPackageManager();
@@ -1606,21 +1623,24 @@ public static void startApkActivity(final Context ctx, String packageName) {
 }
 ```
 
-# 拨打电话
+## 拨打电话
+
 ``` Java
 public static void call(Context context, String phoneNumber) {
     context.startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber)));
 }
 ```
 
-# 跳转到拨号界面
+## 跳转到拨号界面
+
 ``` Java
 public static void callDial(Context context, String phoneNumber) {
     context.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phoneNumber)));
 }
 ```
 
-# 发送短信
+## 发送短信
+
 ``` Java
 public static void sendSms(Context context, String phoneNumber, String content) {
     Uri uri = Uri.parse("smsto:" + (TextUtils.isEmpty(phoneNumber) ? "" : phoneNumber));
@@ -1630,7 +1650,8 @@ public static void sendSms(Context context, String phoneNumber, String content) 
 }
 ```
 
-# 发送彩信
+## 发送彩信
+
 ``` Java
 StringBuilder sb = new StringBuilder();
 sb.append("file://");
@@ -1644,7 +1665,8 @@ intent.putExtra(Messaging.KEY_ACTION_SENDTO_EXIT_ON_SENT, exitOnSent);
 startActivity(intent);
 ```
 
-# 发送email
+## 发送email
+
 ``` Java
 String mime = "img/jpg";
 shareIntent.setDataAndType(Uri.fromFile(fd), mime);
@@ -1653,13 +1675,15 @@ shareIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
 shareIntent.putExtra(Intent.EXTRA_TEXT, body);
 ```
 
-# 打开浏览器浏览某一个网站
+## 打开浏览器浏览某一个网站
+
 ``` Java
 Intent viewIntent = new Intent("android.intent.action.VIEW",Uri.parse("http://vaiyanzi.cnblogs.com"));
 startActivity(viewIntent);
 ```
 
-# 唤醒屏幕并解锁
+## 唤醒屏幕并解锁
+
 ``` Java
 public static void wakeUpAndUnlock(Context context) {
     KeyguardManager km = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
@@ -1681,7 +1705,8 @@ public static void wakeUpAndUnlock(Context context) {
 <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
 ```
 
-# 判断当前App处于前台还是后台状态
+## 判断当前App处于前台还是后台状态
+
 ``` Java
 public static boolean isApplicationBackground(final Context context) {
 
@@ -1701,7 +1726,8 @@ public static boolean isApplicationBackground(final Context context) {
 <uses-permission android:name="android.permission.GET_TASKS" />
 ```
 
-# 判断当前手机是否处于锁屏(睡眠)状态
+## 判断当前手机是否处于锁屏(睡眠)状态
+
 ``` Java
 public static boolean isSleeping(Context context) {
     KeyguardManager kgMgr = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
@@ -1710,7 +1736,8 @@ public static boolean isSleeping(Context context) {
 }
 ```
 
-# 判断当前是否有网络连接
+## 判断当前是否有网络连接
+
 ``` Java
 public static boolean isOnline(Context context) {
     ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Activity.CONNECTIVITY_SERVICE);
@@ -1722,7 +1749,8 @@ public static boolean isOnline(Context context) {
 }
 ```
 
-# 判断当前是否是WIFI连接状态
+## 判断当前是否是WIFI连接状态
+
 ``` Java
 public static boolean isWifiConnected(Context context) {
     ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -1734,7 +1762,8 @@ public static boolean isWifiConnected(Context context) {
 }
 ```
 
-# 安装APK
+## 安装APK
+
 ``` Java
 public static void installApk(Context context, File file) {
     Intent intent = new Intent();
@@ -1747,7 +1776,8 @@ public static void installApk(Context context, File file) {
 }
 ```
 
-# 获取已经安装的APK路径
+## 获取已经安装的APK路径
+
 ``` Java
 PackageManager pm = getPackageManager();
 for (ApplicationInfo app : pm.getInstalledApplications(0)) {
@@ -1755,7 +1785,8 @@ for (ApplicationInfo app : pm.getInstalledApplications(0)) {
 }
 ```
 
-# 判断当前设备是否为手机
+## 判断当前设备是否为手机
+
 ``` Java
 public static boolean isPhone(Context context) {
     TelephonyManager telephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -1767,14 +1798,16 @@ public static boolean isPhone(Context context) {
 }
 ```
 
-# 判断设备是否是平板
+## 判断设备是否是平板
+
 ``` Java
 public static boolean isTablet(Context context) {
     return (context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE;
 }
 ```
 
-# 监听apk的安装和卸载
+## 监听apk的安装和卸载
+
 ``` Java
 MyBroadcastReceiver myReceiver = new MyBroadcastReceiver();
 IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_INSTALL);
@@ -1786,7 +1819,8 @@ filter.addDataScheme("package"); //This line is very important. Otherwise, broad
 registerReceiver(myReceiver, filter);
 ```
 
-# 获取内存大小
+## 获取内存大小
+
 ``` Java
 ActivityManager.MemoryInfo outInfo = new ActivityManager.MemoryInfo();
 activityManager.getMemoryInfo(outInfo);
@@ -1796,7 +1830,8 @@ outInfo.availMem
 outInfo.lowMemory
 ```
 
-# 取得ScrollView的实际高度
+## 取得ScrollView的实际高度
+
 ``` Java
 scrollview.getHeight()
 scrollview.getMeasuredHeight()
@@ -1804,7 +1839,8 @@ scrollview.compute()
 scrollview.getLayoutParams().height
 ```
 
-# 获取当前设备宽高，单位px
+## 获取当前设备宽高，单位px
+
 ``` Java
 public static int getDeviceWidth(Context context) {
     WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -1819,7 +1855,8 @@ public static int getDeviceHeight(Context context) {
 }
 ```
 
-# 获取屏幕宽高
+## 获取屏幕宽高
+
 ``` Java
 DisplayMetrics dm = new DisplayMetrics();
 //获取窗口属性
@@ -1828,7 +1865,8 @@ int screenWidth = dm.widthPixels;//320
 int screenHeight = dm.heightPixels;//480
 ```
 
-# 获取当前设备的IMEI，需要与上面的isPhone()一起使用
+## 获取当前设备的IMEI，需要与上面的isPhone()一起使用
+
 ``` Java
 public static String getDeviceIMEI(Context context) {
     String deviceId;
@@ -1844,14 +1882,13 @@ public static String getDeviceIMEI(Context context) {
 ```
 
 # 获取SIM卡的IMSI号码
-方法1
+
 ``` Java
+//方法1
 TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
 String mIMSI = tm.getSubscriberIdGemini(PhoneConstants.GEMINI_SIM_1);
-```
 
-方法2
-``` Java
+//方法2
 import com.android.internal.telephony.Phone;
 import com.android.internal.telephony.PhoneFactory;
 import com.android.internal.telephony.RIL;
@@ -1877,8 +1914,8 @@ public void handleMessage(Message msg) {
 }
 ```
 
+## 获取当前设备的MAC地址
 
-# 获取当前设备的MAC地址
 ``` Java
 public static String getMacAddress(Context context) {
     String macAddress;
@@ -1893,12 +1930,14 @@ public static String getMacAddress(Context context) {
 }
 ```
 
-# 获取android设备唯一标示码
+## 获取android设备唯一标示码
+
 ``` Java
 String android_id = Secure.getString(getContext().getContentResolver(), Secure.ANDROID_ID)
 ```
 
-# 获取当前程序的版本号
+## 获取当前程序的版本号
+
 ``` Java
 public static String getAppVersion(Context context) {
     String version = "0";
@@ -1911,9 +1950,8 @@ public static String getAppVersion(Context context) {
 }
 ```
 
+## 精确获取屏幕尺寸
 
-
-# 精确获取屏幕尺寸
 ``` Java
 public static double getScreenPhysicalSize(Activity ctx) {
     DisplayMetrics dm = new DisplayMetrics();
@@ -1923,16 +1961,8 @@ public static double getScreenPhysicalSize(Activity ctx) {
 }
 ```
 
-# 计算字宽
-``` Java
-public static float getTextWidth(String text, float Size) {
-    TextPaint FontPaint = new TextPaint();
-    FontPaint.setTextSize(Size);
-    return FontPaint.measureText(text);
-}
-```
+## 获取应用程序下所有的activity
 
-# 获取应用程序下所有的activity
 ``` Java
 public static ArrayList<String> getActivities(Context ctx) {
     ArrayList<String> result = new ArrayList<String>();
@@ -1945,14 +1975,16 @@ public static ArrayList<String> getActivities(Context ctx) {
 }
 ```
 
-# 获取设备上已安装并且可启动的应用列表
+## 获取设备上已安装并且可启动的应用列表
+
 ``` Java
 Intent intent = new Intent(Intent.ACTION_MAIN);
 intent.addCategory(Intent.CATEGORY_LAUNCHER);
 List<ResolveInfo> activities = getPackageManager().queryIntentActivities(intent, 0)
 ```
 
-# 列出系统中所有安装的app的信息
+## 列出系统中所有安装的app的信息
+
 ``` Java
 PackageManager pm = getPackageManager();
 List<PackageInfo> packages = pm.getInstalledPackages(PackageManager.GET_UNINSTALLED_PACKAGES);
@@ -1966,7 +1998,8 @@ for(PackageInfo packageInfo : packages){
 }
 ```
 
-# 将raw中的apk拷贝到/data/data/包名/files/中
+## 将raw中的apk拷贝到/data/data/包名/files/中
+
 ``` Java
 InputStream in = null;
 OutputStream out = null;
@@ -1995,13 +2028,15 @@ try {
 }
 ```
 
-# 文件读写相关
+## 文件读写相关
+
 https://blog.csdn.net/lilu_leo/article/details/6597302
 https://blog.csdn.net/lilu_leo/article/details/6589510
 
 # 保存文件
 
-# 拷贝文件
+## 拷贝文件
+
 ``` Java
 private void copyFile(InputStream in, OutputStream out){
     byte[] buffer = new byte[1024];
@@ -2017,7 +2052,8 @@ private void copyFile(InputStream in, OutputStream out){
 }
 ```
 
-# 使用DexClassLoader加载 /data/data/包名/files/ 下的apk的classes.dex，并通过反射执行。
+## 使用DexClassLoader加载 /data/data/包名/files/ 下的apk的classes.dex，并通过反射执行。
+
 ``` Java
 String pkgDataPath = "/data/data/" + getPackageName();
 String optimizedDirectory = pkgDataPath + "/files/";
@@ -2033,7 +2069,8 @@ try {
 }
 ```
 
-# 动态加载其他已经安装的apk的dex文件， 并通过反射执行
+## 动态加载其他已经安装的apk的dex文件， 并通过反射执行
+
 ``` Java
 private void useDexClassLoader(){
     //创建一个意图，用来找到指定的apk
@@ -2043,7 +2080,6 @@ private void useDexClassLoader(){
     List<ResolveInfo> resolveinfoes =  pm.queryIntentActivities(intent, 0);
     //获得指定的activity的信息
     ActivityInfo actInfo = resolveinfoes.get(0).activityInfo;
-    
     //获得包名
     String pacageName = actInfo.packageName;
     //获得apk的目录或者jar的目录
@@ -2051,12 +2087,10 @@ private void useDexClassLoader(){
     //dex解压后的目录,注意，这个用宿主程序的目录，android中只允许程序读取写自己
     //目录下的文件
     String dexOutputDir = getApplicationInfo().dataDir;
-    
     //native代码的目录
     String libPath = actInfo.applicationInfo.nativeLibraryDir;
     //创建类加载器，把dex加载到虚拟机中
     DexClassLoader calssLoader = new DexClassLoader(apkPath, dexOutputDir, libPath,　this.getClass().getClassLoader());
-    
     //利用反射调用插件包内的类的方法
     try {
         Class<?> clazz = calssLoader.loadClass(pacageName+".Plugin1");
@@ -2064,7 +2098,6 @@ private void useDexClassLoader(){
         Class[] param = new Class[2];
         param[0] = Integer.TYPE;
         param[1] = Integer.TYPE;
-        
         Method method = clazz.getMethod("function1", param);
         Integer ret = (Integer)method.invoke(obj, 1,12);
         Log.i("Host", "return result is " + ret);
@@ -2084,7 +2117,8 @@ private void useDexClassLoader(){
 }
 ```
 
-# 获取其他包中的资源
+## 获取其他包中的资源
+
 ``` Java
 Intent intent = new Intent("com.suchangli.android.plugin", null);
 //获得包管理器
@@ -2104,7 +2138,8 @@ try {
 }
 ```
 
-# 获取Activity的图标
+## 获取Activity的图标
+
 ``` Java
 private Bitmap getIconForActivity(Context context, String packageName, String activityName){
     ComponentName activityComp = new ComponentName(packageName, activityName);
@@ -2117,7 +2152,8 @@ private Bitmap getIconForActivity(Context context, String packageName, String ac
 }
 ```
 
-# 获取当前app的签名信息
+## 获取当前app的签名信息
+
 ``` Java
 /**
  * get signature of current package
@@ -2144,7 +2180,8 @@ public static String getSignature(Context context){
 }
 ```
 
-# 获取apk文件的签名信息
+## 获取apk文件的签名信息
+
 ``` Java
 /**
  * get signature of an apk file
@@ -2171,7 +2208,8 @@ public static String getSignatureOfApk(Context context, String apkFilePath){
 }
 ```
 
-# 获取apk文件的权限信息
+## 获取apk文件的权限信息
+
 ``` Java
 public static List<PermissionInfo> getApkPermissions(String apkFile, PackageManager pm){
     List<PermissionInfo> permissionInfos = new ArrayList<PermissionInfo>();
@@ -2189,8 +2227,8 @@ public static List<PermissionInfo> getApkPermissions(String apkFile, PackageMana
 }
 ```
 
+## 检测字符串中是否包含汉字
 
-# 检测字符串中是否包含汉字
 ``` Java
 public static boolean checkChinese(String sequence) {
     final String format = "[\\u4E00-\\u9FA5\\uF900-\\uFA2D]";
@@ -2202,7 +2240,8 @@ public static boolean checkChinese(String sequence) {
 }
 ```
 
-# 检测字符串中只能包含:中文、数字、下划线(_)、横线(-)
+## 检测字符串中只能包含:中文、数字、下划线(_)、横线(-)
+
 ``` Java
 public static boolean checkNickname(String sequence) {
     final String format = "[^\\u4E00-\\u9FA5\\uF900-\\uFA2D\\w-_]";
@@ -2212,7 +2251,8 @@ public static boolean checkNickname(String sequence) {
 }
 ```
 
-# 检查又没有应用程序来接受处理你发出的intent
+## 检查又没有应用程序来接受处理你发出的intent
+
 ``` Java
 public static boolean isIntentAvailable(Context context, String action) {
     final PackageManager packageManager = context.getPackageManager();
@@ -2222,7 +2262,8 @@ public static boolean isIntentAvailable(Context context, String action) {
 }
 ```
 
-# 使用TransitionDrawable实现渐变效果
+## 使用TransitionDrawable实现渐变效果
+
 ``` Java
 private void setImageBitmap(ImageView imageView, Bitmap bitmap) {
     final TransitionDrawable td = new TransitionDrawable(new Drawable[] { new ColorDrawable(android.R.color.transparent), new BitmapDrawable(mContext.getResources(), bitmap) });
@@ -2232,12 +2273,14 @@ private void setImageBitmap(ImageView imageView, Bitmap bitmap) {
 }
 ```
 
-# 发送广播扫描指定文件
+## 发送广播扫描指定文件
+
 ``` Java
 sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
 ```
 
-# 多进程Preferences数据共享
+## 多进程Preferences数据共享
+
 ``` Java
 public static void putStringProcess(Context ctx, String key, String value) {
     SharedPreferences sharedPreferences = ctx.getSharedPreferences("preference_mu", Context.MODE_MULTI_PROCESS);
@@ -2252,7 +2295,8 @@ public static String getStringProcess(Context ctx, String key, String defValue) 
 }
 ```
 
-# 泛型ArrayList转数组
+## 泛型ArrayList转数组
+
 ``` Java
 public static <T> T[] toArray(Class<?> cls, ArrayList<T> items) {
     if (items == null || items.size() == 0) {
@@ -2262,7 +2306,8 @@ public static <T> T[] toArray(Class<?> cls, ArrayList<T> items) {
 }
 ```
 
-# 保存恢复ListView为当前位置
+## 保存恢复ListView为当前位置
+
 ``` Java
 private void saveCurrentPosition() {
     if (mListView != null) {
@@ -2282,7 +2327,8 @@ private void restorePosition() {
 }
 ```
 
-# 调用便携式热点和数据共享设置
+## 调用便携式热点和数据共享设置
+
 ``` Java
 public static Intent getHotspotSetting() {
     Intent intent = new Intent();
@@ -2293,50 +2339,53 @@ public static Intent getHotspotSetting() {
 }
 ```
 
-# 格式化输出IP地址
+## 格式化输出IP地址
+
 ``` Java
 public static String getIp(Context ctx) {
     return Formatter.formatIpAddress((WifiManager) ctx.getSystemService(Context.WIFI_SERVICE).getConnectionInfo().getIpAddress());
 }
 ```
 
-# ip地址转成8位16进制串
+## ip地址转成8位16进制串
+
 ``` Java
 /** ip转16进制 */
 public static String ipToHex(String ips) {
-   StringBuffer result = new StringBuffer();
-   if (ips != null) {
-       StringTokenizer st = new StringTokenizer(ips, ".");
-       while (st.hasMoreTokens()) {
-           String token = Integer.toHexString(Integer.parseInt(st.nextToken()));
-           if (token.length() == 1)
-               token = "0" + token;
-           result.append(token);
-       }
-   }
-   return result.toString();
+    StringBuffer result = new StringBuffer();
+    if (ips != null) {
+        StringTokenizer st = new StringTokenizer(ips, ".");
+        while (st.hasMoreTokens()) {
+        String token = Integer.toHexString(Integer.parseInt(st.nextToken()));
+        if (token.length() == 1) {
+            token = "0" + token;
+            result.append(token);
+        }
+    }
+    return result.toString();
 }
 
 /** 16进制转ip */
 public static String texToIp(String ips) {
-   try {
-       StringBuffer result = new StringBuffer();
-       if (ips != null && ips.length() == 8) {
-           for (int i = 0; i < 8; i += 2) {
-               if (i != 0)
-                   result.append('.');
-               result.append(Integer.parseInt(ips.substring(i, i + 2), 16));
-           }
-       }
-       return result.toString();
-   } catch (NumberFormatException ex) {
-       Logger.e(ex);
-   }
-   return "";
+    try {
+        StringBuffer result = new StringBuffer();
+        if (ips != null && ips.length() == 8) {
+            for (int i = 0; i < 8; i += 2) {
+                if (i != 0) {
+                    result.append('.');
+                    result.append(Integer.parseInt(ips.substring(i, i + 2), 16));
+                }
+            }
+            return result.toString();
+    } catch (NumberFormatException ex) {
+        Logger.e(ex);
+    }
+    return "";
 }
 ```
 
 ## 利用反射机制，获取drawable文件夹下的图片名称
+
 ``` Java
 Field[] fields = R.drawable.class.getDeclaredFields();
 for(Field field:fields){
@@ -2347,7 +2396,8 @@ for(Field field:fields){
 mTextView.setText(sb.toString());
 ```
 
-# 文件夹排序
+## 文件夹排序
+
 ``` Java
 public static void sortFiles(File[] files) {
     Arrays.sort(files, new Comparator<File>() {
@@ -2368,7 +2418,8 @@ public static void sortFiles(File[] files) {
 }
 ```
 
-# 发送不重复的通知
+## 发送不重复的通知
+
 ``` Java
 public static void sendNotification(Context context, String title, String message, Bundle extras) {
     Intent mIntent = new Intent(context, FragmentTabsActivity.class);
@@ -2376,8 +2427,7 @@ public static void sendNotification(Context context, String title, String messag
     mIntent.putExtras(extras);
     int requestCode = (int) System.currentTimeMillis();
     PendingIntent mContentIntent = PendingIntent.getActivity(context, requestCode, mIntent, 0);
-    Notification mNotification = new NotificationCompat.Builder(context).setContentTitle(title).setSmallIcon(R.drawable.app_icon)
-        .setContentIntent(mContentIntent).setContentText(message).build();
+    Notification mNotification = new NotificationCompat.Builder(context).setContentTitle(title).setSmallIcon(R.drawable.app_icon).setContentIntent(mContentIntent).setContentText(message).build();
     mNotification.flags |= Notification.FLAG_AUTO_CANCEL;
     mNotification.defaults = Notification.DEFAULT_ALL;
     NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -2385,26 +2435,30 @@ public static void sendNotification(Context context, String title, String messag
 }
 ```
 
-# 通过代码设置TextView的样式
+## 通过代码设置TextView的样式
+
 ``` Java
 new TextView(new ContextThemeWrapper(this, R.style.text_style));
 ```
 
-# 通过html设置TextView中内容的样式
+## 通过html设置TextView中内容的样式
+
 ``` Java
 tv.setText(Html.fromHtml("<font color="#ff0000">红色</font>其它颜色"));
 ```
 
-# WebView保留缩放功能但隐藏缩放控件
+## WebView保留缩放功能但隐藏缩放控件
+
 ``` Java
 mWebView.getSettings().setSupportZoom(true);
 mWebView.getSettings().setBuiltInZoomControls(true);
 if (DeviceUtils.hasHoneycomb()){
-     mWebView.getSettings().setDisplayZoomControls(false);
+    mWebView.getSettings().setDisplayZoomControls(false);
 }
 ```
 
-# 通过代码解压zip包
+## 通过代码解压zip包
+
 ``` Java
 /**
  * 解压一个压缩文档 到指定位置
@@ -2443,7 +2497,8 @@ public static void UnZipFolder(String zipFileString, String outPathString) throw
 }
 ```
 
-# 从assets中读取文本和图片资源
+## 从assets中读取文本和图片资源
+
 ``` Java
 /** 从assets 文件夹中读取文本数据 */
 public static String getTextFromAssets(final Context context, String fileName) {
@@ -2488,25 +2543,27 @@ public static Drawable loadImageFromAsserts(final Context ctx, String fileName) 
 /** 从assets 文件夹中读取图片2 */
 bgimg0 = getImageFromAssetsFile("Cat_Blink/cat_blink0000.png");
 private Bitmap getImageFromAssetsFile(String fileName) {
-	Bitmap image = null;
-	AssetManager am = getResources().getAssets();
-	try {
-		InputStream is = am.open(fileName);
-		image = BitmapFactory.decodeStream(is);
-		is.close();
-	} catch (IOException e) {
-		e.printStackTrace();
-	}
-	return image;
+    Bitmap image = null;
+    AssetManager am = getResources().getAssets();
+    try {
+        InputStream is = am.open(fileName);
+        image = BitmapFactory.decodeStream(is);
+        is.close();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    return image;
 }
 ```
 
-# 解析assets文件夹下的xml文件
+## 解析assets文件夹下的xml文件
+
 ``` Java
 SAXParserFactory.newInstance().newSAXParser().parse(getResources().getAssets().open("apns-conf.xml"), apnHandler);
 ```
 
-# 展开、收起状态栏
+## 展开、收起状态栏
+
 ``` Java
 public static final void collapseStatusBar(Context ctx) {
     Object sbservice = ctx.getSystemService("statusbar");
@@ -2541,7 +2598,8 @@ public static final void expandStatusBar(Context ctx) {
 }
 ```
 
-# 计算字宽
+## 计算字宽
+
 ``` Java
 public static float getTextWidth(String text, float Size) {
     TextPaint FontPaint = new TextPaint();
@@ -2550,7 +2608,8 @@ public static float getTextWidth(String text, float Size) {
 }
 ```
 
-# 图片的旋转
+## 图片的旋转
+
 ``` Java
 Bitmap bitmapOrg = BitmapFactory.decodeResource(this.getContext().getResources(), R.drawable.moon);
 Matrix matrix = new Matrix();
@@ -2559,7 +2618,8 @@ Bitmap resizedBitmap = Bitmap.createBitmap(bitmapOrg, 0, 0, bitmapOrg.getWidth()
 BitmapDrawable bmd = new BitmapDrawable(resizedBitmap);
 ```
 
-# 格式化string.xml 中的字符串
+## 格式化 string.xml 中的字符串
+
 ``` xml
 // in strings.xml..
 <string name="my_text">Thanks for visiting %s. You age is %d!</string>
@@ -2570,13 +2630,15 @@ BitmapDrawable bmd = new BitmapDrawable(resizedBitmap);
 String.format(getString(R.string.my_text), "oschina", 33);
 ```
 
-# 查看电池使用详情
+## 查看电池使用详情
+
 ``` Java
 Intent intentBatteryUsage = new Intent(Intent.ACTION_POWER_USAGE_SUMMARY);
 startActivity(intentBatteryUsage);
 ```
 
-# android获取存储卡路径以及使用情况
+## android获取存储卡路径以及使用情况
+
 ``` Java
 /** 获取存储卡路径 */
 File sdcardDir=Environment.getExternalStorageDirectory();
@@ -2590,7 +2652,8 @@ Long totalBlocks=statFs.getBlockCount();
 Long availableBlocks=statFs.getAvailableBlocks();
 ```
 
-# android中添加新的联系人
+## android中添加新的联系人
+
 ``` Java
 private Uri insertContact(Context context, String name, String phone) {
     ContentValues values = new ContentValues();
@@ -2607,7 +2670,8 @@ private Uri insertContact(Context context, String name, String phone) {
 }
 ```
 
-# 唤醒屏幕并解锁
+## 唤醒屏幕并解锁
+
 ``` Java
 public static void wakeUpAndUnlock(Context context){
     KeyguardManager km= (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
@@ -2628,7 +2692,8 @@ public static void wakeUpAndUnlock(Context context){
 <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
 ```
 
-# 判断当前App处于前台还是后台状态
+## 判断当前App处于前台还是后台状态
+
 ``` Java
 public static boolean isApplicationBackground(final Context context) {
     ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -2645,7 +2710,8 @@ public static boolean isApplicationBackground(final Context context) {
 <uses-permission android:name="android.permission.GET_TASKS" />
 ```
 
-# 获取栈顶Activity
+## 获取栈顶Activity
+
 ``` Java
 private ComponentName getTopActivity() {
     final ActivityManager am = (ActivityManager)mContext.getSystemService(Context.ACTIVITY_SERVICE);
@@ -2662,18 +2728,17 @@ private ComponentName getTopActivity() {
 // 判断facebook是否在栈顶
 private boolean isFaceBookLiteTop(){
     ComponentName topActivity = getTopActivity();
-	String packageName = "";
-	String className = "";
-	if(topActivity != null){
-		packageName = topActivity.getPackageName().trim();
-		className = topActivity.getClassName().trim();
-	}
-	if ("com.facebook.lite".equalsIgnoreCase(packageName)　{
-		return true;
-	}
-	return false;
+    String packageName = "";
+    String className = "";
+    if (topActivity != null) {
+        packageName = topActivity.getPackageName().trim();
+        className = topActivity.getClassName().trim();
+    }
+    if ("com.facebook.lite".equalsIgnoreCase(packageName)　{
+        return true;
+    }
+    return false;
 }
-
 
 // L之后的方法
 public static boolean isAppRunningForeground(Context context){
@@ -2692,7 +2757,8 @@ public static boolean isAppRunningForeground(Context context){
 }
 ```
 
-# 判断当前手机是否处于休眠状态
+## 判断当前手机是否处于休眠状态
+
 ``` Java
 public static boolean isSleeping(Context context) {
     KeyguardManager kgMgr = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
@@ -2701,7 +2767,8 @@ public static boolean isSleeping(Context context) {
 }
 ```
 
-# 在View Layout完成后获取 控件大小
+## 在View Layout完成后获取控件大小
+
 ``` Java
 final TextView tv = (TextView) findViewById(R.id.myTextView);
 ViewTreeObserver vto = tv.getViewTreeObserver();
@@ -2714,25 +2781,27 @@ vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
 });
 ```
 
-# 关键帧插值器
+## 关键帧插值器
+
 ``` Java
 public static float calculateValue(float[] values, float time, float def) {
-	float value = def;
+    float value = def;
     if (values != null && values.length > 0) {
         float segment = 1.0f / (float)(values.length - 1);
         int index = (int)(time / segment);
         if (index >= values.length - 1) {
-        	value = values[values.length - 1];
+            value = values[values.length - 1];
         } else {
-        	float extra = time - segment * (float)index;
-        	value = values[index] + (values[index + 1] - values[index]) * extra / segment;
+            float extra = time - segment * (float)index;
+            value = values[index] + (values[index + 1] - values[index]) * extra / segment;
         }
     }
     return value;
 }
 ```
 
-# 给图片叠加渐变
+## 给图片叠加渐变
+
 ``` Java
 private void addShadow(Bitmap bitmap, int color) {
     int[] colors = new int[]{
@@ -2754,7 +2823,8 @@ private void addShadow(Bitmap bitmap, int color) {
 }
 ```
 
-# ListView 或者 GridView 去除滑动特性 (即固定高度)
+## ListView 或者 GridView 去除滑动特性 (即固定高度)
+
 ``` Java
 @Override
 protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -2763,12 +2833,14 @@ protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 }
 ```
 
-# 获取系统长按时间，自定义View会用到
+## 获取系统长按时间，自定义View会用到
+
 ``` Java
 getSystemLongPressTime
 ```
 
-# 圆形的ImageView,CircleImageView
+## 圆形的ImageView,CircleImageView
+
 ``` Java
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -2836,7 +2908,8 @@ public class CircleImageView extends ImageView {
 }
 ```
 
-# 通过代码动态设置语言
+## 通过代码动态设置语言
+
 ``` Java
 Resources resources = getResources();//获得res资源对象
 Configuration config = resources.getConfiguration();//获得设置对象
@@ -2845,8 +2918,10 @@ config.locale = Locale.SIMPLIFIED_CHINESE; //简体中文
 resources.updateConfiguration(config, dm);
 ```
 
-# 根据控件的id名称获取控件
+## 根据控件的id名称获取控件
+
 frameworks/base/core/java/android/app/Activity.java
+
 ``` Java
 private View findViewByName(String name){
     return findViewById(getResources().getIdentifier(name, "id", getPackageName()));
@@ -2860,7 +2935,8 @@ private View findViewByName(View parent, String name){
 View setting_autodownload_layout = findViewByName("setting_autodownload_layout");
 ```
 
-# 获取图片信息
+## 获取图片信息
+
 ``` Java
 import java.io.File;
 import java.io.IOException;
@@ -2901,7 +2977,8 @@ public class ReadPic {
 }
 ```
 
-# 解析res/drawable下图片的另一种方式
+## 解析res/drawable下图片的另一种方式
+
 ``` Java
 if (width == 540) {
     path = "/res/drawable-960x540/paillette_" + pailletteIndex + ".png";
@@ -2915,7 +2992,8 @@ if (width == 540) {
 paillette_array[0] = BitmapFactory.decodeStream(getClass().getResourceAsStream(path));
 ```
 
-# 通过代码创建快捷方式
+## 通过代码创建快捷方式
+
 ``` Java
 private void createShortcut(String title, String url) {
     Intent intent = new Intent(INSTALL_SHORTCUT);
@@ -2930,7 +3008,8 @@ private void createShortcut(String title, String url) {
 }
 ```
 
-# 通过代码动态设置view的selector
+## 通过代码动态设置view的selector
+
 ``` Java
 private StateListDrawable getStateDrawable(Context context, int normalId, int focusedId, int pressedId) {
     StateListDrawable stateListDrawable = new StateListDrawable();
@@ -2950,13 +3029,14 @@ private StateListDrawable getStateDrawable(Context context, int normalId, int fo
 btn_state.setBackground(getStateDrawable(mContext, R.drawable.dialog_button_normal, R.drawable.dialog_button_focused, R.drawable.dialog_button_pressed));
 ```
 
-# 模拟鼠标点击？？？？
+## 模拟鼠标点击？？？？
 
-# 模拟鼠标长按？？？？
+## 模拟鼠标长按？？？？
 
-# 模拟滑动？？？？
+## 模拟滑动？？？？
 
-# 模拟按键事件？？？？
+## 模拟按键事件？？？？
+
 ``` Java
 //方法a
 new EditText(context).onKeyDown(keyCode, new KeyEvent(KeyEvent.ACTION_DOWN, keyCode));	//模拟按键的点击事件,这里必须需要一个EditText才可以
@@ -2974,7 +3054,8 @@ instrumentation.sendKeySync(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_
 instrumentation.sendKeySync(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MENU));
 ```
 
-# 通过反射修改全局默认字体
+## 通过反射修改全局默认字体
+
 ``` Java
 private final static String CUSTOM_FONT = "fonts/custom_font.ttf";
 public static void changeDefaultFont(Context ctx){
@@ -2989,7 +3070,8 @@ public static void changeDefaultFont(Context ctx){
 }
 ```
 
-# 通过反射获取FeatureOption中的所有字段的值
+## 通过反射获取FeatureOption中的所有字段的值
+
 ``` Java
 private String getFields() {
     StringBuilder builder = new StringBuilder();
@@ -3010,7 +3092,8 @@ private String getFields() {
 }
 ```
 
-# 通过反射设置EditText的游标颜色
+## 通过反射设置EditText的游标颜色
+
 ``` Java
 private void setTextCursorColor(TextView et, int color){
     try {
@@ -3033,14 +3116,14 @@ private void setTextCursorColor(TextView et, int color){
 }
 ```
 
-# Launcher上长按下键RecyclerView乱跳的问题
+## Launcher上长按下键RecyclerView乱跳的问题
+
 ``` Java
 @Override
 public View onInterceptFocusSearch(View focused, int direction) {
     int currentPosition = getPosition(getFocusedChild());
     int count = getItemCount();
     int lastVisiblePosition = findLastVisibleItemPosition();
-    android.util.Log.e("onInterceptFocusSearch", "AllAppsGridAdapter->onInterceptFocusSearch(1) currentPosition:"+currentPosition+" lastVisiblePosition:"+lastVisiblePosition);
     switch (direction) {
         case View.FOCUS_RIGHT:
             currentPosition++;
@@ -3054,7 +3137,6 @@ public View onInterceptFocusSearch(View focused, int direction) {
         case View.FOCUS_UP:
             break;
     }
-    android.util.Log.e("onInterceptFocusSearch", "AllAppsGridAdapter->onInterceptFocusSearch(2) currentPosition:"+currentPosition+" lastVisiblePosition:"+lastVisiblePosition);
     if (currentPosition < 0 || currentPosition>count) {
         return focused;
     } else {
@@ -3068,8 +3150,8 @@ public View onInterceptFocusSearch(View focused, int direction) {
 
 ---------------------------------- 17-3-20 ----------------------------------
 
+## SRLauncher修改图片之后，部分图片不生效
 
-# SRLauncher修改图片之后，部分图片不生效
 在 Android.mk 文件中看到有 LOCAL_USE_AAPT2 := true　，说明是用AAPT2来编译链接资源的，把这个去掉用aapt去编译即可
 因为 AAPT2 不会重新编译生成 SRLauncher_intermediates，而 AAPT 就会重新生成
 
@@ -3077,25 +3159,16 @@ The main idea behind AAPT2, apart from new features, is that it divides the 'pac
 
 https://fucknmb.com/2018/10/05/%E5%86%8D%E8%B0%88aapt2%E8%B5%84%E6%BA%90%E5%88%86%E5%8C%BA/
 
+## tint 着色器的原理和使用方法
 
-
-
-
-
-
-
-
-# tint 着色器的原理和使用方法
 http://yifeng.studio/2017/03/30/android-tint/
+
+``` Java
 mMessageListItem.setBackgroundTintList(android.content.res.ColorStateList.valueOf(0x00000000));
+```
 
+## Android 利用 activity-alias 动态改变 App 桌面图标
 
-
-
-
-
-
-# Android 利用 <activity-alias> 动态改变 App 桌面图标
 http://yifeng.studio/2016/12/30/android-change-app-launcher-icon-dynamically/
 
 ## 单例模板
@@ -3132,6 +3205,41 @@ private static class OkHandler extends android.os.Handler {
 }
 ```
 
+## PID的获取方法
+
+``` Java
+//方法1
+Binder.getCallingPid()
+
+//方法2
+android.os.Process.myPid();
+```
+
+## 通过pid获取app包名
+
+``` Java
+String callerPackage = getAppNameByPID(getContext(), Binder.getCallingPid());
+
+private String getAppName(int pID) {
+    String processName = "";
+    ActivityManager am = (ActivityManager)this.getSystemService(ACTIVITY_SERVICE);
+    List l = am.getRunningAppProcesses();
+    Iterator i = l.iterator();
+    PackageManager pm = this.getPackageManager();
+    while(i.hasNext()) {
+        ActivityManager.RunningAppProcessInfo info = (ActivityManager.RunningAppProcessInfo)(i.next());
+        try {
+            if(info.pid == pID) {
+                CharSequence c = pm.getApplicationLabel(pm.getApplicationInfo(info.processName, PackageManager.GET_META_DATA));
+                processName = info.processName;
+            }
+        } catch(Exception e) {
+        }
+    }
+    return processName;
+}
+```
+
 ## 获取电池电量
 
 ``` Java
@@ -3144,6 +3252,44 @@ int battery = batteryManager.getIntProperty(4);//BATTERY_PROPERTY_CAPACITY = 4
 ``` Java
 private static final String TAG = $className$.class.getSimpleName();
 ```
+
+## 文字设置高对比度 HighContrastText
+
+``` Java
+View.java
+canvas.setHighContrastText(mAttachInfo.mHighContrastText);
+```
+
+## 通过代码修改字体颜色的另外一种方法
+
+``` Java
+setSpan(new ForegroundColorSpan(android.graphics.Color.parseColor("#0096ff")), before, buf.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+```
+
+## 39go默认壁纸(其他的一些属性也会在 device/mediatek/common/overlay/ago/ 目录下overlay)
+
+device/mediatek/common/overlay/ago/frameworks/base/core/res/res/drawable-nodpi/default_wallpaper.jpg
+
+## TextView设置跑马灯效果
+
+``` Java
+1.首先控件必须是focused或selected的
+2.不能设置spannable，不能是editable的
+android:ellisize="marquee"
+android:singleLine="true"
+android:lines="1"
+android:maxLines="1"
+```
+
+## AndroidManifest中的模板？？？？
+
+## Activity模板？？？？
+
+## Service模板？？？？
+
+## Receiver模板？？？？
+
+## ContentProvider模板？？？？
 
 ## Adapter模板(ListView+GridView)？？？
 
@@ -3167,21 +3313,4 @@ private static final String TAG = $className$.class.getSimpleName();
 
 ## 阿拉伯语相关问题修改？
 
-## 
-
-## HighContrastText
-
-``` Java
-View.java
-canvas.setHighContrastText(mAttachInfo.mHighContrastText);
-```
-
-## 通过代码修改字体颜色的另外一种方法
-
-``` Java
-setSpan(new ForegroundColorSpan(android.graphics.Color.parseColor("#0096ff")), before, buf.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-```
-
-# 39go默认壁纸
-
-device/mediatek/common/overlay/ago/frameworks/base/core/res/res/drawable-nodpi/default_wallpaper.jpg
+## SystemProperties的模板类
