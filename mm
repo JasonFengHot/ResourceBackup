@@ -34,12 +34,13 @@
 
 # TODO : 如何添加 -t -m -p 等开关？
 
-# TODO : 如果 $1 是空的怎么办？如何判断输入的参数是否为空？
+    # TODO : 如果 $1 是空的怎么办？如何判断输入的参数是否为空？
+    ## if [ ! -z $1 ] ; then
 
 # TODO : 自动加宏功能？
 
     # TODO : 如何终止脚本执行？
-    ## exit 0;//失败退出
+    ## exit 0; #失败退出
 
 # TODO : new 完之后把软件直接拷贝到31上？
 
@@ -235,6 +236,7 @@ make(){
         #./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/SettingsLib/;
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/MtkSettings/;
         process=com.android.settings;
+        componentName=com.android.settings/.Settings;
         moduleType=1;
     elif [ $module == "MtkSettingsLib" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/SettingsLib/;
@@ -382,6 +384,12 @@ make(){
         ./mk -ud $new_project mm packages/apps/SagerealApp/Camera_TPlink/
         process=com.mediatek.camera;
         moduleType=1;
+    elif [ $module == "FactoryMode" ] ; then
+        ./mk -ud $new_project mm packages/apps/FactoryMode/
+        process=com.dyc.factorymode;
+        componentName=com.dyc.factorymode/.TestMainActivity
+        moduleType=1;
+
 
 
 
@@ -499,6 +507,11 @@ push(){
     # kill process
     if [ ! -z $process ] ; then
         adb shell kill `adb shell ps | grep $process | awk {'print $2'} | head -n 1`
+    fi
+
+    # start main activity
+    if [ ! -z $componentName ] ; then
+        adb shell am start -n $componentName
     fi
 }
 
