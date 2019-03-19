@@ -659,6 +659,7 @@ builder.create().show();
 # 全局对话框
 
 使用 Application 作为 Dialog 的 Context 将对话框的window类型设置为 WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
+
 ``` Java
 AlertDialog.Builder builder = new AlertDialog.Builder(mApplicationContext);
 ...
@@ -666,7 +667,9 @@ AlertDialog alertDialog = builder.create();
 alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
 alertDialog.show();
 ```
+
 //在AndroidManifest.xml文件中添加如下权限
+
 ``` xml
 <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 ```

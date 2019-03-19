@@ -274,7 +274,7 @@ make(){
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Email/
         process=com.android.email;
         moduleType=1;
-    elif [ $module == "Camera2" ] ; then
+    elif [ $module == "Camera" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Camera2/
         process=com.mediatek.camera;
         moduleType=1;
