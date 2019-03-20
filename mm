@@ -50,7 +50,7 @@
 
 # TODO : 一键签名脚本
 
-# TODO : 如何通过脚本修改文件中的内容？
+# TODO : 如何通过脚本修改文件中的内容？比如删除frameworks/base/Android.mk文件中的platformprotos
 
 #####################################################
 
@@ -217,11 +217,14 @@ if [ ! -f mk ]; then
     exit 0;
 fi
 
+
+removetests;
+
 mModule=$1;
 new_project=`cat sagereal_build.log | grep "new_project" | awk '{print $2}'`;
 target_project=`cat sagereal_build.log | grep "sagereal_target_project" | awk '{print $2}'`;
 adb shell settings put system screen_off_timeout 1800000;
-remount
+remount;
 
 # type 1: vendor/mediatek/proprietary/packages/apps/*
 # type 2: packages/apps/*
@@ -240,6 +243,7 @@ make(){
         moduleType=1;
     elif [ $module == "MtkSettingsLib" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/SettingsLib/;
+        moduleType=2;
     elif [ $module == "MtkSystemUI" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/SystemUI/;
         process=com.android.systemui;
@@ -252,14 +256,17 @@ make(){
         #make RecipientChips;
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Mms/
         process=com.android.mms;
+        componentName=com.android.mms/.ui.BootActivity;
         moduleType=1;
     elif [ $module == "MtkDialer" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Dialer/
         process=com.android.dialer;
+        componentName=com.android.dialer/.app.DialtactsActivity;
         moduleType=1;
     elif [ $module == "MtkContacts" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Contacts/
         process=com.android.contacts;
+        com.android.contacts/.activities.PeopleActivity
         moduleType=1;
     elif [ $module == "MtkSettingsProvider" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/SettingsProvider/
@@ -273,10 +280,12 @@ make(){
         make RecipientChips;
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Email/
         process=com.android.email;
+        componentName=com.android.email/com.android.email.activity.Welcome
         moduleType=1;
     elif [ $module == "Camera" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Camera2/
         process=com.mediatek.camera;
+        componentName=com.mediatek.camera/.CameraActivity
         moduleType=1;
     elif [ $module == "SchedulePowerOnOff" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/SchedulePowerOnOff/
@@ -285,23 +294,28 @@ make(){
     elif [ $module == "FMRadio" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/FMRadio/
         process=com.android.fmradio;
+        componentName=com.android.fmradio/.FmMainActivity
         moduleType=1;
     elif [ $module == "Music" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Music/
         process=com.android.music;
+        componentName=com.android.music/com.android.music.MusicBrowserActivity
         moduleType=3
     elif [ $module == "MtkCalendar" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Calendar/
         process=com.android.calendar;
+        componentName=com.android.calendar/.AllInOneActivity
         moduleType=1;
     elif [ $module == "MtkGallery2" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Gallery2/
         process=com.android.gallery3d;
+        componentName=com.android.gallery3d/com.android.gallery3d.app.GalleryActivity
         moduleType=1;
     elif [ $module == "EngineerMode" ] ; then
-        notice "要先mmma"
+        #notice "要先mmma"
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/EngineerMode/
         process=com.mediatek.engineermode;
+        componentName=com.mediatek.engineermode/.EngineerMode
         moduleType=1;
     elif [ $module == "MtkTeleService" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/services/Telephony/
@@ -310,10 +324,12 @@ make(){
     elif [ $module == "YGPS" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/YGPS/
         process=com.mediatek.ygps;
+        componentName=com.mediatek.ygps/.YgpsActivity
         moduleType=1;
     elif [ $module == "FileManager" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/FileManager/
         process=com.mediatek.filemanager;
+        process=com.mediatek.filemanager/.FileManagerOperationActivity
         moduleType=1;
     elif [ $module == "MtkPackageInstaller" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/PackageInstaller/
@@ -330,6 +346,7 @@ make(){
     elif [ $module == "MtkVideos" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/VideoPlayer/
         process=com.android.providers.media;
+        componentName=com.mediatek.videoplayer/.MovieListActivity
         moduleType=1;
     elif [ $module == "Bluetooth" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Bluetooth/
@@ -347,6 +364,7 @@ make(){
     elif [ $module == "MtkBrowser" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Browser/
         process=com.android.browser;
+        componentName=com.android.browser/.BrowserActivity
         moduleType=1;
     elif [ $module == "MtkWallpaperPicker" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/WallpaperPicker/
@@ -375,10 +393,12 @@ make(){
     elif [ $module == "FactoryDevelopX" ] ; then
         ./mk -ud $new_project mm packages/apps/FactoryDevelopX/
         process=com.example.factorydevelopx;
+        componentName=com.example.factorydevelopx/.MainActivity
         moduleType=1;
     elif [ $module == "SoundRecorder_V01" ] ; then
         ./mk -ud $new_project mm packages/apps/SoundRecorder_V01/
         process=com.android.soundrecorder;
+        componentName=com.android.soundrecorder/.SoundRecorder
         moduleType=1;
     elif [ $module == "Camera_TPlink" ] ; then
         ./mk -ud $new_project mm packages/apps/SagerealApp/Camera_TPlink/
@@ -397,7 +417,7 @@ make(){
     elif [ $module == "framework" ] ; then
         cat frameworks/base/Android.mk | grep "platformprotos"
         if [ $? -ne 0 ] ; then
-            echo "no_have_platformprotos";
+            echo "without_platformprotos";
         else
             notice "You_should_modify_Android_mk_first!!!";
             code frameworks/base/Android.mk;
@@ -535,6 +555,13 @@ check_sys(){
     echo $release"_"$bit
 }
 
-removetests;
+start=`date +%s`
+
 make $mModule;
 push $mModule;
+
+end=`date +%s`
+dif=$[ end - start ] 
+echo $dif
+
+time
