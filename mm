@@ -30,14 +30,16 @@
 
 # TODO : new 完之后直接模块编译一下几个比较常用的并比较耗时的模块？framework,fres,MtkSystemUI,MtkSettings
 
-# TODO : 记录下开始的时间和结束的时间
+    # TODO : 记录下开始的时间和结束的时间
+    ## startTime=`date +"%s.%N"`
+    ## endTime=`date +"%s.%N"`
 
 # TODO : 如何添加 -t -m -p 等开关？
 
     # TODO : 如果 $1 是空的怎么办？如何判断输入的参数是否为空？
     ## if [ ! -z $1 ] ; then
 
-# TODO : 自动加宏功能？
+# TODO : 一键加宏功能？
 
     # TODO : 如何终止脚本执行？
     ## exit 0; #失败退出
@@ -52,6 +54,8 @@
 
 # TODO : 如何通过脚本修改文件中的内容？比如删除frameworks/base/Android.mk文件中的platformprotos
 
+# TODO : 刷机完成之后自动开机？
+
 #####################################################
 
 # TODO : ERP管理系统
@@ -62,7 +66,6 @@
 
 # TODO : 微信群发系统
 
-# TODO : 
 
 # 按power键无法返回到home，是因为开机向导没有过完
 # adb shell settings put secure user_setup_complete 1
@@ -535,33 +538,34 @@ push(){
     fi
 }
 
+# Print system info
 check_sys(){
-	if [[ -f /etc/redhat-release ]]; then
-		release="centos"
-	elif cat /etc/issue | grep -q -E -i "debian"; then
-		release="debian"
-	elif cat /etc/issue | grep -q -E -i "ubuntu"; then
-		release="ubuntu"
-	elif cat /etc/issue | grep -q -E -i "centos|red hat|redhat"; then
-		release="centos"
-	elif cat /proc/version | grep -q -E -i "debian"; then
-		release="debian"
-	elif cat /proc/version | grep -q -E -i "ubuntu"; then
-		release="ubuntu"
-	elif cat /proc/version | grep -q -E -i "centos|red hat|redhat"; then
-		release="centos"
+    if [[ -f /etc/redhat-release ]]; then
+        release="centos"
+    elif cat /etc/issue | grep -q -E -i "debian"; then
+        release="debian"
+    elif cat /etc/issue | grep -q -E -i "ubuntu"; then
+        release="ubuntu"
+    elif cat /etc/issue | grep -q -E -i "centos|red hat|redhat"; then
+        release="centos"
+    elif cat /proc/version | grep -q -E -i "debian"; then
+        release="debian"
+    elif cat /proc/version | grep -q -E -i "ubuntu"; then
+        release="ubuntu"
+    elif cat /proc/version | grep -q -E -i "centos|red hat|redhat"; then
+        release="centos"
     fi
-	bit=`uname -m`
+    bit=`uname -m`
     echo $release"_"$bit
 }
 
-start=`date +%s`
+startTime=`date +"%s.%N"`
 
 make $mModule;
 push $mModule;
 
-end=`date +%s`
-dif=$[ end - start ] 
-echo $dif
+endTime=`date +"%s.%N"`
 
-time
+echo `awk -v x1="$(echo $endTime | cut -d '.' -f 1)" -v x2="$(echo $startTime | cut -d '.' -f 1)" -v y1="$[$(echo $endTime | cut -d '.' -f 2) / 1000]" -v y2="$[$(echo $startTime | cut -d '.' -f 2) /1000]" 'BEGIN{printf "RunTime:%.6f s",(x1-x2)+(y1-y2)/1000000}'`
+
+echo $PLATFORM_VERSION
