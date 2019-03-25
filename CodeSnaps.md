@@ -3285,6 +3285,16 @@ android:lines="1"
 android:maxLines="1"
 ```
 
+## TextView设置为大字体的时候wrap_content还是不能显示完全
+
+https://blog.csdn.net/HJF_HUANGJINFU/article/details/79813172
+
+``` Java
+TextView textView = new Text(context);
+textView.setText("hello world");
+textView.requestLayout();   //在setText()之后主动条用requestLayout();
+```
+
 ## AndroidManifest中的模板？？？？
 
 ## Activity模板？？？？

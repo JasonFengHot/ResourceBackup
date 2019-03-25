@@ -56,6 +56,11 @@
 
 # TODO : 刷机完成之后自动开机？
 
+    # TODO : 获取当前分支名称
+    ## git symbolic-ref --short -q HEAD
+
+# TODO : 获取当前日期
+
 #####################################################
 
 # TODO : ERP管理系统
@@ -214,6 +219,7 @@ removetests(){
 }
 
 
+# check if mk file exists
 if [ ! -f mk ]; then
     echo "mk_file_not_exist";
     notice "Make_sure_you_are_in_alps!!!"
@@ -226,12 +232,25 @@ removetests;
 mModule=$1;
 new_project=`cat sagereal_build.log | grep "new_project" | awk '{print $2}'`;
 target_project=`cat sagereal_build.log | grep "sagereal_target_project" | awk '{print $2}'`;
+branchName=`git symbolic-ref --short -q HEAD`;
+
+dateStr=`date +%Y/%m/%d`;
+
 adb shell settings put system screen_off_timeout 1800000;
 remount;
 
 # type 1: vendor/mediatek/proprietary/packages/apps/*
 # type 2: packages/apps/*
 moduleType=1;
+
+if [ $1 == "commit" ] ; then
+    bugId=$2;
+    commitMessage=$3;
+    git pull;
+    git commit -m "test "$bugId" "$commitMessage" Submitter:zhangqi Checker:liangshuang "$dateStr;
+    git push origin HEAD:refs/for/$branchName;
+    exit 0;
+fi
 
 make(){
     module=$1;
@@ -459,7 +478,6 @@ make(){
         ./mk -ud $new_project mm frameworks/base/data/fonts/
         moduleType=3
     elif [[ $module == "new" || $module == "n" ]] ; then
-        removetests;
         ./mk -ud $new_project new && ./mk -ud $new_project sign-image
         notice "make_new_success!!!"
         exit 0;
@@ -569,4 +587,3 @@ endTime=`date +"%s.%N"`
 spends=`awk -v x1="$(echo $endTime | cut -d '.' -f 1)" -v x2="$(echo $startTime | cut -d '.' -f 1)" -v y1="$[$(echo $endTime | cut -d '.' -f 2) / 1000]" -v y2="$[$(echo $startTime | cut -d '.' -f 2) /1000]" 'BEGIN{printf "RunTime:%.6f s",(x1-x2)+(y1-y2)/1000000}'`
 
 echo $spends
-
