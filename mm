@@ -6,19 +6,40 @@
     # TODO : remove tests files
     ## find . -name "Android.mk" | grep "/tests/Android.mk" > tests.txt
 
-# TODO : 怎么判断是哪个平台的代码？KK, L, M, N, O, P？
-# PLATFORM_VERSION
+    # TODO : 怎么判断是哪个平台的代码？KK, L, M, N, O, P？
+    ## 根据 build/core/version_defaults.mk 中的 PLATFORM_SDK_VERSION 版本号判断
+    ##KK : 19,20
+    ## L : 21,22
+    ## M : 23
+    ## N : 24,25
+    ## O : 26,27
 
     # TODO : 怎么判断这个脚本已经放在 alps 目录下了？
     ## 判断 mk 文件是否存在
 
-# TODO : 如何从编译的log中提取出 install
+    # TODO : 记录下开始的时间和结束的时间，还有点问题，有时候会出现错误
+    ## startTime=`date +"%s.%N"`
+    ## endTime=`date +"%s.%N"`
+
+    # TODO : 如果 $1 是空的怎么办？如何判断输入的参数是否为空？
+    ## if [ ! -z $1 ] ; then
+
+    # TODO : 如何终止脚本执行？
+    ## exit 0; #失败退出
+
+    # TODO : 获取当前分支名称
+    ## git symbolic-ref --short -q HEAD
+
+    # TODO : 获取当前日期
+    ## dateStr=`date +%Y/%m/%d`;
+
+# TODO : 如何从编译的log中提取出 install， push 的时候直接从编译出来的文件中获取出目标路径
 
 # TODO : 如何判断下面的这些基础命令是否存在？adb, mocp
 
 # TODO : 如何判断要编译的项目是否包含widevine？
 
-# TODO : 如何判断某个模块没有发生变化？
+# TODO : 如何判断某个模块是否经过修改？
 
 # TODO : 如何在程序中执行脚本？QT？
 
@@ -30,21 +51,17 @@
 
 # TODO : new 完之后直接模块编译一下几个比较常用的并比较耗时的模块？framework,fres,MtkSystemUI,MtkSettings
 
-    # TODO : 记录下开始的时间和结束的时间
-    ## startTime=`date +"%s.%N"`
-    ## endTime=`date +"%s.%N"`
+# TODO : 在mm某个模块之前先检查out/target/common中是否已经编译过该模块？
 
 # TODO : 如何添加 -t -m -p 等开关？
 
-    # TODO : 如果 $1 是空的怎么办？如何判断输入的参数是否为空？
-    ## if [ ! -z $1 ] ; then
-
 # TODO : 一键加宏功能？
 
-    # TODO : 如何终止脚本执行？
-    ## exit 0; #失败退出
-
 # TODO : new 完之后把软件直接拷贝到31上？
+
+# TODO : new 完之后直接把软件打包？
+
+# TODO : new 完之后直接把软件做成MSU？
 
 # TODO : 如何监听手机的重启
 
@@ -54,12 +71,7 @@
 
 # TODO : 如何通过脚本修改文件中的内容？比如删除frameworks/base/Android.mk文件中的platformprotos
 
-# TODO : 刷机完成之后自动开机？
-
-    # TODO : 获取当前分支名称
-    ## git symbolic-ref --short -q HEAD
-
-# TODO : 获取当前日期
+# TODO : 刷机完成之后自动开机？在DA中修改？
 
 #####################################################
 
@@ -78,7 +90,8 @@
 
 
 remount(){
-    adb root;
+    rootResult=`adb root`;
+    echo "rootResult:"$rootResult;
     adb remount;
 }
 
@@ -214,10 +227,32 @@ removetests(){
     removetest frameworks/base/services/tests/Android.mk
     removetest frameworks/base/lowpan/tests/Android.mk
     removetest frameworks/base/wifi/tests/Android.mk
-    removetest vendor/mediatek/proprietary/packages/apps/DocumentsUI/tests/Android.mk;
-    removetest vendor/mediatek/proprietary/packages/apps/SettingsLib/tests/Android.mk;
+    removetest vendor/mediatek/proprietary/packages/apps/DocumentsUI/tests/Android.mk
+    removetest vendor/mediatek/proprietary/packages/apps/SettingsLib/tests/Android.mk
 }
 
+# if $1 exists
+if [ ! -z $1 ] ; then
+    echo $1
+else
+    echo "please input the operation you want to do!";
+    # TODO : you can show some tips here
+    exit 0;
+fi
+
+# commit and push
+# get branch name first
+branchName=`git symbolic-ref --short -q HEAD`;
+dateStr=`date +%Y/%m/%d`;
+if [ $1 == "commit" ] ; then
+    bugId=$2;
+    commitMessage=$3;
+    # TODO : make sure you code is the latest
+    git pull;
+    git commit -m "test "$bugId" "$commitMessage" Submitter:zhangqi Checker:liangshuang "$dateStr;
+    git push origin HEAD:refs/for/$branchName;
+    exit 0;
+fi
 
 # check if mk file exists
 if [ ! -f mk ]; then
@@ -227,30 +262,58 @@ if [ ! -f mk ]; then
 fi
 
 
+# remove test files before make
 removetests;
 
-mModule=$1;
+# new project
+if [[ $1 == "new" || $1 == "n" ]] ; then
+    if [ ! -z $2 ] ; then
+        echo $2;
+    else
+        if [ ! -f sagereal_build.log ]; then
+            echo "sagereal_build.log does not exists! Make sure you have maked this project";
+            exit 0;
+        fi
+        # new_project
+        new_project=`cat sagereal_build.log | grep "new_project" | awk '{print $2}'`;
+        # build mode
+        buildMode=`cat sagereal_build.log | grep "user_mode" | awk '{print $2}'`;
+        if [[ $buildMode == "yes" || $buildMode == "user" ]] ; then
+            ./mk -u $new_project new;
+        elif [ $buildMode == "userdebug" ] ; then
+            ./mk -ud $new_project new;
+        elif [[ $buildMode == "no" || $buildMode == "eng" ]] ; then
+            ./mk $new_project new;
+        fi
+    fi
+fi
+
+# check if sagereal_build.log file exists
+if [ ! -f sagereal_build.log ]; then
+    echo "sagereal_build.log does not exists! Make sure you have maked this project";
+    exit 0;
+fi
+
+# new_project
 new_project=`cat sagereal_build.log | grep "new_project" | awk '{print $2}'`;
+
+# target_project
 target_project=`cat sagereal_build.log | grep "sagereal_target_project" | awk '{print $2}'`;
-branchName=`git symbolic-ref --short -q HEAD`;
 
-dateStr=`date +%Y/%m/%d`;
+# build mode
+buildMode=`cat sagereal_build.log | grep "user_mode" | awk '{print $2}'`;
 
-adb shell settings put system screen_off_timeout 1800000;
+# sdk version
+sdkVersion=`cat build/core/version_defaults.mk | grep "PLATFORM_SDK_VERSION :=" | awk '{print $3}'`;
+
 remount;
+adb shell settings put system screen_off_timeout 1800000;
 
 # type 1: vendor/mediatek/proprietary/packages/apps/*
 # type 2: packages/apps/*
 moduleType=1;
 
-if [ $1 == "commit" ] ; then
-    bugId=$2;
-    commitMessage=$3;
-    git pull;
-    git commit -m "test "$bugId" "$commitMessage" Submitter:zhangqi Checker:liangshuang "$dateStr;
-    git push origin HEAD:refs/for/$branchName;
-    exit 0;
-fi
+mModule=$1;
 
 make(){
     module=$1;
@@ -259,6 +322,7 @@ make(){
         #./mk -ud $new_project mm frameworks/support/v7/;
         #./mk -ud $new_project mm frameworks/support/v14/;
         #./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/SettingsLib/;
+
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/MtkSettings/;
         process=com.android.settings;
         componentName=com.android.settings/.Settings;
@@ -477,10 +541,6 @@ make(){
     elif [ $module == "fonts" ] ; then
         ./mk -ud $new_project mm frameworks/base/data/fonts/
         moduleType=3
-    elif [[ $module == "new" || $module == "n" ]] ; then
-        ./mk -ud $new_project new && ./mk -ud $new_project sign-image
-        notice "make_new_success!!!"
-        exit 0;
     elif [[ $module == "remake" || $module == "r" ]] ; then
         ./mk -ud $new_project clone && ./mk -ud $new_project r
         exit 0;
