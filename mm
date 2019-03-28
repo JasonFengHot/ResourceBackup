@@ -87,11 +87,13 @@
 # 按power键无法返回到home，是因为开机向导没有过完
 # adb shell settings put secure user_setup_complete 1
 
+#
+# aapt dump badging Terminal.apk
+
 
 
 remount(){
-    rootResult=`adb root`;
-    echo "rootResult:"$rootResult;
+    adb root;
     adb remount;
 }
 
