@@ -251,8 +251,11 @@ if [ $1 == "commit" ] ; then
     commitMessage=$3;
     # TODO : make sure you code is the latest
     git pull;
+    # TODO : if pull failed ???
     git commit -m "test "$bugId" "$commitMessage" Submitter:zhangqi Checker:liangshuang "$dateStr;
     git push origin HEAD:refs/for/$branchName;
+    notice "git_commit_push_done!"
+    # TODO : list files committed
     exit 0;
 fi
 
