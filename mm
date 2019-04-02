@@ -73,6 +73,8 @@
 
 # TODO : 刷机完成之后自动开机？在DA中修改？
 
+# TODO : Logcat
+
 #####################################################
 
 # TODO : ERP管理系统
@@ -255,7 +257,10 @@ if [ $1 == "commit" ] ; then
     git commit -m "test "$bugId" "$commitMessage" Submitter:zhangqi Checker:liangshuang "$dateStr;
     git push origin HEAD:refs/for/$branchName;
     notice "git_commit_push_done!"
-    # TODO : list files committed
+    # TODO : list files committed ???
+
+    # after push completed, open gerrit
+    google-chrome %U http://192.168.3.79:8084/#/dashboard/self
     exit 0;
 fi
 
@@ -312,7 +317,7 @@ buildMode=`cat sagereal_build.log | grep "user_mode" | awk '{print $2}'`;
 sdkVersion=`cat build/core/version_defaults.mk | grep "PLATFORM_SDK_VERSION :=" | awk '{print $3}'`;
 
 remount;
-adb shell settings put system screen_off_timeout 1800000;
+adb shell settings put system screen_off_timeout 300000;
 
 # type 1: vendor/mediatek/proprietary/packages/apps/*
 # type 2: packages/apps/*
