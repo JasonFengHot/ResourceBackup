@@ -468,7 +468,6 @@ make(){
         moduleType=1;
 
 
-
     elif [ $module == "Browser" ] ; then
         ./mk -ud $new_project mm packages/apps/Browser/;
         process=com.android.browser;
