@@ -279,6 +279,9 @@ removetests;
 if [[ $1 == "new" || $1 == "n" ]] ; then
     if [ ! -z $2 ] ; then
         echo $2;
+        rm vendor/mediatek/proprietary/packages/apps/Contacts/Android.mk;
+        ./mk -ud $2 new;
+        exit 0;
     else
         if [ ! -f sagereal_build.log ]; then
             echo "sagereal_build.log does not exists! Make sure you have maked this project";
@@ -288,12 +291,16 @@ if [[ $1 == "new" || $1 == "n" ]] ; then
         new_project=`cat sagereal_build.log | grep "new_project" | awk '{print $2}'`;
         # build mode
         buildMode=`cat sagereal_build.log | grep "user_mode" | awk '{print $2}'`;
+        rm vendor/mediatek/proprietary/packages/apps/Contacts/Android.mk;
         if [[ $buildMode == "yes" || $buildMode == "user" ]] ; then
             ./mk -u $new_project new;
+            exit 0;
         elif [ $buildMode == "userdebug" ] ; then
             ./mk -ud $new_project new;
+            exit 0;
         elif [[ $buildMode == "no" || $buildMode == "eng" ]] ; then
             ./mk $new_project new;
+            exit 0;
         fi
     fi
 fi
