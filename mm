@@ -75,6 +75,10 @@
 
 # TODO : Logcat
 
+# TODO : 开发一些工具，比如：查看颜色，常用配色
+
+# TODO : 如何通过redmine的id获取标题？
+
 #####################################################
 
 # TODO : ERP管理系统
@@ -253,12 +257,19 @@ if [ $1 == "commit" ] ; then
     commitMessage=$3;
     # TODO : make sure you code is the latest
     git pull;
+    # 1. create folder
+    mkdir ~/gitcommit
+    # 2. touch file
+    touch ~/gitcommit/$bugId"_"$dateStr"_"$commitMessage
     # TODO : if pull failed ???
     git commit -m "test "$bugId" "$commitMessage" Submitter:zhangqi Checker:liangshuang "$dateStr;
     git push origin HEAD:refs/for/$branchName;
     notice "git_commit_push_done!"
     # TODO : list files committed ???
+    # TODO : commit 完了之后直接把bug登记到服务器上的excel表格中？？？
 
+    # open redmine
+    google-chrome %U http://192.168.3.78:8006/redmine/issues/""$bugId
     # after push completed, open gerrit
     google-chrome %U http://192.168.3.79:8084/#/dashboard/self
     exit 0;
