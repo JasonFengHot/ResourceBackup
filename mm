@@ -260,7 +260,7 @@ if [ $1 == "commit" ] ; then
     # 1. create folder
     mkdir ~/gitcommit
     # 2. touch file
-    touch ~/gitcommit/$bugId"_"$dateStr"_"$commitMessage
+    touch ~/gitcommit/$bugId
     # TODO : if pull failed ???
     git commit -m "test "$bugId" "$commitMessage" Submitter:zhangqi Checker:liangshuang "$dateStr;
     git push origin HEAD:refs/for/$branchName;
