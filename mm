@@ -260,13 +260,13 @@ if [ $1 == "commit" ] ; then
     # 1. create folder
     mkdir ~/gitcommit
     # 2. touch file
-    touch ~/gitcommit/$bugId
+    touch ~/gitcommit/$bugId"_"$commitMessage
     # TODO : if pull failed ???
     git commit -m "test "$bugId" "$commitMessage" Submitter:zhangqi Checker:liangshuang "$dateStr;
     git push origin HEAD:refs/for/$branchName;
     notice "git_commit_push_done!"
     # TODO : list files committed ???
-    # TODO : commit 完了之后直接把bug登记到服务器上的excel表格中？？？
+    # TODO : commit 完了之后直接把bug登记到服务器上的excel表格中？？？开发一个java应用，用于操作excel文件
 
     # open redmine
     google-chrome %U http://192.168.3.78:8006/redmine/issues/""$bugId

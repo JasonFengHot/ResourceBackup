@@ -458,7 +458,7 @@ android:ellipsize="marquee" 　　　//跑马灯跑动的几个条件, selected=
 # 修改actionbar的颜色
 
 ``` Java
-window.getDecorView().findViewById(com.android.internal.R.id.action_bar_container).setBackgroundColor(android.graphics.Color.parseColor("#ffffff"));
+getWindow().getDecorView().findViewById(com.android.internal.R.id.action_bar_container).setBackgroundColor(android.graphics.Color.parseColor("#ffffff"));
 ```
 
 # 发送广播
@@ -3294,6 +3294,13 @@ TextView textView = new Text(context);
 textView.setText("hello world");
 textView.requestLayout();   //在setText()之后主动条用requestLayout();
 ```
+
+## 修改WebView的字体大小
+
+``` Java
+webSettings.setTextZoom(textZoom);
+```
+
 
 ## AndroidManifest中的模板？？？？
 
