@@ -1006,6 +1006,11 @@ crontab -e
 //每分钟执行一次播放音乐的任务
 * * * * * mocp -l /home/zq/sounds/ring3.ogg
 
+* * * * * google-chrome %U https://readfree.me/ ？？？？
+
+在crontab中执行需要指定设备，如下：
+export DISPLAY=:0 && google-chrome %U https://readfree.me/;
+
 //每天23:59定时更新MyResources中的修改到github服务器
 59 23 * * * cd ~/github/MyResources;git add .;git commit -m "update automatically";git push origin master
 
@@ -1015,29 +1020,34 @@ crontab -l
 //选择默认编辑器
 select-editor
 
-//重启cron服务
-sudo service cron restart
+//修改完了之后重新载入配置即可
+sudo service cron reload
 ```
+
+## ubuntu右键new document没有创建文本文档的选项？
+
+在 home/Templates 中添加一个空的文本文档即可
 
 ## TodoList
 
 ``` bash
+如何开机自启动mocp
 notice 修改成功和失败时候的铃声和图标
 如何判断某个模块没有发生变化？
 如何在程序中执行脚本？QT？
 如何在已编译过的代码中获取项目名称？和project名称？
-把lint功能整合进来？
+把lint功能整合进来？lint怎么用？？？？？？？？？
 如何检测手机是否开机？
 在注释中添加生效的路径（如：Settings/Display/Auto-rotate screen）,方便别人查看验证
 研究开发输入法
 把培训做成视频
-lint怎么用？？？？？？？？？
 整理bug并归类？？？？？？？最好能整理成一个树（思维导图）
 如何通过命令或工具把PC上的通知发送到手机上？？？
 如何检测是否插入了usb？？
 研究HierarchyView的工作原理
 adb remount 之后如何判断是否成功？
-开发vscode上的脚本，android snippets
-开发chrome脚本
+开发vscode上的插件，android snippets
+开发chrome插件
 git push 之后延时10秒左右发送一个通知提示可以查看gerrit？？？
+为什么crontab中执行打开浏览器的脚本不成功？ google-chrome %U http://readfree.me
 ```

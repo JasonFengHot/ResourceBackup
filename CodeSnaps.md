@@ -3279,7 +3279,7 @@ device/mediatek/common/overlay/ago/frameworks/base/core/res/res/drawable-nodpi/d
 ``` Java
 1.首先控件必须是focused或selected的
 2.不能设置spannable，不能是editable的
-android:ellisize="marquee"
+android:ellipsize="marquee"
 android:singleLine="true"
 android:lines="1"
 android:maxLines="1"
@@ -3301,6 +3301,24 @@ textView.requestLayout();   //在setText()之后主动条用requestLayout();
 webSettings.setTextZoom(textZoom);
 ```
 
+## 在symbols.xml文件中添加了资源之后
+
+需要先编译 frameworks/base/core/res
+再编译 frameworks/base
+再编译对应模块即可 MtkSettings
+
+## Android WebView 禁止缩放（手势、点击）
+
+``` Java
+webSettings.setBuiltInZoomControls(false);
+webSettings.setSupportZoom(false);
+webSettings.setDisplayZoomControls(false);
+```
+
+## 操作excel的类库
+
+POI
+http://poi.apache.org/download.html
 
 ## AndroidManifest中的模板？？？？
 
