@@ -47,7 +47,7 @@
 
 # TODO : ICU资源的一键 编译、push、重启、拷贝 脚本？
 
-# TODO : new 完之后发送一封邮件到指定邮箱
+# TODO : new 完之后发送一封邮件到指定邮箱？没有外网怎么办，如何配置？
 
 # TODO : new 完之后直接模块编译一下几个比较常用的并比较耗时的模块？framework,fres,MtkSystemUI,MtkSettings
 
@@ -55,13 +55,13 @@
 
 # TODO : 如何添加 -t -m -p 等开关？
 
-# TODO : 一键加宏功能？
-
-# TODO : new 完之后把软件直接拷贝到31上？
+# TODO : 一键加宏功能？添加提示需要注意修改哪些文件？
 
 # TODO : new 完之后直接把软件打包？
 
 # TODO : new 完之后直接把软件做成MSU？
+
+# TODO : new 完之后把软件直接拷贝到31上？
 
 # TODO : 如何监听手机的重启
 
@@ -69,23 +69,23 @@
 
 # TODO : 一键签名脚本
 
-# TODO : 如何通过脚本修改文件中的内容？比如删除frameworks/base/Android.mk文件中的platformprotos
+# TODO : 如何通过脚本修改文件中的内容？比如删除frameworks/base/Android.mk 文件中的 platformprotos
 
-# TODO : 刷机完成之后自动开机？在DA中修改？
+# TODO : 刷机完成之后自动开机？在DA中修改？是否需要修改工具？
 
 # TODO : Logcat
 
-# TODO : 开发一些工具，比如：查看颜色，常用配色
+# TODO : 用JavaFx开发一些工具，比如：查看颜色，常用配色等
 
 # TODO : 如何通过redmine的id获取标题？
 
 #####################################################
 
-# TODO : ERP管理系统
+# TODO : ERP管理系统？
 
-# TODO : 自动登录签到系统
+# TODO : 自动登录签到系统？自动签到已通过crontab实现
 
-# TODO : 微信读书刷分系统
+# TODO : 微信读书刷钱系统
 
 # TODO : 微信群发系统
 

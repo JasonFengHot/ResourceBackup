@@ -12,8 +12,7 @@ Home目录下的.ssh文件夹，也就是git的id。
 
 ``` bash
 sudo gedit /etc/apt/sources.list
-deb http://us.archive.ubuntu.com/ubuntu trusty main universe          #用于mingw32的安装，因为源的原因,直接使用sudo apt-get install mingw32会出问题
-deb http://download.virtualbox.org/virtualbox/debian precise contrib  #用于virtualbox虚拟机的安装
+deb http://us.archive.ubuntu.com/ubuntu trusty main universe          #用于mingw32的安装，因为源的原因,直接使用 sudo apt-get install mingw32 会出问题
 sudo add-apt-repository ppa:openjdk-r/ppa
 ```
 
@@ -50,7 +49,7 @@ sudo apt-get install openjdk-7-jdk
 ### 安装jdk1.6
 
 ``` bash
-sudo cd /
+cd /
 sudo mkdir -p /mtkoss/jdk/1.6.0_45-ubuntu-10.04/x86_64/   	（请查看KK工程根目录下的mbldenv.sh）
 cd /mtkoss/jdk/1.6.0_45-ubuntu-10.04/x86_64/
 sudo ln -s /opt/jdk1.6.0_27/*  ./
@@ -211,9 +210,16 @@ ssh-keygen -t rsa
 ## github push 不上去
 
 ``` bash
+Could not resolve hostname ssh.github.com: Name or service not known
 在 /etc/hosts 文件中添加如下host
 192.30.253.122 ssh.github.com
+
+添加了之后用如下命令测试
+ssh -T git@github.com
+成功了之后会显示success
 ```
+
+## github clone ssh 下载不了???
 
 ## 配置USB
 
@@ -263,6 +269,8 @@ select * from student_info;
 ``` bash
 sudo ln -s /home/xyz/Android/Sdk/platform-tools/adb /usr/bin/adb
 1.0.40的adb push目录的时候会卡???
+
+sudo apt-get install adb aapt fastboot
 ```
 
 ## 把android开发工具添加到环境变量
@@ -310,38 +318,54 @@ alias adbkill='_adbkill(){ adb shell kill `adb shell ps | grep $1 | awk {'\''pri
 ``` bash
 sudo apt-get install privoxy
 
-//如果无法上网，需要重启privoxy
-sudo /etc/init.d/privoxy restart
-```
-
-### /etc/privoxy/config
-
-``` bash
+#/etc/privoxy/config
 forward-socks5 / 127.0.0.1:1080 .
 listen-address  localhost:8118   //forward port 1080 to 8118
-```
 
-### /etc/apt/apt.conf
+#修改了之后重启试一下看是否能成功，不成功的话可能是 /etc/privoxy/config 文件修改有问题
+sudo /etc/init.d/privoxy restart
 
-``` bash
+#/etc/apt/apt.conf
 Acquire::http::proxy "http://127.0.0.1:8118/";
 Acquire::https::proxy "https://127.0.0.1:8118/";
 Acquire::ftp::proxy "ftp://127.0.0.1:8118/";
 Acquire::socks::proxy "socks://127.0.0.1:8118/";
-```
 
-### ~/.bashrc
 
-``` bash
+#~/.bashrc
 export http_proxy=http://127.0.0.1:8118/
 export https_proxy=http://127.0.0.1:8118/
+```
+
+## 查看端口占用情况
+sudo netstat -lnp | grep "1080"
+
+## 配置electron-ssr
+
+a.下载electron-ssr
+https://github.com/erguotou520/electron-ssr/releases
+
+b.下载shadowsocksr
+``` bash
+git clone https://github.com/ssrbackup/shadowsocksr
+```
+
+c.删除~/.config/electron-ssr/中的缓存文件
+``` bash
+rm -r ~/.config/electron-ssr/
+```
+
+d.并配置ssr的local.py为shadowsocksr中的local.py
+
+e.可能会有1080端口被占用的情况，可通过如下命令查看
+``` bash
+sudo netstat -lnp | grep "1080"
 ```
 
 ## 安装proxychains
 
 ``` bash
 sudo apt-get install proxychains
-
 ```
 
 ## 配置Shadowsocks PAC全局代理
@@ -355,17 +379,20 @@ pip install --upgrade genpac
 genpac --pac-proxy "SOCKS5 127.0.0.1:1080" --gfwlist-proxy="SOCKS5 127.0.0.1:1080" --gfwlist-url=https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt --output="autoproxy.pac"
 ```
 
-## 安装ccache
+## 安装配置ccache，找郑州要文档
 
 ``` bash
 sudo apt-get install ccache
+
 export USE_CCACHE=1
+export CCACHE_SLOPPINESS=file_macro,include_file_mtime,time_macros
+export CCACHE_UMASK=002
+export CCACHE_DIR=/home/zq/.ccache
 ```
 
 ## ShadowSocks服务器一键安装脚本
 
 ``` bash
-#wget --no-check-certificate https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocksR.sh && chmod +x shadowsocksR.sh && ./shadowsocksR.sh 2>&1 | tee shadowsocksR.log
 wget --no-check-certificate https://raw.githubusercontent.com/iMeiji/shadowsocks_install/master/shadowsocks-go.sh && chmod +x shadowsocks-go.sh && ./shadowsocks-go.sh
 
 端口设置为995
@@ -390,11 +417,15 @@ download the latest version from official website
 ``` bash
 download the latest version from official website
 https://www.eclipse.org/downloads/download.php?file=/oomph/epp/2018-09/R/eclipse-inst-linux64.tar.gz
+
+or:
+sudo apt-get install eclipse
+
 配置eclipse adt
 配置sdk
 配置快捷键
 配置eclipse用4个空格代替tab??
-配置eclipse的格式化模板
+配置eclipse的格式化模板？？把之前的配置文件保存到github上，最好能配置成自动同步？？
 
 安装fx插件
 http://download.eclipse.org/efxclipse/updates-released/2.3.0/site
@@ -402,15 +433,17 @@ http://download.eclipse.org/efxclipse/updates-released/2.3.0/site
 fxjava的jar包
 https://github.com/qweasdzxcpoi/JavaFX/blob/master/jfxrt.jar
 
-
 问题：Graphics Device initialization failed for :  es2, sw
 解决：sudo apt-get install openjfx
 
 问题：Gtk-WARNING **: Unable to locate theme engine in module_path: "adwaita",
-解决：sudo apt install gnome-themes-standard
+解决：sudo apt-get install gnome-themes-standard
 
 安装配置JavaFX Scene Builder
 /opt/JavaFXSceneBuilder2.0/
+
+问题：OpenJDK 64-Bit Server VM warning: ignoring option MaxPermSize=256m; support was removed in 8.0
+解决：去掉 /etc/eclipse.ini 中的 MaxPermSize=256m
 ```
 
 ## 安装VSCode
@@ -438,7 +471,8 @@ ext install felipecaputo.git-project-manager
 ext install formulahendry.code-runner
 ext install CoenraadS.bracket-pair-colorizer
 
-快捷键
+快捷键？
+搜索上一个/下一个的快捷键？？
 
 代码片段
 $HOME/.config/Code/User/snippets/(language).json
@@ -446,7 +480,7 @@ $HOME/.config/Code/User/snippets/(language).json
 安装Java Imports Snippets
 F1 -> ext install tushortz.java-imports-snippets
 
-//常用代码片段
+//常用代码片段？？如何自动同步保存到github上？？
 class --> To trigger a class definition statement
 main --> To auto-complete main method
 method to trigger a normal method with return capability
@@ -479,8 +513,8 @@ sudo apt-get remove modemmanager
 sudo apt-get install npm
 npm config set proxy=http://127.0.0.1:8118
 npm config set registry=http://registry.npmjs.org
-npm config set proxy http://username:password@server:port
-npm config set https-proxy http://username:password@server:port
+npm config set proxy http://127.0.0.1:8118
+npm config set https-proxy http://127.0.0.1:8118
 ```
 
 ## 安装hexo
@@ -492,7 +526,7 @@ sudo npm install hexo-cli -g
 ## 安装xmind
 
 ``` bash
-download the latest version from https://www.xmind.net/download/xmind8/
+https://www.xmind.net/download/xmind8/
 直接解压打开arm64下的可执行程序即可
 ```
 
@@ -514,21 +548,25 @@ reboot
 
 重启电脑后，会看到屏幕右上角有企鹅输入fcitx。
 然后右键点开，选择ConfigureFcitx。
-然后点击弹出的框的左下方的”+“号，添加搜狗输入法，去掉那个只“显示当前语言”的选项，然后搜索框输入sog，你会发现搜狗输入法已经有了，选中输入法即可，然后关闭。
+然后点击弹出的框的左下方的"+"号，添加搜狗输入法，去掉那个只“显示当前语言”的选项，然后搜索框输入sog，你会发现搜狗输入法已经有了，选中输入法即可，然后关闭。
 然后打开一个能输入文字的软件，比如word，输入文字的时候，shift键进行中英文切换，你会发现屏幕右上方的搜狗输入法图标有了，搜狗输入法安装成功，输入文字正常，但是这个时候，输入法输入中文显示会乱码，没关系，重启电脑或者下次开机就好了。
 ```
 
 ## 安装WPS
 
 ``` bash
-download the latest version from official website
+http://www.wps.cn/product/wpslinux#
 sudo dpkg -i xxx.deb
+
+or
+
+sudo apt-get install wps-office
 ```
 
 ## 安装VirtualBox + 安装虚拟机
 
 ``` bash
-download the latest version from official website   //https://www.virtualbox.org/wiki/Linux_Downloads
+https://www.virtualbox.org/wiki/Linux_Downloads
 sudo dpkg -i 下载文件
 download   Oracle_VM_VirtualBox_Extension_Pack-5.2.20-125813.vbox-extpack
 sudo usermod -a -G vboxusers xyz
@@ -549,21 +587,90 @@ g:配置打印机
 ## 安装bcompare
 
 ``` bash
-download the latest version from official website
+https://www.scootersoftware.com/download.php
 安装完了之后通过终端打开 bcompare 在options设置中添加右键比较功能，重启后生效
 ```
 
 ## 安装TeamViewer
 
 ``` bash
-download the latest version from official website
+https://www.teamviewer.com/en/download/linux/
 ```
 
 ## 安装右键终端
 
 ``` bash
-sudo apt-get install gnome-terminal
-sudo apt-get install nautilus-open-terminal
+sudo apt-get install gnome-terminal nautilus-open-terminal
+```
+
+## 修改开机启动项的显示时间
+
+``` bash
+sudo gedit /etc/default/grub
+GRUB_TIMEOUT=4
+sudo update-grub
+```
+
+## 使用apt-fast取代apt-get
+
+``` bash
+sudo add-apt-repository ppa:apt-fast/stable
+sudo apt-get update
+sudo apt-get install apt-fast
+```
+
+## 用TLP降低发热
+
+``` bash
+sudo add-apt-repository ppa:linrunner/tlp
+sudo apt-get update
+sudo apt-get install tlp tlp-rdw
+sudo tlp start
+```
+
+## 安装preload
+
+``` bash
+sudo apt-get install preload
+```
+
+## 安装cpufreq指示器，并设置到powersave模式
+
+``` bash
+sudo apt-get install indicator-cpufreq
+```
+
+## 从 apt-get 更新移除语言相关的 ign
+
+``` bash
+sudo gedit /etc/apt/apt.conf.d/00aptitude
+Acquire::Languages "none";
+```
+
+## 清理apt安装的程序
+
+``` bash
+sudo apt-get clean
+sudo apt-get autoremove
+sudo apt-get remove xxx
+```
+
+## vpnc
+
+``` bash
+sudo apt-get install vpnc
+```
+
+## openssh-server
+
+``` bash
+sudo apt-get install openssh-server
+```
+
+## unrar
+
+``` bash
+sudo apt-get install unrar
 ```
 
 ## Gnome Classic
@@ -588,23 +695,20 @@ sed -i "s/jack/tom/g" test.txt
 ## 安装Chrome
 
 ``` bash
-download the latest version from official website
+https://www.google.cn/intl/zh-CN/chrome/
 google-chrome-stable --proxy-server="127.0.0.1:8118" &
-```
 
-## 解决Ubuntu无法从外部应用启动Chrome打开链接的问题
-
-``` bash
+#解决Ubuntu无法从外部应用启动Chrome打开链接的问题
 https://blog.csdn.net/Artprog/article/details/71076111
-打开文件：gedit ~/.local/share/applications/google-chrome.desktop 
-找到下面这行: 
+打开文件:gedit ~/.local/share/applications/google-chrome.desktop 
+找到下面这行:
 Exec=/opt/google/chrome/chrome
-在末尾添加一个空格和%U: 
+在末尾添加一个空格和%U:
 Exec=/opt/google/chrome/chrome %U
-然后保存文件即可。
+然后保存文件即可
 ```
 
-## 安装markdown阅读器 typora
+## 安装markdown阅读器 typora，其实不需要安装，使用vscode也能打开
 
 ``` bash
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys BA300B7755AFCFAE
@@ -613,7 +717,7 @@ sudo apt-get update
 sudo apt-get install typora
 ```
 
-## 安装mocp音乐播放器，并设置为开机自启动
+## 安装mocp音乐播放器，并设置为开机自启动??如何设置为开机自启动？
 
 ``` bash
 sudo apt-get install moc
@@ -634,7 +738,7 @@ wget https://github.com/geeeeeeeeek/electronic-wechat/releases/download/V2.0/lin
 ## 安装VLC播放器
 
 ``` bash
-sudo apt install vlc browser-plugin-vlc
+sudo apt-get install vlc browser-plugin-vlc
 ```
 
 ## 安装主题管理工具 gnome-tweak-tool
@@ -651,13 +755,62 @@ sudo apt-get install fonts-wqy-microhei fonts-droid ttf-wqy-zenhei ttf-wqy-micro
 
 ## 安装 matcha 主题
 
-``` bash
+`` bash
+sudo apt-get install gtk2-engines-murrine gtk2-engines-pixbuf
+
 sudo add-apt-repository ppa:ryu0/aesthetics
 sudo apt-get update
 sudo apt-get install matcha-theme
+
+or
+
+git clone https://github.com/vinceliuice/matcha.git
+cd matcha
+./Install
 ```
 
-## 安装 flatabulous 主题(主题可以到　https://www.gnome-look.org/　网站上搜索下载，目前使用Canta theme挺不错)
+## 终端美化，优化
+
+``` bash
+https://blog.jae.sh/article/zqle60.html
+sudo apt-get install zsh -y
+sudo wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | sh
+chsh -s /bin/zsh
+
+# 查看zsh主题列表(agnoster比较好看)
+ll ~/.oh-my-zsh/themes
+
+# 修改主题
+gedit ~/.zshrc
+source ~/.bashrc
+
+# 解决zsh卡顿的问题，可以使用以下命令禁止zsh自动获取git信息，解决卡顿问题
+git config --global oh-my-zsh.hide-status 1
+
+# zsh插件列表
+ll ~/.oh-my-zsh/plugins
+
+# 安装zsh-autosuggestions插件
+git clone https://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
+
+# 安装zsh-syntax-highlighting插件
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+
+# zsh git插件命令
+https://github.com/robbyrussell/oh-my-zsh/wiki/Plugin:git
+
+# 更新你OMZ
+upgrade_oh_my_zsh
+```
+
+## 安装guake
+
+``` bash
+sudo apt-get install guake
+在 Startup Application 中设置为开机自启动
+```
+
+## 安装 flatabulous 主题(主题可以到　https://www.gnome-look.org/　网站上搜索下载，目前使用 Canta theme挺不错)
 
 ``` bash
 sudo add-apt-repository ppa:noobslab/themes
@@ -683,6 +836,15 @@ sudo apt-get update
 sudo apt-get install numix-icon-theme-circle
 ```
 
+## 安装macos主题和鼠标
+
+``` bash
+sudo add-apt-repository ppa:noobslab/macbuntu
+sudo apt-get update
+sudo apt-get install macbuntu-os-icons-lts-v7
+sudo apt-get install macbuntu-os-ithemes-lts-v7
+```
+
 ## 安装Early OOM
 
 ``` bash
@@ -690,6 +852,30 @@ git clone https://github.com/rfjakob/earlyoom.git
 cd earlyoom
 make
 sudo make install
+```
+
+## 安装系统负载指示器
+
+``` bash
+sudo apt-get install -y indicator-multiload
+```
+
+## 经典菜单指示器
+
+``` bash
+sudo apt-add-repository ppa:diesch/testing
+sudo apt-get update
+sudo apt-get install classicmenu-indicator
+```
+
+## 安装dock
+
+``` bash
+sudo apt-get install cairo-dock
+
+or:
+
+sudo apt-get install docky
 ```
 
 ## 下载SVG图片查看工具
@@ -713,7 +899,7 @@ sudo apt-get install fbreader
 ## 下载反编译工具jadx
 
 ``` bash
-git@github.com:skylot/jadx.git
+git clone git@github.com:skylot/jadx.git
 ```
 
 ## 安装gnome桌面
@@ -721,8 +907,8 @@ git@github.com:skylot/jadx.git
 ``` bash
 sudo add-apt-repository ppa:gnome3-team/gnome3-staging
 sudo add-apt-repository ppa:gnome3-team/gnome3
-sudo apt update
-sudo apt install gnome gnome-shell
+sudo apt-get update
+sudo apt-get install gnome gnome-shell
 ```
 
 ## 下载安装配置MailSpring
@@ -799,7 +985,7 @@ sudo apt-get remove telegram
 ## 压缩工具
 
 ``` bash
-sudo apt-get install 7zip unrar zip unzip
+sudo apt-get install unrar zip unzip
 ```
 
 ## FileZilla(FTP客户端)
@@ -829,7 +1015,7 @@ sudo mkdir -p /opt/calibre && sudo rm -rf /opt/calibre/* && sudo tar xvf calibre
 sudo apt-get remove libreoffice-common
 ```
 
-## 卸载FireFox
+## 卸载 FireFox
 
 ``` bash
 sudo apt-get purge firefox
@@ -853,8 +1039,8 @@ sudo apt-get install gnome-osd
 spd-say "mission complete"
 
 //mocp　命令行音乐播放器
-sudo apt-get install mocp
-mocp xx.mp3
+sudo apt-get install moc
+mocp -l xx.mp3
 
 //zenity 弹出一个对话框
 zenity --info --text="message text"
@@ -879,6 +1065,7 @@ sudo pip --proxy 127.0.0.1:8118 install --upgrade pip
 
 ``` bash
 sudo pip --proxy 127.0.0.1:8118 install wechat_sender
+how to use it??
 ```
 
 ## 终端发送邮件
@@ -909,6 +1096,9 @@ ssh root@45.32.165.125 -o "ProxyCommand corkscrew 127.0.0.1 8118 45.32.165.125 2
 sudo apt-get install tofrodos(ubuntu16.04默认安装)
 fromdos xxx.txt
 ```
+
+## audit2allow
+sudo apt-get install policycoreutils
 
 ## 配置快捷键返回桌面
 
@@ -947,7 +1137,7 @@ PDF File open password:
 
 ``` bash
 zhangzhefeng@sagereal.com
-sagereal%2018
+sagereal%2019
 ```
 
 ## 修改hosts文件立马生效
@@ -991,6 +1181,43 @@ org.gnome.gedit
 
 [Github源码](https://github.com/ecomfe/fonteditor)
 
+## 修改~/.bashrc文件
+
+``` bash
+export http_proxy=http://127.0.0.1:8118/
+export https_proxy=http://127.0.0.1:8118/
+export no_proxy="localhost,127.0.0.1"
+
+alias chrome='google-chrome-stable --proxy-server="127.0.0.1:8118" &'
+
+alias adbkill='_adbkill(){ adb root;adb remount;adb shell kill `adb shell ps | grep $1 | awk {'\''print $2'\''} | head -n 1`; }; _adbkill'
+
+alias adbrestart='echo 4815912 | sudo -S adb kill-server && echo 4815912 | sudo -S adb start-server'
+
+alias nosleep='adb shell settings put system screen_off_timeout 1800000'
+
+alias logcat='adb logcat -c && adb logcat -G 200M && adb logcat | grep $1'
+
+alias notice='_notice(){ alert $1; mocp -l /home/zq/sounds/ring3.ogg; date; }; _notice'
+# mail -s $1 356480127@qq.com <<< $1; }; _notice
+
+alias studio='/home/zq/Downloads/android-studio/bin/studio.sh'
+
+alias mm='ln -s /home/zq/github/MyResources/mm $pwd'
+
+alias svg='java -jar /home/zq/github/SVG-Android/svg-vector-applet/bat/svg2vector-applet-1.0.1.jar &'
+
+export PATH=/home/zq/Android/Sdk/tools:$PATH
+
+# Flutter
+export PATH=/home/zq/Flutter/flutter/bin:$PATH
+export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
+export PUB_HOSTED_URL=https://pub.flutter-io.cn
+
+# use ccache
+export USE_CCACHE=1
+```
+
 ## crontab定时任务
 
 ``` bash
@@ -1028,6 +1255,13 @@ sudo service cron reload
 
 在 home/Templates 中添加一个空的文本文档即可
 
+## ubuntu18.04 gedit Ubuntu gedit报错Gtk-WARNING **: cannot open display: :0.0 解决办法
+
+https://blog.csdn.net/Lucifer_zzq/article/details/85258429
+``` bash
+xhost +
+```
+
 ## TodoList
 
 ``` bash
@@ -1039,7 +1273,7 @@ notice 修改成功和失败时候的铃声和图标
 把lint功能整合进来？lint怎么用？？？？？？？？？
 如何检测手机是否开机？
 在注释中添加生效的路径（如：Settings/Display/Auto-rotate screen）,方便别人查看验证
-研究开发输入法
+研究开发按键输入法
 把培训做成视频
 整理bug并归类？？？？？？？最好能整理成一个树（思维导图）
 如何通过命令或工具把PC上的通知发送到手机上？？？
@@ -1050,4 +1284,12 @@ adb remount 之后如何判断是否成功？
 开发chrome插件
 git push 之后延时10秒左右发送一个通知提示可以查看gerrit？？？
 为什么crontab中执行打开浏览器的脚本不成功？ google-chrome %U http://readfree.me
+
+mysql
+
+docker            https://thelinuxcode.com/how-to-install-docker-container-in-ubuntu/
+
+vscode configuration save to server auto ????
+
+couch cms         https://thelinuxcode.com/how-to-install-couch-cms-on-ubuntu-16-04-17-10/
 ```

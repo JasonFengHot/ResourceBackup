@@ -4,7 +4,7 @@
 # update resource automatically
 cd ~/github/MyResources;git add .;git commit -m "update automatically!";git push origin master;
 
-# check in everyday
+# check in readfree.me everyday
 export DISPLAY=:0 && google-chrome %U https://readfree.me/;
 
 #
