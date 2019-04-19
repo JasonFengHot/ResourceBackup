@@ -360,6 +360,45 @@ d.并配置ssr的local.py为shadowsocksr中的local.py
 e.可能会有1080端口被占用的情况，可通过如下命令查看
 ``` bash
 sudo netstat -lnp | grep "1080"
+
+f.修改ssr配置文件
+gedit ~/.config/electron-ssr/gui-config.json
+
+    "configs": [
+		{
+			"enable": true,
+			"group": "ssrcloud",
+			"id": "340329CF8B708D960F5578EAD973EEC0",
+			"method": "aes-256-cfb",
+			"obfs": "plain",
+			"obfsparam": "",
+			"password": "f3YcTD",
+			"protocol": "origin",
+			"protocolparam": "",
+			"remarks": "",
+			"remarks_base64": "",
+			"server": "htk03.bilibilivpn.com",
+			"server_port": 8139
+		}
+	],
+	
+	"configs": [
+		{
+			"enable": true,
+			"group": "ssrcloud",
+			"id": "340329CF8B708D960F5578EAD973EEC0",
+			"method": "aes-256-cfb",
+			"obfs": "plain",
+			"obfsparam": "",
+			"password": "4815912",
+			"protocol": "origin",
+			"protocolparam": "",
+			"remarks": "",
+			"remarks_base64": "",
+			"server": "155.138.203.190",
+			"server_port": 995
+		}
+	],
 ```
 
 ## 安装proxychains
@@ -384,10 +423,17 @@ genpac --pac-proxy "SOCKS5 127.0.0.1:1080" --gfwlist-proxy="SOCKS5 127.0.0.1:108
 ``` bash
 sudo apt-get install ccache
 
+ccache -M 50G
+
+alps/prebuilts/misc/linux-x86/ccache -M 50G
+
 export USE_CCACHE=1
 export CCACHE_SLOPPINESS=file_macro,include_file_mtime,time_macros
 export CCACHE_UMASK=002
 export CCACHE_DIR=/home/zq/.ccache
+
+监测ccache的变化
+watch -n1 -d ccache -s
 ```
 
 ## ShadowSocks服务器一键安装脚本
@@ -444,6 +490,9 @@ https://github.com/qweasdzxcpoi/JavaFX/blob/master/jfxrt.jar
 
 问题：OpenJDK 64-Bit Server VM warning: ignoring option MaxPermSize=256m; support was removed in 8.0
 解决：去掉 /etc/eclipse.ini 中的 MaxPermSize=256m
+
+问题：monitor打不开，java.lang.IllegalStateException: Unable to acquire application service. Ensure that the org.eclipse.core.runtime bundle is resolved and started (see config.ini).
+解决：只要通过 sudo update-alternative --config java 把java版本改为1.8即可
 ```
 
 ## 安装VSCode
@@ -776,31 +825,56 @@ https://blog.jae.sh/article/zqle60.html
 sudo apt-get install zsh -y
 sudo wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | sh
 chsh -s /bin/zsh
+```
 
 # 查看zsh主题列表(agnoster比较好看)
+``` bash
 ll ~/.oh-my-zsh/themes
+```
 
 # 修改主题
-gedit ~/.zshrc
+``` bash
+sudo gedit ~/.zshrc
 source ~/.bashrc
+```
 
 # 解决zsh卡顿的问题，可以使用以下命令禁止zsh自动获取git信息，解决卡顿问题
+``` bash
 git config --global oh-my-zsh.hide-status 1
+```
 
 # zsh插件列表
+``` bash
 ll ~/.oh-my-zsh/plugins
+```
 
 # 安装zsh-autosuggestions插件
+``` bash
 git clone https://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
+```
 
 # 安装zsh-syntax-highlighting插件
+``` bash
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+```
 
 # zsh git插件命令
+``` bash
 https://github.com/robbyrussell/oh-my-zsh/wiki/Plugin:git
+```
 
 # 更新你OMZ
+``` bash
 upgrade_oh_my_zsh
+```
+
+# zsh终端会显示中文？
+``` bash
+sudo gedit ~/.zshrc
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+#export LC_ALL=zh_CN.UTF-8
+#export LANG=zh_CN.UTF-8
 ```
 
 ## 安装guake
@@ -1106,6 +1180,12 @@ sudo apt-get install policycoreutils
 Settings/Keyboard/Shortcuts/Navigation/Hide all normal windows //把这个改为 WIN+D 键，和windows保持一致
 ```
 
+## 安装gpick取色器
+
+``` bash
+sudo apt-get install gpick
+```
+
 ## nautilus文件夹进不去
 
 ``` bash
@@ -1118,6 +1198,14 @@ ERROR:nautilus-canvas-container.c:6021:finish_adding_new_icons: assertion failed
 Aborted (core dumped)
 
 解决方法：
+```
+
+## nautilus搜索功能type ahead search
+
+``` bash
+sudo add-apt-repository ppa:lubomir-brindza/nautilus-typeahead
+sudo apt-get dist-upgrade
+
 ```
 
 ## MTK文档密码
@@ -1214,10 +1302,6 @@ export PATH=/home/zq/Flutter/flutter/bin:$PATH
 export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn
 export PUB_HOSTED_URL=https://pub.flutter-io.cn
 
-# use ccache
-export USE_CCACHE=1
-```
-
 ## crontab定时任务
 
 ``` bash
@@ -1262,6 +1346,10 @@ https://blog.csdn.net/Lucifer_zzq/article/details/85258429
 xhost +
 ```
 
+## gsettings编辑器
+
+dconf-editor
+
 ## TodoList
 
 ``` bash
@@ -1284,6 +1372,8 @@ adb remount 之后如何判断是否成功？
 开发chrome插件
 git push 之后延时10秒左右发送一个通知提示可以查看gerrit？？？
 为什么crontab中执行打开浏览器的脚本不成功？ google-chrome %U http://readfree.me
+在终端gedit打开文件不会弹出来显示？
+在chrome中会双击删除？
 
 mysql
 
