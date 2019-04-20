@@ -35,7 +35,7 @@
 
 # TODO : 如何从编译的log中提取出 install， push 的时候直接从编译出来的文件中获取出目标路径
 
-# TODO : 如何判断下面的这些基础命令是否存在？adb, mocp
+    # TODO : 如何判断下面的这些基础命令是否存在？adb, mocp
 
 # TODO : 如何判断要编译的项目是否包含widevine？
 
@@ -79,6 +79,8 @@
 
 # TODO : 如何通过redmine的id获取标题？
 
+# TODO : 在 commit 之后，显示redmine模板？？？
+
 #####################################################
 
 # TODO : ERP管理系统？
@@ -93,7 +95,7 @@
 # 按power键无法返回到home，是因为开机向导没有过完
 # adb shell settings put secure user_setup_complete 1
 
-#
+# 用aapt解析apk文件
 # aapt dump badging Terminal.apk
 
 
@@ -239,12 +241,26 @@ removetests(){
     removetest vendor/mediatek/proprietary/packages/apps/SettingsLib/tests/Android.mk
 }
 
+# if adb exists
+if [ -f /usr/bin/adb ]; then
+    adb version;
+else
+    echo "adb does not exists, please config it!";
+    exit 0;
+fi
+
+# if mocp exists
+if [ ! -f /usr/bin/mocp ]; then
+    echo "mocp does not exists, please config it!";
+    echo "sudo apt-get install moc";
+fi
+
 # if $1 exists
 if [ ! -z $1 ] ; then
     echo $1
 else
     echo "please input the operation you want to do!";
-    # TODO : you can show some tips here
+    # TODO : you can show some tips here ???? 
     exit 0;
 fi
 
@@ -261,9 +277,10 @@ if [ $1 == "commit" ] ; then
     mkdir ~/gitcommit
     # 2. touch file
     touch ~/gitcommit/$bugId"_"$commitMessage
-    # TODO : if pull failed ???
+    # TODO : if pull failed
     git commit -m "test "$bugId" "$commitMessage" Submitter:zhangqi Checker:liangshuang "$dateStr;
     git push origin HEAD:refs/for/$branchName;
+    
     notice "git_commit_push_done!"
     # TODO : list files committed ???
     # TODO : commit 完了之后直接把bug登记到服务器上的excel表格中？？？开发一个java应用，用于操作excel文件
@@ -336,6 +353,10 @@ sdkVersion=`cat build/core/version_defaults.mk | grep "PLATFORM_SDK_VERSION :=" 
 
 remount;
 #adb shell settings put system screen_off_timeout 300000;
+
+# MTK_BUILD_VERSION
+BUILD_VERSION=`cat ../sagereal/mk/$new_project/ProjectConfig.mk | grep "MTK_BUILD_VERNO" | awk '{print $3}'`;
+echo $BUILD_VERSION;
 
 # type 1: vendor/mediatek/proprietary/packages/apps/*
 # type 2: packages/apps/*

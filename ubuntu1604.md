@@ -601,6 +601,12 @@ reboot
 然后打开一个能输入文字的软件，比如word，输入文字的时候，shift键进行中英文切换，你会发现屏幕右上方的搜狗输入法图标有了，搜狗输入法安装成功，输入文字正常，但是这个时候，输入法输入中文显示会乱码，没关系，重启电脑或者下次开机就好了。
 ```
 
+## 安装google拼音
+
+``` bash
+sudo apt-get install fcitx fcitx-googlepinyin im-config
+```
+
 ## 安装WPS
 
 ``` bash
@@ -746,6 +752,9 @@ sed -i "s/jack/tom/g" test.txt
 ``` bash
 https://www.google.cn/intl/zh-CN/chrome/
 google-chrome-stable --proxy-server="127.0.0.1:8118" &
+
+安装chrome插件
+chrome-gnome-shell
 
 #解决Ubuntu无法从外部应用启动Chrome打开链接的问题
 https://blog.csdn.net/Artprog/article/details/71076111
@@ -991,7 +1000,7 @@ git clone git@github.com:skylot/jadx.git
 sudo add-apt-repository ppa:gnome3-team/gnome3-staging
 sudo add-apt-repository ppa:gnome3-team/gnome3
 sudo apt-get update
-sudo apt-get install gnome gnome-shell
+sudo apt-get install gnome gnome-shell gnome-shell-extensions
 ```
 
 ## 下载安装配置MailSpring
