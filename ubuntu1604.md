@@ -770,6 +770,8 @@ sudo apt-get install typora
 
 ``` bash
 sudo apt-get install moc
+如何开机自启动mocp？
+在 gnome-tweak 中添加
 ```
 
 ## 安装网易云音乐
@@ -788,6 +790,12 @@ wget https://github.com/geeeeeeeeek/electronic-wechat/releases/download/V2.0/lin
 
 ``` bash
 sudo apt-get install vlc browser-plugin-vlc
+```
+
+## 安装解码器
+
+``` bash
+sudo apt install ubuntu-restricted-extras
 ```
 
 ## 安装主题管理工具 gnome-tweak-tool
@@ -866,6 +874,7 @@ https://github.com/robbyrussell/oh-my-zsh/wiki/Plugin:git
 # 更新你OMZ
 ``` bash
 upgrade_oh_my_zsh
+更新失败？？
 ```
 
 # zsh终端会显示中文？
@@ -877,7 +886,7 @@ export LANG=en_US.UTF-8
 #export LANG=zh_CN.UTF-8
 ```
 
-## 安装guake
+## 安装guake(F12打开终端)
 
 ``` bash
 sudo apt-get install guake
@@ -1081,6 +1090,8 @@ sudo apt-get install peek
 ``` bash
 download the latest version from
 sudo mkdir -p /opt/calibre && sudo rm -rf /opt/calibre/* && sudo tar xvf calibre-3.37.0-x86_64.txz -C /opt/calibre && sudo /opt/calibre/calibre_postinstall
+
+sudo apt-get install calibre
 ```
 
 ## 卸载 LibreOffice
@@ -1180,7 +1191,7 @@ sudo apt-get install policycoreutils
 Settings/Keyboard/Shortcuts/Navigation/Hide all normal windows //把这个改为 WIN+D 键，和windows保持一致
 ```
 
-## 安装gpick取色器
+## 安装gpick取色器（不好用，不建议安装）
 
 ``` bash
 sudo apt-get install gpick
@@ -1323,7 +1334,7 @@ crontab -e
 export DISPLAY=:0 && google-chrome %U https://readfree.me/;
 
 //每天23:59定时更新MyResources中的修改到github服务器
-59 23 * * * cd ~/github/MyResources;git add .;git commit -m "update automatically";git push origin master
+43 10 * * * cd ~/github/MyResources;bash everyday.sh
 
 //查看定时任务列表
 crontab -l
@@ -1353,18 +1364,16 @@ dconf-editor
 ## TodoList
 
 ``` bash
-如何开机自启动mocp
 notice 修改成功和失败时候的铃声和图标
 如何判断某个模块没有发生变化？
 如何在程序中执行脚本？QT？
-如何在已编译过的代码中获取项目名称？和project名称？
 把lint功能整合进来？lint怎么用？？？？？？？？？
 如何检测手机是否开机？
 在注释中添加生效的路径（如：Settings/Display/Auto-rotate screen）,方便别人查看验证
 研究开发按键输入法
 把培训做成视频
 整理bug并归类？？？？？？？最好能整理成一个树（思维导图）
-如何通过命令或工具把PC上的通知发送到手机上？？？
+如何通过命令或工具把PC上的通知发送到自己手机（小米）上？？？
 如何检测是否插入了usb？？
 研究HierarchyView的工作原理
 adb remount 之后如何判断是否成功？
@@ -1374,6 +1383,7 @@ git push 之后延时10秒左右发送一个通知提示可以查看gerrit？？
 为什么crontab中执行打开浏览器的脚本不成功？ google-chrome %U http://readfree.me
 在终端gedit打开文件不会弹出来显示？
 在chrome中会双击删除？
+如何创建微信的快捷方式到docker?
 
 mysql
 

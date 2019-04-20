@@ -335,7 +335,7 @@ buildMode=`cat sagereal_build.log | grep "user_mode" | awk '{print $2}'`;
 sdkVersion=`cat build/core/version_defaults.mk | grep "PLATFORM_SDK_VERSION :=" | awk '{print $3}'`;
 
 remount;
-adb shell settings put system screen_off_timeout 300000;
+#adb shell settings put system screen_off_timeout 300000;
 
 # type 1: vendor/mediatek/proprietary/packages/apps/*
 # type 2: packages/apps/*
