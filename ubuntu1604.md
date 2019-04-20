@@ -1334,7 +1334,10 @@ sudo service cron reload
 * * * * * google-chrome %U https://readfree.me/ ？？？？
 
 在crontab中执行需要指定设备，如下：
+16.04
 export DISPLAY=:0 && google-chrome %U https://readfree.me/;
+18.04
+export DISPLAY=:1 && google-chrome %U https://readfree.me/;
 
 //每天23:59定时更新MyResources中的修改到github服务器
 43 10 * * * cd ~/github/MyResources;bash everyday.sh

@@ -5,6 +5,6 @@ mocp -l /home/zq/sounds/ring3.ogg;
 cd ~/github/MyResources;git add .;git commit -m "update automatically!";git push origin master;
 
 # check in readfree.me everyday
-export DISPLAY=:0 && google-chrome %U https://readfree.me/;
+export DISPLAY=:1 && google-chrome %U https://readfree.me/;
 
 #
