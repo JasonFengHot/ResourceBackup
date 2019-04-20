@@ -1325,6 +1325,9 @@ sudo service cron status    #查看服务状态
 //编辑定时任务列表
 crontab -e
 
+//修改完了之后重新载入配置即可
+sudo service cron reload
+
 //每分钟执行一次播放音乐的任务
 * * * * * mocp -l /home/zq/sounds/ring3.ogg
 
@@ -1341,9 +1344,6 @@ crontab -l
 
 //选择默认编辑器
 select-editor
-
-//修改完了之后重新载入配置即可
-sudo service cron reload
 ```
 
 ## ubuntu右键new document没有创建文本文档的选项？
