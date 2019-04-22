@@ -57,7 +57,8 @@
 
 # TODO : 一键加宏功能？添加提示需要注意修改哪些文件？
 
-# TODO : new 完之后直接把软件打包？
+    # TODO : new 完之后直接把软件打包？
+    ##zip -r FileName.zip DirName
 
 # TODO : new 完之后直接把软件做成MSU？
 
@@ -67,9 +68,9 @@
 
 # TODO : 如何监听USB的插拔状态
 
-# TODO : 一键签名脚本
+# TODO : 一键签名脚本java -jar
 
-# TODO : 如何通过脚本修改文件中的内容？比如删除frameworks/base/Android.mk 文件中的 platformprotos
+# TODO : 如何通过脚本修改文件中的内容？比如删除 frameworks/base/Android.mk 文件中的 platformprotos
 
 # TODO : 刷机完成之后自动开机？在DA中修改？是否需要修改工具？
 
@@ -307,7 +308,7 @@ removetests;
 if [[ $1 == "new" || $1 == "n" ]] ; then
     if [ ! -z $2 ] ; then
         echo $2;
-        rm vendor/mediatek/proprietary/packages/apps/Contacts/Android.mk;
+        # rm vendor/mediatek/proprietary/packages/apps/Contacts/Android.mk;
         ./mk -ud $2 new;
         exit 0;
     else
