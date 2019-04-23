@@ -1,9 +1,9 @@
 [修复情况和Gerrit提交]
-http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=84a45367052d4891121f08284e33be2a3ec76d4f
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=27d3da365ec8e747c83995556177db42c86d9030
 [问题根源]
-客户要求高亮在某条短信上的时候，点击菜单按钮显示Details/Forward/Delete菜单
+灭屏状态下不能DTMF
 [修复方案]
-给短信列表添加按键监听器
+在PhoneWindowManager.java中不拦截数字键，在DialpadFragment.java中添加onKeyUp()处理事件
 [自测情况]
 已修改，请帮忙验证，有问题请及时反馈，谢谢！
 [Checker]
