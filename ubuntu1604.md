@@ -86,7 +86,7 @@ sub build_modem
 
 ### GNU make编译器降版本
 
-自ubutu15.04及之后，ubutu系统自带的make编译器版本已经是4.1，但是在变异android代码的时候总是报一些莫名其妙的错误，这时候我们需要将make编译器的版本降到3.81版本以支持android代码的编译，具体操作如下(亲测有效):
+自ubutu15.04及之后，ubutu系统自带的make编译器版本已经是4.1，但是在编译android代码的时候总是报一些莫名其妙的错误，这时候我们需要将make编译器的版本降到3.81版本以支持android代码的编译，具体操作如下(亲测有效):
 6.1 下载make3.81的make编译器:
 终端输入以下命令，然后等待下载完成:
 wget -o make.tar.gz http://ftp.gnu.org/gnu/make/make-3.81.tar.gz    //下载包
@@ -554,6 +554,35 @@ sudo sysctl -p
 
 ``` bash
 sudo apt-get remove modemmanager
+
+https://androidmtk.com/smart-phone-flash-tool
+
+#报错1：Connect BROM failed: STATUS_ERR
+USB port is obtained. path name(/dev/ttyACM0), port name(/dev/ttyACM0)
+USB port detected: /dev/ttyACM0
+Connect BROM failed: STATUS_ERR
+Disconnect!
+
+sudo gedit  /etc/udev/rules.d/53-android.rules
+
+这个文件是用于adb调试的，在打开的文件中增加以下文本：
+SUBSYSTEM=="usb", SYSFS{idVendor}=="0bb4", MODE="0666"
+SUBSYSTEM=="usb", ATTR{idVendor}="0bb4", ATTR{idProduct}="0c03", SYMLINK+="android_adb"
+sudo gedit  /etc/udev/rules.d/53-MTKinc.rules
+这个文件是用于下载的，在打开的文件中增加以下文本：
+SUBSYSTEM=="usb", SYSFS{idVendor}=="0e8d", MODE="0666"
+SUBSYSTEM=="usb", ATTR{idVendor}="0e8d", ATTR{idProduct}="2000", SYMLINK+="android_adb"
+KERNEL=="ttyACM*", MODE="0666"
+驱动重新加载：
+sudo chmod a+rx /etc/udev/rules.d/53-android.rules
+sudo chmod a+rx /etc/udev/rules.d/53-MTKinc.rules
+sudo /etc/init.d/udev restart       
+备注：idVendor 与 idProduct的通过lsusb命令查看
+KERNEL=="ttyACM*", MODE="0666"是给flash_tool运行过程中生成的设备文件增加权限，这样不需要管理员权限即可运行。
+
+使用MTK下载工具（驱动程序已安装）无法下载的，可使用如下方法（Ubuntu14.04以上）：
+sudo apt-get remove modemmanager
+sudo /etc/init.d/udev restart
 ```
 
 ## 安装nodejs

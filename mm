@@ -74,13 +74,21 @@
 
 # TODO : 刷机完成之后自动开机？在DA中修改？是否需要修改工具？
 
-# TODO : Logcat
+# TODO : 把 Logcat 整合成一条命令 logcat
+
+# TODO : 把 adb shell settings get/set 整合成一条命令 settings get/set
+
+# TODO : 把 adb shell pm clear 整合成一条命令 adbclear
 
 # TODO : 用JavaFx开发一些工具，比如：查看颜色，常用配色等
 
 # TODO : 如何通过redmine的id获取标题？
 
 # TODO : 在 commit 之后，显示redmine模板？？？
+
+# TODO : 把配置ccache方法整合进来
+
+# TODO : 把拉代码的脚本整合进来？？
 
 #####################################################
 
@@ -280,7 +288,7 @@ if [ $1 == "commit" ] ; then
     touch ~/gitcommit/$bugId"_"$commitMessage
     # TODO : if pull failed
     git commit -m "test "$bugId" "$commitMessage" Submitter:zhangqi Checker:liangshuang "$dateStr;
-    git push origin HEAD:refs/for/$branchName;
+    git push origin "HEAD:refs/for/"$branchName;
     
     notice "git_commit_push_done!"
     # TODO : list files committed ???
@@ -320,7 +328,7 @@ if [[ $1 == "new" || $1 == "n" ]] ; then
         new_project=`cat sagereal_build.log | grep "new_project" | awk '{print $2}'`;
         # build mode
         buildMode=`cat sagereal_build.log | grep "user_mode" | awk '{print $2}'`;
-        rm vendor/mediatek/proprietary/packages/apps/Contacts/Android.mk;
+        # rm vendor/mediatek/proprietary/packages/apps/Contacts/Android.mk;
         if [[ $buildMode == "yes" || $buildMode == "user" ]] ; then
             ./mk -u $new_project new;
             exit 0;
