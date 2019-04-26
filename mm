@@ -331,12 +331,31 @@ if [[ $1 == "new" || $1 == "n" ]] ; then
         # rm vendor/mediatek/proprietary/packages/apps/Contacts/Android.mk;
         if [[ $buildMode == "yes" || $buildMode == "user" ]] ; then
             ./mk -u $new_project new;
+            # if make success push + notice
+            cat new_build.log | grep "build completed successfully";
+            if [ $? -ne 0 ] ; then
+                notice "new_failed!";
+            else
+                notice "new_success!";
+            fi
             exit 0;
         elif [ $buildMode == "userdebug" ] ; then
             ./mk -ud $new_project new;
+            cat new_build.log | grep "build completed successfully";
+            if [ $? -ne 0 ] ; then
+                notice "new_failed!";
+            else
+                notice "new_success!";
+            fi
             exit 0;
         elif [[ $buildMode == "no" || $buildMode == "eng" ]] ; then
             ./mk $new_project new;
+            cat new_build.log | grep "build completed successfully";
+            if [ $? -ne 0 ] ; then
+                notice "new_failed!";
+            else
+                notice "new_success!";
+            fi
             exit 0;
         fi
     fi
@@ -671,6 +690,8 @@ push(){
     if [ ! -z $componentName ] ; then
         adb shell am start -n $componentName
     fi
+    # pull to last version when push done!
+    git pull;
 }
 
 # Print system info

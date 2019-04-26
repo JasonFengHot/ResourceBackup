@@ -1,9 +1,13 @@
 [修复情况和Gerrit提交]
-http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=5a436701eb32381cb8590f3a6672dc453e75a88d
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=9a68480ed6d6cb7dc3d675bd2d5ddc119a4fec95
 [问题根源]
-部分activity点击返回按钮之后没有直接finish掉，而是重新启动了一个TestMainActivity
+Messaging IN conversation list -Options - Voice messages(Delete)------验证NOK 未删除
+Messaging -When in conversation -Options -Send (Delete)------- 验证NOK 未删除
+Messaging -When in conversation -Options -View contact (Delete)-----验证NOK 未删除
 [修复方案]
-在点击返回键之后，执行原来的流程
+1.移除Voice messages菜单
+2.移除Send菜单
+3.移除View contact菜单
 [自测情况]
 已修改，请帮忙验证，有问题请及时反馈，谢谢！
 [Checker]
