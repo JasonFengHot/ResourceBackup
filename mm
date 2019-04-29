@@ -94,7 +94,7 @@
 
 # TODO : ERP管理系统？
 
-# TODO : 自动登录签到系统？自动签到已通过crontab实现
+    # TODO : 自动登录签到系统？自动签到已通过crontab实现
 
 # TODO : 微信读书刷钱系统
 
@@ -262,6 +262,7 @@ fi
 if [ ! -f /usr/bin/mocp ]; then
     echo "mocp does not exists, please config it!";
     echo "sudo apt-get install moc";
+    # TODO : 如何判断 mocp 是否启动了？ps -aux | grep "/usr/bin/mocp"?
 fi
 
 # if $1 exists
@@ -280,19 +281,19 @@ dateStr=`date +%Y/%m/%d`;
 if [ $1 == "commit" ] ; then
     bugId=$2;
     commitMessage=$3;
-    # TODO : make sure you code is the latest
+    # make sure you code is the latest
     git pull;
     # 1. create folder
     mkdir ~/gitcommit
     # 2. touch file
     touch ~/gitcommit/$bugId"_"$commitMessage
-    # TODO : if pull failed
+    # TODO : if pull failed ?
     git commit -m "test "$bugId" "$commitMessage" Submitter:zhangqi Checker:liangshuang "$dateStr;
     git push origin "HEAD:refs/for/"$branchName;
     
     notice "git_commit_push_done!"
-    # TODO : list files committed ???
-    # TODO : commit 完了之后直接把bug登记到服务器上的excel表格中？？？开发一个java应用，用于操作excel文件
+    # TODO : how to list files just added or committed ?
+    # TODO : commit 完了之后直接把bug登记到服务器上的excel表格中？？？开发一个jar包应用，用于操作excel文件
 
     # open redmine
     google-chrome %U http://192.168.3.78:8006/redmine/issues/""$bugId
@@ -316,8 +317,23 @@ removetests;
 if [[ $1 == "new" || $1 == "n" ]] ; then
     if [ ! -z $2 ] ; then
         echo $2;
-        # rm vendor/mediatek/proprietary/packages/apps/Contacts/Android.mk;
         ./mk -ud $2 new;
+        # if make success push + notice
+        cat new_build.log | grep "build completed successfully";
+        if [ $? -ne 0 ] ; then
+            notice "new_failure!";
+            exit 0;
+        fi
+        # new_project
+        new_project=`cat sagereal_build.log | grep "new_project" | awk '{print $2}'`;
+        # MTK_BUILD_VERSION
+        BUILD_VERSION=`cat ../sagereal/mk/$new_project/ProjectConfig.mk | grep "MTK_BUILD_VERNO" | awk '{print $3}'`;
+        timeStr=`date +%m_%d_%H_%M`;
+        if [ ! -f ../$new_project ]; then
+            exit 0;
+        else
+            zip -r $BUILD_VERSION"_"$timeStr".zip" ../$new_project;
+        fi
         exit 0;
     else
         if [ ! -f sagereal_build.log ]; then
@@ -328,7 +344,6 @@ if [[ $1 == "new" || $1 == "n" ]] ; then
         new_project=`cat sagereal_build.log | grep "new_project" | awk '{print $2}'`;
         # build mode
         buildMode=`cat sagereal_build.log | grep "user_mode" | awk '{print $2}'`;
-        # rm vendor/mediatek/proprietary/packages/apps/Contacts/Android.mk;
         if [[ $buildMode == "yes" || $buildMode == "user" ]] ; then
             ./mk -u $new_project new;
             # if make success push + notice
@@ -380,7 +395,7 @@ buildMode=`cat sagereal_build.log | grep "user_mode" | awk '{print $2}'`;
 sdkVersion=`cat build/core/version_defaults.mk | grep "PLATFORM_SDK_VERSION :=" | awk '{print $3}'`;
 
 remount;
-#adb shell settings put system screen_off_timeout 300000;
+adb shell settings put system screen_off_timeout 300000;
 
 # MTK_BUILD_VERSION
 BUILD_VERSION=`cat ../sagereal/mk/$new_project/ProjectConfig.mk | grep "MTK_BUILD_VERNO" | awk '{print $3}'`;
@@ -533,6 +548,12 @@ make(){
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/WallpaperPicker/
         process=com.android.wallpaperpicker;
         moduleType=1;
+    elif [ $module == "Assistance" ] ; then
+        ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Assistance/
+        process=com.nan.assistance;
+        moduleType=1;
+
+
 
 
     elif [ $module == "Browser" ] ; then
@@ -582,7 +603,7 @@ make(){
             echo "without_platformprotos";
         else
             notice "You_should_modify_Android_mk_first!!!";
-            code frameworks/base/Android.mk;
+            gedit frameworks/base/Android.mk;
             exit 0
         fi
         ./mk -ud $new_project mm frameworks/base/
@@ -715,13 +736,13 @@ check_sys(){
     echo $release"_"$bit
 }
 
-startTime=`date +"%s.%N"`
+startTime=`date +"%s"`
 
 make $mModule;
 push $mModule;
 
-endTime=`date +"%s.%N"`
+endTime=`date +"%s"`
 
-spends=`awk -v x1="$(echo $endTime | cut -d '.' -f 1)" -v x2="$(echo $startTime | cut -d '.' -f 1)" -v y1="$[$(echo $endTime | cut -d '.' -f 2) / 1000]" -v y2="$[$(echo $startTime | cut -d '.' -f 2) /1000]" 'BEGIN{printf "RunTime:%.6f s",(x1-x2)+(y1-y2)/1000000}'`
+spends=`awk -v x1="$(echo $endTime | cut -d '.' -f 1)" -v x2="$(echo $startTime | cut -d '.' -f 1)" 'BEGIN{printf "RunTime:%d s",(x1-x2)}'`
 
 echo $spends
