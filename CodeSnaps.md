@@ -3328,6 +3328,12 @@ frameworks/support/v7/appcompat/res/values/dimens_material.xml
 ## 壁纸设置流程
 https://blog.csdn.net/lj527409/article/details/79825015
 
+## Android Button有默认padding值的元凶！！！
+https://blog.csdn.net/vv_bug/article/details/71698200
+把padding设置为0还是有边距的原因？theme中默认把minHeight设置为56dp
+所以需要把minHeight先改为0dp
+
+
 ## 操作excel的类库
 
 POI
