@@ -94,11 +94,21 @@ tar -xvzf make-3.81.tar.gz
 cd make-3.81
 ./configure
 sh build.sh
+
+18.04会报错 undefined reference to `__alloca'
+参考 https://stackoverflow.com/questions/51675200/install-older-version-of-gnu-make-in-ubuntu-18-04
+把 /home/zq/Downloads/make-3.81/./glob/glob.c 文件中的
+if _GNU_GLOB_INTERFACE_VERSION == GLOB_INTERFACE_VERSION
+改为
+if _GNU_GLOB_INTERFACE_VERSION >= GLOB_INTERFACE_VERSION
+
 sudo make install
 
 PS:make install安装的程序如果需要卸载，一般需要以上第四步执行build.sh后的包，再执行:
 sudo make uninstall
 即可完成卸载（需要程序支持，很幸运make程序是支持的），所以一般建议保留安装时的安装包。
+
+!!!!!!!!!!!  18.04不可以安装make3.81，安装了之后必须卸载，否则会编译报错
 
 2.编译M代码(验证的是80M的代码，其他未验证):
 2.1 prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.15-4.8//x86_64-linux/bin/ld: error: out/host/linux-x86/obj/SHARED_LIBRARIES/libart_intermediates/arch/x86_64/quick_entrypoints_x86_64.o: unsupported reloc 42 against global symbol art::Runtime::instance_
@@ -168,7 +178,33 @@ you will need approval.
 解决办法:
 先update-api之后再remake能编译通过，但要更优的方案。
 补充:
-虽然以上的解决方案能编译通过，但是这种方法在实际使用中不太好操作，需要寻求更加使用的解决方案。
+虽然以上的解决方案能编译通过，但是这种方法在实际使用中不太好操作，需要寻求更加实用的解决方案。
+
+# android 编译不过
+
+问题1:flex-2.5.39: loadlocale.c:130: _nl_intern_locale_data: Assertion `cnt < (sizeof (_nl_value_type_LC_TIME) / sizeof (_nl_value_type_LC_TIME[0]))' failed.
+
+解决方案：
+export LC_ALL=C
+
+问题2:Out of memory error (version 1.2-rc4 'Carnac' (298900 f95d7bdecfceb327f9d201a1348397ed8a843843 by android-jack-team@google.com)).
+GC overhead limit exceeded.
+Try increasing heap size with java option '-Xmx<size>'.
+
+fix:修改源码目录下prebuilts/sdk/tools/jack-admin文件的JACK_SERVER_VM_ARGUMENTS变量, 
+添加-Xmx4096M(这个根据你自己的情况),接着make clean,make -j4重新构建
+
+
+问题3：错误：prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.15-4.8/x86_64-linux/bin/ld: error: out/host/linux-x86/obj32/EXECUTABLES/libaapt2_tests_intermediates/split/TableSplitter_test.o: file is empty
+
+fix: ln -s /usr/bin/ld.gold prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.11-4.8/x86_64-linux/bin/ld
+
+
+问题4：Communication error with Jack server (52). Try 'jack-diagnose'
+
+fix:
+#out/host/linux-x86/bin/jack-admin kill-server 
+#out/host/linux-x86/bin/jack-admin start-server
 
 ## 安装git
 
@@ -673,6 +709,9 @@ g:配置打印机
 ``` bash
 https://www.scootersoftware.com/download.php
 安装完了之后通过终端打开 bcompare 在options设置中添加右键比较功能，重启后生效
+
+破解
+https://www.cnblogs.com/bluestorm/p/10259441.html
 ```
 
 ## 安装TeamViewer
