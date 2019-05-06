@@ -3333,6 +3333,9 @@ https://blog.csdn.net/vv_bug/article/details/71698200
 把padding设置为0还是有边距的原因？theme中默认把minHeight设置为56dp
 所以需要把minHeight先改为0dp
 
+## 模拟高温报警命令
+adb shell "echo 55 > /sys/devices/platform/battery/Battery_Temperature"
+
 
 ## 操作excel的类库
 

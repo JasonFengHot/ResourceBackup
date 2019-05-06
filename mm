@@ -552,7 +552,10 @@ make(){
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Assistance/
         process=com.nan.assistance;
         moduleType=1;
-
+    elif [ $module == "BatteryWarning" ] ; then
+        ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/BatteryWarning/
+        process=com.mediatek.batterywarning;
+        moduleType=1;
 
 
 
