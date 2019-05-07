@@ -444,7 +444,7 @@ make(){
     elif [ $module == "MtkContacts" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Contacts/
         process=com.android.contacts;
-        com.android.contacts/.activities.PeopleActivity
+        componentName=com.android.contacts/.activities.PeopleActivity
         moduleType=1;
     elif [ $module == "MtkSettingsProvider" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/SettingsProvider/
