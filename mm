@@ -431,7 +431,7 @@ make(){
         process=com.android.deskclock;
         moduleType=1;
     elif [ $module == "MtkMms" ] ; then
-        #make RecipientChips;
+        make RecipientChips;
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Mms/
         process=com.android.mms;
         componentName=com.android.mms/.ui.BootActivity;
@@ -455,7 +455,7 @@ make(){
         process=com.android.documentsui;
         moduleType=1;
     elif [ $module == "MtkEmail" ] ; then
-        make RecipientChips;
+        #make RecipientChips;
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/Email/
         process=com.android.email;
         componentName=com.android.email/com.android.email.activity.Welcome

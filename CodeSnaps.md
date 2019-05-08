@@ -3333,9 +3333,33 @@ https://blog.csdn.net/vv_bug/article/details/71698200
 把padding设置为0还是有边距的原因？theme中默认把minHeight设置为56dp
 所以需要把minHeight先改为0dp
 
+
+## 连续插拔usb播放音效之后不会播放
+01-03 08:49:11.478   431  1506 E AudioFlinger: not enough memory for AudioTrack size=65760
+01-03 08:49:11.479   431  1506 E AudioFlinger_Threads: createTrack_l() initCheck failed -12; no control block?
+01-03 08:49:11.479   440  3271 E AudioTrack: AudioFlinger could not create track, status: -12
+01-03 08:49:11.480   440  3271 E AudioSink: Unable to create audio track
+01-03 08:49:11.480   440  3271 W NuPlayerRenderer: openAudioSink: non offloaded open failed status: -19
+01-03 08:49:11.480   440  3271 W NuPlayerRenderer: onDrainAudioQueue(): audio sink is not ready
+01-03 08:49:11.480   440  3272 E NuPlayerDecoder: Renderer reported 0xffffffed when changing audio output format
+01-03 08:49:11.480   440  3271 W NuPlayerRenderer: onDrainAudioQueue(): audio sink is not ready
+01-03 08:49:11.480   440  3268 E NuPlayer: received error(0xffffffed) from audio decoder, flushing(0), now shutting down
+01-03 08:49:11.481  1131  1383 E MediaPlayerNative: error (1, -19)
+01-03 08:49:11.483  1131  1131 E MediaPlayer: Error (1,-19)
+01-03 08:49:11.485  1013  1118 I AudioService: setForceUse(FOR_MEDIA, FORCE_NO_BT_A2DP) due to setBluetoothA2dpOn(false) from u/pid:1000/1013
+
+可能是播放铃声之后没有及时释放导致内存泄漏
+https://github.com/google/ExoPlayer/issues/954
+
+Ringtone ringtone;
+ringtone.play();
+什么时候释放比较好呢？
+
 ## 模拟高温报警命令
 adb shell "echo 55 > /sys/devices/platform/battery/Battery_Temperature"
 
+## 修改默认浏览器搜索引擎为google
+https://blog.csdn.net/wobushizhainan/article/details/79872757
 
 ## 操作excel的类库
 

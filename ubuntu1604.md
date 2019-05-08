@@ -948,6 +948,9 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:
 https://github.com/robbyrussell/oh-my-zsh/wiki/Plugin:git
 ```
 
+# oh-my-zsh.sh line 34 syntax error near unexpected token ('
+可能是没有把zsh设置为默认sh, chsh -s $(which zsh) , 修改完之后需要重启，否则不生效
+
 # 更新你OMZ
 ``` bash
 upgrade_oh_my_zsh
