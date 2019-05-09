@@ -90,6 +90,8 @@
 
 # TODO : 把拉代码的脚本整合进来？？
 
+# TODO : 把模块名称做成忽略大小写的？？
+
 #####################################################
 
 # TODO : ERP管理系统？
@@ -564,8 +566,11 @@ make(){
         process=com.android.browser;
         moduleType=1;
     elif [ $module == "Launcher3Go" ] ; then
-        # 修改launcher3的Android.mk文件，去掉里面的launcher3模块和prototype模块
+        # TODO : 修改launcher3的Android.mk文件，去掉里面的launcher3模块和prototype模块
         ./mk -ud $new_project mm packages/apps/Launcher3/
+        adb shell mkdir /system/priv-app/Launcher3Go/
+        adb shell mkdir /system/priv-app/Launcher3Go/oat/
+        adb shell mkdir /system/priv-app/Launcher3Go/oat/arm/
         process=com.android.launcher3;
         moduleType=1;
     elif [ $module == "SRLauncher" ] ; then

@@ -3361,6 +3361,9 @@ adb shell "echo 55 > /sys/devices/platform/battery/Battery_Temperature"
 ## 修改默认浏览器搜索引擎为google
 https://blog.csdn.net/wobushizhainan/article/details/79872757
 
+## 8.0O版本上默认打开数据连接
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commitdiff;h=c0729839d0b3a73c3b67e58d1f4cd20f3068e446;hp=2991172ce00d8c7b979b2cf405f2a8fe417be2e2
+
 ## 操作excel的类库
 
 POI
