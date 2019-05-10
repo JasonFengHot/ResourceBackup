@@ -92,6 +92,10 @@
 
 # TODO : 把模块名称做成忽略大小写的？？
 
+# TODO : 每天定时编译，crontab实现？
+
+# TODO : 每天11:20分提醒吃饭
+
 #####################################################
 
 # TODO : ERP管理系统？
@@ -286,7 +290,9 @@ if [ $1 == "commit" ] ; then
     # make sure you code is the latest
     git pull;
     # 1. create folder
-    mkdir ~/gitcommit
+    if [ ! -f ~/gitcommit ]; then
+        mkdir ~/gitcommit
+    fi
     # 2. touch file
     touch ~/gitcommit/$bugId"_"$commitMessage
     # TODO : if pull failed ?
