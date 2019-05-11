@@ -586,6 +586,7 @@ make(){
     elif [ $module == "ExactCalculator" ] ; then
         ./mk -ud $new_project mm packages/apps/ExactCalculator/
         process=com.android.calculator2;
+        componentName=com.android.calculator2/com.android.calculator2.Calculator
         moduleType=1;
     elif [ $module == "FactoryDevelopX" ] ; then
         ./mk -ud $new_project mm packages/apps/FactoryDevelopX/
