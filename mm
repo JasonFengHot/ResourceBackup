@@ -51,6 +51,8 @@
 
 # TODO : new 完之后直接模块编译一下几个比较常用的并比较耗时的模块？framework,fres,MtkSystemUI,MtkSettings
 
+# TODO : new完之后打开 sudo ./flash_tool
+
 # TODO : 在mm某个模块之前先检查out/target/common中是否已经编译过该模块？
 
 # TODO : 如何添加 -t -m -p 等开关？
@@ -94,7 +96,9 @@
 
 # TODO : 每天定时编译，crontab实现？
 
-# TODO : 每天11:20分提醒吃饭
+    # TODO : 每天11:20分提醒吃饭
+
+# TODO : 每天提醒要做的事情？
 
 #####################################################
 
