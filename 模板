@@ -1,9 +1,9 @@
 [修复情况和Gerrit提交]
-http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=860c5095a88fc0b8d8b3b1392424850eb415db84
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=a701b3e37e45974c27ba0fa9de71f3d524f80383
 [问题根源]
-toast的背景为半透明
+billing cycle中日期不能设置
 [修复方案]
-修改toast的背景为不透明
+修改为可以设置
 [自测情况]
 请帮忙验证，有问题请及时反馈，谢谢！
 [Checker]

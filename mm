@@ -642,6 +642,9 @@ make(){
     elif [ $module == "datetimepicker" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/frameworks/opt/datetimepicker/
         moduleType=3
+    elif [ $module == "timezonepicker" ] ; then
+        ./mk -ud $new_project mm vendor/mediatek/proprietary/frameworks/opt/timezonepicker
+        moduleType=3
     elif [ $module == "RecipientChips" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/frameworks/ex/chips
         moduleType=3
