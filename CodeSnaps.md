@@ -3356,7 +3356,16 @@ ringtone.play();
 什么时候释放比较好呢？
 
 ## 模拟高温报警命令
+
+``` bash
 adb shell "echo 55 > /sys/devices/platform/battery/Battery_Temperature"
+```
+
+## 通过 adb 抓取 radio log
+
+``` bash
+adb logcat -b radio | grep "zhangqi666"
+```
 
 ## 修改默认浏览器搜索引擎为google
 https://blog.csdn.net/wobushizhainan/article/details/79872757
@@ -3368,6 +3377,18 @@ http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commi
 
 POI
 http://poi.apache.org/download.html
+
+## 修改信号log的抓取
+
+修改：
+vendor/mediatek/proprietary/hardware/ril/fusion/mtk-ril/mdcomm/nw/RmcNetworkHandler.cpp
+的 updateSignalStrengthProperty() 方法中有
+编译：
+./mk -ud DFC0270_VF292_7030_DORO_S01A mm vendor/mediatek/proprietary/hardware/ril/fusion/mtk-ril/
+adb root;adb remount;
+adb push out/target/product/k39tv1_bsp_512/vendor/lib/libmtk-ril.so vendor/lib/;
+push之后需要重启
+adb reboot;
 
 ## AndroidManifest中的模板？？？？
 

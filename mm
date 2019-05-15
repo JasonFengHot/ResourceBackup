@@ -294,7 +294,7 @@ if [ $1 == "commit" ] ; then
     # make sure you code is the latest
     git pull;
     # 1. create folder
-    if [ ! -f ~/gitcommit ]; then
+    if [ ! -d ~/gitcommit ]; then
         mkdir ~/gitcommit
     fi
     # 2. touch file
