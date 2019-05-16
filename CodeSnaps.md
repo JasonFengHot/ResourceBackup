@@ -3365,6 +3365,9 @@ adb shell "echo 55 > /sys/devices/platform/battery/Battery_Temperature"
 
 ``` bash
 adb logcat -b radio | grep "zhangqi666"
+
+adb logcat 的用法
+https://developer.android.com/studio/command-line/logcat?hl=zh-cn
 ```
 
 ## 修改默认浏览器搜索引擎为google

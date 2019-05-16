@@ -1,9 +1,9 @@
 [修复情况和Gerrit提交]
-http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=9ea9aa931b955a4ae1d00c7e740b2cbcd52908d2
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=ea9fffe78d73f1608f6c4209b33c18bff36b46c5
 [问题根源]
-在 ConversationList.java 中有 setSelectionFromTop() 会把焦点设置在最上面
+In order to get a better balance in colors, we want to switch order for 'My E-mails' and 'My organiser'.
 [修复方案]
-去掉 setSelectionFromTop() 方法
+修改 My Emails和 My organiser 的顺序
 [自测情况]
 请帮忙验证，有问题请及时反馈，谢谢！
 [Checker]

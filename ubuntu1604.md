@@ -1406,7 +1406,7 @@ sudo service cron status    #查看服务状态
 crontab -e
 
 //修改完了之后重新载入配置即可
-sudo service cron reload
+echo 4815912 | sudo -S service cron reload
 
 //每分钟执行一次播放音乐的任务
 * * * * * mocp -l /home/zq/sounds/ring3.ogg
