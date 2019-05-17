@@ -79,6 +79,9 @@
 # TODO : 把 Logcat 整合成一条命令 logcat
 
 # TODO : 把 adb shell settings get/set 整合成一条命令 settings get/set
+#adb shell cat /data/system/users/0/settings_system.xml
+#adb shell cat /data/system/users/0/settings_secure.xml
+#adb shell cat /data/system/users/0/settings_global.xml
 
 # TODO : 把 adb shell pm clear 整合成一条命令 adbclear
 
@@ -407,7 +410,12 @@ buildMode=`cat sagereal_build.log | grep "user_mode" | awk '{print $2}'`;
 sdkVersion=`cat build/core/version_defaults.mk | grep "PLATFORM_SDK_VERSION :=" | awk '{print $3}'`;
 
 remount;
+
+# set sleep time
 adb shell settings put system screen_off_timeout 300000;
+
+# se big font
+adb shell settings put system font_scale 3.0;
 
 # MTK_BUILD_VERSION
 BUILD_VERSION=`cat ../sagereal/mk/$new_project/ProjectConfig.mk | grep "MTK_BUILD_VERNO" | awk '{print $3}'`;

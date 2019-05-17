@@ -3393,6 +3393,12 @@ adb push out/target/product/k39tv1_bsp_512/vendor/lib/libmtk-ril.so vendor/lib/;
 push之后需要重启
 adb reboot;
 
+## 修改 TextView 的省略号
+- effectiveEllipsize = TruncateAt.END_SMALL;
++ //remine 177184 The dots indicating more text looks strange wuzongchen 20190517 begin
++ //effectiveEllipsize = TruncateAt.END_SMALL;
++ effectiveEllipsize = TruncateAt.END;
+
 ## AndroidManifest中的模板？？？？
 
 ## Activity模板？？？？
