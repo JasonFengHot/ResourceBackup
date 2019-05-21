@@ -3355,6 +3355,8 @@ Ringtone ringtone;
 ringtone.play();
 什么时候释放比较好呢？
 
+最终是因为对应的音频文件没有编译进去导致的
+
 ## 模拟高温报警命令
 
 ``` bash
@@ -3393,11 +3395,15 @@ adb push out/target/product/k39tv1_bsp_512/vendor/lib/libmtk-ril.so vendor/lib/;
 push之后需要重启
 adb reboot;
 
+## 信号强度
+在Android手机上，通过“设置”-“关于手机”-“状态”-“信号强度”可以查看到手机的信号强度，显示出如“-87 dBm 13 asu”这样的数据。ASU与dBm之间的关系是：dBm=-113+（2*ASU）。在你手机屏幕上方显示的信号条永远不会是最好的方法来确定你手机的信号，无论你用什么手机都一样。Android也是，用很粗的条来展示很强的信号，但这些条仅仅表示最高的信号。或许你并不熟悉，信号通常是以dBm度量的。dBm是每毫瓦特的电磁波产生的功率。-60dBm的信号接近完美，-112dBm就很容易掉线，如果你在 -87dBm以上，Android会显示一个4格的满信号。android界面UI信号显示是通过RIL对通讯模块发送AT命令来实现的，如AT+CSQ，我们查看一般可以通过 logcat -b radio来获取一些RIL的实时信息，可以通过关键字“CSQ”查找radio.log，查看手机信号强度。log如：AT< +CSQ: 14,99  这里的14就是ASU值，在4.0源码中有SignalStrength.Java类，其中有ASU值转换为几格信号的方法
+
 ## 修改 TextView 的省略号
 - effectiveEllipsize = TruncateAt.END_SMALL;
 + //remine 177184 The dots indicating more text looks strange wuzongchen 20190517 begin
 + //effectiveEllipsize = TruncateAt.END_SMALL;
 + effectiveEllipsize = TruncateAt.END;
+
 
 ## AndroidManifest中的模板？？？？
 

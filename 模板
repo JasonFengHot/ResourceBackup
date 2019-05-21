@@ -1,9 +1,9 @@
 [修复情况和Gerrit提交]
-http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=c9b97be83cea0cd2ea8e96bd91e444d3217a557e
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=3c29b19d7354fa04c76bfd9c4d3257bf9b454721
 [问题根源]
-客户要求添加kika输入法
+开发信号强度的log
 [修复方案]
-合入kika输入法
+在log中添加信息方便检索，抓取mtklog，并搜索"7777"关键字即可查看信号强度的变化信息
 [自测情况]
 请帮忙验证，有问题请及时反馈，谢谢！
 [Checker]

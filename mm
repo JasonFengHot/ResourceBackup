@@ -280,10 +280,10 @@ fi
 
 # if $1 exists
 if [ ! -z $1 ] ; then
-    echo $1
+    echo $1;
 else
     echo "please input the operation you want to do!";
-    # TODO : you can show some tips here ???? 
+    # TODO : you can show some tips here ????
     exit 0;
 fi
 
@@ -426,6 +426,7 @@ echo $BUILD_VERSION;
 moduleType=1;
 
 mModule=$1;
+
 
 make(){
     module=$1;
@@ -641,8 +642,11 @@ make(){
     elif [ $module == "fres" ] ; then
         ./mk -ud $new_project mm frameworks/base/core/res/
         moduleType=3
+    elif [ $module == "mtel" ] ; then
+        ./mk -ud $new_project mm vendor/mediatek/proprietary/frameworks/opt/telephony
+        moduleType=3
     elif [ $module == "v7" ] ; then
-        ./mk -ud $new_project mm frameworks/support/v7
+        ./mk -ud $new_project mm frameworks/support/v7/
         moduleType=3
     elif [ $module == "protobuf" ] ; then
         ./mk -ud $new_project mm external/protobuf/
@@ -651,16 +655,16 @@ make(){
         ./mk -ud $new_project mm vendor/mediatek/proprietary/frameworks/opt/datetimepicker/
         moduleType=3
     elif [ $module == "timezonepicker" ] ; then
-        ./mk -ud $new_project mm vendor/mediatek/proprietary/frameworks/opt/timezonepicker
+        ./mk -ud $new_project mm vendor/mediatek/proprietary/frameworks/opt/timezonepicker/
         moduleType=3
     elif [ $module == "RecipientChips" ] ; then
-        ./mk -ud $new_project mm vendor/mediatek/proprietary/frameworks/ex/chips
+        ./mk -ud $new_project mm vendor/mediatek/proprietary/frameworks/ex/chips/
         moduleType=3
     elif [ $module == "mres" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/frameworks/base/res/
         moduleType=3
     elif [ $module == "wifi-service" ] ; then
-        ./mk -ud $new_project mm frameworks/opt/net/wifi/service
+        ./mk -ud $new_project mm frameworks/opt/net/wifi/service/
         moduleType=3
     elif [ $module == "mediatek-cta" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/frameworks/opt/cta/
@@ -671,6 +675,9 @@ make(){
     elif [[ $module == "remake" || $module == "r" ]] ; then
         ./mk -ud $new_project clone && ./mk -ud $new_project r
         exit 0;
+    elif [[ $module == "ril" ]] ; then
+        ./mk -ud $new_project mm vendor/mediatek/proprietary/hardware/ril/fusion/mtk-ril/;
+        moduleType=3
     else 
         notice 'Error_Unknown_module!!!';
         exit 0;
@@ -727,6 +734,13 @@ push(){
             adb push out/target/product/$target_project/system/framework/oat/arm/wifi-service.odex system/framework/oat/arm/;
             adb push out/target/product/$target_project/system/framework/oat/arm/wifi-service.art system/framework/oat/arm/;
             adb push out/target/product/$target_project/system/framework/oat/arm/wifi-service.vdex system/framework/oat/arm/;
+            adb reboot;
+        elif [ $module == "mtel" ] ; then
+            adb push out/target/product/$target_project/system/framework/mediatek-telephony-common.jar system/framework/;
+            adb push out/target/product/$target_project/system/framework/arm/boot* system/framework/arm/;
+            adb reboot;
+        elif [ $module == "ril" ] ; then
+            adb push out/target/product/$target_project/vendor/lib/libmtk-ril.so vendor/lib/;
             adb reboot;
         fi
         # adb logcat -c && adb logcat -G 200M && adb logcat | grep "zhangqi8888";
