@@ -412,7 +412,7 @@ sdkVersion=`cat build/core/version_defaults.mk | grep "PLATFORM_SDK_VERSION :=" 
 remount;
 
 # set sleep time
-adb shell settings put system screen_off_timeout 300000;
+adb shell settings put system screen_off_timeout 30000;
 
 # se big font
 adb shell settings put system font_scale 3.0;
@@ -540,7 +540,7 @@ make(){
         moduleType=1;
     elif [ $module == "SageRealIME" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/inputmethods/SageRealIME/
-        process=com.android.providers.media;
+        process=com.sagereal.zq.softkeyboard;
         moduleType=1;
     elif [ $module == "MtkVideos" ] ; then
         ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/VideoPlayer/
