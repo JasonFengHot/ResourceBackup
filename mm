@@ -8,7 +8,7 @@
 
     # TODO : 怎么判断是哪个平台的代码？KK, L, M, N, O, P？
     ## 根据 build/core/version_defaults.mk 中的 PLATFORM_SDK_VERSION 版本号判断
-    ##KK : 19,20
+    ## K : 19,20
     ## L : 21,22
     ## M : 23
     ## N : 24,25
@@ -34,6 +34,8 @@
     ## dateStr=`date +%Y/%m/%d`;
 
 # TODO : 如何从编译的log中提取出 install， push 的时候直接从编译出来的文件中获取出目标路径
+
+# TODO : push 之后点亮屏幕
 
     # TODO : 如何判断下面的这些基础命令是否存在？adb, mocp
 
@@ -95,7 +97,7 @@
 
 # TODO : 把拉代码的脚本整合进来？？
 
-# TODO : 把模块名称做成忽略大小写的？？
+# TODO : 把模块名称做成忽略大小写的？？先把输入转换成小写
 
 # TODO : 每天定时编译，crontab实现？
 

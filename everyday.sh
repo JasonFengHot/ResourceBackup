@@ -1,7 +1,7 @@
 #!/bin/bash
 
 notice(){
-    notify-send $1;
+    export DISPLAY=:1 && notify-send $1;
     mocp -l /home/zq/sounds/ring3.ogg;
     date;
 }
