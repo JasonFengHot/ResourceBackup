@@ -3400,10 +3400,20 @@ adb reboot;
 
 ## 修改 TextView 的省略号
 - effectiveEllipsize = TruncateAt.END_SMALL;
-+ //remine 177184 The dots indicating more text looks strange wuzongchen 20190517 begin
-+ //effectiveEllipsize = TruncateAt.END_SMALL;
 + effectiveEllipsize = TruncateAt.END;
 
+## 修改无法输入#的问题
+alps/device/mediatek/mt6739/mtk-kpd.kcm
+key POUND {
+label: '#'
+base: '#'
+}
+
+## adb直接打开某个网页进行浏览
+adb shell am start -a android.intent.action.VIEW -d http://www.baidu.com
+
+## ota升级之后没有走 DatabaseHelper.java 中的onUpgrade()方法
+o上走的是 SettingsProvider.java 中的 onUpgradeLocked() 方法
 
 ## AndroidManifest中的模板？？？？
 

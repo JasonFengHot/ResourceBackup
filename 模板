@@ -1,10 +1,10 @@
 [修复情况]
-http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=3c29b19d7354fa04c76bfd9c4d3257bf9b454721
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=18b9df7f3812bf26f77fb595b699ca4a399d3250
 [查找问题的思路]
-
+1.把 Dialer 还原到之前没问题的版本，对比 Dialer 的修改
 [问题根源]
-开发信号强度的log
+最后发现是在 InCallActivityCommon.java 文件中添加一些修改导致的
 [修复方案]
-在log中添加信息方便检索，抓取mtklog，并搜索"7777"关键字即可查看信号强度的变化信息
+修改 InCallActivityCommon.java 文件
 [自测情况 & 建议]
 自测10次都正常，请帮忙验证，谢谢！
