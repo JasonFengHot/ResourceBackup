@@ -513,8 +513,9 @@ make(){
         componentName=com.android.gallery3d/com.android.gallery3d.app.GalleryActivity
         moduleType=1;
     elif [ $module == "EngineerMode" ] ; then
-        #notice "要先mmma"
-        ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/EngineerMode/
+        #notice "要清空或删除 vendor/mediatek/proprietary/packages/apps/EngineerMode/jni/server_em/Android.mk"
+        rm vendor/mediatek/proprietary/packages/apps/EngineerMode/jni/server_em/Android.mk;
+        ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/EngineerMode/;
         process=com.mediatek.engineermode;
         componentName=com.mediatek.engineermode/.EngineerMode
         moduleType=1;
