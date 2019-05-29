@@ -591,6 +591,8 @@ sudo sysctl -p
 ``` bash
 sudo apt-get remove modemmanager
 
+# 官方下载地址
+https://spflashtools.com/category/linux
 https://androidmtk.com/smart-phone-flash-tool
 
 #报错1：Connect BROM failed: STATUS_ERR

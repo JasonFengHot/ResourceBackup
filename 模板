@@ -1,10 +1,10 @@
 [修复情况]
-http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=18b9df7f3812bf26f77fb595b699ca4a399d3250
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=5032bd7c265e0264de791d84ebfbc6f5eb3dadb9
 [查找问题的思路]
-1.把 Dialer 还原到之前没问题的版本，对比 Dialer 的修改
+客户要求去掉待机界面上的字体描边效果
 [问题根源]
-最后发现是在 InCallActivityCommon.java 文件中添加一些修改导致的
+在idle界面上的控件中添加了tag="Outline"
 [修复方案]
-修改 InCallActivityCommon.java 文件
+去掉tag="Outline"
 [自测情况 & 建议]
 自测10次都正常，请帮忙验证，谢谢！

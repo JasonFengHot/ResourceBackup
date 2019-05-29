@@ -3366,7 +3366,7 @@ adb shell "echo 55 > /sys/devices/platform/battery/Battery_Temperature"
 ## 通过 adb 抓取 radio log
 
 ``` bash
-adb logcat -b radio | grep "zhangqi666"
+adb logcat -b radio | grep "zhangqi7777"
 
 adb logcat 的用法
 https://developer.android.com/studio/command-line/logcat?hl=zh-cn
@@ -3412,8 +3412,11 @@ base: '#'
 ## adb直接打开某个网页进行浏览
 adb shell am start -a android.intent.action.VIEW -d http://www.baidu.com
 
-## ota升级之后没有走 DatabaseHelper.java 中的onUpgrade()方法
+## ota 升级之后没有走 DatabaseHelper.java 中的 onUpgrade() 方法
 o上走的是 SettingsProvider.java 中的 onUpgradeLocked() 方法
+
+## APN相关
+https://blog.csdn.net/u012686462/article/details/55213023
 
 ## AndroidManifest中的模板？？？？
 
