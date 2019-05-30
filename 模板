@@ -1,10 +1,10 @@
 [修复情况]
-http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=5032bd7c265e0264de791d84ebfbc6f5eb3dadb9
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=7aff8c79a43dea57c44b47410e6dd45eabc8bbbd
 [查找问题的思路]
-客户要求去掉待机界面上的字体描边效果
+通过布局和代码查看
 [问题根源]
-在idle界面上的控件中添加了tag="Outline"
+SRLauncher->Single view下的背景为白色，建议修改为白色
 [修复方案]
-去掉tag="Outline"
+修改为日期显示文本框的高度为wrap_content
 [自测情况 & 建议]
 自测10次都正常，请帮忙验证，谢谢！
