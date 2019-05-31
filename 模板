@@ -1,10 +1,10 @@
 [修复情况]
-http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=7aff8c79a43dea57c44b47410e6dd45eabc8bbbd
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=3be9a1bd1a9ea9e0bcd650459be00c903f5be60e
 [查找问题的思路]
-通过布局和代码查看
+查看布局和代码
 [问题根源]
-SRLauncher->Single view下的背景为白色，建议修改为白色
+客户要求修改会议通话界面
 [修复方案]
-修改为日期显示文本框的高度为wrap_content
+按照需求修改
 [自测情况 & 建议]
 自测10次都正常，请帮忙验证，谢谢！

@@ -414,7 +414,7 @@ sdkVersion=`cat build/core/version_defaults.mk | grep "PLATFORM_SDK_VERSION :=" 
 remount;
 
 # set sleep time
-adb shell settings put system screen_off_timeout 30000;
+adb shell settings put system screen_off_timeout 300000;
 
 # se big font
 adb shell settings put system font_scale 3.0;

@@ -3418,6 +3418,8 @@ o上走的是 SettingsProvider.java 中的 onUpgradeLocked() 方法
 ## APN相关
 https://blog.csdn.net/u012686462/article/details/55213023
 
+## TextView去掉上下边距
+
 ## AndroidManifest中的模板？？？？
 
 ## Activity模板？？？？
