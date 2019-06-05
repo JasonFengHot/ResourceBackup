@@ -698,9 +698,9 @@ push(){
     module=$1;
     if [ $moduleType == "1" ] ; then
         # system/priv-app
-        adb push out/target/product/$target_project/system/priv-app/$module/$module.apk system/priv-app/$module/; | tee grep "pushed";
-        adb push out/target/product/$target_project/system/priv-app/$module/oat/arm/$module.odex system/priv-app/$module/oat/arm/; | tee grep "pushed";
-        adb push out/target/product/$target_project/system/priv-app/$module/oat/arm/$module.vdex system/priv-app/$module/oat/arm/; | tee grep "pushed";
+        adb push out/target/product/$target_project/system/priv-app/$module/$module.apk system/priv-app/$module/
+        adb push out/target/product/$target_project/system/priv-app/$module/oat/arm/$module.odex system/priv-app/$module/oat/arm/
+        adb push out/target/product/$target_project/system/priv-app/$module/oat/arm/$module.vdex system/priv-app/$module/oat/arm/
         # system/app
         adb push out/target/product/$target_project/system/app/$module/$module.apk system/app/$module/; | tee grep "pushed.";
         adb push out/target/product/$target_project/system/app/$module/oat/arm/$module.odex system/app/$module/oat/arm/; | tee grep "pushed";

@@ -454,7 +454,7 @@ pip install --upgrade genpac
 genpac --pac-proxy "SOCKS5 127.0.0.1:1080" --gfwlist-proxy="SOCKS5 127.0.0.1:1080" --gfwlist-url=https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt --output="autoproxy.pac"
 ```
 
-## 安装配置ccache，找郑州要文档
+## 安装配置ccache
 
 ``` bash
 sudo apt-get install ccache
@@ -472,7 +472,7 @@ export CCACHE_DIR=/home/zq/.ccache
 watch -n1 -d ccache -s
 ```
 
-## ShadowSocks服务器一键安装脚本
+## VPS ShadowSocks服务器一键安装脚本
 
 ``` bash
 wget --no-check-certificate https://raw.githubusercontent.com/iMeiji/shadowsocks_install/master/shadowsocks-go.sh && chmod +x shadowsocks-go.sh && ./shadowsocks-go.sh
@@ -497,7 +497,6 @@ download the latest version from official website
 ## 安装最新版 Eclipse
 
 ``` bash
-download the latest version from official website
 https://www.eclipse.org/downloads/download.php?file=/oomph/epp/2018-09/R/eclipse-inst-linux64.tar.gz
 
 or:
@@ -1254,7 +1253,7 @@ set smtp-auth=login
 
 ``` bash
 sudo apt-get install corkscrew
-ssh root@45.32.165.125 -o "ProxyCommand corkscrew 127.0.0.1 8118 45.32.165.125 22"
+ssh root@149.28.98.137 -o "ProxyCommand corkscrew 127.0.0.1 8118 149.28.98.137 22"
 ```
 
 ## 去掉ubuntu文件中^M符号的方法
