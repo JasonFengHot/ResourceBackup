@@ -57,12 +57,12 @@
 
 # TODO : 在mm某个模块之前先检查out/target/common中是否已经编译过该模块？
 
-# TODO : 如何添加 -t -m -p 等开关？
+# TODO : 添加 -t -m -p 等开关？
 
 # TODO : 一键加宏功能？添加提示需要注意修改哪些文件？
 
     # TODO : new 完之后直接把软件打包？
-    ##zip -r FileName.zip DirName
+    ## zip -r FileName.zip DirName
 
 # TODO : new 完之后直接把软件做成MSU？
 
@@ -104,6 +104,9 @@
     # TODO : 每天11:20分提醒吃饭
 
 # TODO : 每天提醒要做的事情？
+
+# TODO : 去掉编译java的时候生成的javadoc
+# external/doclava/src/com/google/doclava/Doclava.java    generateDocs = false;
 
 #####################################################
 
@@ -277,7 +280,7 @@ fi
 if [ ! -f /usr/bin/mocp ]; then
     echo "mocp does not exists, please config it!";
     echo "sudo apt-get install moc";
-    # TODO : 如何判断 mocp 是否启动了？ps -aux | grep "/usr/bin/mocp"?
+    # TODO : 如何判断 mocp 是否启动了?ps -aux | grep "/usr/bin/mocp"?
 fi
 
 # if $1 exists
@@ -416,7 +419,7 @@ remount;
 # set sleep time
 adb shell settings put system screen_off_timeout 300000;
 
-# se big font
+# set big font
 adb shell settings put system font_scale 3.0;
 
 # MTK_BUILD_VERSION
@@ -431,6 +434,8 @@ mModule=$1;
 
 
 make(){
+    # clone before mm
+    ./mk -ud $new_project clone;
     module=$1;
     if [ $module == "MtkSettings" ] ;then
         adb shell pm clear com.android.settings;
@@ -702,9 +707,9 @@ push(){
         adb push out/target/product/$target_project/system/priv-app/$module/oat/arm/$module.odex system/priv-app/$module/oat/arm/
         adb push out/target/product/$target_project/system/priv-app/$module/oat/arm/$module.vdex system/priv-app/$module/oat/arm/
         # system/app
-        adb push out/target/product/$target_project/system/app/$module/$module.apk system/app/$module/; | tee grep "pushed.";
-        adb push out/target/product/$target_project/system/app/$module/oat/arm/$module.odex system/app/$module/oat/arm/; | tee grep "pushed";
-        adb push out/target/product/$target_project/system/app/$module/oat/arm/$module.vdex system/app/$module/oat/arm/; | tee grep "pushed";
+        adb push out/target/product/$target_project/system/app/$module/$module.apk system/app/$module/
+        adb push out/target/product/$target_project/system/app/$module/oat/arm/$module.odex system/app/$module/oat/arm/
+        adb push out/target/product/$target_project/system/app/$module/oat/arm/$module.vdex system/app/$module/oat/arm/
     elif [ $moduleType == "3" ] ; then
         if [ $module == "framework" ] ; then
             # framework/base

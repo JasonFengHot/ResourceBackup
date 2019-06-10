@@ -1,7 +1,0 @@
-签名问题：https://onlinesso.mediatek.com/FAQ/SW/FAQ13817
-
-development/tools/make_key releasekey '/C=CN/ST=NingBo/L=Fenghua/O=Mediatek/OU=WCD/CN=Liangshuang/emailAddress=liangshuang@sagereal.com'
-development/tools/make_key platform '/C=CN/ST=NingBo/L=Fenghua/O=Mediatek/OU=WCD/CN=Liangshuang/emailAddress=liangshuang@sagereal.com'
-development/tools/make_key media '/C=CN/ST=NingBo/L=Fenghua/O=Mediatek/OU=WCD/CN=Liangshuang/emailAddress=liangshuang@sagereal.com'
-development/tools/make_key shared '/C=CN/ST=NingBo/L=Fenghua/O=Mediatek/OU=WCD/CN=Liangshuang/emailAddress=liangshuang@sagereal.com'
-development/tools/make_key testkey '/C=CN/ST=NingBo/L=Fenghua/O=Mediatek/OU=WCD/CN=Liangshuang/emailAddress=liangshuang@sagereal.com'

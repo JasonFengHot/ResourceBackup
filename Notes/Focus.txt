@@ -1,9 +1,0 @@
-    子控件和父控件之间的处理
-    setDescendantFocusability
-    如何查找焦点？一个界面上有且只有一个焦点
-    查找焦点的原理
-    performClick()
-点击触摸的原理
-    介绍一下 adb shell input ，代码在哪里？？
-    Instructions类
-自动化测试介绍

@@ -1,7 +1,0 @@
-export USE_CCACHE=1
-export CCACHE_DIR=/HDD/.ccache
-
-
-watch -n1 -d prebuilts/misc/linux-x86/ccache/ccache -s
-
-./mk -o=USE_CCACHE=1,TARGET_BUILD_VARIANT=user new

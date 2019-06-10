@@ -12,21 +12,12 @@ import com.drew.metadata.Tag;
 
 public class ReadPic {
 
-    /**
-     * 导入标签，使用metadata-extractor
-     * 
-     * @param args
-     */
+    /** 导入标签，使用metadata-extractor */
     public static void main(String[] args) {
         readPic();
     }
 
-    /**
-     * 处理 单张 图片
-     * 
-     * @return void
-     * @date 2015-7-25 下午7:30:47
-     */
+    /** 处理 单张 图片 */
     private static void readPic() {
         File jpegFile = new File("d:\\002.jpg");
         Metadata metadata;
@@ -41,14 +32,11 @@ public class ReadPic {
                     System.out.println(tag);
 
                 }
-
             }
         } catch (JpegProcessingException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
-
 }

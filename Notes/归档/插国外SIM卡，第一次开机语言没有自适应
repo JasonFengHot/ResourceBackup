@@ -12,7 +12,7 @@
 
 文件：frameworks\base\telephony\java\com\android\internal\telephony\MccTable.java
 
-代码：table = new ArrayList<MccEntry>(240)
+代码：table = new ArrayList<MccEntry>(240);
 
 修改对应的代码为如下代码：
 

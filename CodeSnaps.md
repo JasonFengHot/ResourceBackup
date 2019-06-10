@@ -2996,22 +2996,6 @@ if (width == 540) {
 paillette_array[0] = BitmapFactory.decodeStream(getClass().getResourceAsStream(path));
 ```
 
-## 通过代码创建快捷方式
-
-``` Java
-private void createShortcut(String title, String url) {
-    Intent intent = new Intent(INSTALL_SHORTCUT);
-    intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Baidu");
-    Intent shortcutIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-    long urlHash = url.hashCode();
-    long uniqueId = (urlHash << 32) | shortcutIntent.hashCode();
-    shortcutIntent.putExtra("com.android.browser.application_id", Long.toString(uniqueId));
-    intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-    intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
-    sendBroadcast(intent);
-}
-```
-
 ## 通过代码动态设置view的selector
 
 ``` Java
@@ -3036,6 +3020,46 @@ btn_state.setBackground(getStateDrawable(mContext, R.drawable.dialog_button_norm
 ## 模拟鼠标点击？？？？
 
 ## 模拟鼠标长按？？？？
+
+``` Java
+//frameworks/base/test-runner/src/android/test/TouchUtils.java
+public static void longClickView(InstrumentationTestCase test, View v) {
+    int[] xy = new int[2];
+    v.getLocationOnScreen(xy);
+    
+    final int viewWidth = v.getWidth();
+    final int viewHeight = v.getHeight();
+    
+    final float x = xy[0] + (viewWidth / 2.0f);
+    float y = xy[1] + (viewHeight / 2.0f);
+    
+    Instrumentation inst = test.getInstrumentation();
+
+    long downTime = SystemClock.uptimeMillis();
+    long eventTime = SystemClock.uptimeMillis();
+
+    MotionEvent event = MotionEvent.obtain(downTime, eventTime, MotionEvent.ACTION_DOWN, x, y, 0);
+    inst.sendPointerSync(event);
+    inst.waitForIdleSync();
+
+    eventTime = SystemClock.uptimeMillis();
+    final int touchSlop = ViewConfiguration.get(v.getContext()).getScaledTouchSlop();
+    event = MotionEvent.obtain(downTime, eventTime, MotionEvent.ACTION_MOVE, x + touchSlop / 2, y + touchSlop / 2, 0);
+    inst.sendPointerSync(event);
+    inst.waitForIdleSync();
+    
+    try {
+        Thread.sleep((long)(ViewConfiguration.getLongPressTimeout() * 1.5f));
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+
+    eventTime = SystemClock.uptimeMillis();
+    event = MotionEvent.obtain(downTime, eventTime, MotionEvent.ACTION_UP, x, y, 0);
+    inst.sendPointerSync(event);
+    inst.waitForIdleSync();
+}
+```
 
 ## 模拟滑动？？？？
 
@@ -3417,6 +3441,796 @@ o上走的是 SettingsProvider.java 中的 onUpgradeLocked() 方法
 
 ## APN相关
 https://blog.csdn.net/u012686462/article/details/55213023
+
+## framework下字体文件的修改
+
+``` Java
+1.将需要添加的ttf字体文件放在 frameworks/base/data/fonts/ 目录
+
+A:frameworks/base/data/fonts/hiosClock_thin.ttf
+
+2.修改 frameworks/base/data/fonts/Android.mk 文件,将字体文件编译到 system/fonts/ 目录中
+
+M:frameworks/base/data/fonts/Android.mk
+#Redmine124982 modified for clock widget font 2018/03/23:begin
+font_src_files := \
+    AndroidClock.ttf \
+    hiosClock_thin.ttf
+#Redmine124982 modified for clock widget font 2018/03/23:end
+
+3.修改 frameworks/base/data/fonts/fonts.mk 文件
+
+M:frameworks/base/data/fonts/fonts.mk
+#Redmine124982 modified for clock widget font 2018/03/23:begin
+PRODUCT_PACKAGES := \
+    DroidSansMono.ttf \
+    AndroidClock.ttf \
+    hiosClock_thin.ttf \
+    fonts.xml
+#Redmine124982 modified for clock widget font 2018/03/23:end
+
+4.在 fonts.xml 文件中定义字体对应的名称
+
+M:frameworks/base/data/fonts/fonts.xml
+<!--Redmine124982 modified for clock widget font 2018/03/23:begin-->
+<family name="tecno-clock-font">
+    <font weight="400" style="normal">hiosClock_thin.ttf</font>
+</family>
+<!--Redmine124982 modified for clock widget font 2018/03/23:end-->
+
+5.使用新添加的字体
+
+方法1:
+TextView textView = new TextView(mContext);
+textView.setTypeface(android.graphics.Typeface.createFromFile("/system/fonts/hiosClock_thin.ttf"));
+
+方法2:
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fontFamily="tecno-clock-font" />
+
+6.在项目中的具体使用实例----Bug124982 修改桌面时钟widget的字体
+
+M:alps/frameworks/base/core/java/android/widget/RemoteViews.java
+public class RemoteViews implements Parcelable, Filter {
+    ...
+    private class TextViewSizeAction extends Action {
+        ...
+        @Override
+        public void apply(View root, ViewGroup rootParent, OnClickHandler handler) {
+            final TextView target = root.findViewById(viewId);
+            if (target == null) return;
+
+            //通过特殊约定的参数(如77,0)来特殊设置TextView的字体
+            if(units == -77 && size == 0f){
+                target.setTypeface(android.graphics.Typeface.createFromFile("/system/fonts/hiosClock_thin.ttf"));
+            }else{
+                target.setTextSize(units, size);
+            }
+        }
+        ...
+    }
+    ...
+}
+
+M:alps/vendor/mediatek/proprietary/packages/apps/DeskClock/src/com/android/alarmclock/DigitalAppWidgetProvider.java
+public class DigitalAppWidgetProvider extends AppWidgetProvider {
+    private static RemoteViews relayoutWidget(Context context, AppWidgetManager wm, int widgetId, Bundle options, boolean portrait) {
+        final String packageName = context.getPackageName();
+        final RemoteViews rv = new RemoteViews(packageName, R.layout.digital_widget);
+        //通过特殊约定的参数(如77,0)来特殊设置TextView的字体,这里调用setTextViewTextSize方法就会调用RemoteViews的内部类TextViewSizeAction的apply方法
+        rv.setTextViewTextSize(R.id.clock, -77, 0f);
+        ...
+    }
+    ...
+}
+```
+
+## 使用framework下隐藏的api
+
+在 Android.mk 文件中添加 LOCAL_JAVA_LIBRARIES := framework 即可
+
+## 监听 SharePreference 的变化
+
+``` Java
+SharedPreferences sp1 = getSharedPreferences(getPackageName() + "test", MODE_PRIVATE);
+sp1.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() { 
+    @Override 
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    }
+});
+```
+
+## 通过监听布局变化来获取view的高度和宽度
+
+``` Java
+private int mViewHeight;
+private View mView;
+...
+//注册监听
+mView.getViewTreeObserver().addOnGlobalLayoutListener(
+    new OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+            //获取View高度
+            mViewHeight = mView.getHeight();
+            //取消监听，否则该方法会不断回调
+            mView.getViewTreeObserver().removeGlobalLayoutListener(this);
+        }
+    }
+)
+```
+
+## TextView各种padding解析、长度测量
+
+https://www.jianshu.com/p/fd9cce7a333f
+
+## View.post()原理
+
+https://www.jianshu.com/p/85fc4decc947
+
+## Android KeyEvent 点击事件分发处理流程（一）
+
+https://www.jianshu.com/p/2f28386706a0
+
+## 查看方法的调用栈
+
+``` Java
+RuntimeException here = new RuntimeException("bolex");
+here.fillInStackTrace();
+Log.w("myTag", "Called: " + this, here);
+```
+
+## 插国外SIM卡，第一次开机语言没有自适应
+
+语言自适应需要通过利用SIM卡MCC信息查表来实现，而此表内容对于每个国家并不一样，有些国家没有默认语言，只有较少国家有默认语言。
+``` Java
+frameworks\base\telephony\java\com\android\internal\telephony\MccTable.java
+table = new ArrayList<MccEntry>(240);
+table.add(new MccEntry(202,"gr",2,"el"));//Greece
+```
+
+## 读取图片信息
+
+``` Java
+package com.test;
+import java.io.File;
+import java.io.IOException;
+import java.util.Iterator;
+import com.drew.imaging.jpeg.JpegMetadataReader;
+import com.drew.imaging.jpeg.JpegProcessingException;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.Tag;
+
+public class ReadPic {
+    /** 导入标签，使用metadata-extractor */
+    public static void main(String[] args) {
+        readPic();
+    }
+    /** 处理 单张 图片 */
+    private static void readPic() {
+        File jpegFile = new File("d:\\002.jpg");
+        Metadata metadata;
+        try {
+            metadata = JpegMetadataReader.readMetadata(jpegFile);
+            Iterator<Directory> it = metadata.getDirectories().iterator();
+            while (it.hasNext()) {
+                Directory exif = it.next();
+                Iterator<Tag> tags = exif.getTags().iterator();
+                while (tags.hasNext()) {
+                    Tag tag = (Tag) tags.next();
+                    System.out.println(tag);
+
+                }
+            }
+        } catch (JpegProcessingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+## 如何设置MTKlogger是否开机自启动
+
+``` Java
+1. 第一次开机MTKlogger是否开启
+
+1) 配置prop文件:   true则开启，false则关闭 
+com.mediatek.log.mobile.enabled = true/false
+com.mediatek.log.modem.enabled = true/false
+com.mediatek.log.net.enabled = true/false
+com.mediatek.log.gps.enabled = true/false
+
+2) prop文件路径
+KK版本: alps/mediatek/external/xlog/tools/mtklog-config-eng.prop或mtklog-config-user.prop
+L 版本:  alps/vendor/mediatek/proprietary/external/xlog/tools/mtklog-config-eng.prop或mtklog-config-user.prop
+M/N版本:  alps/device/mediatek/common/mtklog/mtklog-config-bsp-eng.prop或mtklog-config-bsp-user.prop
+
+2. 非第一次开机是否开启的配置方法有如下两种
+
+1) 勾选Start Automatically进行设置
+MTKlogger UI——》Settings——》MobileLog/ModemLog/NetworkLog/GPSLog——》Start Automatically
+
+2) 通过adb发送广播设置
+adb shell am broadcast -a com.mediatek.mtklogger.ADB_CMD -e cmd_name set_auto_start_1/set_auto_start_0 --ei   cmd_target 23
+set_auto_start_1表示开启开机自启动, set_auto_start_0表示关闭开机自启动
+cmd_target is a combination or just a single of each Log type
+MobileLog: 1 ModemLog: 2 NetworkLog: 4 GPSLog: 16
+```
+
+## 编译优化：去掉编译java的时候生成的javadoc
+
+``` Java
+android2.3 以前
+修改如下：
+build/tools/droiddoc/src/DroidDoc.java
+private static boolean generateDocs = false;
+
+android4.0 以后
+修改如下：
+external/doclava/src/com/google/doclava/Doclava.java
+private static boolean generateDocs = false;
+```
+
+## java使用代理访问网络
+
+``` Java
+使用代码的方式：
+String proxyHost = "127.0.0.1";
+String proxyPort = "1080";
+
+System.setProperty("http.proxyHost", proxyHost);
+System.setProperty("http.proxyPort", proxyPort);
+
+System.setProperty("https.proxyHost", proxyHost);
+System.setProperty("https.proxyPort", proxyPort);
+
+使用参数的方式：
+-Dhttp.proxyHost=127.0.0.1 -Dhttp.proxyPort=1080 -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=1080
+```
+
+## AsyncTask和Thread的使用场景
+
+``` Java
+AsyncTask 的使用场景
+不需要下载大量数据的简单网络操作
+I/O 密集型任务，耗时可能几个毫秒以上
+
+Java Thread 使用场景
+涉及中等或大量的网络数据操作（包括上传和下载）
+需要在后台执行的 CPU 密集型任务
+当你想要在 UI 线程控制 CPU 占用率时
+
+还有一个老生常谈的问题就是，千万不要在 UI 线程（主线程）执行网络操作。你需要使用上述两种方式之一来访问网络。
+```
+
+## 性能优化
+
+``` Java
+根据 SystemServer.java 中的代码去掉一些不用的feature
+媒体播放：预留给视频解码器可以去掉，操作系统看不到
+界面：硬件拉伸缓存，芯片厂商SDK配置，操作系统可见
+Java堆大小全局配置，堆调小。
+JVM预加载jar包，可以不加载部分不用的jar包
+swap分区在内存不足的情况下，擦写频繁对flash压力大
+内存裁剪：不用的驱动通过menuconfig裁掉
+socket缓存调小，默认256k，多个socket消耗更多内存
+去掉一些不用的监听
+去掉 init.rc 中启动的一些不需要的服务
+
+1、移除或修改Window默认的Background
+2、移除XML布局文件中非必需的Background
+3、按需显示占位背景图片
+4、控制绘制区域
+
+第一个建议：可以使用相对布局减少层级的就使用相对布局，否则使用线性布局。Android中RelativeLayout和LinearLayout性能分析，参考：www.jianshu.com/p/8a7d059da…
+第二个建议：用merge标签来合并布局，这可以减少布局层次。
+第三个建议：用include标签来重用布局，抽取通用的布局可以让布局的逻辑更清晰明了，但要避免include乱用。
+第四个建议：避免创建不必要的布局层级。（最容易发生的！）
+第五个建议：使用惰性控件ViewStub实现布局动态加载
+```
+
+## ROM优化
+
+``` Java
+开机动画换成更小的
+精简 system/media/audio/ 下的铃声资源
+system/tts
+删除整个srec的内容，语音拨号相关的东西，从来不用
+删除ttf字库文件
+```
+
+## adbkill 脚本
+
+``` bash
+adb shell kill `adb shell ps | grep $1 | awk {'print $2'} | head -n 1`;
+
+or:
+PID=`adb shell ps | grep $1 | awk '{print $2}'`
+echo "adb shell kill $1 : $PID"
+result=`adb shell kill $PID`
+echo "$result"
+```
+
+## android 7.0 之后启动服务必须 startForegroundService()
+
+``` bash
+Prior to Android 8.0, the usual way to create a foreground service was to create a background service, then promote that service to the foreground. With Android 8.0, there is a complication; the system doesn't allow a background app to create a background service. For this reason, Android 8.0 introduces the new method startForegroundService() to start a new service in the foreground. After the system has created the service, the app has five seconds to call the service's startForeground() method to show the new service's user-visible notification. If the app does not call startForeground() within the time limit, the system stops the service and declares the app to be ANR.
+```
+
+## 签名问题:如何在L上use release key？
+
+https://online.mediatek.com/FAQ#/SW/FAQ13817
+
+## 查看apk签名？？
+
+``` Java
+jarsigner -verify -verbose -certs ${your_apk} > log.txt
+```
+
+## 设置 EditText 的游标颜色
+
+``` Java
+方法一、通过XML文件设置
+TextView 有一个属性 android:textCursorDrawable，这个属性是用来控制光标颜色的
+android:textCursorDrawable="@null"，"@null"作用是让光标颜色和text color一样
+
+也可以自定义游标的颜色
+cursor.xml
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+	<size android:width="1dp" />
+	<solid android:color="#008000" />
+</shape>
+android:textCursorDrawable="@drawable/cursor"
+
+方法二、通过代码设置
+遗憾的是 TextView 默认没有设置游标颜色的方法
+在 TextView.java 中找到
+    case com.android.internal.R.styleable.TextView_textCursorDrawable:
+        mCursorDrawableRes = a.getResourceId(attr, 0);
+        break;
+int mCursorDrawableRes;     //这个值是不可以被直接访问的
+
+于是就想到可以使用反射来设置游标的颜色
+try {
+    Field f = TextView.class.getDeclaredField("mCursorDrawableRes");
+    f.setAccessible(true);
+    f.set(editText, R.drawable.cursor_color);
+} catch (Exception ignored) {
+}
+
+也可以使用如下封装好的方法
+private void setTextCursorColor(TextView et, int color){
+    try {
+        java.lang.reflect.Field fCursorDrawableRes = TextView.class.getDeclaredField("mCursorDrawableRes");
+        fCursorDrawableRes.setAccessible(true);
+        int mCursorDrawableRes = fCursorDrawableRes.getInt(et);
+        java.lang.reflect.Field fEditor = TextView.class.getDeclaredField("mEditor");
+        fEditor.setAccessible(true);
+        Object editor = fEditor.get(et);
+        Class<?> clazz = editor.getClass();
+        java.lang.reflect.Field fCursorDrawable = clazz.getDeclaredField("mCursorDrawable");
+        fCursorDrawable.setAccessible(true);
+        android.graphics.drawable.Drawable[] drawables = new android.graphics.drawable.Drawable[1];
+        drawables[0] = et.getContext().getResources().getDrawable(mCursorDrawableRes);
+        drawables[0].setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN);
+        fCursorDrawable.set(editor, drawables);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+```
+
+## 联系人编辑界面上的号码输入框无法输入+号？
+
+``` Java
+问题分析：
+可以参照拨号盘界面上的号码输入框的实现方法，通过跟踪代码发现长按0键之后会调用如下方法
+packages/apps/Dialer/src/com/android/dialer/dialpad/DialpadFragment.java
+public boolean onLongClick(View view) {
+    ......
+    case R.id.zero: {
+        removePreviousDigitIfPossible();        //删除之前输入的 "0"
+        keyPressed(KeyEvent.KEYCODE_PLUS);      //输入 "+"
+        stopTone();
+        mPressedDialpadKeys.remove(view);
+        return true;
+    }
+    ......
+}
+private void removePreviousDigitIfPossible() {
+    final Editable editable = mDigits.getText();
+    final int currentPosition = mDigits.getSelectionStart();
+    if (currentPosition > 0) {
+        mDigits.setSelection(currentPosition);
+        mDigits.getText().delete(currentPosition - 1, currentPosition);
+    }
+}
+private void keyPressed(int keyCode) {
+    ......
+    mDigits.onKeyDown(keyCode, new KeyEvent(KeyEvent.ACTION_DOWN, keyCode));        //关键代码，重新发送 keycode 的 event 事件，模拟按键的输入
+    final int length = mDigits.length();
+    if (length == mDigits.getSelectionStart() && length == mDigits.getSelectionEnd()) {
+        mDigits.setCursorVisible(false);
+    }
+    mDigits.setCursorVisible(true);
+}
+
+但是很遗憾，EditText默认没有 onKey 的长按监听事件，我们需要自己重写EditText，添加 onKey 的长按监听事件
+
+public class DigitsEditText extends EditText {
+    public DigitsEditText(Context context) {
+        super(context);
+        setInputType(getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        setShowSoftInputOnFocus(false);
+    }
+    public DigitsEditText(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        setInputType(getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        setShowSoftInputOnFocus(false);
+    }
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if(event.getRepeatCount() > 0 && lockLongPressKey){
+            if(KeyEvent.KEYCODE_0 <= event.getKeyCode() && event.getKeyCode() <= KeyEvent.KEYCODE_9){
+                return true;
+            }else if(KeyEvent.KEYCODE_STAR == event.getKeyCode()){
+                return true;
+            }else if(KeyEvent.KEYCODE_POUND == event.getKeyCode()){
+                return true;
+            }
+        }
+        return super.dispatchKeyEvent(event);
+    }
+    private boolean lockLongPressKey = false;
+    private final static int MSG_LONG_CLICK = 777;
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(event.getRepeatCount() > 0 && !lockLongPressKey){
+            event.startTracking();
+            lockLongPressKey = true;
+            Message msg = new Message();
+            msg.what = MSG_LONG_CLICK;
+            msg.arg1 = keyCode;
+            handler.sendMessageDelayed(msg, 500);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+    private Handler handler = new Handler(){
+        public void handleMessage(Message msg){
+            if(msg.what == MSG_LONG_CLICK){
+                if(mOnKeyLongClickListener != null){
+                    mOnKeyLongClickListener.onKeyLongClick(msg.arg1);
+                }
+            }
+        }
+    };
+    public interface OnKeyLongClickListener{
+        public void onKeyLongClick(int keyCode);
+    }
+    private OnKeyLongClickListener mOnKeyLongClickListener;
+    public void setOnKeyLongClickListener(OnKeyLongClickListener onKeyLongClickListener){
+        mOnKeyLongClickListener = onKeyLongClickListener;
+    }
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if(lockLongPressKey){
+            lockLongPressKey = false;
+            handler.removeMessages(MSG_LONG_CLICK);
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+}
+
+长按 onKey 方法的实现原理如下：
+a. 在 onKeyDown() 的时候发送一个延时500ms的消息
+b. 在 onKeyUp() 的时候移除这个消息，如果Handler接收到了这个消息，就处理长按事件，如果Handler没有接收到这个消息，就处理短按事件
+```
+
+## 在某些ListView界面点击按键的时候会显示搜索框？？
+
+``` Java
+listView.setTextFilterEnabled(false);
+```
+
+## 减慢按键输入速度
+
+``` Java
+public boolean onKeyDown(int keyCode, KeyEvent event) {
+    if(event.getRepeatCount() % 3 != 0){    //添加了这段代码
+        return true;
+    }
+}
+```
+
+## Launcher预置快捷方式shortcut
+
+``` xml
+launcher:uri 可以从 Launcher 数据库中获取
+
+<shortcut
+launcher:uri="#Intent;action=android.intent.action.MAIN;launchFlags=0x10200000;component=com.cleanmaster.mguard/com.cleanmaster.processcleaner.ProcessCleanerActivity;end"
+launcher:icon="@drawable/ic_launcher_application"
+launcher:title="@string/jinshan_title" 
+launcher:screen=""
+launcher:x=""
+launcher:y=""/>
+```
+
+## 通过代码创建快捷方式
+
+``` Java
+private void createShortcut(String title, String url) {
+    Intent intent = new Intent(INSTALL_SHORTCUT);
+    intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Baidu");
+    Intent shortcutIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+    long urlHash = url.hashCode();
+    long uniqueId = (urlHash << 32) | shortcutIntent.hashCode();
+    shortcutIntent.putExtra("com.android.browser.application_id", Long.toString(uniqueId));
+    intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+    intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+    sendBroadcast(intent);
+}
+```
+
+## 设置 SeekBar 每一格的进度？
+
+``` Java
+mSlider.setKeyProgressIncrement(val);
+```
+
+## 隐藏AllApp中的应用图标？？
+
+``` Java
+public void reorderApps() {
+    ......
+    //Redmine87958 zhangqi modified to hide GoogleSettings 2017/03/04:begin
+    for(int i = mApps.size() - 1; i > 0 ; i--){
+        AppInfo appInfo = mApps.get(i);
+        if("com.google.android.gms".equalsIgnoreCase(appInfo.getPackageName())){
+            mApps.remove(appInfo);
+        }
+    }
+    //Redmine87958 zhangqi modified to hide GoogleSettings 2017/03/04:end
+}
+```
+
+## 耳机模式下播放音乐再拍照，音乐会卡顿
+
+``` Java
+M:alps/frameworks/av/services/camera/libcameraservice/CameraService.cpp
+//mp->setAudioStreamType(AUDIO_STREAM_ENFORCED_AUDIBLE);    //注释掉这一行就可以了
+
+M:alps/vendor/mediatek/proprietary/packages/apps/Camera/src/com/mediatek/camera/util/CaptureSound.java
+//AudioAttributes attrs = new AudioAttributes.Builder().setInternalLegacyStreamType(AudioManager.STREAM_SYSTEM_ENFORCED).build();//去掉STREAM_SYSTEM_ENFORCED
+AudioAttributes attrs = new AudioAttributes.Builder().build();
+case AUDIO_STREAM_ENFORCED_AUDIBLE:
+    attr->flags  |= AUDIO_FLAG_AUDIBILITY_ENFORCED;
+// intended fall through, attributes in common with STREAM_SYSTEM
+```
+
+## 查看手机中安装的所有apk的包名？？？
+
+``` bash
+adb shell pm -l
+```
+
+## 查看 Android 许可权限
+
+``` bash
+adb shell pm list permissions -d -g
+```
+
+## KK GMS无法通过网络定位？？
+
+``` Java
+https://onlinesso.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ11643
+1.系统对提供LocationProvider的应用需要进行申明,而KK GMS将NetworkLocation应用的功能集成到了GmsCore（Google Play Service）中，所以需要添加GmsCore的packageName进去：
+framework/base/core/res/res/values/config.xml
+<string-array name="config_locationProviderPackageNames" translatable="false">
+    <!-- The standard AOSP fused location provider -->
+    <item>com.android.location.fused</item>
+    <!-- MTK add for GMS -->
+    <item>com.google.android.location</item>
+    <item>com.google.android.gms</item>
+    <!-- MTK add end -->
+</string-array>
+
+2.GMS4.4_r3（包含r3）之后版本在满足1条件下依然可能存在无法使用网络定位功能，请继续按照如下修改操作：
+WifiStateMachine.java (frameworks\base\wifi\java\android\net\wifi)
+private void setScanResults() {
+    ...
+    if (bssid != null) {
+    String ssid = (wifiSsid != null) ? wifiSsid.toString() : WifiSsid.NONE;
+    String key = bssid + ssid;
+    tsf = SystemClock.elapsedRealtimeNanos()/1000;//add this line
+    ScanResult scanResult = mScanResultCache.get(key);
+    ...
+}
+```
+
+## 如何判断是否支持VOLTE？？
+
+``` Java
+在如下文件中搜索 107(sfr)
+ALPS-MP-N0.MP1-V1.0.2_SR6737T_65_N_modem/custom/service/nvram/custom_nvram_int_config.c
+```
+
+## android中图片的uri??
+
+``` Java
+"http://site.com/image.png" // from Web
+"file:///mnt/sdcard/image.png" // from SD card
+"file:///mnt/sdcard/video.mp4" // from SD card (video thumbnail)
+"content://media/external/images/media/13" // from content provider
+"content://media/external/video/media/13" // from content provider (video thumbnail)
+"assets://image.png" // from assets
+"drawable://" + R.drawable.img // from drawables (non-9patch images) //通常不用。
+```
+
+## 提高进程优先级的方法
+
+``` Java
+方法1：
+找到这个进程对应的AndroidMannifest.xml文件，在其中添加属性『android:persistent="true"』， 这样可以将该进程设置为常驻内存进程，就可以降低被Kill的概率。以Acore进程为例， 在 /package/providers/ContactsProvider/AndroidMannifest.xml 文件中增加一行『android:persistent="true"』
+具体修改示例如下：
+android:label="@string/app_label"
+android:icon="@drawable/app_icon"
+android:allowBackup="false"
+android:persistent="true" 
+
+方法2： 
+提高进程优先级 startForeground(1, new Notification()); 降低进程优先级 stopForeground(true); 
+onStart() 方法中进行提高优先级操作，然后在onStop()方法中进行降低优先级操作
+这个方法可以将对应AP的ADJ临时提高到2。
+```
+
+## 去掉ID资源编译检查？？
+
+``` Java
+alps/vendor/mediatek/proprietary/framework/base/res/android.mk 文件中
+#include #(LOCAL_PATH)/apicheck.mk
+```
+
+## 通过代码设置view的selector
+
+``` Java
+private StateListDrawable getStateDrawable(Context context, int normalId, int focusedId, int pressedId) {
+    StateListDrawable stateListDrawable = new StateListDrawable();
+    Drawable normalDrawable = normalId == -1 ? null : context.getResources().getDrawable(normalId);
+    Drawable focusedDrawable = focusedId == -1 ? null : context.getResources().getDrawable(focusedId);
+    Drawable pressedDrawable = pressedId == -1 ? null : context.getResources().getDrawable(pressedId);
+    stateListDrawable.addState(new int[] { android.R.attr.state_enabled, android.R.attr.state_focused }, focusedDrawable);
+    stateListDrawable.addState(new int[] { android.R.attr.state_enabled, android.R.attr.state_pressed }, pressedDrawable);
+    stateListDrawable.addState(new int[] { android.R.attr.state_focused }, focusedDrawable);
+    stateListDrawable.addState(new int[] { android.R.attr.state_pressed }, pressedDrawable);
+    stateListDrawable.addState(new int[] { android.R.attr.state_enabled }, normalDrawable);
+    stateListDrawable.addState(new int[] {}, normalDrawable);
+    return stateListDrawable;
+}
+
+btn_state.setBackground(getStateDrawable(mContext, R.drawable.dialog_button_normal, R.drawable.dialog_button_focused, R.drawable.dialog_button_pressed));
+```
+
+## 通过代码删除一个字符
+
+``` Java
+mDigits.getText().delete(currentPosition - 1, currentPosition);
+```
+
+## adb 关机命令
+
+``` bash
+adb shell reboot -p
+adb shell svc power shutdown
+```
+
+## adb shell input 的代码实现
+
+``` Java
+private void sendKeyCode(int paramInt1, int paramInt2) {
+    long l = SystemClock.uptimeMillis();
+    KeyEvent localKeyEvent = new KeyEvent(l, l, paramInt2, paramInt1, 0);
+    try {
+        IWindowManager.Stub.asInterface(ServiceManager.getService("window")).injectKeyEvent(localKeyEvent, true);
+        return;
+    } catch (RemoteException localRemoteException) {
+    }
+}
+
+private void sendTouchKeyEvent(int paramInt, boolean paramBoolean1, boolean paramBoolean2) {
+    if (paramBoolean2);
+    try {
+        this.mIWM.injectKeyEvent(new KeyEvent(this.now, SystemClock.uptimeMillis(), 1, paramInt, 0), paramBoolean1);
+        return;
+        //this.now = SystemClock.uptimeMillis();
+        //this.mIWM.injectKeyEvent(new KeyEvent(this.now, this.now, 0, paramInt, 0), paramBoolean1);
+    } catch (RemoteException localRemoteException) {
+    }
+}
+
+private void sendTouchKeyEvent(int paramInt1, boolean paramBoolean1, boolean paramBoolean2, int paramInt2) {
+    if (paramBoolean2);
+    try {
+        this.mIWM.injectKeyEvent(new KeyEvent(0L, 0L, 1, paramInt1, paramInt2), paramBoolean1);
+        return;
+        //this.mIWM.injectKeyEvent(new KeyEvent(this.now, 1100L + this.now, 0, paramInt1, paramInt2, 0, 0, 0, this.flag), paramBoolean1);
+    } catch (RemoteException localRemoteException) {
+        Log.i("input", localRemoteException.toString());
+    }
+}
+```
+
+## 状态栏上显示小时钟？？？
+
+``` xml
+<item
+	android:id="@+id/clock"
+	android:actionLayout="@layout/actionbar_layout_menu"
+	android:showAsAction="always"
+	android:title="时钟"/>
+
+actionbar_layout_menu.xml
+<AnalogClock xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content" >
+</AnalogClock>
+```
+
+## FAQ15487 如何让Launcher3支持横屏显示？
+
+``` Java
+N/M：
+Launcher默认支持横屏显示，只需要按如下操作即可开启横屏显示：
+桌面空白处长按→进入OverviewMode→点击设置→打开允许旋转的开关
+ 
+L：
+1.修改AndroidManifest.xml
+<activity
+android:name="com.android.launcher3.Launcher"
+android:launchMode="singleTask"
+android:clearTaskOnLaunch="true"
+android:stateNotNeeded="true"
+android:theme="@style/Theme"
+android:configChanges="mcc|mnc"
+android:windowSoftInputMode="adjustPan"
+android:screenOrientation="sensor"> <!--modify to sensor -->
+
+2.修改Utilities.java的isRotationEnabled方法
+public static boolean isRotationEnabled(Context c) {
+    return true;//直接返回true
+}
+
+此时旋转手机，Launcher会横竖屏切换。但hotseat会显示在屏幕的右方。如果要让hotseat显示在屏幕底部，可以按照如下步骤操作：
+
+3.修改res/values/config.xml
+<!--hotseat --> 
+<bool name="hotseat_transpose_layout_with_orientation">false</bool> <!--改为false-->
+
+4.修改Hotseat.java的onFinishInflate方法
+@Override
+protected void onFinishInflate() {
+    super.onFinishInflate();
+    LauncherAppState app = LauncherAppState.getInstance();
+    DeviceProfile grid = app.getDynamicGrid().getDeviceProfile();
+    mAllAppsButtonRank = grid.hotseatAllAppsRank;
+    mContent = (CellLayout) findViewById(R.id.layout);
+    if (grid.isLandscape && !grid.isLargeTablet()) {
+        mContent.setGridSize((int) grid.numHotseatIcons, 1); //modify
+    } else {
+        mContent.setGridSize((int) grid.numHotseatIcons, 1);
+    }
+    mContent.setIsHotseat(true);
+    Log.i(TAG, "onFinishInflate,(int) grid.numHotseatIcons: " + (int) grid.numHotseatIcons);
+    resetLayout();
+}
+```
 
 ## TextView去掉上下边距
 

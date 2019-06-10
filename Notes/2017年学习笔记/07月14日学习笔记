@@ -1,5 +1,0 @@
-    1.通过命令行设置获取SettingsProvider中保存的值？？
-
-    解决：
-    adb shell settings put global device_provisioned 0
-    adb shell settings get global device_provisioned

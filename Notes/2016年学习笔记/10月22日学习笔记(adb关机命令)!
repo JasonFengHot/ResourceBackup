@@ -1,6 +1,0 @@
-    1.关机命令？？
-
-    解决：
-    adb shell reboot -p
-    
-    adb shell svc power shutdown

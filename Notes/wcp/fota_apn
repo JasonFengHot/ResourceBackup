@@ -1,11 +1,11 @@
 [标题]
-    [FOTA]更新APN列表OTA升级后开机即生效
+[FOTA]更新APN列表OTA升级后开机即生效
 
 [问题描述]
-    更新APN列表OTA升级后需要恢复出厂设置APN更新才有效， 客户需要做升级后开机即生效。 
+更新APN列表OTA升级后需要恢复出厂设置APN更新才有效， 客户需要做升级后开机即生效。 
 
 [解决方案]
-MTK解决方案 FAQ12633 : 
+MTK解决方案 FAQ12633:
 因为，OTA升级更新的是三个区域，boot , recovery, system,
 APN属于DATA域，OTA升级不会涉及到， 所以必须reset之后才会更新有效。
 所以需要修改 alps\build\tools\releasetools\ota_from_target_files 这个脚本，在
@@ -27,8 +27,8 @@ device_specific.FullOTA_InstallEnd()
 +  script.AppendExtra('delete("/data/data/com.android.providers.telephony/shared_prefs/load-apn.xml");')
 
 if OPTIONS.extra_script is not None:
-    script.AppendExtra(OPTIONS.extra_script)
-    
+script.AppendExtra(OPTIONS.extra_script)
+
 2.在使用广升做差分包的工具里面替换脚本为修改后的脚本
 
 但此方法只适用于KK及以下的版本，并不适用于KK以上的版本，如L，M，N，O，因为KK以上的版本对/data区的数据的保护更加严格

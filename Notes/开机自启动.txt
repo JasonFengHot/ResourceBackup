@@ -4,10 +4,10 @@
 
 添加开机广播接收器
 public class BootReceiver extends BroadcastReceiver{
-	public void onReceive(Context context,Intent intent){
-		Intent mIntent = new Intent(context,MainActivity.class);
-		startActivity(mIntent);
-	}
+    public void onReceive(Context context,Intent intent){
+        Intent mIntent = new Intent(context,MainActivity.class);
+        startActivity(mIntent);
+    }
 }
 
 在AndroidManifest.xml文件中添加权限
@@ -27,25 +27,25 @@ public class BootReceiver extends BroadcastReceiver{
 //OOBE
 mediatek/packages/apps/OOBE/src/com/mediatek/oobe/basic/MainActivity.java
 private void finishOOBE() {
-	...
-	Settings.Secure.putInt(getContentResolver(), Settings.Secure.USER_SETUP_COMPLETE, 1);
-	...
+    ...
+    Settings.Secure.putInt(getContentResolver(), Settings.Secure.USER_SETUP_COMPLETE, 1);
+    ...
 }
 
 //SetupWizard
 com/google/android/setupwizard/BaseActivity.java
 protected void onSetupComplete(boolean paramBoolean){
-	...
-	Settings.Secure.putInt(getContentResolver(), "user_setup_complete", 1);
-	...
+    ...
+    Settings.Secure.putInt(getContentResolver(), "user_setup_complete", 1);
+    ...
 }
 
 //再SystemUI中已经有了对 Settings.Secure.USER_SETUP_COMPLETE 的监听
 在 frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBar.java 中有
 private void resetUserSetupObserver() {
-	...
-	mContext.getContentResolver().registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE), true, mUserSetupObserver, mCurrentUserId);
-	...
+    ...
+    mContext.getContentResolver().registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE), true, mUserSetupObserver, mCurrentUserId);
+    ...
 }
 private ContentObserver mUserSetupObserver = new ContentObserver(new Handler()) {
     @Override
@@ -67,17 +67,17 @@ private ContentObserver mUserSetupObserver = new ContentObserver(new Handler()) 
 };
 
 初步修改后的代码如下
-boolean isFirstBoot = Settings.Secure.getInt(mContext.getContentResolver(), "isFirstBoot", 0) == 0;			//设置标志位，只有在恢复出厂设置的时候启动一次
+boolean isFirstBoot = Settings.Secure.getInt(mContext.getContentResolver(), "isFirstBoot", 0) == 0;            //设置标志位，只有在恢复出厂设置的时候启动一次
 if(userSetup && isFirstBoot){
-	try{
-		Intent intent = new Intent();
-		intent.setComponent(new android.content.ComponentName("za.co.axon.mdas.roid","za.co.axon.mdas.roid.Splash"));
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-		mContext.startActivity(intent);
-		Settings.Secure.putInt(mContext.getContentResolver(), "isFirstBoot", 1);							//将标志为设置为1，表示启动成功
-	} catch(Exception e) {
-		e.printStackTrace();		//这里加try,catch防止内置的APK face2face 丢失
-	}
+    try{
+        Intent intent = new Intent();
+        intent.setComponent(new android.content.ComponentName("za.co.axon.mdas.roid","za.co.axon.mdas.roid.Splash"));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+        mContext.startActivity(intent);
+        Settings.Secure.putInt(mContext.getContentResolver(), "isFirstBoot", 1);                            //将标志为设置为1，表示启动成功
+    } catch(Exception e) {
+        e.printStackTrace();        //这里加try,catch防止内置的APK face2face 丢失
+    }
 }
 
 但经过强度测试之后发现了一个小问题，概率性的出现应用程序不启动的现象？？？？
@@ -128,7 +128,7 @@ if(userSetup && isFirstBoot){
 01-01 00:01:13.481537   720   968 I notification_cancel_all: [com.android.providers.downloads,0,0,64
 01-01 00:01:14.885420   720   736 I am_restart_activity: [0,1111200792,4,com.android.launcher3/.Launcher
 01-01 00:01:14.903973   720  1090 I am_destroy_service: [0,1113635320,1208
-01-01 00:01:14.912448   720   743 I am_finish_activity: [0,1113616608,3,za.co.axon.mdas.roid/.Splash,no-history		//za.co.axon.mdas.roid.Splash 被莫名其妙地 finish 掉了
+01-01 00:01:14.912448   720   743 I am_finish_activity: [0,1113616608,3,za.co.axon.mdas.roid/.Splash,no-history        //za.co.axon.mdas.roid.Splash 被莫名其妙地 finish 掉了
 01-01 00:01:14.918549   720   743 I am_destroy_activity: [0,1113616608,3,za.co.axon.mdas.roid/.Splash,finish-imm
 
 根据这种情况，再次做了修改
@@ -138,62 +138,62 @@ private ContentObserver mUserSetupObserver = new ContentObserver(new Handler()) 
         ...
         if (userSetup != mUserSetup) {
             mUserSetup = userSetup;
-			boolean isFirstBoot = Settings.Secure.getInt(mContext.getContentResolver(), "isFirstBoot", 0) == 0;
-			if(userSetup && isFirstBoot){
-				try{
-					Intent intent = new Intent();
-					intent.setComponent(new android.content.ComponentName("za.co.axon.mdas.roid","za.co.axon.mdas.roid.Splash"));
-					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-					mContext.startActivity(intent);
-					Settings.Secure.putInt(mContext.getContentResolver(), "isFirstBoot", 1);
-					new Thread(new Runnable(){					//在这个地方启动一个线程，再次启动这个应用
-						public void run(){
-							try{
-								while(!isStartSuccess){
-									Thread.sleep(2000);
-									handler.sendEmptyMessage(1);
-								}
-							}catch(Exception e){
-								e.printStackTrace();
-							}
-						}
-					}).start();
-				}catch(Exception e){
-					e.printStackTrace();
-				}
-			}
+            boolean isFirstBoot = Settings.Secure.getInt(mContext.getContentResolver(), "isFirstBoot", 0) == 0;
+            if(userSetup && isFirstBoot){
+                try{
+                    Intent intent = new Intent();
+                    intent.setComponent(new android.content.ComponentName("za.co.axon.mdas.roid","za.co.axon.mdas.roid.Splash"));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+                    mContext.startActivity(intent);
+                    Settings.Secure.putInt(mContext.getContentResolver(), "isFirstBoot", 1);
+                    new Thread(new Runnable(){                    //在这个地方启动一个线程，再次启动这个应用
+                        public void run(){
+                            try{
+                                while(!isStartSuccess){
+                                    Thread.sleep(2000);
+                                    handler.sendEmptyMessage(1);
+                                }
+                            }catch(Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
             ...
         }
     }
 };
 private boolean isStartSuccess = false;
 Handler handler = new Handler(){
-	public void handleMessage(Message msg){
-		switch(msg.what){
-			case 1:
-				String topActivityName = getTopActivityName(mContext);
-				if(topActivityName != null && topActivityName.contains("za.co.axon.mdas.roid")){
-					isStartSuccess = true;
-				} else {
-					Intent intent = new Intent();
-					intent.setComponent(new android.content.ComponentName("za.co.axon.mdas.roid","za.co.axon.mdas.roid.Splash"));
-					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					mContext.startActivity(intent);
-				}
-				break;
-			default:
-				break;
-		}
-	}
+    public void handleMessage(Message msg){
+        switch(msg.what){
+            case 1:
+                String topActivityName = getTopActivityName(mContext);
+                if(topActivityName != null && topActivityName.contains("za.co.axon.mdas.roid")){
+                    isStartSuccess = true;
+                } else {
+                    Intent intent = new Intent();
+                    intent.setComponent(new android.content.ComponentName("za.co.axon.mdas.roid","za.co.axon.mdas.roid.Splash"));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent);
+                }
+                break;
+            default:
+                break;
+        }
+    }
 };
 
 /**获取栈顶Activity的名称*/
 private String getTopActivityName(Context context) {
-	ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-	List<android.app.ActivityManager.RunningTaskInfo> runningTaskInfos = activityManager.getRunningTasks(1);
-	if (runningTaskInfos != null) {
-		return (runningTaskInfos.get(0).topActivity).toString();
-	} else {
-		return null;
-	}
+    ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+    List<android.app.ActivityManager.RunningTaskInfo> runningTaskInfos = activityManager.getRunningTasks(1);
+    if (runningTaskInfos != null) {
+        return (runningTaskInfos.get(0).topActivity).toString();
+    } else {
+        return null;
+    }
 }

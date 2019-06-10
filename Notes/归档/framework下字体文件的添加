@@ -5,31 +5,31 @@ A:frameworks/base/data/fonts/hiosClock_thin.ttf
 2.修改 frameworks/base/data/fonts/Android.mk 文件,将字体文件编译到 system/fonts/ 目录中
 
 M:frameworks/base/data/fonts/Android.mk
-#Redmine124982 zhangqi modified for clock widget font 2018/03/23:begin
+#Redmine124982 modified for clock widget font 2018/03/23:begin
 font_src_files := \
     AndroidClock.ttf \
     hiosClock_thin.ttf
-#Redmine124982 zhangqi modified for clock widget font 2018/03/23:end
+#Redmine124982 modified for clock widget font 2018/03/23:end
 
 3.修改 frameworks/base/data/fonts/fonts.mk 文件
 
 M:frameworks/base/data/fonts/fonts.mk
-#Redmine124982 zhangqi modified for clock widget font 2018/03/23:begin
+#Redmine124982 modified for clock widget font 2018/03/23:begin
 PRODUCT_PACKAGES := \
     DroidSansMono.ttf \
     AndroidClock.ttf \
     hiosClock_thin.ttf \
     fonts.xml
-#Redmine124982 zhangqi modified for clock widget font 2018/03/23:end
+#Redmine124982 modified for clock widget font 2018/03/23:end
 
 4.在 fonts.xml 文件中定义字体对应的名称
 
 M:frameworks/base/data/fonts/fonts.xml
-<!--Redmine124982 zhangqi modified for clock widget font 2018/03/23:begin-->
+<!--Redmine124982 modified for clock widget font 2018/03/23:begin-->
 <family name="tecno-clock-font">
     <font weight="400" style="normal">hiosClock_thin.ttf</font>
 </family>
-<!--Redmine124982 zhangqi modified for clock widget font 2018/03/23:end-->
+<!--Redmine124982 modified for clock widget font 2018/03/23:end-->
 
 5.使用新添加的字体
 

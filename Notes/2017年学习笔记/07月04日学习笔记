@@ -1,9 +1,0 @@
-    1.按键长按减慢速度？
-
-    解决：
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(event.getRepeatCount() % 3 != 0){    //添加了这段代码
-            return true;
-        }
-        ......
-    }

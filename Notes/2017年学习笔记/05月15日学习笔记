@@ -1,4 +1,0 @@
-    1.设置 SeekBar 每一格的进度？
-
-    解决：
-    mSlider.setKeyProgressIncrement(val);

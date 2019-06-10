@@ -1,6 +1,0 @@
-1.Android 许可权限？？？
-
-解决：
-adb shell pm list permissions -d -g
-
-2.
