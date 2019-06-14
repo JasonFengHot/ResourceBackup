@@ -206,6 +206,16 @@ fix:
 #out/host/linux-x86/bin/jack-admin kill-server 
 #out/host/linux-x86/bin/jack-admin start-server
 
+
+## fatal error: openssl/bio.h: No such file or directory 解决方案
+
+出现这个或者fatal error: openssl/名单.h: No such file or directory。都是没有安装libssl-dev～
+libssl-dev包含libraries, header files and manpages，他是openssl的一部分，而openssl对ssl进行了实现～
+
+``` bash
+sudo apt-get install libssl-dev
+```
+
 ## 安装git
 
 ``` bash
@@ -354,21 +364,21 @@ alias adbkill='_adbkill(){ adb shell kill `adb shell ps | grep $1 | awk {'\''pri
 ``` bash
 sudo apt-get install privoxy
 
-#/etc/privoxy/config
+# /etc/privoxy/config
 forward-socks5 / 127.0.0.1:1080 .
 listen-address  localhost:8118   //forward port 1080 to 8118
 
-#修改了之后重启试一下看是否能成功，不成功的话可能是 /etc/privoxy/config 文件修改有问题
+# 修改了之后重启试一下看是否能成功，不成功的话可能是 /etc/privoxy/config 文件修改有问题
 sudo /etc/init.d/privoxy restart
 
-#/etc/apt/apt.conf
+# /etc/apt/apt.conf
 Acquire::http::proxy "http://127.0.0.1:8118/";
 Acquire::https::proxy "https://127.0.0.1:8118/";
 Acquire::ftp::proxy "ftp://127.0.0.1:8118/";
 Acquire::socks::proxy "socks://127.0.0.1:8118/";
 
 
-#~/.bashrc
+# ~/.bashrc
 export http_proxy=http://127.0.0.1:8118/
 export https_proxy=http://127.0.0.1:8118/
 ```
