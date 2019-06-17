@@ -69,7 +69,16 @@ perlbrew install 5.10.1 //这里会提示失败，因为perlbrew下载包的时�
 wget http://www.cpan.org/src/5.0/perl-5.10.1.tar.bz2
 perlbrew --notest install /home/zq/perl-5.10.1.tar.bz2 //这里必须使用绝对路径，否则安装不上
 
+perlbrew use perl5.10.1
+
 需要更新gcc的版本为4.8.1
+https://www.cnblogs.com/wang-130213/articles/9139226.html
+
+sudo apt-get install gcc-4.8
+
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.4 50
+
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 100
 
 一键编译脚本在16.04上有问题，./mk 会出现问题
 sub build_modem
