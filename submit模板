@@ -1,10 +1,10 @@
 [修复情况]
-http://192.168.3.79:8084/gitweb?p=KK_MyOS/ALPS.KK1.MP7.V1.22_SR72_W_KK.git;a=commit;h=a12b31c238a04dd1442367f545f42c72fa500b66
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=f997579b5e7b4605f3ba494f19d12b46f1e7818a
 [查找问题的思路]
 查看代码
 [问题根源]
-客户要求修改IMEISV版本号为03
+客户要求移除Settings和SoundRecorder中的分割线
 [修复方案]
-修改IMEISV版本号为03
+要求移除Settings和SoundRecorder中的分割线
 [自测情况 & 建议]
 自测10次都正常，请帮忙验证，谢谢！
