@@ -1,10 +1,10 @@
 [修复情况]
-http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=f997579b5e7b4605f3ba494f19d12b46f1e7818a
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=dbb379f5efa6325e62bc697e74013d16cd11201b
 [查找问题的思路]
-查看代码
+查看布局，查看代码
 [问题根源]
-客户要求移除Settings和SoundRecorder中的分割线
+客户要求修改短信界面ui
 [修复方案]
-要求移除Settings和SoundRecorder中的分割线
+按照客户要求修改
 [自测情况 & 建议]
 自测10次都正常，请帮忙验证，谢谢！

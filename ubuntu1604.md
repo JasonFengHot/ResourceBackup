@@ -69,7 +69,7 @@ perlbrew install 5.10.1 //这里会提示失败，因为perlbrew下载包的时�
 wget http://www.cpan.org/src/5.0/perl-5.10.1.tar.bz2
 perlbrew --notest install /home/zq/perl-5.10.1.tar.bz2 //这里必须使用绝对路径，否则安装不上
 
-perlbrew use perl5.10.1
+perlbrew use perl-5.10.1 && sudo update-alternatives --config gcc
 
 需要更新gcc的版本为4.8.1
 https://www.cnblogs.com/wang-130213/articles/9139226.html
@@ -79,6 +79,8 @@ sudo apt-get install gcc-4.8
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.4 50
 
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 100
+
+
 
 一键编译脚本在16.04上有问题，./mk 会出现问题
 sub build_modem
@@ -547,6 +549,17 @@ https://github.com/qweasdzxcpoi/JavaFX/blob/master/jfxrt.jar
 
 问题：monitor打不开，java.lang.IllegalStateException: Unable to acquire application service. Ensure that the org.eclipse.core.runtime bundle is resolved and started (see config.ini).
 解决：只要通过 sudo update-alternative --config java 把java版本改为1.8即可
+```
+
+## Ubuntu18.04 下 draw9patch 出现 org.GNOME.Accessibility.AtkWrapper 问题
+
+```
+Exception in thread "main" java.awt.AWTError: Assistive Technology not found: org.GNOME.Accessibility.AtkWrapper
+解决方法 :
+This can be done by editing the accessibility.properties file for OpenJDK:
+sudo gedit /etc/java-11-openjdk/accessibility.properties
+Comment out the following line:
+#assistive_technologies=org.GNOME.Accessibility.AtkWrapper
 ```
 
 ## 安装VSCode

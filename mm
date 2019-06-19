@@ -308,7 +308,7 @@ if [ $1 == "commit" ] ; then
     # 2. touch file
     touch ~/gitcommit/$bugId"_"$commitMessage
     # TODO : if pull failed ?
-    git commit -m "test "$bugId" "$commitMessage" Submitter:zhangqi Checker:liangshuang "$dateStr;
+    git commit -m "test "$bugId" "$commitMessage" Submitter:zhangqi Checker:liangshuang Date:"$dateStr;
     git push origin "HEAD:refs/for/"$branchName;
     
     notice "git_commit_push_done!"
@@ -655,6 +655,9 @@ make(){
         moduleType=3
     elif [ $module == "v7" ] ; then
         ./mk -ud $new_project mm frameworks/support/v7/
+        moduleType=3
+    elif [ $module == "v14" ] ; then
+        ./mk -ud $new_project mm frameworks/support/v14/
         moduleType=3
     elif [ $module == "protobuf" ] ; then
         ./mk -ud $new_project mm external/protobuf/
