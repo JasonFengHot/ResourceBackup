@@ -1477,6 +1477,54 @@ xhost +
 
 dconf-editor
 
+## Selinux权限快速编译
+
+添加对应selinux权限到文件之后
+编译：
+source build/envsetup.sh
+lunch {prj}
+mmm system/sepolicy （O之后）
+mmm external/sepolicy （O之前）
+make -j24 ramdisk-nodeps
+make -j24 bootimage-nodeps
+重刷boot.img
+
+## Android.mk 文件中打印log
+
+有时候需要在Android.mk文件或者其他以 .mk结尾的文件中打印默写变量的值, 如何打印呢. 使用$(waing text ) 或者 $(error text) 语句,
+其中text 可以是普通文本 加 变量. 变量打印用$(val) sample:
+$(waing 111 $(TARGET_BOARD_PLATFORM_PRODUCT))
+$(warning Warning:BUILD_FINGERPRINT=$(BUILD_FINGERPRINT))
+$(error 111  $(TARGET_BOARD_PLATFORM_PRODUCT))
+Note: 如使用error, 打印完成后,停止向下继续执行
+
+## 添加系统应用引v7包
+
+部分模块没有添加V7包，导致有些主题（appcompat）不能使用。
+具体修改如下：
+在模块的android.mk下面添加：
+LOCAL_STATIC_JAVA_LIBRARIES := \
+    android-support-v7-appcompat
+
+LOCAL_RESOURCE_DIR += \
+    $(LOCAL_PATH)/res \
+    $(LOCAL_PATH)/../../../../prebuilts/sdk/current/support/v7/appcompat/res       //v7/路径
+
+LOCAL_AAPT_FLAGS := \
+    --auto-add-overlay \
+    --extra-packages android.support.v7.appcompat
+
+## 默认语言不会随着sim卡变化而变化
+
+``` Java
+alps/vendor/mediatek/proprietary/packages/services/Telephony/src/com/android/phone/PhoneInterfaceManager.java
+-        final Locale mccLocale = MccTable.getLocaleFromMcc(mPhone.getContext(), mcc, simLanguage);
++        //final Locale mccLocale = MccTable.getLocaleFromMcc(mPhone.getContext(), mcc, simLanguage);
++        //redmine139979 panhaoda modify for language not change from sim 2018 0704 begin
++        final Locale mccLocale = null;
++        //redmine139979 panhaoda modify for language not change from sim 2018 0704 end
+```
+
 ## TodoList
 
 ``` bash

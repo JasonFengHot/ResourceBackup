@@ -1,10 +1,10 @@
 [修复情况]
-http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=dbb379f5efa6325e62bc697e74013d16cd11201b
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=f1c770d70603f438974b65500608b168bbb76a8c
 [查找问题的思路]
 查看布局，查看代码
 [问题根源]
-客户要求修改短信界面ui
+短信添加联系人中的ok菜单也没有作用，建议移除
 [修复方案]
-按照客户要求修改
+移除短信中的ok菜单
 [自测情况 & 建议]
 自测10次都正常，请帮忙验证，谢谢！
