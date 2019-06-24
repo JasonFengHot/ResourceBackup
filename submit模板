@@ -1,10 +1,10 @@
 [修复情况]
-http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=f1c770d70603f438974b65500608b168bbb76a8c
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=shortlog;h=refs/heads/dev_MyOS_Doro
 [查找问题的思路]
-查看布局，查看代码
+找到apk的上传路径
 [问题根源]
-短信添加联系人中的ok菜单也没有作用，建议移除
+kika提供新的apk
 [修复方案]
-移除短信中的ok菜单
+更新kika
 [自测情况 & 建议]
 自测10次都正常，请帮忙验证，谢谢！

@@ -298,16 +298,29 @@ branchName=`git symbolic-ref --short -q HEAD`;
 dateStr=`date +%Y/%m/%d`;
 if [ $1 == "commit" ] ; then
     bugId=$2;
+    
+    # TODO : commitMessage 中不能有空格？
     commitMessage=$3;
     # make sure you code is the latest
     git pull;
+    # TODO : if pull failed ?
+    
     # 1. create folder
     if [ ! -d ~/gitcommit ]; then
         mkdir ~/gitcommit
     fi
+
     # 2. touch file
-    touch ~/gitcommit/$bugId"_"$commitMessage
-    # TODO : if pull failed ?
+    commitFile=~/gitcommit/$bugId"_"$commitMessage
+    echo "[修复情况]" >> $commitFile
+    echo "[查找问题的思路]" >> $commitFile
+    echo "查看布局，查看代码" >> $commitFile
+    echo "[问题根源]" >> $commitFile
+    echo "[修复方案]" >> $commitFile
+    echo "[自测情况 & 建议]" >> $commitFile
+    echo "[自测10次都正常，请帮忙验证，谢谢！]" >> $commitFile
+    gedit $commitFile
+
     git commit -m "test "$bugId" "$commitMessage" Submitter:zhangqi Checker:liangshuang Date:"$dateStr;
     git push origin "HEAD:refs/for/"$branchName;
     

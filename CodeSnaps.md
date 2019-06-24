@@ -3387,19 +3387,91 @@ ringtone.play();
 adb shell "echo 55 > /sys/devices/platform/battery/Battery_Temperature"
 ```
 
+## 高温报警代码中修改字符串不起效果
+
+查看 alps/vendor/mediatek/proprietary/packages/apps/BatteryWarning/Android.mk 文件发现有两种编译方式，一种是把编译好的apk直接编译到系统中，另外一种是通过源码编译apk
+
+``` Makefile
+LOCAL_PATH:= $(call my-dir)
+include $(CLEAR_VARS)
+
+MY_BUILD_PORTABLE := yes        # 这里默认是 yes，所以
+
+ifeq ($(strip $(MY_BUILD_PORTABLE)),yes)
+# Module name should match apk name to be installed
+LOCAL_MODULE := BatteryWarning
+LOCAL_MODULE_TAGS := optional
+LOCAL_SRC_FILES := $(LOCAL_MODULE)-release-unsigned.apk
+LOCAL_MODULE_CLASS := APPS
+LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
+LOCAL_CERTIFICATE := platform
+
+LOCAL_PROPRIETARY_MODULE := false
+LOCAL_MODULE_OWNER := mtk
+include $(BUILD_PREBUILT)
+else
+LOCAL_JAVA_LIBRARIES := bouncycastle
+
+LOCAL_MODULE_TAGS := optional
+
+LOCAL_SRC_FILES := $(call all-java-files-under, src)
+
+LOCAL_PACKAGE_NAME := BatteryWarning
+LOCAL_PROPRIETARY_MODULE := false
+LOCAL_MODULE_OWNER := mtk
+LOCAL_CERTIFICATE := platform
+
+include $(BUILD_PACKAGE)
+endif
+
+# Use the following include to make our test apk.
+include $(call all-makefiles-under,$(LOCAL_PATH))
+```
+
+这里的 MY_BUILD_PORTABLE 默认为 yes，所以会默认编译已经编译好的apk，所以怎么修改字符串都不会起作用
+
+修改方案：
+MY_BUILD_PORTABLE 修改为 no 即可
+
 ## 通过 adb 抓取 radio log
 
 ``` bash
+查看包含在无线/电话相关的缓冲区消息
 adb logcat -b radio | grep "zhangqi7777"
+
+查看事件相关的消息
+adb logcat -b events
+
+查看主缓冲区 (默认缓冲区)
+adb logcat -b main
 
 adb logcat 的用法
 https://developer.android.com/studio/command-line/logcat?hl=zh-cn
 ```
 
 ## 修改默认浏览器搜索引擎为google
+
 https://blog.csdn.net/wobushizhainan/article/details/79872757
 
+修改方案:
+把如下文件中的 google 移动到最上面第一条即可
+M:alps/vendor/mediatek/proprietary/frameworks/base/res/res/values*/donottranslate-new-search_engines.xml
+``` xml
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string-array name="new_search_engines" translatable="false">
+        <item>--</item>
+        <!--Redmine176101 zhangqi modified for default "Google" search engine for browser 2019/05/08:begin-->
+        <item>google--Google--google.com--search_engine_google--http://www.google.com/m?hl={language}&amp;ie={inputEncoding}&amp;source=android-browser&amp;q={searchTerms}--UTF-8--http://www.google.com/complete/search?hl={language}&amp;json=true&amp;q={searchTerms}</item>
+        <!--Redmine176101 zhangqi modified for default "Google" search engine for browser 2019/05/08:end-->
+        <item>start--Start--mt.start.fyi--search_engine_other--http://mt.start.fyi/search?ie={inputEncoding}&amp;source=browser#gsc.q={searchTerms}--UTF-8--http://www.google.com/complete/search?hl={language}&amp;json= true&amp;q={searchTerms}</item>
+        <item>yahoo--Yahoo!--yahoo.com--search_engine_yahoo--https://search.yahoo.com/search?ei={inputEncoding}&amp;.tsrc=mtkandroid&amp;p={searchTerms}--UTF-8--http://sugg.search.yahoo.com/gossip/?output=fxjson&amp;command={searchTerms}</item>
+        <item>bing--Bing--bing.com--search_engine_bing--http://www.bing.com/search?q={searchTerms}--UTF-8--http://api.bing.com/osjson.aspx?query={searchTerms}&amp;language={language}</item>
+    </string-array>
+</resources>
+```
+
 ## 8.0O版本上默认打开数据连接
+
 http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commitdiff;h=c0729839d0b3a73c3b67e58d1f4cd20f3068e446;hp=2991172ce00d8c7b979b2cf405f2a8fe417be2e2
 
 ## 操作excel的类库
@@ -3423,23 +3495,24 @@ adb reboot;
 在Android手机上，通过“设置”-“关于手机”-“状态”-“信号强度”可以查看到手机的信号强度，显示出如“-87 dBm 13 asu”这样的数据。ASU与dBm之间的关系是：dBm=-113+（2*ASU）。在你手机屏幕上方显示的信号条永远不会是最好的方法来确定你手机的信号，无论你用什么手机都一样。Android也是，用很粗的条来展示很强的信号，但这些条仅仅表示最高的信号。或许你并不熟悉，信号通常是以dBm度量的。dBm是每毫瓦特的电磁波产生的功率。-60dBm的信号接近完美，-112dBm就很容易掉线，如果你在 -87dBm以上，Android会显示一个4格的满信号。android界面UI信号显示是通过RIL对通讯模块发送AT命令来实现的，如AT+CSQ，我们查看一般可以通过 logcat -b radio来获取一些RIL的实时信息，可以通过关键字“CSQ”查找radio.log，查看手机信号强度。log如：AT< +CSQ: 14,99  这里的14就是ASU值，在4.0源码中有SignalStrength.Java类，其中有ASU值转换为几格信号的方法
 
 ## 修改 TextView 的省略号
+
+``` Java
 - effectiveEllipsize = TruncateAt.END_SMALL;
 + effectiveEllipsize = TruncateAt.END;
-
-## 修改无法输入#的问题
-alps/device/mediatek/mt6739/mtk-kpd.kcm
-key POUND {
-label: '#'
-base: '#'
-}
+```
 
 ## adb直接打开某个网页进行浏览
+
+``` bash
 adb shell am start -a android.intent.action.VIEW -d http://www.baidu.com
+```
 
 ## ota 升级之后没有走 DatabaseHelper.java 中的 onUpgrade() 方法
+
 o上走的是 SettingsProvider.java 中的 onUpgradeLocked() 方法
 
 ## APN相关
+
 https://blog.csdn.net/u012686462/article/details/55213023
 
 ## framework下字体文件的修改
@@ -4232,7 +4305,238 @@ protected void onFinishInflate() {
 }
 ```
 
-## TextView去掉上下边距
+## 修改recovery界面的显示问题
+
+1.修改 Makefile 中的 recovery 字体资源
+M:alps/build/make/core/Makefile
+-recovery_font := $(call include-path-for, recovery)/fonts/12x22.png
++recovery_font := $(call include-path-for, recovery)/fonts/8x14.png
+
+2.添加 8*14 的资源
+A:alps/bootable/recovery/fonts/8x14.png
+A:alps/bootable/recovery/minui/font_8x14.h
+
+3.添加 ldpi 分辨率的 recovery 动画资源
+A:alps/bootable/recovery/res-ldpi/images/*
+
+4.上传记录
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=97d43c37c7a211fd1e768c4ae1c93e3bf6f3ce18
+
+## 根据霍尔器件的状态发送AT指令来控制 SAR 值功率是否回退
+
+1.在 EngineerMode 中添加一个 ATService 来发送AT命令
+``` Java
+String cdmaSlotIdStr = SystemProperties.get("persist.radio.cdma_slot", "1");
+int cdmaSlotId = Integer.parseInt(cdmaSlotIdStr) - 1;
+Phone sarPhone = null;
+if (TelephonyManager.getDefault().getPhoneCount() > 1) {
+    try {
+        sarPhone = PhoneFactory.getPhone(cdmaSlotId);
+    } catch (Exception e) {
+        return;
+    }
+} else {
+    sarPhone = PhoneFactory.getDefaultPhone();
+}
+String[] sarStr = new String[2];
+sarStr[0] = shutDown ? "AT+ERFIDX=1,0" : "AT+ERFIDX=1,1";    //对应的AT命令，盒盖的时候发送 AT+ERFIDX=1,0 回退功率，开盖的时候发送 AT+ERFIDX=1,1 不回退功率
+sarStr[1] = "+ERFIDX";
+if (sarPhone != null) {
+    sarPhone.invokeOemRilRequestStrings(sarStr, mMessageHandler.obtainMessage(EVENT_AT_CMD));   //发送命令
+}
+```
+
+2.在 PhoneWindowManager.java 中通过 AIDL 绑定 EngineerMode 中的 ATService
+
+3.在 PhoneWindowManager.java 的 notifyLidSwitchChanged(long whenNanos, boolean lidOpen) 方法中的 lidOpen 就是霍尔器件的状态
+``` Java
+if (atService == null) {
+    bindATService(mContext);
+}
+if (null != atService){
+    try {
+        atService.sendATCommand(lidOpen);
+    } catch (RemoteException e) {
+        e.printStackTrace();
+    }
+}
+```
+
+4.遇到的问题
+a.为什么在 EngineerMode 中添加 ATService，而不是在别的应用中？
+
+因为 Phone 这个类只能在 phone 进程中使用，而 EngineerMode 中有 android:sharedUserId="android.uid.phone"
+
+b.开机第一次盒盖没有发送 AT 命令？
+
+因为第一次绑定 ATService 的时候 phone 进程可能没有启动，绑定失败
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=518e1a0088cfb63c262926f69f537398da78a73e
+
+
+c.开机第一次盒盖没有发送正确的 AT 命令
+
+因为第一次绑定的时候需要一定的时间，绑定成功了之后实际的霍尔器件的状态已经发生了改变，通过一个局部变量 private int mLidOpenState = 0; 来保存第一次绑定时候的霍尔器件的状态
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=fb0b93a7cc02d2b4652859510ed58aefe6477a24
+
+d.如何查看对应 AT 命令是否发送成功，是否发送正确？
+
+adb logcat -b radio > log.txt
+在 log 中搜索 ERFIDX 附近的 log, 如果有 OK 则表示已经发送成功
+
+5.上传记录
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=54ba3a5018d97814ffe21bd9df4c5ca238baf3b9
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=c6e5472f36bdaea5230f48b3f5450ff1cdd2b64c
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=518e1a0088cfb63c262926f69f537398da78a73e
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=fb0b93a7cc02d2b4652859510ed58aefe6477a24
+
+## 按键无法输入#的问题
+
+在 39go SmartFeaturePhone 平台一开始移植按键输入法的时候就没有把#键加到 alps/device/mediatek/mt6739/mtk-kpd.kcm 文件中
+只是在添加了 SageRealIME 之后，这个问题被隐藏了。现在添加了 Kika 输入法之后，这个问题又被曝光了出来，修改方案如下:
+M:alps/device/mediatek/mt6739/mtk-kpd.kcm
+key POUND {
+    label: '#'
+    base: '#'
+}
+
+M:alps/frameworks/base/core/java/android/text/method/WordResource.java
+this.put(KeyEvent.KEYCODE_POUND, "#");
+
+## 在连续点击 * 键之后会卡在某些字符上一直切换大小写
+
+因为在 MultiTapKeyListener.java 中有实现 * 键切换大小写的功能，代码如下：
+``` Java
+if (keyCode == KeyEvent.KEYCODE_STAR) {
+    char current = content.charAt(selStart);
+    if (Character.isLowerCase(current)) {
+        content.replace(selStart, selEnd, String.valueOf(current).toUpperCase());   //切换为大写
+        removeTimeouts(content);
+        new Timeout(content); // for its side effects
+        return true;
+    }
+    if (Character.isUpperCase(current)) {
+        content.replace(selStart, selEnd, String.valueOf(current).toLowerCase());   //切换为小写
+        removeTimeouts(content);
+        new Timeout(content); // for its side effects
+        return true;
+    }
+}
+```
+
+而在 WordResource.java 中有 private static String WORD_KEYCODE_STAR = "*+Δ¡¿£Φ\"¥ΓΛ¤ΩΠΨΣÇøΘΞØÄäÅåÆæàÉéèìÖöòÑñßÜüù§";
+在遇到 Δ 的时候就会一直在切换大小写，无法切换后后面的字符
+
+修改方案:
+只需要去掉 MultiTapKeyListener.java 中点击 * 键切换大小写的功能即可
+
+## 根据包名查看apk的安装路径
+
+``` bash
+adb shell pm path com.sagereal.launcher
+```
+
+## 39go无法打开 modemlog
+
+M:sagereal/mk/VQ288_common/k39tv1_bsp_512.mk
+MTK_DYNAMIC_CCB_BUFFER_GEAR_ID =
+
+M:sagereal/mk/VQ288_common/ProjectConfig.mk
+MTK_DYNAMIC_CCB_BUFFER_GEAR_ID =
+
+## EngineerMode 中没有 batterylog
+
+``` Java
+private static final String[] KEY_REMOVE_ARRAY = {"de_sense", "display", "battery_log", //只需要去掉 battery_log 就不会消失了
+```
+
+## 通过 "Outline" tag 来控制View是否高对比度显示
+
+``` Java
+Object mViewTag = getTag();
+if (mViewTag instanceof String) {
+    String mViewTagStr = (String)mViewTag;
+    if ("Outline".equalsIgnoreCase(mViewTagStr)) {
+        canvas.setHighContrastText(true);   //设置高对比度显示
+    }
+}
+```
+
+## dumpsys 系统服务
+
+``` bash
+$ adb shell service list 列出所有系统服务 然后通过dumpsys media.camera 打印media.camera服务的信息
+$ adb shell dumpsys meminfo 打印内存信息
+$ adb shell dumpsys SurfaceFlinger 显示当前应用的包名
+$ adb shell dumpsys activity
+$ adb shell dumpsys cpuinfo CPU
+$ adb shell dumpsys battery
+$ adb shell dumpsys window（最后部分可以看到分辨率的信息） 有些service能够接收额外的参数，我们可以使用-h查看帮助信息。
+$ adb shell dumpsys package -h
+$ adb shell dumpsys activity -h
+如adb shell dumpsys activity o 能够输出oom的值 adb shell dumpsys activity p 能够打印运行中的进程
+```
+
+## 39Go TPLink 中 FaceBook 图标显示白块
+
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commitdiff;h=24fd8a317d43a1c618a26a58101927139164c750
+M:alps/frameworks/base/core/java/android/app/Notification.java
+``` Java
+private void processSmallIconColor(Icon smallIcon, RemoteViews contentView, boolean ambient) {
+-            boolean colorable = !isLegacy() || getColorUtil().isGrayscaleIcon(mContext, smallIcon);
++            boolean colorable = getColorUtil().isGrayscaleIcon(mContext, smallIcon);
+```
+
+M:alps/vendor/mediatek/proprietary/packages/apps/SystemUI/src/com/android/systemui/statusbar/ExpandableNotificationRow.java
+``` Java
+-        boolean colorize = !isPreL || NotificationUtils.isGrayscale(expandedIcon,
++        boolean colorize = NotificationUtils.isGrayscale(expandedIcon, NotificationColorUtil.getInstance(mContext));
+```
+
+M:alps/vendor/mediatek/proprietary/packages/apps/SystemUI/src/com/android/systemui/statusbar/phone/NotificationIconAreaController.java
+``` Java
+-        boolean colorize = !isPreL || NotificationUtils.isGrayscale(v, mNotificationColorUtil);
++        boolean colorize = NotificationUtils.isGrayscale(v, mNotificationColorUtil);
+```
+
+## 强制修改 39Go TPLink 中安兔兔跑分中的参数
+
+一开始的时候在 setText() 方法中作的修改，但是在最新的antutu中不管用了，反编译发现最新的antutu中不再使用 setText() 来设置字符串了，而是把字符串分割成了单个的字符再append()到TextView中，应该是发现有太多的厂商强行修改这些参数，然而这并难不倒我们，修改方法如下。
+``` Java
+public void append(CharSequence text, int start, int end) {
+    if (!(mText instanceof Editable)) {
+        setText(mText, BufferType.EDITABLE);
+    }
+
+    ((Editable) mText).append(text, start, end);
+
+    //modified begin
+    if (getContext() != null) {
+        String packageName = getContext().getPackageName();
+        if ("com.antutu.ABenchMark".equalsIgnoreCase(packageName)) {
+            int textViewId = getContext().getResources().getIdentifier("item_hardware_text_desc", "id", "com.antutu.ABenchMark");
+            if (textViewId == getId()) {
+                String sizeStr = getContext().getResources().getString(getContext().getResources().getIdentifier("size_panel", "string", "com.antutu.ABenchMark"));
+                if (mText.toString().contains(sizeStr)) {
+                    mText = "5.45 " + sizeStr;
+                    setText(mText);
+                }
+            }
+        }
+    }
+    //modified end
+
+    if (mAutoLinkMask != 0) {
+        boolean linksWereAdded = Linkify.addLinks((Spannable) mText, mAutoLinkMask);
+        // Do not change the movement method for text that support text selection as it
+        // would prevent an arbitrary cursor displacement.
+        if (linksWereAdded && mLinksClickable && !textCanBeSelected()) {
+            setMovementMethod(LinkMovementMethod.getInstance());
+        }
+    }
+}
+```
+
+## TextView去掉上下边距？？？？
 
 ## AndroidManifest中的模板？？？？
 
