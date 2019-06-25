@@ -4536,6 +4536,73 @@ public void append(CharSequence text, int start, int end) {
 }
 ```
 
+## 查看文件夹占用磁盘空间大小
+
+``` bash
+du -h --max-depth=1
+```
+
+## 如何精简apk??
+
+https://blog.csdn.net/u013176138/article/details/78894538
+https://blog.csdn.net/xJ032w2j4cCjhOW8s8/article/details/80174800
+
+1.使用proguard混淆，规则是什么样的呢？
+    a. 修改该模块的Android.mk文件，添加如下内容：
+    LOCAL_PROGUARD_ENABLED := custom
+    LOCAL_PROGUARD_FLAG_FILES := proguard.flags
+
+    b. 编写一个文本文件，将其命名为proguard.flags，并将该文件放到与该模块的Android.mk相同的目录下；该文件开头部分内容需要填写：
+    -dontpreverify
+    -dontoptimize
+    -keepattributes *Annotation*
+    该文件其余部分根据模块的内容填写即可，文件格式可参考Codebase中其他proguard.flags文件(Codebase中有很多proguard.flags文件)
+
+2.优化图片资源，使用 webp 或 9.png 格式
+
+3.去掉一些没必要的分辨率
+
+## LCA项目，MTK_PRODUCT_LOCALES中"-sw600dp -sw720dp"的含义
+
+LCA项目中，为给img瘦身，若MTK_PRODUCT_LOCALES中定义了"-sw600dp -sw720dp"，则在MTK_LCA_ROM_OPTIMIZE为yes，且MTK_TABLET_PLATFORM为no的前提情况下，那些为Tablet（大屏幕设备）准备的资源（含有sw600dp，sw720dp限定符的resource目录）将不会被build到apk中。
+ 
+比如：
+定义MTK_PRODUCT_LOCALES=zh_CN en_US zh_TW hdpi -sw600dp -sw720dp
+假设某一app的res目录下，关于drawable，含有下面的资源目录：
+drawable
+drawable-hdpi
+drawable-land-hdpi
+drawable-land-mdpi
+drawable-land-xhdpi
+drawable-mdpi
+drawable-nodpi
+drawable-sw600dp-hdpi
+drawable-sw600dp-mdpi
+drawable-sw600dp-xhdpi
+drawable-sw720dp-hdpi
+drawable-sw720dp-mdpi
+drawable-sw720dp-xhdpi
+drawable-xhdpi
+
+那么，最终编译过后，apk中将只含有下面这些目录：
+drawable
+drawable-hdpi
+drawable-land-hdpi
+drawable-nodpi
+
+这样将大大减小img的大小，达到为project瘦身的目的。
+
+aapt2 link 怎么使用 --preferred-density 参数？？？
+
+device/mediatek/common/aapt_config.mk 中的参数好像不起作用？？
+
+## makefile 中打 log
+
+``` bash
+$(warning Warning:xxxx)
+eg:$(warning Warning:BUILD_FINGERPRINT=$(BUILD_FINGERPRINT))
+```
+
 ## TextView去掉上下边距？？？？
 
 ## AndroidManifest中的模板？？？？
