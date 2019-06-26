@@ -4596,11 +4596,46 @@ aapt2 link 怎么使用 --preferred-density 参数？？？
 
 device/mediatek/common/aapt_config.mk 中的参数好像不起作用？？
 
+1. 在L0(android 5.0)及之前的AOSP版本：
+在device\mediatek\$(proj_name)\full_$(proj_name).mk设置
+PRODUCT_AAPT_CONFIG := hdpi xhdpi xxhdpi 
+指定project支持的density.
+
+2. 在L1和M0(android 5.1之后版本):
+系统会通过屏幕height和width来算出project默认应该支持的density:
+device/mediatek/common/aapt/aapt_config.mk
+
+如果该默认值不符合您的要求，可以在device\mediatek\$(proj_name)\full_$(proj_name).mk中添加如下：
+PRODUCT_AAPT_PREF_CONFIG := xhdpi
+AAPT会将xhdpi的资源打包。如果此时找不到xhdpi资源, AAPT会去找其他分辨率。这种情况下，为避免资源缺失，至少会包一种类型的资源进来。所以这种case下，可能会发生系统编译进多种其他分辨率资源，导致rom变大的情况。
+
+注意1：PRODUCT_AAPT_PREF_CONFIG只能设置一种dpi。不能设置为PRODUCT_AAPT_PREF_CONFIG := xhdpi  xxhdpi 这种错误形式。
+注意2: PRODUCT_AAPT_CONFIG在L1上已经失效.
+
 ## makefile 中打 log
 
 ``` bash
 $(warning Warning:xxxx)
 eg:$(warning Warning:BUILD_FINGERPRINT=$(BUILD_FINGERPRINT))
+```
+
+## 监测设备是否root
+
+``` Java
+public boolean isRoot() {
+    boolean root = false;
+    try {
+        if(!("eng".equals(SystemProperties.get("ro.build.type")))){
+            if ((!new File("/system/bin/su").exists()) && (!new File("/system/xbin/su").exists())) {
+                root = false;
+            }else {
+                root = true;
+            }
+        }
+    } catch (Exception e) {
+    }
+    return root;
+}
 ```
 
 ## TextView去掉上下边距？？？？
