@@ -4638,6 +4638,10 @@ public boolean isRoot() {
 }
 ```
 
+## lint 命令行怎么使用？
+lint [flags] <project directory>
+gradlew lint
+
 ## TextView去掉上下边距？？？？
 
 ## AndroidManifest中的模板？？？？
