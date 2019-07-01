@@ -4642,6 +4642,206 @@ public boolean isRoot() {
 lint [flags] <project directory>
 gradlew lint
 
+## Selinux权限快速编译
+
+添加对应selinux权限到文件之后
+编译：
+source build/envsetup.sh
+lunch {prj}
+mmm system/sepolicy （O之后）
+mmm external/sepolicy （O之前）
+make -j24 ramdisk-nodeps
+make -j24 bootimage-nodeps
+重刷boot.img
+
+## Android.mk 文件中打印log
+
+有时候需要在Android.mk文件或者其他以 .mk结尾的文件中打印默写变量的值, 如何打印呢. 使用$(waing text ) 或者 $(error text) 语句,
+其中text 可以是普通文本 加 变量. 变量打印用$(val) sample:
+$(waing 111 $(TARGET_BOARD_PLATFORM_PRODUCT))
+$(warning Warning:BUILD_FINGERPRINT=$(BUILD_FINGERPRINT))
+$(error 111  $(TARGET_BOARD_PLATFORM_PRODUCT))
+Note: 如使用error, 打印完成后,停止向下继续执行
+
+## 添加系统应用引v7包
+
+部分模块没有添加V7包，导致有些主题（appcompat）不能使用。
+具体修改如下：
+在模块的android.mk下面添加：
+LOCAL_STATIC_JAVA_LIBRARIES := \
+    android-support-v7-appcompat
+
+LOCAL_RESOURCE_DIR += \
+    $(LOCAL_PATH)/res \
+    $(LOCAL_PATH)/../../../../prebuilts/sdk/current/support/v7/appcompat/res       //v7/路径
+
+LOCAL_AAPT_FLAGS := \
+    --auto-add-overlay \
+    --extra-packages android.support.v7.appcompat
+
+## 默认语言不会随着sim卡变化而变化
+
+``` Java
+alps/vendor/mediatek/proprietary/packages/services/Telephony/src/com/android/phone/PhoneInterfaceManager.java
+-        final Locale mccLocale = MccTable.getLocaleFromMcc(mPhone.getContext(), mcc, simLanguage);
++        //final Locale mccLocale = MccTable.getLocaleFromMcc(mPhone.getContext(), mcc, simLanguage);
++        //redmine139979 panhaoda modify for language not change from sim 2018 0704 begin
++        final Locale mccLocale = null;
++        //redmine139979 panhaoda modify for language not change from sim 2018 0704 end
+```
+
+## smaps 各个字段含义
+
+``` bash
+adb shell ps | grep "systemui"
+
+adb shell cat /proc/${pid}/smaps
+
+ffff0000-ffff1000 r-xp 00000000 00:00 0          [vectors]
+Size:                  4 kB
+Rss:                   0 kB
+Pss:                   0 kB
+Shared_Clean:          0 kB
+Shared_Dirty:          0 kB
+Private_Clean:         0 kB
+Private_Dirty:         0 kB
+Referenced:            0 kB
+Anonymous:             0 kB
+AnonHugePages:         0 kB
+Shared_Hugetlb:        0 kB
+Private_Hugetlb:       0 kB
+Swap:                  0 kB
+PSwap:                 0 kB
+SwapPss:               0 kB
+KernelPageSize:        4 kB
+MMUPageSize:           4 kB
+Locked:                0 kB
+VmFlags: rd ex mr me
+
+第一行： 
+08048000-080bc000 地址空间的开始地址 - 结束地址 
+r-xp 属性。前三个是rwx（读、写、可执行）,如果不具有则为“-”。最后一个是p/s(私有/共享) 
+00000000 偏移量。如果这段内存是从文件里映射过来的，则偏移量为这段内容在文件中的偏移量。如果不是从文件里面映射过来的则为0. 
+03:02 If the region was mapped from a file, this is the major and minor device number (in hex) where the file lives. 
+13130 If the region was mapped from a file, this is the file number. 
+/bin/bash If the region was mapped from a file, this is the name of the file. This field is blank for anonymous mapped regions. There are also special regions with names like [heap], [stack], or [vdso]. [vdso] stands for virtual dynamic shared object. It’s used by system calls to switch to kernel mode.
+
+Rss-Resident Set Size 实际使用物理内存（包含共享库占用的内存） 
+Rss=Shared_Clean+Shared_Dirty+Private_Clean+Private_Dirty 
+Pss 实际使用的物理内存（按比例包含共享库占用的内存）。比如四个进程共享同一个占内存1000MB的共享库，每个进程算进250MB在Pss。 
+Shared_Clean 、 Shared_Dirty 、 Private_Clean、 Private_Dirty 
+（shared/private）共享和私有 
+一个页的clean字段表示没有更改此页，当发生换页时不用写回。dirty表示更改了此页，当发生换页时要写回磁盘。此处这四个值是遍历页表中各个页后得到的。 
+“Referenced” indicates the amount of memory currently marked as referenced or accessed. “Anonymous” shows the amount of memory that does not belong to any file. Even a mapping associated with a file may contain anonymous pages: when MAP_PRIVATE and a page is modified, the file page is replaced by a private anonymous copy. “Swap” shows how much would-be-anonymous memory is also used, but out on swap.
+```
+
+## meminfo 各个字段含义
+ 
+``` bash
+adb shell dumpsys meminfo com.android.systemui
+
+Applications Memory Usage (in Kilobytes):
+Uptime: 560220 Realtime: 560220
+
+** MEMINFO in pid 875 [com.android.systemui] **
+                   Pss  Private  Private  SwapPss     Heap     Heap     Heap
+                 Total    Dirty    Clean    Dirty     Size    Alloc     Free
+                ------   ------   ------   ------   ------   ------   ------
+  Native Heap     7482     7324      108     2073    12544    10061     2482
+  Dalvik Heap     4124     4004       12      147     7038     3519     3519
+ Dalvik Other     1522     1516        4       16                           
+        Stack       44       44        0        0                           
+       Ashmem        2        0        0        0                           
+    Other dev       16        0       12        0                           
+     .so mmap     6851      132      732       77                           
+    .apk mmap     6026        0     5528        0                           
+    .ttf mmap      385        0      256        0                           
+    .dex mmap     5151        0      688        0                           
+    .oat mmap     3584        0       64        0                           
+    .art mmap     2249      784       60       32                           
+   Other mmap     2587        4     1388        1                           
+   EGL mtrack       62       62        0        0                           
+    GL mtrack     5289     5289        0        0                           
+      Unknown      652      560       92      101                           
+        TOTAL    48473    19719     8944     2447    19582    13580     6001
+ 
+ App Summary
+                       Pss(KB)
+                        ------
+           Java Heap:     4848
+         Native Heap:     7324
+                Code:     7400
+               Stack:       44
+            Graphics:     5351
+       Private Other:     3696
+              System:    19810
+ 
+               TOTAL:    48473       TOTAL SWAP PSS:     2447
+ 
+ Objects
+               Views:      376         ViewRootImpl:        3
+         AppContexts:        5           Activities:        0
+              Assets:        7        AssetManagers:        0
+       Local Binders:      156        Proxy Binders:       55
+       Parcel memory:       20         Parcel count:      110
+    Death Recipients:        2      OpenSSL Sockets:        0
+            WebViews:        0
+ 
+ SQL
+         MEMORY_USED:        0
+  PAGECACHE_OVERFLOW:        0          MALLOC_SIZE:        0
+
+
+PSS TOTAL:              内存锁实际占用的值
+Dalvik Heap Alloc:      Runtime.totalMemory() - Runtime.freeMemory(), Dalvik Heap 分配的内存大小
+Dalvik Heap Free:       Runtime.freeMemory()  获得，DalvikHeap 剩余的内存大小
+Dalvik Heap size:       Runtime.totalMemory() 获得，DalvikHeap 总共的内存大小 = Heap Alloc + Heap Free
+.so mmap                C库代码占用的内存
+.jar mmap               Java文件代码占用的内存
+.apk mmap               apk代码占用的内存
+.ttf mmap               ttf文件代码占用的内存
+.dex mmap               dex文件代码占用的内存
+Other mmap              其他文件占用的内存
+Cursor                  /dev/ashmem/Curxor Cursor消耗的内存(KB)
+Ashmem                  /dev/ashmem，匿名共享内存用来提供共享内存通过分配一个或多个进程可以共享的带名称的内存块
+Other dev               /dev/,内部driver占用的在 Other dev
+```
+
+## showmap
+
+``` bash
+adb shell showmap ${pid}
+```
+
+## procrank
+
+``` bash
+VSS - Virtual Set Size 虚拟耗用内存（包括共享库占用的内存）
+RSS - Resident Set Size 实际使用物理内存（包括共享库占用的内存）
+PSS - Proportional Set Size 实际使用的物理内存（比例分配共享库占用的内存）
+USS - Unique Set Size 进程独自占用的物理内存（不包括共享库占用的内存）
+
+
+VSS：VSS表示一个进程可訪问的所有内存地址空间的大小。
+
+这个大小包含了进程已经申请但尚未使用的内存空间。在实际中非常少用这样的方式来表示进程占用内存的情况，用它来表示单个进程的内存使用情况是不准确的。
+RSS：表示一个进程在RAM中实际使用的空间地址大小。包含了所有共享库占用的内存。这样的表示进程占用内存的情况也是不准确的。
+PSS：表示一个进程在RAM中实际使用的空间地址大小，它按比例包括了共享库占用的内存。假如有3个进程使用同一个共享库，那么每一个进程的PSS就包括了1/3大小的共享库内存。
+
+这样的方式表示进程的内存使用情况较准确。但当仅仅有一个进程使用共享库时，其情况和RSS一模一样。
+USS：表示一个进程本身占用的内存空间大小，不包括其他不论什么成分，这是表示进程内存大小的最好方式！
+```
+
+## free命令查看剩余可用空间
+
+``` bash
+free 命令显示系统使用和空闲的内存情况，包括物理内存、交互区内存(swap)和内核缓冲区内存。
+		    total        used        free      shared     buffers
+Mem:        441946112   432463872     9482240     1175552     1437696
+-/+ buffers/cache:      431026176    10919936
+Swap:       331452416    91521024   239931392
+```
+
 ## TextView去掉上下边距？？？？
 
 ## AndroidManifest中的模板？？？？
