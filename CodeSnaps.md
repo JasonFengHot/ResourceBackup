@@ -3784,7 +3784,8 @@ Java Thread 使用场景
 ## 性能优化
 
 ``` Java
-根据 SystemServer.java 中的代码去掉一些不用的feature
+根据 SystemServer.java 中的代码去掉一些不用的feature和service
+去掉 init.rc 中启动的一些不需要的服务
 媒体播放：预留给视频解码器可以去掉，操作系统看不到
 界面：硬件拉伸缓存，芯片厂商SDK配置，操作系统可见
 Java堆大小全局配置，堆调小。
@@ -3792,8 +3793,9 @@ JVM预加载jar包，可以不加载部分不用的jar包
 swap分区在内存不足的情况下，擦写频繁对flash压力大
 内存裁剪：不用的驱动通过menuconfig裁掉
 socket缓存调小，默认256k，多个socket消耗更多内存
-去掉一些不用的监听
-去掉 init.rc 中启动的一些不需要的服务
+去掉一些不用的监听，ContentObserver
+去掉一些广播和广播监听器
+
 
 1、移除或修改Window默认的Background
 2、移除XML布局文件中非必需的Background

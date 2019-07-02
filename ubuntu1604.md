@@ -392,6 +392,16 @@ Acquire::socks::proxy "socks://127.0.0.1:8118/";
 # ~/.bashrc
 export http_proxy=http://127.0.0.1:8118/
 export https_proxy=http://127.0.0.1:8118/
+
+# 取消设置
+unset http_proxy
+unset https_proxy
+
+# /etc/environment
+http_proxy="http://127.0.0.1:8118/"
+https_proxy="https://127.0.0.1:8118/"
+ftp_proxy="ftp://127.0.0.1:8118/"
+socks_proxy="socks://127.0.0.1:8118/"
 ```
 
 ## 查看端口占用情况
@@ -458,10 +468,53 @@ gedit ~/.config/electron-ssr/gui-config.json
 	],
 ```
 
+## 安装v2ray
+
+``` bash
+sudo snap install v2ray-core
+
+or
+
+bash <(curl -L -s https://install.direct/go.sh)
+
+or
+
+brew tap v2ray/v2ray
+brew install v2ray-core
+brew update
+brew upgrade v2ray-core
+
+vim /usr/local/etc/v2ray/config.json
+
+brew services run v2ray-core
+
+brew services start v2ray-core
+
+
+# 一键脚本安装
+下载并安装 V2Ray:
+wget https://install.direct/go.sh && sudo bash go.sh
+
+配置文件:
+/etc/v2ray/config.json
+
+使用以下命令启动 V2Ray:
+sudo systemctl start v2ray
+
+停止运行 V2Ray：
+sudo systemctl stop v2ray
+
+重启 V2Ray:
+sudo systemctl restart v2ray
+```
+
 ## 安装proxychains
 
 ``` bash
 sudo apt-get install proxychains
+
+测试
+proxychains wget http://www.google.com
 ```
 
 ## 配置Shadowsocks PAC全局代理
