@@ -218,7 +218,7 @@ fix:
 #out/host/linux-x86/bin/jack-admin start-server
 
 
-## fatal error: openssl/bio.h: No such file or directory 解决方案
+## 如意项目 fatal error: openssl/bio.h: No such file or directory 解决方案
 
 出现这个或者fatal error: openssl/名单.h: No such file or directory。都是没有安装libssl-dev～
 libssl-dev包含libraries, header files and manpages，他是openssl的一部分，而openssl对ssl进行了实现～
@@ -568,6 +568,12 @@ sudo apt-get install shadowsocks-qt5
 download the latest version from official website
 ```
 
+## android studio 编译失败 Connection refused (Connection refused)
+
+```
+去掉 gradle.properties 中的代理
+```
+
 ## 安装最新版 Eclipse
 
 ``` bash
@@ -585,7 +591,7 @@ sudo apt-get install eclipse
 安装fx插件
 http://download.eclipse.org/efxclipse/updates-released/2.3.0/site
 
-fxjava的jar包
+JavaFx的jar包
 https://github.com/qweasdzxcpoi/JavaFX/blob/master/jfxrt.jar
 
 问题：Graphics Device initialization failed for :  es2, sw
@@ -602,6 +608,11 @@ https://github.com/qweasdzxcpoi/JavaFX/blob/master/jfxrt.jar
 
 问题：monitor打不开，java.lang.IllegalStateException: Unable to acquire application service. Ensure that the org.eclipse.core.runtime bundle is resolved and started (see config.ini).
 解决：只要通过 sudo update-alternative --config java 把java版本改为1.8即可
+
+问题：从 ubuntu 软件中心安装的 eclipse 少一个包导致 java.lang.ClassNotFoundException: org.eclipse.core.runtime.adaptor.EclipseStarter Eclipse启动失败
+
+解决：
+下载 https://mvnrepository.com/artifact/org.eclipse.maven/org.eclipse.osgi.source/3.8.0 放到 plugins 里面
 ```
 
 ## Ubuntu18.04 下 draw9patch 出现 org.GNOME.Accessibility.AtkWrapper 问题
