@@ -4862,6 +4862,68 @@ Mem:        441946112   432463872     9482240     1175552     1437696
 Swap:       331452416    91521024   239931392
 ```
 
+## reserve memory 查看和详情
+
+https://online.mediatek.com/FAQ#/SW/FAQ21499
+```
+一个固定的内存，通过proc/meminfo 发现total memory 并不是全部的内存，那剩下的的内存如何查看？
+都是做了什么？
+ 
+部分kernel代码、modem ,  tee,  framebuffer 等都会占用一部分的内存
+
+MTK 有相关内容的记录
+k71v1_64_bsp:/proc/mtk_memcfg # ls
+memory_layout reserve_memory total_reserve
+ 
+k71v1_64_bsp:/proc/mtk_memcfg # cat reserve_memory
+*mblock-15-ccci: 80412672
+mblock-9-dtb_kernel_addr_mb: 524288
+ram_console-reserved-memory@54400000: 65536
+pstore-reserved-memory@54410000: 917504
+minirdump-reserved-memory@544f0000: 65536
+mblock-4-atf-reserved: 262144
+mblock-7-pl-bootarg: 2097152  // pl 
+mblock-8-lk_addr_mb: 4194304 // lk 
+reserve-memory-dram_r0_dummy_read: 4096
+mblock-12-SPM-reserved: 65536
+mblock-10-framebuffer: 29229056  //framebuffer
+mblock-6-SSPM-reserved: 786432
+mblock-3-log_store: 262144  // log 
+*mblock-16-ccci: 23068672  // modem
+*mblock-14-ccci: 1048576
+reserve-memory-scp_share: 20971520
+reserve-memory-sspm_share: 5308416
+mblock-13-SCP-reserved: 6291456
+consys-reserve-memory: 2097152
+mblock-11-vpu_binary: 44105728
+mblock-5-atf-log-reserved: 262144
+mblock-1-dramc-rk0: 4096
+mblock-2-dramc-rk1: 4096
+kernel(text): 13340672
+kernel(data): 14116716
+kernel(page): 67108800
+kernel(other): 12486868
+
+k71v1_64_bsp:/proc/mtk_memcfg # cat total_reserve
+321388 kB
+ 
+321388 kB = 321388 /1024 =  313 MB
+ 
+totoal  meminfo 
+ 
+k71v1_64_bsp:/proc/mtk_memcfg # cat /proc/meminfo
+MemTotal: 3872916 kB
+MemFree: 119676 kB
+MemAvailable: 2269012 kB
+Buffers: 218348 kB
+ 
+MemTotal: 3872916 kB =  3872916  / 1024  = 3782.14 MB
+ 
+4G =4096MB - 313 MB = 3783M
+ 
+physics RAM = Total meminfo + total_reserve
+```
+
 ## TextView去掉上下边距？？？？
 
 ## AndroidManifest中的模板？？？？
