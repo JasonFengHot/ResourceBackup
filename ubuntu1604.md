@@ -1564,11 +1564,21 @@ xhost +
 
 dconf-editor
 
+## 通过命令拷贝文件到服务器
+
+```
+命令行访问192.168.0.31/bal，该服务器使用的是windows共享，服务器共享方式不同，使用的访问方法也不一样，目前已经经过测试的访问windows共享的可行的方法如下：
+(1). 安装cifs功能包：sudo apt-get install cifs-utils
+(2). 创建挂载文件夹，如果已有该文件夹，可以不用创建：sudo mkdir /mnt/wind
+(3). 使用命令挂载：sudo mount -t cifs -o username=gsm\\63994,password=smn123456 //192.168.0.31/bal /mnt/wind
+(4). 进入挂载文件夹就可以查看服务器中的文件：cd /mnt/wind; ls
+```
+
 ## TodoList
 
 ``` bash
 notice 修改成功和失败时候的铃声和图标
-如何判断某个模块没有发生变化？
+如何判断某个模块有没有发生变化？
 如何在程序中执行脚本？QT？
 把lint功能整合进来？lint怎么用？？？？？？？？？
 如何检测手机是否开机？
