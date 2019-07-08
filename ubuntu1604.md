@@ -220,7 +220,7 @@ fix:
 
 ## 如意项目 fatal error: openssl/bio.h: No such file or directory 解决方案
 
-出现这个或者fatal error: openssl/名单.h: No such file or directory。都是没有安装libssl-dev～
+出现这个或者 fatal error: openssl/bio.h: No such file or directory。都是没有安装libssl-dev～
 libssl-dev包含libraries, header files and manpages，他是openssl的一部分，而openssl对ssl进行了实现～
 
 ``` bash
@@ -390,6 +390,10 @@ Acquire::socks::proxy "socks://127.0.0.1:8118/";
 
 
 # ~/.bashrc
+export http_proxy=http://127.0.0.1:8118/
+export https_proxy=http://127.0.0.1:8118/
+
+# ~/.zshrc
 export http_proxy=http://127.0.0.1:8118/
 export https_proxy=http://127.0.0.1:8118/
 
@@ -1572,6 +1576,36 @@ dconf-editor
 (2). 创建挂载文件夹，如果已有该文件夹，可以不用创建：sudo mkdir /mnt/wind
 (3). 使用命令挂载：sudo mount -t cifs -o username=gsm\\63994,password=smn123456 //192.168.0.31/bal /mnt/wind
 (4). 进入挂载文件夹就可以查看服务器中的文件：cd /mnt/wind; ls
+```
+
+## 安装运行 docker
+
+``` bash
+sudo apt-get install docker.io
+// 配置加速器
+/etc/docker/daemon.json
+{
+    "registry-mirrors": ["http://hub-mirror.c.163.com"]
+}
+
+sudo usermod -aG docker zq
+sudo service docker start
+```
+
+## 安装运行 battery-historian
+
+``` bash
+docker run --name=battery -d -p 9999:9999 bhaavan/battery-historian
+在浏览器中打开 localhost:9999  //貌似不太好用，可以尝试自己搭建一个 battery-historian
+
+or
+
+需要翻墙才能会显示 submit 按钮？？
+https://bathist.ef.lc/
+
+导出 bugreport
+在Android 7.0以及之后都采用 adb bugreport bugreport.zip
+在Android 7.0之前采用 adb bugreport > bugreport.txt
 ```
 
 ## TodoList

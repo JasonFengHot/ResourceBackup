@@ -4924,6 +4924,388 @@ MemTotal: 3872916 kB =  3872916  / 1024  = 3782.14 MB
 physics RAM = Total meminfo + total_reserve
 ```
 
+## Android P one 版本默认底层配的 device version为 HAL3.2，如果想改为 HAL1.0
+
+``` C
+在文件 alps/vendor/mediatek/proprietary/custom/mt6739/hal/imgsensor_metadata/common/config_static_metadata_common.h 中把
+case 0:
+    CONFIG_METADATA_BEGIN(MTK_HAL_VERSION)
+    CONFIG_ENTRY_VALUE(MTK_HAL_VERSION_3_2, MINT32)
+    CONFIG_METADATA_END()
+    break;
+case 1:
+    CONFIG_METADATA_BEGIN(MTK_HAL_VERSION)
+    CONFIG_ENTRY_VALUE(MTK_HAL_VERSION_3_2, MINT32)
+    CONFIG_METADATA_END()
+    break;
+改为
+case 0:
+    CONFIG_METADATA_BEGIN(MTK_HAL_VERSION)
+    CONFIG_ENTRY_VALUE(MTK_HAL_VERSION_1_0, MINT32)
+    CONFIG_METADATA_END()
+    break;
+case 1:
+    CONFIG_METADATA_BEGIN(MTK_HAL_VERSION)
+    CONFIG_ENTRY_VALUE(MTK_HAL_VERSION_1_0, MINT32)
+    CONFIG_METADATA_END()
+    break;
+```
+
+## 根据 SIM 卡的 mccmnc 设置语言
+
+``` Java
+MccTable.java updateMccMncConfiguration() 中添加
+setLocaleFromMccIfNeeded(context, mcc);     //部分平台没有这个方法，需要自行添加实现部分的代码
+```
+
+## 开机后发现Home和Menu功能不正常
+
+``` Java
+原因是开机向导过程中意外关机导致 Settings.Global.DEVICE_PROVISIONED 这个值没有写入到数据库中
+M:frameworks/base/services/core/java/com/android/server/pm/PackageManagerService.java文件中的setEnabledSetting方法中   ----->redmine62528
+try {
+    if(packageName.equals("com.google.android.setupwizard") && !(newState == COMPONENT_ENABLED_STATE_ENABLED||newState == COMPONENT_ENABLED_STATE_DEFAULT)) {
+        if (android.provider.Settings.Global.getInt(mContext.getContentResolver(),android.provider.Settings.Global.DEVICE_PROVISIONED, 0) == 0) {
+            android.provider.Settings.Global.putInt(mContext.getContentResolver(), android.provider.Settings.Global.DEVICE_PROVISIONED, 1);
+        }
+    }
+} catch (Exception e) {
+}
+adb shell settings put global xxx 1
+```
+
+## 在 app 中使用自定义字体
+
+``` Java
+//package/apps/calculate/里面新建assets/fonts文件夹，然后把那个.otf/.ttf文件放到里面
+Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/HelveticaNeueLTStd-UltLt.otf");
+setTypeface(typeface);
+```
+
+## SIM卡联系人数量显示的与实际不符
+
+```
+SIM卡联系人数量显示的与实际不符（SIM卡中有很多联系人，选择删除所有SIM卡联系人，删除过程中下拉状态栏，点击“联系人”正在运行，选择强制停止后返回联系人。sim卡中联系人的数量没有变，重启后才会减少。）
+1、sim卡中的联系人删除原理：删除过程中首先删除的是sim卡里的数据，然后去删除数据库的数据，如果在删除过程中强制停止的话，可能就只删除了sim卡里面的数据，而还没有删除掉数据库的数据，然后再打开联系人的时候，它会根据数据库的数据进行更新，如果数据库没被 删除掉的话，联系人的数据也就不会变了，因此出现了上述的bug情况。
+2、手机中联系人删除原理：删除过程中是直接删除数据库的数据，不会出现上述情况。
+3、手机重启联系人会更新的原理：手机重启后，会先把数据库中关于sim卡的数据进行删除，然后再从sim卡中把那些号码导入到数据库，这样数据库的数据就会跟sim卡的数据一样，然后再从数据库读取数据显示出来就会是最新的。
+4、无法修改原因：我通过调试和使用MTKlog抓取log的方法，在删除联系人的地方发现了有关它删除sim卡联系人的方法，然后进行修改，最终发现更新功能是能实现，但是删除的速度会减慢，本来是100条删除一次，现在变成每1条删除一次，这样会严重影响效率，而且该bug的操作我认为是非法操作，手机已经提醒如此操作会使数据发生错乱，综合上面种种原因，我认为该bug不用修改。
+5、删除sim卡联系人数据具体方法：trunk/Packages/apps/Contacts/src/com/mediatek/contacts/list/DeleteProcessor.java中的runInternal()方法中。
+```
+
+## (情景模式)勾选触摸提示音，每次约5s后第一次触摸时触摸音较小，之后触摸声音会变大一点(主要还是要注意kernel修改以后怎么把它烧到手机里面去)
+
+```
+注意：先进入mediatek/config/所编的工程/ProjectConfig.mk,然后搜索CUSTOM_KERNEL_SOUND，看我们所使用su_android_speaker.c
+1.打开mediatek/custom/common/kernel/sound/上一步搜索出来的文件夹/yusu_android_speaker.c，然后把define CONFIG_DEBUG_MSG前面的“//”去掉，接着把define SPK_WARM_UP_TIME的参数改为50，然后再Sound_Speaker_Turnon方法下面加上了两句log。
+2.在终端里执行./mk sagetel82_wet_kk r kernel
+3.在终端里执行./mk bootimage
+4.在终端里执行./copy_sagetel82_wet_kk.sh
+5.然后用Release_SW文件夹进行刷机
+然后就可以了！
+```
+
+## 为什么第一次编译的时候要"./mk 工程名 new"，而第二次编的与上一次编的是同一个工程的话，我们直接"./mk new"就可以了？
+
+```
+这是因为你把工程下下来后，第一次编译的时候会编译产生makeMtk.ini文件，然后再这个文件里面会把第一次输入的"./mk 工程名 new"中的工程名记录到这个文件里面,然后下次编译再你不写工程名的时候就会默认为makeMtk.ini文件的工程名
+```
+
+## 经常会出现开机logo显示正确，而关机充电图标显示乱，
+
+```
+原因：
+1、我们少修改了一个文件mediatek/custom/common/lk/include/target/cust_display.h)以tecno的UP07为例，config文件中BOOT_LOGO=fwvga_tecno_d7 
+tecnoD7项目是FWVGA的分辨率，因此需要在cust_display.h的FWVGA最后添加一句
+#elif defined(FWVGA) || defined(CU_FWVGA) || defined(CMCC_FWVGA) || defined(FWVGA_TECNO_D7) (这个的分辨率是fwvga 480*854，所以每个项目都要到projectConfig.mk文件中找到手机对应的分辨率)
+如果你的分辨率是320*480的话，就要在该文件中的#elif defined(HVGA) || defined(CU_HVGA) || defined(CMCC_HVGA) || defined(CT_HVGA) || defined(HVGA_UP11)加了，可以直接搜索分辨率(320*480)
+注：BOOT_LOGO中定义的是小写的，而cust_display.h中需要写成大写的
+2、你要去看mediatek/custom/common/lk/logo中的图片的分辨率是否正确！
+```
+
+## FeatureOption.java 的位置
+
+```
+out/target/product/mq16_h451_t3_p/obj/JAVA_LIBRARIES/mediatek-common_intermediates/FeatureOption.java（看宏编译后生成的是什么就再java文件中调用什么，注意有些宏再projectConfig.mk文件中的宏名字和featrueoption产生的宏名字不一样，如果我们要使用这个宏的话以编后再featrueoption生成的为准）
+```
+
+## [默认值]usb默认联接用Media device(MTP)而不用USB Storage
+
+```
+方法：[FAQ04464] [USB]如何修改USB连接后的默认功能
+/build/core/main.mk 中搜索 ADDITIONAL_DEFAULT_PROPERTIES += persist.sys.usb.config，会发现默认连接值用哪个可以用宏控制，MTK_MASS_STORAGE
+```
+
+## [默认值]短信转彩信条数
+
+```
+短信字数到达一定数字短信变成彩信（redmine 6837）
+SAGEREAL_SMSTOMMS_LIMIT，这个宏要打开!
+该功能修改再MmsConfig.java文件里面！
+
+1.短信变为彩信？？？？
+解决：
+packages/apps/Mms/res/xml/mms_config.xml
+<!-- Maximum number of SMS message segments in a long text message before converting the SMS message to an MMS message. -->
+<int name="smsToMmsTextThreshold">7</int>
+```
+
+## [默认值]当用USB链接的时候，USB名称修改
+
+```
+1、打开/system/vold/Fat.cpp，然后 if(isInttrunkernalSd)下面把要修改的名字修改了！（相当于我的电脑上显示出来的名称）
+2、是按照客户需求名称汇总表20131105文件修改！（这个是虚拟机上面的设备-->分配设备）
+```
+
+## [默认值]照片详情中 maker,modle 名称修改
+
+```
+1、mediatek/custom/mt6572/hal/camera/camera/camera_custom_if.cpp中修改（jb3），可以搜索CUSTOM_EXIF_STRING_MAKE
+2、mediatek/custom/up09l_h401_ddm_single/hal/inc/camera_custom_exif.h（kk），可以搜索CUSTOM_EXIF_STRING_MAKE
+3、mediatek/custom/common/hal/inc/camera_custom_exif.h（kk），可以搜索CUSTOM_EXIF_STRING_MAKE
+4、../sagereal/mk/UP19_H353_Vodacom/full_sr6572_wet_l.mk (l),可以搜索PRODUCT_MANUFACTURER和PRODUCT_MODEL
+
+TODO : 其他平台的也更新进来？？？
+```
+
+## launcher界面最下面排顺序（Hotseat）-->[FAQ10350] 如何修改Allapp Button的位置
+
+```
+1、/packages/apps/Launcher2/res/xml/default_workspace.xml中修改除了app button以外按钮的顺序，就是Hotseat
+然后/packages/apps/Launcher2/src/com/android/launcher2/Hotseat.java中有一个Allapp Button的默认位置，是通过/packages/apps/Launcher2/res/values/config.xml中的hotseat_all_apps_index值设置的，如果你要把all button的位置也修改了，必须要把这个hotseat_all_apps_index默认值给修改了,当然那个默认值修改后你要把default_workspace.xml中的hotseat的其他图标的位置做相应的修改！
+2、/packages/apps/Launcher3:
+DynamicGrid.java文件
+hotseatAllAppsRank = (int) (numColumns/2); //默认是列数除以2取整，可以设置为需要的值,(比如说(int) (numColumns/2)-1就是相当与把Allapp Button向左移动了一位，当然在default_workspace.xml中要把原来在Allapp Button左边的那个应用的位置给让出来！)
+```
+
+## [6504]（设置）选择使用网络自动更新时间后，时间不准确
+
+```
+frameworks/base/services/java/com/android/server/NetworkTimeUpdateService.java
+进入文件，然后把"203.160.128.59","2.android.pool.ntp.org","time-a.nist.gov"中的"203.160.128.59"注销掉，因为这个通过这个服务器获得的时间是有问题，导致了这个时间不准确！
+```
+
+## [6509](情景模式)勾选触摸提示音，每次约5s后第一次触摸时触摸音较小，之后触摸声音会变大一点（第二十三条有详细步骤）
+
+```
+custom/common/kernel/sound/amp_aw8145/yusu_android_speaker.c
+然后把 SPK_WARM_UP_TIME 的数值修改！
+```
+
+## [6410](通话记录)通话记录详情界面进入到电话本记录后，按返回键退出的不是上一个界面
+
+```
+packages/apps/Dialer/src/com/android/dialer/CallDetailActivity.java
+把 onPostExecute() 中的 mainActionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP)注销掉！
+```
+
+## [11203] pls remove the calendar option
+
+```
+packages/apps/Mms/src/com/android/mms/util/MessageConsts.java
+把calendar的项给去掉，然后进入 packages/apps/Mms/res/values/mtk_arrays.xml 把calendar的项去掉
+
+packages/apps/Mms/src/com/mediatek/ipmsg/ui/SharePanel.java
+把多余的一页去掉！
+```
+
+## [11786](相机)后置摄像头拍照的预览大小更换为全屏后，再更换为4:3，默认像素变为8M
+
+```
+描述：手机默认像素为13.1M，后置摄像头的预览大小默认为4:3，更换为全屏后，像素变为6M，再更换为4:3后，像素默认为8M
+期望：更换为4:3，像素应该仍然为默认值13.1M；全屏的像素为6M，请确认是否正确
+首先去找projectconfig.mk文件中的CUSTOM_HAL_MAIN_IMGSENSOR（后摄像头），然后按照这个找到/mediatek/custom/mq16_h504_c5vp/hal/imgsensor/ov8858_mipi_raw/config.ftbl.ov8858_mipi_raw.h文件
+一般在java和xml文件中已经把每个比例的所有pictrue size都写进去了，只是config.ftbl.ov8858_mipi_raw.h这个文件中没有把所有的东西写进去（每个比例写了哪几个就在手机上显示哪几个尺寸）
+```
+
+## [FAQ02892] 紧急号码的管理及客制化方法
+
+```
+思想大义：framework/base/telephony/java/android/telephony/PhoneNumberUtils.java 中的 isEmergencyNumber 为 true，isSpecialEmergencyNumber 为 false
+1、不插卡时：framework/base/telephony/java/android/telephony/PhoneNumberUtils.java 中的 isEmergencyNumber(String number) 方法中是有插卡和不插卡的两个方法(可以直接抓取log看，一般就能看出有卡和无卡情况下怎么修改)
+isEmergencyNumber(String number)方法中当int eccNo = 9;
+String[] emergencyNumList = {"112", "911", "000", "08", "110", "118", "119", "999", "123"}中把要加的号码加上去（一般再SIM4的判断后面是无sim情况的）
+2、插卡时：打开 mediatek/frameworks/base/op/java/com/mediatek/op/telephony/PhoneNumberExt.java，有 isCustomizedEmergencyNumber(String number, String plusNumber, String numberPlus) 方法，然后就可以在这里加上你要定制的紧急拨号号码！（特殊情况：如果是去掉911号码要在PhoneNumberUtils中判断sim1的时候（有注释的），直接在判断方法中把911去除）
+ps：编译 mediatek/frameworks/base/op/java/com/mediatek/op/telephony/PhoneNumberExt.java 该文件的时候可以编译 ./mk -t mm mediatek/frameworks/base
+
+ps:在插入卡的时候会发现在默认112、911为紧急拨号，如果要去除的话，要在 frameworks/opt/telephony/src/java/com/android/internal/telephony/uicc/SIMRecords.java 文件中handleMessage(Message msg)方法中 case EVENT_GET_SIM_ECC_DONE和case EVENT_GET_USIM_ECC_DONE下有个mEfEcc = "112,911"
+
+[FAQ21186] 特定运营商紧急号码配置（After Android O）
+```
+
+## 查看sim卡信息
+
+```
+*#*#4636#*#*
+```
+
+## 改了宏该如何编译(KK)
+
+```
+需要编译mediatek/frameworks/common(不需要push进去)，然后把使用宏的java代码重新编译一下，push到手机上就会有新的现象产生！
+```
+
+## [shell]通过终端找字符串
+
+``` bash
+find . | xargs grep -n --color "orange"
+grep "字符" ./ -r(./代表当前文件夹，-r代表遍trunk历)
+```
+
+## 如何确定全屏时屏幕比例
+
+```
+再 ProjectConfig.mk 文件中搜索LCM，会找到一个宽度和一个高度，然后比一下就会出来全屏的比例！
+```
+
+## [adb]抓取kernel log
+
+``` bash
+adb shell cat /proc/kmsg > log.txt
+```
+
+## 如何修改actionbar上面的颜色
+
+```
+一般可先找到该activity到底是使用了哪种主题或者style到value/theme.xml（或style.xml）文件中找到相应的主题或者style，用android:windowBackground去设置！
+```
+
+## [默认值]camera闪光灯默认情况
+
+``` bash
+可以打开 package/apps/camera/res/values/string.xml,然后搜索 pref_camera_flashmode_default 就可以了！(R.styleable.ListPreference_defaultValue要去搜索defaultValue而不是去搜索ListPreference_defaultValue)
+```
+
+## [默认值]默认声音改成80%
+
+```
+可以打开/frameworks/base/media/java/android/media/AudioService.java，可以发现MAX_STREAM_VOLUME，这个数组里面有各种声音的最大值，STREAM_NOTIFICATION和STREAM_ALARM应该改成80%，然后进入/frameworks/base/media/java/android/media/AudioManager.java，搜索DEFAULT_STREAM_VOLUME，然后把STREAM_RING和STREAM_ALARM改成15x80%=12就可以了
+打开mediatek/frameworks/base/media/audio/java/com/mediatek/audioprofile/AudioProfileManager.java，然后搜索DEFAULT_NOTIFICATION_VOLUME_GENERAL和DEFAULT_ALARM_VOLUME_GENERAL，把他们改成15x80%=12就可以了！
+```
+
+## 如何修改邮件帐号类型和邮件签名
+
+``` Java
+帐号类型：packages/apps/Email/res/xml/providers.xml（redmine16643）
+邮件签名：（redmine30687）
+M:mediatek/config/mq16_h504_c5ql/sagereal_copy/packages/apps/Email/UnifiedEmail/src/com/android/mail/compose/ComposeActivity.java  -->appendSignature方法下
+if (TextUtils.isEmpty(newSignature)) {
+    newSignature  = getString(R.string.email_signature_h504_c5ql);
+}
+M:mediatek/config/mq16_h504_c5ql/sagereal_copy/packages/apps/Email/src/com/android/email/activity/setup/AccountSettingsFragment.java  -->loadSettings()方法下
+if (TextUtils.isEmpty(accountSignature)) {
+    accountSignature =getString(R.string.email_signature_h504_c5ql);
+} 
+M:packages/apps/Email/res/values/mtk_strings.xml
+M:packages/apps/Email/res/values-es/mtk_strings.xml
+```
+
+## [默认值]如何使settings/printing/cloud print默认为off
+
+``` Java
+frameworks/base/services/java/com/android/server/print/UserState.java  -->  enableSystemPrintServicesOnFirstBootLocked()
+if (builder.length() <= 0) {
+    return;
+}后面加上if (true) return; 
+相当于没有寻找到相关设备，默认就会是off 
+```
+
+## [默认值]修改 GPS 默认高精度 high accuracy
+
+```
+frameworks/base/packages/SettingsProvider/res/values/defaults.xml
+把 def_location_providers_allowed 设置为 gps,network 然后清理一下 SettingsProvider 的数据或恢复出厂设置就可以了！
+```
+
+## [默认值]修改make passwords visible默认为off
+打开frameworks/base/packages/SettingsProvider/src/com/android/providers/settings/DatabaseHelper.java，然后查看com.android.providers.settings的数据库（一般你一点击你要修改的项，数据库的最后一项就会自动改变），你找到要修改项的名字，这个项的名字show_password，然后可以看到再loadSystemSettings中没有进行loading，所以加上loadBooleanSetting(stmt, Settings.System.TEXT_SHOW_PASSWORD, R.bool.show_password)（主要是该数据保存存在叫system的table中，所以用loadSystemSettings）;show_password到frameworks/base/packages/SettingsProvider/res/values/defaults.xml里面去加这个字符串，然后值为false
+
+## [默认值]修改unknown sources默认为off
+
+```
+frameworks/base/packages/SettingsProvider/res/values/defaults.xml
+def_install_non_market_apps
+```
+
+## [默认值]如何使vibrate默认为on
+
+```
+mediatek/frameworks/base/media/audio/java/com/mediatek/audioprofile/AudioProfileManager.java
+DEFAULT_VIBRATION_GENERAL = true;
+```
+
+## [默认值]如何使dial pad touch tones默认为off
+
+```
+mediatek/frameworks/base/media/audio/java/com/mediatek/audioprofile/AudioProfileManager.java
+DEFAULT_DTMFTONE_GENERAL = false;
+```
+
+## [默认值]screen lock sound默认为off (redmine36401)
+
+```
+mediatek/frameworks/base/media/audio/java/com/mediatek/audioprofile/AudioProfileManager.java
+DEFAULT_LOCK_SCREEN_GENERAL = false;
+```
+
+## [默认值]默认语言
+
+```
+mediatek/config/项目名/ProjectConfig.mk
+MTK_PRODUCT_LOCALES = en_GB en
+```
+
+## [默认值]默认键盘语言
+
+```
+这个是写在数据库里面的！
+```
+
+## 下载DRM的音频文件，使用google play music无法播放，原生音乐app可播放。
+
+```
+[FAQ10443] [Audio App] DRM下载的音频文件无法使用GMS play music播放。
+可修改DrmMtkDef.cpp文件，把有需要打开该格式的的APK名称添加到TRUSTED_APP数组中（比如说用google play music打开该文件，就可以在这个数组里面加上apk名字.注意该apk名字eclipse中的DDMS中显示的apk名字，不是Hierarchy中显示的apk名字），
+TRUSTED_APP[TRUSTED_APP_CNT]这个数组我们要把TRUSTED_APP_CNT也要加上1（可全局搜索TRUSTED_APP_CNT）
+同样的，如果是视频文件，也可以使用类似的方式修改，把播放视频APK 添加到TRUSTED_VIDEO_APP中
+```
+
+## 信号跳变如何分析
+
+```
+如果是想从log里面看modem上报的信号强度，可以在radio log里面搜 : +ECSQ:，然后看第一个参数的值，如果是99为无效，其他值是越小表示信号强度越弱；
+```
+
+## 如何模拟sim卡的mcc和mnc
+
+```
+ApnSettings.java 文件中的 initSimState() 方法的最下面添加一行代码 mNumeric = "21403";就可以模拟了
+现在有专门的白卡可以写mccmnc
+```
+
+## 在修改Preference上的内容之后，不会立刻刷新如何修改！
+
+```
+只要在设置好内容之后调用 notifyChanged() 就行了
+```
+
+## 获取屏幕密度
+
+``` Java
+DisplayMetrics metric = new DisplayMetrics();
+getWindowManager().getDefaultDisplay().getMetrics(metric);
+int density Dpi = metric.densityDpi;	//屏幕dpi
+```
+
+## 如何使桌面去掉没有app的页面
+
+```
+打开/packages/apps/Launcher3/res/values/config.xml，然后把config_workspaceMaxScreenNum改为1（相当于说再其他页都没有app的情况下，launcher最多显示一页，当然如果其他页上面也有app，当然可以多页）
+config_workspaceDefaultScreen则表示默认的中间页，也就是按home键回到的那一页！
+```
+
+## [FAQ09296] 如何将APN设置为不可编辑
+
 ## TextView去掉上下边距？？？？
 
 ## AndroidManifest中的模板？？？？
