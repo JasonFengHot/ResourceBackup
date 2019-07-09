@@ -603,7 +603,7 @@ http://eportal.mediatek.com/
 		<intent-filter>
 			<action android:name="android.intent.action.MAIN" />
 			<category android:name="android.intent.category.LAUNCHER" />
-		</intent./sqlite数据库操作:-filter>
+		</intent-filter>
    注销掉即可！
 
 八十八、如何加上wireless input device
@@ -1241,22 +1241,7 @@ loadSetting(stmt, Settings.Global.DATA_ROAMING,"true".equalsIgnoreCase(SystemPro
     adb shell ls -l system/app >test.txt
     adb shell df >test.txt
 
-二百零一、git上传commit格式
-	Redine31685 jiangcunbin modify for [6735移植基本任务]移植P-sensor校准，并在工程模式下面放一份 2015-04-14 checker：zhangqi
 
-二百零二、svn上传格式
-submitter：
-江存斌
-checker:
-rongweidi
-Bug:
-30911
-content:
-[bug](关机充电)关机充电图标混乱
-file:
-M:mediatek/custom/common/lk/include/target/cust_display.h
-Date:
-2015-03-30
 
 二百零三、修改modem后应该怎么编译
 	./mk update-modem ,然后直接生成新的刷机包就可以了
@@ -1515,6 +1500,15 @@ RivoAppFilter里面的方法了！原理：launcherModel.java文件中的loadAnd
 
 二百二十五、activity什么时候去运行onDestroy()？
        必须要用activity.finish()方法，还有就是按手机中的后退键的时候
+
+
+
+
+
+
+
+
+
 
 二百二十六、注意：
 	new Thread(new Runnable(){
@@ -1809,7 +1803,7 @@ ps：BUILD_CLARO_GMS在common.mk里面如果其他项目的projectConfig.mk文�
 	    }
 
 
-二百五十三、如何获取可用内存   adb shell ,cat /proc/meminfo ,里面全是各种内存消息
+二百五十三、如何获取可用内存   adb shell cat /proc/meminfo ,里面全是各种内存消息
 	private long getAvailMemory(Context context) {
 		String path = "/proc/meminfo";
 		String[] arrayOfString = null;
@@ -2983,23 +2977,6 @@ sed -i "/config_automatic_brightness_available/s/>.*</>false</" $path
     	property_get("ro.sagereal.date", val, "TBD");
     	print_verinfo(info, len,  "Build Time  ", val);
  
-三百八十三、Google 翻墙步骤：设置->更多->VPN->添加VPN网络后登入账户
- 
- 
-   翻墙VPN网络及账户1：
-    VPN网络名称：vpntest
-     服务器地址：us1.tovips.info
-          账户：sagerealtest12345
-          密码：test12345
-   备注：1.服务器地址：us1.tovips.info 里面的“1”是小写的数字一
-        2.此账户只有一个月的使用期限，5月26日--6月26日
- 
- 
-   翻墙VPN网络及账户2：
-    VPN网络名称 ：vpntest
-     服务器地址 ：108.61.246.250
-           账户 ：vpntest
-           密码 ：a123456
 
 三百八十四、[FAQ14322]【Phone Call】关于L版本来电响铃与UI同步的Workround方法
 
@@ -3152,18 +3129,8 @@ sed -i "/config_automatic_brightness_available/s/>.*</>false</" $path
    	/alps/device/mediatek/mt6580/init.mt6580.rc
 
 
-四百一十六、最新提交代码的格式
-  svn:	Submitter：提交者
-	Tester： 测试人员
-	Checker：检查代码人员
-	Bug：该问题的bug号
-	Files: 修改该问题涉及到的相应文件
-		M 表示修改的意思(Modify)
-		A  表示增加文件
-	Comment: 该问题的简要说明
-	Date: 提交日期
 
-   git: Software #68227 [需求]CTS测试请安排～  Submitter:wangjiashui Checker:liangshuang Date:2016.07.04
+
 
 四百一十七、当开机的动画结束后到锁屏界面出来中间出现较长时间的黑屏（非第一次开机，因为第一次开机有开机向导）
     因为开机动画的最后一张图片是纯黑的，开机动画时间较短，最后是通过最后一张图片延续到锁屏界面出来，如果要修改，就去更换开机动画最后一张图片
@@ -3713,9 +3680,6 @@ date
 	HCI(Host Controller Interface，主机控制接口) HCI,属于蓝牙协议栈的一部分。
 蓝牙规范包含了一个符合标准的接口定义(主机控制器接口),它适用于蓝牙通讯模块的硬件部分。此定义描述了位于HCI驱动程序(主机的一部分,也即蓝牙通讯模块的使用者)和主机控制器固件(蓝牙通讯模块本身的一部分)之间的接口
 
-8.Exchange，是同一个。
-9.Drive是同一个
-date
 
 	settings->developer options->enable bluetooth snoop hci log->勾选
 
@@ -4226,7 +4190,7 @@ date
           service.allowUsbDebugging(true, mKey);     -------->主要是靠这句话
 
 五百四十五、Bit Byte  ---> Bit为位，Byte为字节
-        1个汉字 = 16 Bytes ，1 Byte = 8 Bits
+        1个汉字 = 2 Bytes ，1 Byte = 8 Bits
 	1 KB = 1024 Bytes , 1 MB = 1024 KB , 1 GB = 1024 MB
 	bps: bits per second      Bps:Byte per second ,   1Bps = 8 bps
 
@@ -4498,7 +4462,7 @@ ps：在这个方法中可以看到，获取显示名字的优先级为getSpnByE
 	}
 
 
-ps: L/M/N:永久解锁使用的是sendUnlockBroadcas(mContext, mPhoneId)方法，非永久解锁使用的是supplyNetworkDepersonalization方法，这两个方法都在KeyguardSimPinPukMeView.java文件中的CheckSimMe方法中，这些平台上没有keep_list就能永久解锁就是因为他们的数据保存在protect_f, protect_s分区里面，这两个分区的数据不会因为恢复出厂设置而被清除（kk的时候数据是保存在data/nvram里面，所以每次恢复出厂设置后数据会被清除），所以就能直接实现永久解锁；而非永久解锁应该是modem解锁后没有把数据保存进protect_f, protect_s分区。
+ps: L/M/N:永久解锁使用的是sendUnlockBroadcast(mContext, mPhoneId)方法，非永久解锁使用的是supplyNetworkDepersonalization方法，这两个方法都在KeyguardSimPinPukMeView.java文件中的CheckSimMe方法中，这些平台上没有keep_list就能永久解锁就是因为他们的数据保存在protect_f, protect_s分区里面，这两个分区的数据不会因为恢复出厂设置而被清除（kk的时候数据是保存在data/nvram里面，所以每次恢复出厂设置后数据会被清除），所以就能直接实现永久解锁；而非永久解锁应该是modem解锁后没有把数据保存进protect_f, protect_s分区。
 
 	
 

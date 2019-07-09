@@ -470,6 +470,10 @@ gedit ~/.config/electron-ssr/gui-config.json
 			"server_port": 995
 		}
 	],
+
+
+g.ssr 订阅服务器
+https://adyymore.netlify.com/
 ```
 
 ## 安装v2ray
@@ -1607,6 +1611,8 @@ https://bathist.ef.lc/
 在Android 7.0以及之后都采用 adb bugreport bugreport.zip
 在Android 7.0之前采用 adb bugreport > bugreport.txt
 ```
+
+## ELT激活码：E21C-BCCF-4959-4845
 
 ## TodoList
 

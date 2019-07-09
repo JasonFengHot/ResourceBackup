@@ -1404,14 +1404,6 @@ public static int getTopBarHeight(Activity activity) {
 }
 ```
 
-# 获得手机UA
-``` Java
-public String getUserAgent() {
-    String user_agent = ProductProperties.get(ProductProperties.USER_AGENT_KEY, null);
-    return user_agent;
-}
-```
-
 # 清空手机上的cookie
 ``` Java
 CookieSyncManager.createInstance(getApplicationContext());
@@ -3067,10 +3059,10 @@ public static void longClickView(InstrumentationTestCase test, View v) {
 
 ``` Java
 //方法a
-new EditText(context).onKeyDown(keyCode, new KeyEvent(KeyEvent.ACTION_DOWN, keyCode));	//模拟按键的点击事件,这里必须需要一个EditText才可以
+new EditText(context).onKeyDown(keyCode, new KeyEvent(KeyEvent.ACTION_DOWN, keyCode));    //模拟按键的点击事件,这里必须需要一个EditText才可以
 
-//方法b, 这个也可以通过命令行发送	adb shell input keyevent 82
-Process process = Runtime.getRuntime().exec("input keyevent 82");						//模拟按键的点击事件,82相当于上面的keyCode
+//方法b, 这个也可以通过命令行发送    adb shell input keyevent 82
+Process process = Runtime.getRuntime().exec("input keyevent 82");                        //模拟按键的点击事件,82相当于上面的keyCode
 
 //方法c
 Instrumentation instrumentation = new Instrumentation();
@@ -3857,8 +3849,8 @@ android:textCursorDrawable="@null"，"@null"作用是让光标颜色和text colo
 也可以自定义游标的颜色
 cursor.xml
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-	<size android:width="1dp" />
-	<solid android:color="#008000" />
+    <size android:width="1dp" />
+    <solid android:color="#008000" />
 </shape>
 android:textCursorDrawable="@drawable/cursor"
 
@@ -4246,15 +4238,15 @@ private void sendTouchKeyEvent(int paramInt1, boolean paramBoolean1, boolean par
 
 ``` xml
 <item
-	android:id="@+id/clock"
-	android:actionLayout="@layout/actionbar_layout_menu"
-	android:showAsAction="always"
-	android:title="时钟"/>
+    android:id="@+id/clock"
+    android:actionLayout="@layout/actionbar_layout_menu"
+    android:showAsAction="always"
+    android:title="时钟"/>
 
 actionbar_layout_menu.xml
 <AnalogClock xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content" >
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
 </AnalogClock>
 ```
 
@@ -4856,7 +4848,7 @@ For systems that have Python available, there is also a nice tool called smem th
 
 ``` bash
 free 命令显示系统使用和空闲的内存情况，包括物理内存、交互区内存(swap)和内核缓冲区内存。
-		    total        used        free      shared     buffers
+            total        used        free      shared     buffers
 Mem:        441946112   432463872     9482240     1175552     1437696
 -/+ buffers/cache:      431026176    10919936
 Swap:       331452416    91521024   239931392
@@ -4971,7 +4963,9 @@ try {
     }
 } catch (Exception e) {
 }
-adb shell settings put global xxx 1
+
+adb shell settings put  global device_provisioned 0
+adb shell settings get  global device_provisioned
 ```
 
 ## 在 app 中使用自定义字体
@@ -5129,6 +5123,38 @@ String[] emergencyNumList = {"112", "911", "000", "08", "110", "118", "119", "99
 ps：编译 mediatek/frameworks/base/op/java/com/mediatek/op/telephony/PhoneNumberExt.java 该文件的时候可以编译 ./mk -t mm mediatek/frameworks/base
 
 ps:在插入卡的时候会发现在默认112、911为紧急拨号，如果要去除的话，要在 frameworks/opt/telephony/src/java/com/android/internal/telephony/uicc/SIMRecords.java 文件中handleMessage(Message msg)方法中 case EVENT_GET_SIM_ECC_DONE和case EVENT_GET_USIM_ECC_DONE下有个mEfEcc = "112,911"
+
+[Android Version]
+Android 5.0/5.1 (L)
+Android 6.0 (M)
+Android 7.0(N)
+Android 8.0(O)
+
+[DESCRIPTION]
+L及之后的版本紧急号码Customer的部分改成了在XML文件中来配置，文件的路径：
+alps/vendor/mediatek/proprietary/external/EccList
+
+EccList文件夹中会包含ecc_list.xml，以及与运营商有关的ecc_list_OP01.xml、ecc_list_OPXX.xml等对应文件，此外还包括一个EccList.mk的Makefile。实际运行中会根据Makefile文件中的定义匹配对应的XML文件作为判断是否是紧急号码的来源。
+
+下面是ecc_list.xml文件中的内容：
+
+N及之后的版本ecc_list.xml 文件不变，但是有加上PLMN的配置， 也就是可以按照运营商
+
+26    <!-- Add for China CTA -->
+27    <EccEntry Ecc="110" Category="0" Condition="2" Plmn = "460 FFF" />
+28    <EccEntry Ecc="119" Category="0" Condition="2" Plmn = "460 FFF" />
+29    <EccEntry Ecc="120" Category="0" Condition="2" Plmn = "460 FFF" />
+30    <EccEntry Ecc="122" Category="0" Condition="2" Plmn = "460 FFF" />
+31
+32    <!-- Add for Malaysis Digi operator -->
+33    <EccEntry Ecc="999" Category="0" Condition="1" Plmn = "502 FFF" />
+*说明：
+
+一 、添加号码请注意Condition的配置，根据需求来选择对应的值。
+0:表示在无卡的时候当紧急号码；
+1:表示始终当紧急号码；
+2:表示界面上显示成紧急拨号，但实际以普通方式拨出。
+二 、Category属性的设置于语音台选择有关，只有在实际拨打紧急号码的时候会将此号码配置的Category属性发送到Modem。国内默认都是‘0’，国外根据实际情况选择。 
 
 [FAQ21186] 特定运营商紧急号码配置（After Android O）
 ```
@@ -5294,7 +5320,7 @@ ApnSettings.java 文件中的 initSimState() 方法的最下面添加一行代�
 ``` Java
 DisplayMetrics metric = new DisplayMetrics();
 getWindowManager().getDefaultDisplay().getMetrics(metric);
-int density Dpi = metric.densityDpi;	//屏幕dpi
+int density Dpi = metric.densityDpi;    //屏幕dpi
 ```
 
 ## 如何使桌面去掉没有app的页面
@@ -5304,7 +5330,2642 @@ int density Dpi = metric.densityDpi;	//屏幕dpi
 config_workspaceDefaultScreen则表示默认的中间页，也就是按home键回到的那一页！
 ```
 
-## [FAQ09296] 如何将APN设置为不可编辑
+## [shell]linux下替换某些文件中的某些字符
+
+``` bash
+格式: sed -i "s/查找字段/替换字段/g" `grep 查找字段 -rl 路径`
+sed -i "/MTK_VOLTE_SUPPORT =/s/=.*/= no/" ----->  sed -i "/查找字段/s/需要替换的字段/想要替换成的结果/
+```
+
+## 升级SettingsProvider数据库
+
+``` Java
+if (oldVersion <= 43) {
+    try {
+        db.execSQL("alter table " + Account.TABLE_NAME + " add column " + AccountColumns.IS_START +" integer" + ";");
+        final ContentValues cv = new ContentValues(1);
+        cv.put(AccountColumns.IS_START, 0);
+        db.update(Account.TABLE_NAME, cv, null, null);
+    } catch (final SQLException e) {
+        // Shouldn't be needed unless we're debugging and interrupt the process
+        LogUtils.w(TAG, "Exception upgrading EmailProvider.db from v113 to v114", e);
+    }
+}
+```
+
+## ToggleButton 如何设置背景
+
+``` Java
+mSundayButton.setButtonDrawable(getContext().getResources().getDrawable(R.drawable.sunday_4));sunday_4里面可以设置点击和不点击的图片(normal 和 pressed)
+```
+在布局文件中可以设置textOn,textOff为空 ，不然的话会在图片上出现on和off字样
+android:textOff=""
+android:textOn=""
+drawable/sunday_4
+
+``` xml
+<?xml version="1.0" encoding="UTF-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" android:exitFadeDuration="@android:integer/config_mediumAnimTime">
+    <item android:state_checked="true" android:drawable="@drawable/friday_pressed" />
+    <item android:state_checked="false" android:drawable="@drawable/friday_normal" />
+</selector>
+```
+
+## [默认值]Chrome 第三方浏览器添加书签
+
+```
+packages/providers/PartnerBookmarksProvider/res/values 里面的两个文件进行修改!
+```
+
+## [默认值]如何修改network mode的默认值
+
+```
+frameworks/base/telephony/java/com/android/internal/telephony/RILConstants.java
+该文件中的 PREFERRED_NETWORK_MODE 是默认的 network mode 的值！
+```
+
+## [Bug](相机)用闪光灯拍照声音会卡（redmine 20631）
+
+```
+原因：拍照后loading的时候一个cpu不够用，可以直接强制开启两个cpu
+[FAQ12541] 拍照时强制开两个CPU
+```
+
+## soft touch 左右中快捷键（menu键出现运行的文件）（具体可参考h502s_srf中的redmine 16884）-->虚拟键
+
+```
+frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java，加上keyCode == KeyEvent.KEYCODE_F12的判断
+frameworks/base/core/res/res/values/config.xml，然后<integer name="config_longPressOnHomeBehavior">1</integer>改为2，<bool name="config_dreamsEnabledByDefault">true</bool>改为false（config_longPressOnHomeBehavior中的值每个都是有不同意思的，可以到这个文件中去看，那里有注释）
+mediatek/custom/up16_sfr_h502s/kernel/touchpanel/GT9XX_V22/tpd_custom_gt9xx.h，把#define GTP_KEY_TAB     {KEY_BACK, KEY_HOMEPAGE, KEY_MENU}改为#define GTP_KEY_TAB     {KEY_BACK, KEY_HOMEPAGE, KEY_F12}
+l路径:/alps/kernel-3.10/drivers/input/touchscreen/mediatek/GT9XX_V24，如果在projectConfig.mk中去搜索touchpanel，然后如果发现在前面路径中没有这个touchpanel的文件夹，这时候就需要我们去/sagereal/mk/WQ30_H556_WINONA/sr6735_65u_l1_defconfig文件去中找具体用了哪个touchpanel
+M路径：kernel-3.18/arch/arm/boot/dts/sr6580_we_m.dts，在这个里面有个tpd-key-local= <158 172 88 0>;88为F12的值，139为MENU的值
+
+ps：为什么我们不能直接在menu的以前的方法上直接改成另一种方法实现bug的要求呢？那是因为menu里面的方法是不能修改的，不然CTS是过不了的，所以我们直接把KEY_MENU改成了KEY_F12，然后在    PhoneWindowManager.java，加上keyCode == KeyEvent.KEYCODE_F12的判断，这样就会不走keyCode == KeyEvent.KEYCODE_MENU,会直接走keyCode == KeyEvent.KEYCODE_F12
+```
+
+## [默认值]修改相机 Anti-flicker 默认为 Auto
+
+``` xml
+关于相机中 Anti-flicker 默认要求为Auto,然后这个就是默认值的修改方法，如果相机配有自动功能，则选择auto，如果没有则选择下面一个
+packages/apps/Camera/res/values/camera_arrays.xml
+<string-array name="pref_camera_antibanding_default_array" translatable="false">
+    <item>auto</item>
+    <item>60hz</item>
+    <item>off</item>
+</string-array>
+```
+
+## 信号图标的显示（信号的具体的值）
+
+```
+frameworks/base/op/java/com/mediatek/op/telephony/ServiceStateExt.java
+```
+
+## [bug](相机)相机连拍，手松开后，仍会继续拍照（redmine22662）
+
+```
+分两种情况：
+1、虽然声音和拍照张数不符合，但是不会一直连拍到40张：长按快门连拍，快门声音比拍出的照片数量多。因为目前长按快门连拍时，声音的循环播放是AP端来控制的，跟拍照的次数没有关系，所以会不同步。
+2、松手后直接拍照到40张：
+packages/apps/Camera/src/com/android/camera/actor/PhotoActor.java中 onKeyUp(int keyCode, KeyEvent event)
+case KeyEvent.KEYCODE_CAMERA:最后面加上
+mContinuousShotPerformed = false;
+if (mCamera.getCameraState() == Camera.STATE_SNAPSHOT_IN_PROGRESS) {
+    cancelContinuousShot();
+}
+```
+
+## 修改 VoiceMail number
+
+```
+voicemail number设置
+frameworks/opt/telephony/src/java/com/android/internal/telephony/gsm/GSMPhone.java
+frameworks/opt/telephony/src/java/com/android/internal/telephony/gsm/SIMRecords.java
+
+主要是再 SIMRecords.java 中的 setVoiceMailByCountry() 方法中把
+//mIsVoiceMailFixed = true;  //注释掉此语句以让用户能够修改
+isSetByCountry = true; 
+voiceMailNum = "*77";
+voiceMailTag = "Messagerie vocale";
+
+把 voiceMailNum 和 voiceMailTag 写死
+然后把这个方法下面的mVmConfig.containsCarrier(spn)判断方法去掉，该方法是当把voicemail-conf.xml写进common.mk中才能检测到，我们使用简单方法是没有把这个文件写进去的，所以把该判断方法也是去掉的！ 
+```
+
+## [bug]0005636: ITA Vodafone italy PLMN name is wrong（把plmn中的"Voda IT"改成"VODAFONE IT"）
+
+```
+M:mediatek/frameworks/base/telephony/etc/spn-conf.xml，把这个里面的"Voda IT"都改成"VODAFONE IT"
+```
+
+## (小部件)电量控制小部件无法从最大亮点切换到自动亮度（redmine 25309）,该问题是再jb3升级到kk时候出现的，原因是jb3上面是没有disable_aal这个参数，而到了kk是有这个参数的，当这个参数为0时才能正常操作
+
+```
+packages/apps/Settings/src/com/android/settings/widget/SettingsAppWidgetProvider.java中
+int secureMode = Settings.System.getInt(context.getContentResolver(),Settings.System.DISABLE_AAL);改成int secureMode = Settings.System.getInt(context.getContentResolver(),Settings.System.DISABLE_AAL，0)；
+```
+
+## 在 c++ 中引用 ProjectConfig.mk 中定义的宏
+
+```
+详细如下:
+AUTO_ADD_GLOBAL_DEFINE_BY_NAME:
+如果你希望定义一个宏开关（作为一个功能模块的开关），然后在源文件(*.c/h等使用到这个宏开关)，比如你定义了一个XXX_SUPPORT这个宏的值只有yes和no。那么你可以在
+ProjectConfig.mk中定义：
+XXX_SUPPORT = yes
+但是这样定义在源文件是找不到XXX_SUPPORT的，因此需要加入AUTO_ADD_GLOBAL_DEFINE_BY_NAME，加入之后就可以在源文件使用了，比如aa.c中：
+#ifdef XXX_SUPPORT
+......
+#endif
+注意：如果添加的宏的值为no/none/false（无论大小写），那么该宏不会被添加进去。
+
+AUTO_ADD_GLOBAL_DEFINE_BY_VALUE:
+同上，但是差别在于你希望将宏的值传给源文件，比如定义了：
+XXX_TP = CTP#RTP or CTP
+你希望在代码中去判断当前使用了RTP还是CTP，那么可以将XXX_TP加入AUTO_ADD_GLOBAL_DEFINE_BY_VALUE
+这样在源文件中就可以引用了，比如aa.c中：
+#ifdef CTP
+......
+#elif RTP
+......
+#endif
+
+AUTO_ADD_GLOBAL_DEFINE_BY_NAME_VALUE:
+它与AUTO_ADD_GLOBAL_DEFINE_BY_NAME差别在于AUTO_ADD_GLOBAL_DEFINE_BY_NAME只有定义和没有定义之分，而AUTO_ADD_GLOBAL_DEFINE_BY_NAME_VALUE还可以知道它的值是多少(注意这个值是字符串)，比如：
+XXX_NUM = 1#1 or 2
+那么加入AUTO_ADD_GLOBAL_DEFINE_BY_NAME_VALUE之后：
+在源文件中就可以这样用(比如aa.c):
+if (!strcmp(XXX_NUM, "1")) {
+} else {
+}
+```
+
+## [Recovery]模式中无法恢复出厂设置，即进入恢复出厂设置没有yes选项（redmine 26513）
+
+```
+bootable/recovery/recovery.cpp，打开该文件const char* items[]中把第八项往上移（该bug我们是移到第二项），然后把chosen_item != 7改成chosen_item != 1
+```
+
+## 从jb3升级到kk，音量变成原来的一半
+
+```
+因为jb3的音量最大值是7，而kk的最大值是15，所以当jb3存的音量是7时，升上去到kk后7相当于一半的音量
+```
+
+## 语言设置为阿拉伯语，添加快捷方式至桌面或删除桌面快捷图标，待机界面会先显示一下第二页再显示主页面（redmine 26599）
+
+```
+关于redmine 26599这个问题是在由于阿拉伯语显示的时候从右往左引起的，而我们其他的语言一般都是从左到右显示的
+修改方法：/ddm/packages/apps/Launcher3/AndroidManifest.xml中的com.android.launcher3.LauncherApplication上有个android:supportsRtl="true"这个支持从右往左的功能，所以把这句话去掉就可以了，阿拉伯语的launcher也会从左往右    就不会这个问题了！
+```
+
+## 日历中的事件不能通过蓝牙分享（redmine 27043）
+
+```
+打开packages/apps/Bluetooth/src/com/android/bluetooth/opp/Constants.java文件，然后 ACCEPTABLE_SHARE_INBOUND_TYPES = new String[] 中加上"text/x-vcalendar",在UNACCEPTABLE_SHARE_INBOUND_TYPES = new String[]中去掉"text/x-vcalendar",这样我们手机就可以通过蓝牙分享接收了，但是分享出去的话只能是同样这样修改的手机才可以！
+```
+
+## camera拍照的的咔嚓声音的存储位置
+
+```
+adb shell -->cd /system/media/audio/ui
+frameworks/av/services/camera/libcameraservice/CameraService.cpp
+```
+
+## 1、默认输入法的配置（默认输入法和默认输入法的语言）
+
+```
+kk：进入projectConfig.mk文件，搜索DEFAULT_INPUT_METHOD=com.google.android.inputmethod.latin和DEFAULT_LATIN_IME_LANGUAGES=en_US，然后如果输入法是第三方的，必须要把客户提供的第三方软件也要编进去（把该apk放到packages/apps/中，然后在build/target/product/common.mk中也加上，让它编进去）
+L、M：请在APK正确预置的前提下，再修改如下
+在InputMethodManagerService的systemRunning()函数， if (!mImeSelectedOnBoot) 的分支中修改如下
+if (!mImeSelectedOnBoot) {
+Slog.w(TAG, "Reset the default IME as \"Resource\" is ready here.");
+// String preInstalledImeName = SystemProperties.get("ro.mtk_default_ime");
+String preInstalledImeName = "第三方输入法的完整包名ID";
+或者直接修改build.prop中的ro.mtk_default_ime属性值，也可在system.prop中增加此属性值。只要修改完后，adb shell getprop ro.mtk_default_ime能获取到正确的预置输入法ID即可。
+
+如何修改默认输入法 请参考FAQ04327
+如果按照FAQ04327修改之后不成功，JBX版本请参考FAQ06663，KKX版本请先参考FAQ12213，如果没有FAQ12213中的内容请参考FAQ06663。
+如何实现把多个第三方输入法转换为系统输入法，并且在输入法设置时候勾选框默认是勾选的，请参考FAQ08909
+Latin输入法怎么默认勾选几种语言，请参考FAQ06649。
+Latin输入法如何添加删除某些语言的输入法，请参考FAQ08884
+如何添加一个新的Latin输入法语言，请参考FAQ09620
+
+ps：PinyinIME是mtk默认的输入法apk，LatinImeGoogle是google的输入法，两个apk必须预置其中一个
+```
+
+## SIM ME lock
+
+```
+ 一、首先是要下载对应的modem代码，通过shengjun的ppt里面的方法，把该锁的运营商给锁起来（custom/service/nvram/custom_nvram_sec.c这个文件中去锁网的时候最好用一个宏去控制下，做到一个项目一个宏，比如说加个宏__UP11_DDM_A35_EI_SINGLE_TELMA_SIM_LOCK__，然后还要去定义这个宏，那么就要进入make/文件夹中，然后按照其他项目建一个自己项目的.mak文件，再该文件中去定义前面的宏，再该.mak文件中的CUSTOM_OPTION +=后面加上宏），然后用./make.sh .mak(新加的.mak文件) new去编译这个modem，然后按照excel表格去把需要的文件拿出来放到mediatek/custom/common/modem/中
+ps：如果是升级下载的话必须还要修改modem的东西，不然的话升级下载后还是没有锁网现象，修改方法
+1、trunk/service/nvram/src/nvram_io.c这个文件中加上
+#if !defined(__SFR_H502S_SIMUNLOCK__) && !defined(__UP11_DDM_A35_EI_SINGLE_TELMA_SIM_LOCK__)
+    EXT_ASSERT(KAL_FALSE, DISPLAY_ERROR(status), NVRAM_LOC_WRITE_IMPORTANT_DATA_FAIL, ldi->LID);
+    return status;
+#endif
+#if !defined(__H5_MTN_SIMLOCK__) && !defined(__UP11_DDM_A35_EI_SINGLE_TELMA_SIM_LOCK__)
+    EXT_ASSERT(KAL_FALSE, DISPLAY_ERROR(status), NVRAM_LOC_READ_IMPORTANT_DATA_FAIL, ldi->LID);
+#endif
+#if !defined(__H5_MTN_SIMLOCK__) && !defined(__UP11_DDM_A35_EI_SINGLE_TELMA_SIM_LOCK__)
+    EXT_ASSERT(KAL_FALSE, DISPLAY_ERROR(status), NVRAM_LOC_RESTORE_SUCCESS_READ_FAIL, ldi->LID);(这句话是在kk的版本上必须修改的，不然OTA方式升级没有问题，升级下载方式升级会出问题)
+#endif
+（具体可以参照kk的modem）
+2、trunk/interface/service/nvram/nvram_editor_data_item.h中NVRAM_EF_SML_LID_VERNO加上1，同时用自己modem的宏控制下，
+如#elif defined （__UP09L_H401_DDM_SINGLE_SIMLOCK__）
+#define NVRAM_EF_SML_LID_VERNO               "008"
+二、除了上述的需要修改外还要在上层代码中打开SAGEREAL_SIM_ME_LOCK_SUPPORT = yes
+```
+
+## [shell]通过命令查看每个文件夹的大小
+
+```
+du -d 1 data/
+```
+
+
+## chip id
+
+```
+基带芯片的唯一的chip id（CPUID）
+Userdata的backup和restore是读取的chip id，此id在/proc/rid，如果不一样，就不能实现不同机器的userdata backup和restore，请知悉。
+```
+
+## [术语]基带
+
+```
+Baseband 基带。信源（信息源，也称发终端）发出的没有经过调制（进行频谱搬移和变换）的原始电信号所固有的频带（频率带宽），称为基本频带，简称基带。
+```
+
+## 开机状态下拔下电池再插上电池，会自动开机
+
+```
+该功能是kk新加的功能，短时间掉电后会自动开机，因此不用修改
+```
+
+## Sim卡中的通话记录与NVRAM中通话记录的关系
+
+```
+下面通过几个关键点来介绍：
+1.Sim卡和NVRAM里面都存放有通话记录，但是Sim卡由于容量限制只存放已拨记录，并且已拨记录只包含名字和号码。
+2.当我们进入通话记录菜单的时侯，显示出来的通话记录是从NVRAM里读出来的，当我们产生一个新的通话时，通话记录也是更新到NVRAM里面去。
+3.Sim卡的通话记录和NVRAM里面的通话记录会进行同步,这个同步的做法是,关机的时候会把NVRAM的已拨通话记录更新到Sim卡里面去,开机的时候,会先判断Sim卡是否更换，如果更换了，则会删除手机的通话记录，然后将Sim卡的通话记录复制到NVRAM里面。
+4.Sim卡通话记录与NVRAM通话记录的同步是可以改变的，在10A上可以通过宏CFG_MMI_CLOG_SIM_SYNC_SUPPORT来控制，但是在10A之前没有类似的宏，所以需要手动修改代码。关机时候的同步过程是在phb_sync_handler里面完成的，所以只需定义__PHB_NVRAM_LN_ONLY__就可以免去这个过程；开机过程的同步是在phb_startup_erase_ln完成的，只要在函数前面加上两条语句直接返回即可：phb_init_ln_confirm(PHB_ERRNO_SUCCESS, control_block);
+return;
+```
+
+## 在 Launcher 上隐藏某个应用
+
+```
+一、如果有APK的源码，只需修改AndroidManifest.xml文件
+<activity
+    android:name=".Calculator"
+    android:label="@string/app_name"
+    android:windowSoftInputMode="stateAlwaysHidden">
+    <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />   <!--去掉此行-->
+        <category android:name="android.intent.category.APP_CALCULATOR" />
+    </intent-filter>
+</activity>
+
+
+二、如果不能修改apk的源码，修改Launcher的代码
+1. 请修改LauncherModel.java的loadAllApps()方法，如下：
+    // Create the ApplicationInfos
+    for (int i = 0; i < apps.size(); i++) {
+        LauncherActivityInfoCompat app = apps.get(i);
+        // This builds the icon bitmaps.
+        mBgAllAppsList.add(new AppInfo(mContext, app, user, mIconCache, quietMode));
+    }
+    //mtk add begin
+    mBgAllAppsList.removePackage("PackageName",user,true);
+    mBgAllAppsList.added.removeAll(mBgAllAppsList.removed);
+    mBgAllAppsList.removed.clear();
+    //PackageName为要隐藏的包名
+    //mtk add end
+}
+......
+2. 请在LauncherModel.java的PackageUpdatedTask的run()方法开头，将mPackages变量中要求不显示的package name移除掉。 
+```
+
+## [shell]如何查看电脑的ip地址等信息
+
+``` bash
+ifconfig
+```
+
+## 快捷方式不能更新
+
+```
+快捷方式不能更新
+72KK与82KK有一个共性问题，某些老版本的apk在安装后第一次打开会在Idle界面自动生成一个快捷方式，然后更新此apk，发现自动生成的这个快捷方式图标未更新，QQ新老版本就有这个问题存在；
+纠其原因，是因为apk自己生成的那个虽然与应用程序图标相同，但却是一个shortcut，而我们手动拖出来放在桌面上的却是application，而源码中只判断了application，因此造成了这个现象的产生；
+现已经在所有KK分支中上传；
+
+该问题并不是很严重，目前只发现QQ满足以下三点：
+1.新老版本图标不同
+2.打开后会自动在桌面生成图标
+3.生成的图标是shortcut类型的
+如后续客户在他们自己使用apk的过程中发现了该问题，还请集成组同时更新以下代码：
+packages/apps/Launcher3/src/com/android/launcher3/Workspace.java
+packages/apps/Launcher2/src/com/android/launcher2/Workspace.java
+```
+
+## 如何修改某些plmn(plmn = mcc+mnc)的一些漫游或者显示的文件
+
+```
+/frameworks/opt/telephony/src/java/com/android/internal/telephony/gsm/GsmServiceStateTracker.java
+N:frameworks/opt/telephony/src/java/com/android/internal/telephony/ServiceStateTracker.java
+哪些PLMN（MCC+MNC）想不显示roaming图标就可以在customEhplmn中加上该主运营商和虚拟运营商的plmn就可以了（如果要把某个虚拟运营商去掉roaming图标，也要把主运营商的plmn加上去）
+如果要去获取主运营商和虚拟运营商，可以早radio.log中去搜索plmn
+MVNO(Mobile Virtaul Network Operator)虚拟网络运营商，没有自己的实体网络，通过租用MNO(Mobile Network Operator)的网络来提供网络服务
+[FAQ10438][NW]如何设定忽略国内漫游 ---> SIM卡的MCC跟网络MCC相同时，默认设定不属于漫游，不需要修改。如果需要修改，按照该FAQ，每个平台修改方法不同
+```
+
+## [默认值]默认亮度
+
+```
+/frameworks/base/packages/SettingsProvider/res/values/defaults.xml
+def_screen_brightness
+def_screen_brightness_automatic_mode
+```
+
+## （信息）在收到内容只有一个“=”的信息后，手机自动重启（redmine 9870）
+
+```
+原因：
+01-01 03:11:31.515 501 517 E AndroidRuntime: *** FATAL EXCEPTION IN SYSTEM PROCESS: android.server.ServerThread
+01-01 03:11:31.515 501 517 E AndroidRuntime: java.lang.RuntimeException: Error receiving broadcast Intent { act=android.provider.Telephony.SMS_RECEIVED flg=0x10 (has extras) } in com.android.server.location.GpsLocationProvider$6@41676700
+01-01 03:11:31.515 501 517 E AndroidRuntime: at android.app.LoadedApk$ReceiverDispatcher$Args.run(LoadedApk.java:798)
+01-01 03:11:31.515 501 517 E AndroidRuntime: at android.os.Handler.handleCallback(Handler.java:800)
+01-01 03:11:31.515 501 517 E AndroidRuntime: at android.os.Handler.dispatchMessage(Handler.java:100)
+01-01 03:11:31.515 501 517 E AndroidRuntime: at android.os.Looper.loop(Looper.java:194)
+01-01 03:11:31.515 501 517 E AndroidRuntime: at com.android.server.ServerThread.run(SystemServer.java:1303)
+01-01 03:11:31.515 501 517 E AndroidRuntime: Caused by: java.lang.ArrayIndexOutOfBoundsException: length=0; index=0
+01-01 03:11:31.515 501 517 E AndroidRuntime: at com.android.server.location.GpsLocationProvider.gpsTestMessageParser(GpsLocationProvider.java:1902)
+01-01 03:11:31.515 501 517 E AndroidRuntime: at com.android.server.location.GpsLocationProvider.access$2400(GpsLocationProvider.java:98)
+01-01 03:11:31.515 501 517 E AndroidRuntime: at com.android.server.location.GpsLocationProvider$6.onReceive(GpsLocationProvider.java:1861)
+01-01 03:11:31.515 501 517 E AndroidRuntime: at android.app.LoadedApk$ReceiverDispatcher$Args.run(LoadedApk.java:788)
+01-01 03:11:31.515 501 517 E AndroidRuntime: ... 4 more
+说明上述原因是数组越界
+修改：frameworks/base/services/java/com/android/server/location/GpsLocationProvider.java中
+```
+
+## 通过反射调用 SystemProperties
+
+```
+Class clazz = Class.forName("android.os.SystemProperties");  -->通过具体类名获取到具体的类
+Method method = clazz.getMethod("get", String.class);   -->通过上面拿到的类获取到get方法（String.class是参数的类型，相当于后面的"internal_sd_path"的类型）
+String path = (String) method.invoke(clazz, "internal_sd_path"); -->通过上面的类和方法获取到该方法运行后的结果（其中"internal_sd_path"为get里面的参数）
+等同于
+String path = SystemProperties.get("internal_sd_path");
+Log.e("test", path);
+
+ps：有时候google把某些类的方法给@hide了，这就导致我们在其他apk上无法拿到这个方法，这时候就要用到反射
+@hide在新的sdk版本上越来越少，因为google会对每一个@hide的方法进行多次验证，如果验证完全没问题了就会把@hide给去掉
+```
+
+## 如何获取到phone storage的路径
+
+``` Java
+String path = SystemProperties.get("internal_sd_path")，L、M上不可用
+```
+
+## 常用运营商制式
+
+```
+中国移动：band1、band8
+中国联通：band1、band8
+美频：band2、band4、band5
+欧频：band1、band8
+```
+
+## 预置apk的库文件
+
+```
+如果apk有库文件怎么办？
+如果该apk有lib库的话，也要把这个lib给内置进去，然后android.mk文件也需要修改，具体可参照其他项目的内置lib库的apk中的android.mk（预制在system区需要这个步骤，预制在data区或者vendor下的话就会开机自动去解析lib文件，不会出现找不到lib库报错问题）
+库文件加的方法:
+include $(CLEAR_VARS)
+LOCAL_MODULE := libLCEFnativeU
+LOCAL_SRC_FILES := libs/libLCEFnativeU.so
+LOCAL_MODULE_SUFFIX := .so
+LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_PATH := $(PRODUCT_OUT)/system/lib  -->相当于把库放到system/lib中，apk要用到的时候会直接去拿
+include $(BUILD_PREBUILT)
+或者是把库文件拿出来放到/vendor/mediatek/项目名/artifacts/out/target/product/项目名/system/lib -->相当于把库放到system/lib中，apk要用到的时候会直接去拿
+
+然后把 libLCEFnativeU 添加到 common.mk 或 device.mk 文件中编译
+
+
+有的时候库文件太多，一个一个解析太麻烦
+File file = new File("vendor/mediatek/proprietary/packages/inputmethods/KikaIME/lib");
+for (String fileName : file.list()) {
+    if (fileName.endsWith(".so")) {
+        System.out.println("PRODUCT_COPY_FILES += vendor/mediatek/proprietary/packages/inputmethods/KikaIME/lib/"+fileName+":system/lib/"+fileName);
+    }
+}
+```
+
+## 解析 apk 包中的文件列表
+
+``` Java
+public static void readZipFile2(File file) { 
+    try { 
+        ZipFile zipfile = new ZipFile(file); //创建ZipFile对象
+        System.out.println(zipfile.getName()); //打印Zip文件路径
+        System.out.println("ZIP条目数：" + zipfile.size()); //打印Zip文件条目数
+         
+        Enumeration<? extends ZipEntry> en = zipfile.entries(); 
+        ZipEntry entry; 
+        while (en.hasMoreElements()) { 
+            entry = (ZipEntry) en.nextElement(); 
+            System.out.println(entry.getName()); 
+        } 
+        zipfile.close(); 
+    } catch(ZipException e) { 
+        System.out.println(file.getName() + "压缩文件错误"); 
+    } catch(IOException e) { 
+        System.out.println(file.getName() + "读取文件时出错"); 
+    } 
+}
+```
+
+## 修改recovery后怎么快速编译
+
+``` bash
+./makeMtk mm bootable/recovery/
+./makeMtk -opt=ONE_SHOT_MAKEFILE=build/target/board/Android.mk r recoveryimage
+然后把recovery.img单独down进去就行了
+```
+
+## Collections.sort() 排序
+
+``` Java
+Collections.sort排序
+Collections.sort(appsPackageName, comparator);
+举例：
+ArrayList<String> aa = new ArrayList<String>();
+aa.add("1");
+aa.add("2");
+Collections.sort(aa, comparator );
+Comparator<? super String> comparator =  new Comparator<String>() {
+    public int compare(String lhs, String rhs) {
+        return Integer.valueOf(lhs)-Integer.valueOf(rhs);
+    }
+};
+aa是什么类型的list，那么comparator的方法的参数就是什么类型的，比如说这个是string的list，那么生成的方法的参数就是String类型的，但是该方法返回的是一个int
+如果你要排序某些string的数组，那么可以给每个string中做个数字的排序，
+HashMap<String, String> hashMap = new HashMap<String, String>();
+hashMap.put("packageName","aa");
+hashMap.put("index", "1");
+ArrayList<HashMap<String, String>> appsPackageName =  new ArrayList<HashMap<String,String>>();
+appsPackageName.add(hashMap);
+相当于把string中的东西放到hashMap上，然后同时在hashMap中加上一个标记位，然后标记位去通过Collections.sort(aa, comparator );进行比较
+```
+
+## 如何使data/nvram中的东西备份到bin区
+
+```
+打开 mediatek/custom/common/cgen/CFG_file_info.c 或 mediatek/external/nvram/libcustom_nvram/CFG_file_info.c 文件，然后找到aBackupToBinRegion[]这一个数组
+把要备份到bin区写到这里，然后刷IMEI触动备份即可
+```
+
+## [FAQ08623]如何在滑动解锁界面添加“紧急拨号”按钮
+
+```
+如需在滑动解锁界面添加“紧急拨号”，请修改EmergencyButton.java文件onFinishInflate()方法，将mIsSecure = mLockPatternUtils.isSecure()改为 mIsSecure = true。
+```
+
+## 怎样延长锁屏界面显示时间？
+
+```
+屏灭状态，按power键，显示锁屏界面，然后又进入灭屏状态，现在显示锁屏界面，到又进入灭屏状态大概5s，怎样延长该时间到15s。
+修改KeyguardViewMediator.java中的KEYGUARD_LOCK_AFTER_DELAY_DEFAULT的值
+```
+
+## [需求](Factory Mode)All the menus should be in English
+
+```
+MTK_FACTORY_MODE_IN_GB2312=no
+```
+
+## 通过反射获取 FeatureOption 中的值
+
+``` Java
+Class clazz = Class.forName("com.mediatek.common.featureoption.FeatureOption");
+Field[] fields = clazz.getDeclaredFields();                 //获取这个类里面的所有变量
+for (int i = 0; i < fields.length; i++) {
+    if ("boolean".equalsIgnoreCase(fields[i].getType().getName())) {
+        builder.append(fields[i].getName() + ":" + fields[i].getBoolean(clazz) + "\n");
+    }
+}
+```
+
+## IO流文件读写模板
+
+``` Java
+//读取文件方法1：
+private String path = "/sys/devices/platform/pcbid/pcbid"
+File file = new File(path);
+BufferedReader bufferedReader = null;
+if(file.exists()){
+    try {
+        bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+        bufferedReader.readLine();
+        .....
+    } catch (FileNotFoundException e1) {
+        // TODO Auto-generated catch block
+        e1.printStackTrace();
+    }catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    }
+}
+
+读取文件方法2：
+private boolean proc_read_flash_light() {
+    FileInputStream fileinputstream = null;
+    byte abyte0[] = new byte[3];
+    try {
+        File procFile = new File("/proc/torch_config");
+        if (procFile.exists() && procFile.canRead()) {
+            fileinputstream = new FileInputStream(procFile);
+            fileinputstream.read(abyte0);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (fileinputstream != null) {
+                fileinputstream.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    return abyte0[2] == 0x31 ? true : false;
+}
+    
+写入文件方法1：
+final File file = new File("/storage/sdcard0/jcb.txt");
+try {
+    FileOutputStream fileOutputStream = new FileOutputStream(file);
+    fileOutputStream.write(aa.getBytes());
+    fileOutputStream.close();
+} catch (FileNotFoundException e) {
+    e.printStackTrace();
+} catch (IOException e) {
+    e.printStackTrace();
+}
+
+写入文件方法2：
+private void proc_write_flash_light(boolean state) {
+    FileOutputStream fileoutputstream=null;
+        
+    byte abyte0[] = new byte[1];
+    if(state)
+        abyte0[0] = 0x31;
+    else
+        abyte0[0] = 0x30;
+        
+    try {
+        File procFile = new File("/proc/torch_config");
+        if(procFile.exists() && procFile.canWrite()) {
+            fileoutputstream = new FileOutputStream(procFile);
+            fileoutputstream.write(abyte0);
+            fileoutputstream.flush();
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally{
+        try {
+            if(fileoutputstream != null){
+                fileoutputstream.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+ps：新建文件的方法
+private String path = "/sys/devices/platform/pcbid/pcbid";
+File file = new File(path);
+file.createNewFile();当然当使用new FileOutputStream(file)方法的时候也是会默认新建文件到指定路径的
+```
+
+## 如何使屏幕不灭屏
+
+``` Java
+getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);-->保持屏幕不灭屏
+```
+
+## 无法抓取log时将log写入到文件中的方法
+
+``` Java
+public static void Log(String tag, String str) {
+    File file = null;
+    try {
+        file = new File("storage/sdcard0/log.txt");
+        if(!file.exists()) {
+            file.createNewFile();
+        }
+    } catch (IOException e1) {
+        e1.printStackTrace();
+    }
+    if (file == null) {
+        return;
+    }
+    FileWriter fw = null;
+    try {
+        fw = new FileWriter(file, true);
+        fw.append("\n" + System.currentTimeMillis() + "\t" + tag + ",\t" + str);
+    } catch (IOException e) {
+        e.printStackTrace();
+    } finally {
+        if (fw != null) {
+            try {
+                fw.flush();
+                fw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            fw = null;
+        }
+    }
+}
+```
+
+## watchDog的作用
+
+```
+Watchdog目的是监控系统几个比较主要的service，如果超过一定时间没有反应，认为系统出错，会强制重启Android.
+```
+
+## L项目文件获取写入权限：
+
+```
+[FAQ13635]Android L APP 如何获取sys file system 中节点的写权限+SELinux_Policy_Editing_Guideline这个文档
+device/mediatek/common/sepolicy/system_app.te
+```
+
+## 手机安装apk的代码：/packages/apps/PackageInstaller/src/com/android/packageinstaller/
+
+```
+在PackageInstallerActivity.java这个Activity中：
+1.首先检查所要安装的程序是否是正确的安装文件
+2.判断安装应用是否设置未知来源应用的安装判断：isInstallingUnknownAppsAllowed()
+3.当前系统中是否已安装了此应用程序，提示用户是否重复安装
+4.还获取所欲安装的程序所将要用到的权限，然后将这些信息通过一个对话框提示给用户，startInstallConfirm()
+然后当用户确定安装时，启动packages/apps/PackageInstaller/src/com/android/packageinstaller/InstallAppProgress.java，在这个Activity中，系统调用
+pm.installPackageWithVerificationAndEncryption(mPackageUri,observer,installFlags,installerPackageName);-->该方法实现在packageManagerService.java中，即进行安装
+```
+
+## 结束当前程序的进程
+
+``` Java
+android.os.Process.killProcess(android.os.Process.myPid());
+```
+
+## 如何让 app 自行处理 power key
+
+```
+Power key 通常都是由 framework 自行的
+app 无法拿到这个 key 值
+如果想让某个 app 自行处理 power key
+应该要怎么做呢?
+
+L、M
+修改PhoneWindowManager的interceptKeyBeforeQueueing方法：
+....
+case KeyEvent.KEYCODE_POWER: {
+    result &= ~ACTION_PASS_TO_USER;
+    isWakeKey = false; // wake-up will be handled separately
+    //com.example.adc 为要处理power key的包名
+    if (win != null && win.getAttrs() != null && win.getOwningPackage().equals("com.example.adc")) {
+        return 1;// return 1事件就传给app处理
+    }
+    if (down) {
+        interceptPowerKeyDown(event, interactive);
+    } else {
+        interceptPowerKeyUp(event, interactive, canceled);
+    }
+    break;
+}
+ 
+如果只想让power键让某个Activity处理，将以上的if条件改为：
+if(win != null && win.getAttrs() != null&&win.getAttrs().getTitle().equals("xxx.xxx.xxx.xxxActivity")){
+    return 1;// return 1 就会传给 xxx.xxx.xxx.xxxActivity处理
+}
+ 
+KK、JB
+1: 修改 phoneWindowManager.java 的 interceptKeyBeforeQueueing 方法,在 reference line 后加入下面这段代码
+case KeyEvent.KEYCODE_POWER: { //reference line
+    result &= ~ACTION_PASS_TO_USER; //reference line
+    // add begin
+    ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+    try {
+        if (activityManager.getRunningTasks(1).get(0).topActivity.getPackageName().equals("your_special_package_name")) { 
+            //Please reset the special package name.
+            result |= ACTION_PASS_TO_USER;
+            Xlog.d(TAG,"detect power key in special package, pass to user!")
+        }
+    }catch(NullPointerException e){
+        Xlog.d(TAG,"ingore a NullPointerException ..");
+    }
+    //add end
+ 
+2: 同样在此分支内, 找到 else 语句段, 并找到如下位置加入
+if (interceptPowerKeyUp(canceled || mPendingPowerKeyUpCanceled)) { //参考行
+    if(!((result & ACTION_PASS_TO_USER) == ACTION_PASS_TO_USER)){ //加入行
+        result = (result & ~ACTION_WAKE_UP) | ACTION_GO_TO_SLEEP; //原有代码
+    } //加入行
+}
+```
+
+## ro值修改位置（KK）
+
+```
+ro.build.display.id -->相当于版本号，可直接修改ProjectConfig.mk文件中的CUSTOM_BUILD_VERNO，CUSTOM_BUILD_VERNO1，CUSTOM_BUILD_VERNO2
+ro.product.model -->/build/target/product/up29_h403_ddm.mk中
+ro.product.name -->ProjectConfig.mk文件中SAGEREAL_PRODUCT_NAME
+ro.product.device -->ProjectConfig.mk文件中SAGEREAL_TARGET_DEVICE
+ro.product.board -->ProjectConfig.mk文件中SAGEREAL_TARGET_DEVICE
+ro.product.locale.language -->/build/core/Makefile中可搜索define default-locale-language，其中后面的$是指取出的值赋值给default-locale-language
+ro.product.locale.region  -->/build/core/Makefile中可搜索define default-locale-region，其中后面的$是指取出的值赋值给default-locale-region
+ro.build.product -->ProjectConfig.mk文件中SAGEREAL_TARGET_DEVICE
+ro.build.fingerprint --> /build/core/Makefile中可搜索BUILD_FINGERPRINT
+```
+
+## *.mk中加宏的时候
+
+```
+ifdef MTK_WEATHER_PROVIDER_APP   -->先判定是否有宏
+    ifneq ($(strip $(MTK_WEATHER_PROVIDER_APP)), no)   -->再判断宏的值
+        PRODUCT_PACKAGES += MtkWeatherProvider
+    endif
+endif
+
+ifneq (yes, $(strip $(BUILD_CLARO_GMS)))     --> 当BUILD_CLARO_GM不是yes的情况下，怎么样，其他情况怎么样
+    $(shell rm -r $(TOPDIR)vendor/claro_gms)
+else
+    $(shell cp $(TOPDIR)mediatek/config/$(PROJECT)/sagereal_copy/vendor/claro_gms/apps/Android_gms.mk $(TOPDIR)vendor/claro_gms/google/apps/Android.mk)
+endif
+ps：BUILD_CLARO_GMS在common.mk里面如果其他项目的projectConfig.mk文件中没有定义这个宏，也不会报错，直接当成no，如果是java宏的话一定要去判断ifdef BUILD_CLARO_GMS，不然某些项目没有定义这个宏，就会报错 
+```
+
+## 如何获取可用内存
+
+``` Java
+private long getAvailMemory(Context context) {
+    String path = "/proc/meminfo";
+    String[] arrayOfString = null;
+    File file = new File(path);
+    BufferedReader bufferedReader = null;
+    InputStreamReader inputStreamReader = null;
+    long avail_memory = 0;
+    try {
+        inputStreamReader = new InputStreamReader(new FileInputStream(file));
+    } catch (FileNotFoundException e2) {
+        // TODO Auto-generated catch block
+        android.util.Log.d("jcb", "e2 =", e2);
+        e2.printStackTrace();
+    }
+    if (file.exists()) {
+        bufferedReader = new BufferedReader(inputStreamReader);
+        String readLine = null;
+        try {
+            for(int i = 0 ; i<2 ; i++){
+                readLine = bufferedReader.readLine();
+            }
+            android.util.Log.d("jcb", "readLine = "+readLine);
+            arrayOfString = readLine.split("\\s+");
+            avail_memory = Integer.valueOf(arrayOfString[1]).intValue() * 1024;
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+            android.util.Log.d("jcb", "e1 =", e1);
+        }
+        android.util.Log.d("jcb", "getAvailMemory readLine = " + arrayOfString[1]);
+        android.util.Log.d("jcb","getAvailMemory = "+ Formatter.formatFileSize(context,avail_memory));
+    }
+    return avail_memory;
+}
+```
+
+## 如何获取总内存
+
+``` Java
+private long getTotalMemory(Context context) {
+    // 获取android当前可用内存大小
+    String path = "/proc/meminfo";
+    String[] arrayOfString = null;
+    File file = new File(path);
+    BufferedReader bufferedReader = null;
+    InputStreamReader inputStreamReader = null;
+    long initial_memory = 0;
+    try {
+        inputStreamReader = new InputStreamReader(new FileInputStream(file));
+    } catch (FileNotFoundException e2) {
+        // TODO Auto-generated catch block
+        android.util.Log.d("jcb", "e2 =", e2);
+        e2.printStackTrace();
+    }
+    if (file.exists()) {
+        bufferedReader = new BufferedReader(inputStreamReader);
+        String readLine = null;
+        try {
+            readLine = bufferedReader.readLine();
+            android.util.Log.d("jcb", "readLine = "+readLine);
+            arrayOfString = readLine.split("\\s+");
+            initial_memory = Integer.valueOf(arrayOfString[1]).intValue() * 1024;
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+            android.util.Log.d("jcb", "e1 =", e1);
+        }
+        android.util.Log.d("jcb", "readLine = " + arrayOfString[1]);
+        android.util.Log.d("jcb","getTotalMemory = "+ Formatter.formatFileSize(context,initial_memory));
+    }
+    return initial_memory;
+}
+```
+
+## [FAQ03065]如何开启或隐藏 Navigation Bar
+
+```
+第一步：修改系统变量。
+打开目录下文件：alps/device/mediatek/工程名字/system.prop
+修改变量值：qemu.hw.mainkeys=0
+qemu.hw.mainkeys=1   表示隐藏Navigationbar
+qemu.hw.mainkeys= 0   表示显示Navigationbar
+注意： 如果工程没有定义该变量，再进行第二步。否则修改结束。因系统变量优先级比配置文件高。
+
+第二步：修改配置文件。
+frameworks/base/core/res/res/values/config.xml
+device/mediatek/common/overlay/navbar/frameworks/base/core/res/res/values/config.xml
+修改 config 文件中的 config_showNavigationBar 的值。
+
+隐藏Navigationbar：
+
+<bool name=“config_showNavigationBar”>false</bool>
+将这个配置信息修改为false即可。
+
+显示Navigationbar：
+<bool name=“config_showNavigationBar”>true</bool>
+
+将这个配置信息修改为true即可。
+
+特别的，对于O版本还要修改如下：
+O版本主要是google 设计默认有navigationbar，所以没有判断mNavigationBar 这个window 为null，还请修改如下，
+如果还有其他异常报错请贵司按照这个mWindowManagerService.hasNavigationBar()办法来规避即可。
+frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBar.java
+frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBar.java
+public NavigationBarView getNavigationBarView() {
+    // return (NavigationBarView) mNavigationBar.getView(); 修改为下面：
+    boolean showNav = mWindowManagerService.hasNavigationBar();
+    if(showNav) {
+        mNavigationBar.onKeyguardOccludedChanged(keyguardOccluded);
+    } else {
+        return null; 
+    }
+}
+
+public void onKeyguardOccludedChanged(boolean keyguardOccluded) {
+    //mNavigationBar.onKeyguardOccludedChanged(keyguardOccluded);修改如下：
+    boolean showNav = mWindowManagerService.hasNavigationBar();
+    if(showNav) {
+        mNavigationBar.onKeyguardOccludedChanged(keyguardOccluded);
+    }
+}
+```
+
+## 如何在L上预置图片且恢复出厂设置不会消失
+
+```
+先在data/media中预置图片，然后在system/vendor下面预置图片，然后在恢复出厂设置的时候去调用recovery.cpp文件，在该文件中自己写方法把system/vendor下面的图片还原到data/media下面
+具体可以看/home/jiangcunbin/Desktop/sagereal资料/自己总结/他人培训/预置资源
+ps:刷机进去后到开机不会进入recovery模式，也就是说不会调用recovery.cpp文件，但是在恢复出厂设置的时候是会进入recovery模式的，会调用recovery.cpp文件
+提交记录：http://192.168.3.76:8007/gitweb/?p=ALPS-MP-N0.MP2-V1_SR6580_WE_N.git;a=commit;h=bb723f9be5edf6c5ccaaf04e5240d11fa6060691
+```
+
+## [shell]使用终端查看ascii码
+
+```
+在终端中输入man ascii，然后hex列代表16进制，比如说那边写的31，我们在代码中使用要写0x31;Dec列为10进制，可以直接写
+```
+
+## L项目上如何让手机能充电
+
+```
+把alps/kernel-3.10/drivers/misc/mediatek/mach/mt6735/include/mach/upmu_sw.h 文件中关闭宏 BATTERY_CDP_WORKAROUND  就可以充电了
+```
+
+## [FAQ12075]如何让 keguard run 在 com.android.keyguard 进程
+
+```
+如何让 keguard run 在 com.android.keyguard 进程
+KK 上, keyguard 默认会 run 在 com.android.systemui 进程中如果需要将 keyguard run 在 com.android.keyguard 进程中，请修改
+
+alps/frameworks/base/packages/Keyguard/res/values/mtk_config.xml
+-<string name="keyguard_process_name">com.android.systemui</string>
++<string name="keyguard_process_name">com.android.keyguard</string>
+
+PS:L上keyguard作为SystemUI的一个lib,不再是一个独立的apk,不能运行在单独的进程。
+```
+
+## 开机进入桌面，会先出现壁纸，而后状态栏空白透明，屏幕其他地方为黑色，之后进入锁屏界面。这一概率比较大
+
+```
+期望：希望不要出现状态栏透明空白，其他地方却是黑色
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBarWindowView.java
+public class StatusBarWindowView extends FrameLayout {
+    onAttachedToWindow(){
+    ...
+    //WindowManagerGlobal.getInstance().changeCanvasOpacity(windowToken, true); 注释掉这句，设置不透明.
+    setWillNotDraw(false);
+} else {
+    ...
+}
+```
+
+## [adb]通过命令启动 Service
+
+``` bash
+adb shell am startservice -n "包名类名"   ----> service
+```
+
+## 阿拉伯语下文字布局等相反，有些布局显示不正常，可采用如下方式优化：
+
+```
+1.Androidmanifest中设置android:supportsRtl="true"， 找到显示异常的布局，将其中的left，right等标签修改为start， end标签
+eg: android:layout_marginStart替换android:layout_marginLeft, android:layout_alignParentStart替换android:layout_alignParentLeft
+
+2.图片若显示异常，可尝试将图片修改正常，放置res下带有ldrtl的文件夹中，具体根据手机分辨率放置
+eg：res/drawable-ldrtl-hdpi
+
+3.重写 public void onRtlPropertiesChanged(int layoutDirection)， 根据layoutDirection判断
+layoutDirection = 1， 则为rtl
+layoutDirection = 0， 则为ltr
+
+4.可根据Configuration的getLayoutDirection()方法获取是否是View.LAYOUT_DIRECTION_RTL
+RTL     right-> left
+LTR     left-> right
+```
+
+## 如何去看调用的是drawable_hdpi还是drawable_xdpi等？
+
+```
+alps/device/mediatek/common/aapt/aapt_config.mk
+```
+
+## preference设置后如何保存到sharedPrefence的文件中
+
+```
+在布局文件中加上android:persistent="true"，如果为false就不会保存到sharedPrefence
+```
+
+## 系统数据库对多媒体文件已经进行了归类，我们使用它就可以了。
+
+```
+String volumeName = "external";
+获取音频
+Uri uri = Audio.Media.getContentUri(volumeName);
+获取视频
+uri = Video.Media.getContentUri(volumeName);
+获取图片
+uri = Images.Media.getContentUri(volumeName);
+获取所有文件
+uri = Files.getContentUri(volumeName);
+可以看出音频，视频，图片已经完全被系统归类好了，对于apk,doc, zip等文件，我们可以根据它们的后缀在uri = Files.getContentUri(volumeName);里面进行筛选，获得我们想要的数据
+```
+
+## 系统媒体数据库无法扫描到数据
+
+```
+1.插入一张SDCARD
+2.push 3000左右图片到sdcard
+3.重启
+4.观察发现手机不能读取到图片数据 （读取方法：Images.Media.getContentUri(“external”)获取uri, 然后读取数据库）
+5.push 1首歌曲
+6.重启进入music,等待扫描结束,music不能显示歌曲
+
+根本原因是：
+多媒体文件所在目录下有.nomedia文件，因此，MediaProvider会把该目录的文件识别为普通文件，具体表现是在db文件中media_type的值为0； 因此在image、video 、audio等视图中通过type查询时，是查询不到信息的。 该问题的原因就在目录中有了.nomedia文件
+
+.nomedia产生的原因：
+在MediaProvider.apk中是不会自动添加该文件的； 一般.nomedia文件是由其他apk的一些设置等操作才会添加。由于缺乏信息且无法复现，无法分析是什么产生的。
+```
+
+## Webview是用来浏览网页或浏览文件使用，使用google webview会有以下两问题：
+
+```
+1.打开中文电子书乱码
+2.浏览器输入 186.148.57.28/browser/httpreq，查看UAPROFILE为Unknow
+```
+
+## [UserAgent][UA]UA相关
+
+```
+UserAgent：Http协议中的一部分，属于头域的组成部分，是一种向访问网站提供你所使用的浏览器类型、操作系统及版本、CPU类型、浏览器渲染引擎、浏览器语言、浏览器插件等信息的标识。UA字符串在每次浏览器HTTP请求时发送到服务器。
+ex:browser.UserAgent = Athens15_TD/V2 Linux/3.0.13 Android/4.0 Release/02.15.2012 Browser/AppleWebKit534.30 Mobile Safari/534.30 System/Android 4.0.1;
+mms.UserAgent = Android-Mms/2.0
+UAProfileURL是一个相当于放在某个服务器的UAProfile的网址，如http://218.249.47.94/Xianghe/MTK_Phone_KK_UAprofile.xml
+UAProfile就是上面的MTK_Phone_KK_UAprofile.xml文件，该文件中有终端机的一下信息：
+1、硬件信息：制造厂商、类型、屏幕大小（像素、文字等）
+2、软件信息：应用软件管理版本、SK-VM版本、MIN
+UAProfile文件描述了手机的功能，包括供应商、型号、分辨率、多媒体功能、支持字符集等
+
+[FAQ13899][VS]RTSP流媒体UA/UAProfile修改方法
+[FAQ04656]如何修改Android自带浏览器的User Agent
+
+可以查看 UA 的网址
+186.148.57.28/browser/httpreq
+www.ua.yeswap.com
+
+browser.UserAgent所在位置
+alps/device/sagetel/sr6572_wet_l/custom.conf中的
+#browser.UserAgent = Athens15_TD/V2 Linux/3.0.13 Android/4.0 Release/02.15.2012 Browser/AppleWebKit534.30 Mobile Safari/534.30 System/Android 4.0.1;
+browser.UAProfileURL = http://218.249.47.94/Xianghe/MTK_Phone_KK_UAprofile.xml
+mms.UserAgent = Android-Mms/0.1
+mms.UAProfileURL = http://www.google.com/oha/rdf/ua-profile-kila.xml
+
+//通过代码获取 UA
+public String getUserAgent() {
+    String user_agent = ProductProperties.get(ProductProperties.USER_AGENT_KEY, null);
+    return user_agent;
+}
+```
+
+## 以下是根据早前的mtk分析kazam网络问题导致modem重启得到的经验，我们也可以根据以下信息对后续的丢信号问题进行分析
+
+```
+1.在radio log中查找关键字updateDataStallInfo
+如果出现连续的一片只有out的情况updateDataStallInfo: OUT
+则说明网络出了问题，只有发出去的数据，却没有收到回复；
+正常的应该是updateDataStallInfo: IN/OUT
+
+2.搜索关键字onDataStallAlarm
+06-04 12:09:17.374: D/DCT(1189): [0]onDataStallAlarm: tag=28495 do recovery action=3
+在KK中当这个recovery action为3时，会去reset radio
+在L中当这个recovery action为4时，会去reset radio
+当达到次数条件时，会出现如下log：
+06-04 12:10:49.618: D/DCT(1189): [0]restarting radio with gsm.radioreset to true
+06-04 12:10:50.621: D/DCT(1189): [0]restartRadio: ************TURN OFF RADIO**************
+
+3.在mainlog中同步搜索socket：
+06-04 12:10:20.674: I/System.out(1550): [socket][157] connection www.google.com/216.58.221.132:443;LocalPort=36353(30000)
+可以看到它都是在尝试与谷歌的地址链接，确定引起问题的原因
+```
+
+## 如何在log中分析网络是否为3g
+
+```
+打开radio_log，然后搜索“networktype =”即可
+```
+
+## 如何调整横竖屏
+
+```
+1、android:screenOrientation="landscape"（"portrait"）
+2、setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+3、横竖屏切换的时候先会去调用onSaveInstanceState(Bundle outState)方法，然后切换好了onRestoreInstanceState(Bundle savedInstanceState)
+注意：可以通过outState的putInt，以及savedInstanceState的getint来传输数据
+4、android:configChanges="orientation"，然后切换横竖屏的时候可以去重写onConfigurationChanged(Configuration newConfig)方法
+```
+
+## 发送开机广播的位置
+
+```
+frameworks/base/packages/SystemUI/src/com/android/systemui/keyguard/KeyguardViewMediator.java  -->  onBootCompleted() 方法里面进行开机广播的发送
+```
+
+## [默认值]USB连接方式，CD-ROM
+
+```
+mediatek/config/mq16_h451_t3_p/system.prop 中搜索 ro.sys.usb.storage.type，然后在后面可以加上你想加的选择项 mtp,mass_storage
+usb、mtp ：真正修改的地方：device/sagetel/$base_project/system.prop中的ro.sys.usb.storage.type值设为mtp,mass_storage，现在都用宏控，即config_usbtype=mtp,mass_storage
+如何选择默认选择为usb：用宏控MTK_MASS_STORAGE = yes
+cd rom：真正修改的地方：device/sagetel/$base_project/system.prop中的ro.sys.usb.bicr设为yes，现在都用宏控，即ro_sys_usb_bicr=yes
+```
+
+## [默认值]如何使Settings --> Security --> Lock screen = None
+
+```
+frameworks/base/packages/SettingsProvider/res/values/defaults.xml 中的 def_lockscreen_disabled 改为 true
+```
+
+## git 终端显示颜色
+
+```
+git config --global color.ui true
+```
+
+## L项目的falsh的配置怎么看
+
+```
+ProjectConfig.mk文件--> sagereal_memory_flash = EMMC_64_8（8G+1G）、EMMC_32_4（4G+512M）、EMMC_16GB_2GB（16G+2G）
+```
+
+## [FAQ09022]如何调整锁屏界面的背景亮度
+
+```
+锁屏和launcher一样，都是透到wallpaper上的.但是同样一张wallpaper背景图片，在锁屏界面上看起来要比launcher暗一些。这是因为锁屏界面设置了一个半透明的灰色背景色0X70000000。
+如果需要调整锁屏界面的背景色，可以通过调整KeyguardViewBase.java中BACKGROUND_COLOR的值。
+
+L上的修改参考如下:
+ScrimView.java()
+private float mViewAlpha = 1.0f; // 将1.0f修改为0.0f.
+```
+
+## user版本和eng版本的区别, UserDebug版本呢？？？？？
+
+```
+1.user 版本为提高第一次开机速度，使用了ART 的预优化，将dex 文件分解成可直接load 运行的odex 文件；ENG 版本不会开启这项优化，每次开机都会从apk包解析出dex文件，执行的是dex文件，降低运行速度。
+2.user版本更少的LOG 打印，UART 的关闭。UART，是一种异步收发传输器。
+3.ART执行的区别
+user：首次开机执行一次，apk->dex->odex->被ART执行  ----->直接被优化为odex后，一直不用去apk中提取dex，直接运行odex文件就可以了，这样速度就快了
+eng：每次执行，apk->dex->被ART执行
+4.编译路径区别
+User版：64位路径：out/.../system/app/arm64/***.odex
+32位路径：out/.../system/app/arm/***.odex
+User版本的32位apk在64位系统环境下编译时，默认被编译解析为64位路径。当运行时找不到其32位的默认路径，报错。在Android.mk文件中加入LOCAL_MULTILIB := 32，可以编译解析为32位路径，运行不报错。
+Eng版本没有32位和64位区分，运行不报错
+5、如何分辨32位和64位系统
+1.ProjectConfig.mk文件中，MTK_K64_SUPPORT = yes/no
+2.在sagereal/mk/项目名/full_sr67**m_**gu_l.mk中，
+# Inherit for devices that support 64-bit primary and 32-bit secondary zygote startup script
+$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
+有以上这句话的是64位系统，反之没有这句话是32位系统。
+3. 在alps/device/sagetel/     sr6735m_35gu_l（32位系统）     sr6735m_65u_l（64位系统）
+4. 在当前手机中查看。输入adb shell---->cd system----->ls----->看到lib(lib64)，32位系统没有lib64文件夹，64位系统含有lib和lib64文件夹
+```
+
+## sharedUserID 的使用
+
+```
+Android提供了如下的一种机制，可以使两个apk打破前面讲的这种壁垒，只有相同签名和相同sharedUserID标签的两个应用程序签名才会被分配相同的用户ID。
+在AndroidManifest.xml中利用sharedUserId属性给不同的package分配相同的userID，通过这样做，两个package可以被当做同一个程序，系统会分配给两个程序相同的UserID。当然，基于安全考虑，两个package需要有相同的签名，否则没有验证也就没有意义了。
+如果增加了上面的属性但没有定义与之对应的LOCAL_CERTIFICATE（android.mk）的话，APK是安装不上去的。提示错误是：Package com.test.MyTest has no signatures that match those in shared user android.uid.system; ignoring!（也就是上面说的需要两个相同的签名），例如所有和media/download相关的APK都使用android.media作为sharedUserId的话，那么它们必须有相同的签名media。
+关于签名： build/target/product/security目录中有四组默认签名供Android.mk在编译APK使用： 
+1、testkey/releasekey：普通APK，默认情况下使用。
+2、platform：该APK完成一些系统的核心功能。经过对系统中存在的文件夹的访问测试，这种方式编译出来的APK所在进程的UID为system。 
+3、shared：该APK需要和home/contacts进程共享数据。 
+4、media：该APK是media/download系统中的一环。 
+应用程序的Android.mk中有一个LOCAL_CERTIFICATE字段，由它指定用哪个key签名，未指定的默认用testkey（但是当MTK_SIGNATURE_CUSTOMIZATION这个宏打开后，未指定的默认的会用releasekey，不懂看第五百四十六条即可）. 对于使用eclipse编译的apk，可以使用signapk.jar来手动进行签名
+platform和shared对应签名文件的key都放在alps/build/target/product/security/common下，如platform.x509.pem、platform.pk8、shared.x509.pem、shared.pk8
+签名工具signapk.jar位于/out/host/linux-x86/framework 下，由alps/build/tools/signapk/生成​。
+
+ps：当打开MTK_SIGNATURE_CUSTOMIZATION这个宏时会直接使用device/mediatek/common/security/sr6580_we_n下面的key去进行签名，如果关闭MTK_SIGNATURE_CUSTOMIZATION这个宏时会直接使用MTK默认的key去签名，即build/target/product/security下面的，device/mediatek/common/security/sr6580_we_n下面的keyplatform.x509.pem、platform.pk8等这些是梁爽做出来的，同平台的应该都是一样的
+
+使用方法：
+1、以platform为例：java -jar signapk.jar platform.x509.pem platform.pk8 input.apk output.apk (platform.x509.pem platform.pk8在build/target/product/security获取)
+2、以shared为例：用 shared.x509.pem和shared.pk8来签名 Contacts.apk，重新签名之后的apk名字为Contacts_2.apk 
+java -jar signapk.jar shared.x509.pem shared.pk8 Contacts.apk Contacts_2.apk 
+
+ps：如果在AndroidManifest.xml和android.mk中都进行了修改，可以把该apk预置到手机中，这样在编译整个项目的时候会去编译这个apk，这样就会按照android.mk中的LOCAL_CERTIFICATE进行平台签名，如果不内置直接对apk进行签名，这时候就要用signapk.jar来手动进行签名，步骤在上面。
+
+LOCAL_CERTIFICATE := PRESIGNED 表示 这个apk已经签过名了，系统不需要再次签名；
+
+关于apk的签名
+1、第三方的apk用eclipse生成后可以直接install到手机中，我们如果不再eclipse里面特地的生成签名，那就默认会使用debug的签名；当然可以直接在生成apk的时候生成有自己个人信息的正式签名
+2、第三方的apk用客户提供的keystore签名，会出现两种情况，如果该apk中没有使用shareduserid，那就可以直接install到手机上；如果该apk中使用了shareduserid（system）,这时候需要在keystore的基础上再进行平台签名，才能install到手机中
+3、第三方的apk直接用平台签名可以直接install到手机中
+```
+
+## 如何实现每台手机的序列号唯一？
+
+```
+KK：alps/mediatek/platform/mt65**/ kernel/core/mt_devs.c中定义CONFIG_MTK_USB_UNIQUE_SERIAL
+L：alps/bootable/bootloader/lk/app/mt_boot/mt_boot.c中定义CONFIG_MTK_USB_UNIQUE_SERIAL
+M：alps/vendor/mediatek/proprietary/bootable/bootloader/lk/app/mt_boot/mt_boot.c中定义CONFIG_MTK_USB_UNIQUE_SERIAL
+PS：在c文件中定义该CONFIG_MTK_USB_UNIQUE_SERIAL，即为#define CONFIG_MTK_USB_UNIQUE_SERIAL
+
+FAQ10923[USB serial number客制化][系列2]：如何实现每台手机的序列号唯一？10924[USB serial number客制化][系列3]：如何修改手机序列号为Barcode ？
+FAQ10925[USB serial number客制化][系列4]：如何修改手机序列号为手机型号？
+FAQ10926[USB serial number客制化][系列5]：如何实现可以通过pc工具来修改serial number？
+FAQ10927[USB serial number客制化][系列6]：能否实现adb devices的序列号，usb serial number, cts device ID，SN一致？
+```
+
+## [术语]UUID
+
+```
+UUID是一个128位长的数字,用16进制表示，然后是电脑随机生成的一个值，是结合机器的网卡、当地时间、一个随机数生成的，能保证3240年不重复，相当于一个永不重复的随机数
+```
+
+## 文件监听
+
+```
+当删除文件管理器上的音乐文件的时候，数据库会发生改变，可监听 Uri.parse("content://media/external/file") 这个uri的数据库
+```
+
+## permission和uses-permission的区别
+
+```
+两者之间的不同之一就是，作用域不同，在 manifest.xml文件中，<uses-permission>是和<application>同级的节点，一般<uses-permission >是在</application>后面的。但<permission>就不同了，是定义在<application>和</application>之间，和Activity、Service同级别的，同时使用 group的权限组可以大幅减少你同类型相似权限的声明。
+其二可能就是<uses-permission>是官方定义的权限，<permission>是自己定义的权限。
+ps：uses-permission这个是给整个apk用的权限，permission是给自己activity或者service使用的权限
+```
+
+## 如何预置wifi热点  （redmine55627）
+
+```
+kk：/mediatek/external/mtk_wifi/config/mtk-wpa_supplicant.conf
+l：请在alps/hardware/mediatek/wlan/config/mtk-wpa_supplicant.conf
+m:alps/vendor/mediatek/proprietary/hardware/connectivity/wlan/config/mtk-wpa_supplicant.conf
+文件中增加network={} 即可。
+network={
+ 	ssid="aaaa"
+ 	scan_ssid=1
+ 	key_mgmt=NONE
+}
+ps：Wifi的预置说明也可以查看/alps/hardware/mediatek/wlan/wpa_suppli_8/wpa_supplicant/wpa_supplicant.conf
+
+ps:ps:ps:在增加这个wifi热点的时候，一定要加上节省功耗的操作，文件路径：
+kk：external/wpa_supplicant_8/wpa_supplicant/wpa_supplicant.c，在ssid_len == os_strlen("CMCC")判断之后，加上如下代码
+if(ssid_len == os_strlen("MEO-WiFi.x")){
+   if(os_strncasecmp(cmcc_conf->ssid,"MEO-WiFi.x",ssid_len) == 0){
+       tmp = cmcc_conf->next;
+       removed = 1;
+       wpa_config_remove_network(wpa_s->conf, cmcc_conf->id);
+       if(wpa_s->conf->update_config){
+           if(wpa_config_write(wpa_s->confname, wpa_s->conf)){
+               wpa_printf(MSG_DEBUG,"CTRL_IFACE:SAVE_CONFIG - Failed to update configuration");
+           }else{
+               wpa_printf(MSG_DEBUG,"CTRL_IFACE:SAVE_CONFIG -Configuration updated");
+           }
+       }
+   }
+}
+[ALPS02441559] 预制WIFI热点造成功耗过大问题
+[ALPS02399488] 预制WIFI热点造成功耗过大问题
+M:external/wpa_supplicant_8/wpa_supplicant/wpa_supplicant.c,在wpa_supplicant_init_iface
+Redmine 63933[bug]wifi有时不能自动连接上
+```
+
+## 识别SIM卡的位置
+
+```
+SIM卡识别位置寻找与开机类似，我们知道SIM卡状态变化时会有 android.intent.action.SIM_STATE_CHANGED，这样我们就可以找发出此广播的地方：
+alps/frameworks/opt/telephony/src/java/com/android/internal/telephony/uicc/IccCardProxy.java 其中有一个方法为 broadcastIccStateChangedIntent()
+```
+
+## 开机顺序
+
+```
+开机顺序：
+IccCardProxy（在亮屏之前会有消息，在手机运行过程中sim卡状态改变也会有消息）---主要用来读取数据，也需要启动动画
+doKeyguardLocked（在亮屏之前）
+finishBooting（在亮屏之后一小段时间）---启动动画
+```
+
+## 如何自定义google launcher的桌面
+
+```
+自己写一个apk（比如说packages/apps/SageRealApp/GoogleHomeCustomization/），这个apk的里面是一个广播接收器，action为com.android.launcher3.action.PARTNER_CUSTOMIZATION
+```
+
+## Handler.post(runnable)和 new Thread(runnable)的区别
+
+```
+mHandler.post(mMeoRunnable);这个是没有启动新的线程，还是在原来线程中，用这个的好处主要是可以在非ui线程中修改ui
+new Thread(runnable)，这个是直接启动新的线程
+```
+
+## 防止用户在最近应用程序列表中看到
+
+```
+在 activity 中请加入 android:excludeFromRecents="true" 属性
+```
+
+## M项目上关于settingsProvider是在哪里？
+
+```
+adb shell --> data/system/user/0
+android N后某些数据库位置：
+Google Now Launcher数据库存放位置  ---->  /data/data/com.google.android.googlequicksearchbox/databases/launcher.db
+ContactsProvider ----->  contacts.db和callog.db都位于data/user/0/com.android.providers.contacts/databases
+TelephonyProvider -----> data/user_de/0/com.android.providers.telephony/databases
+MediaProvider -----> data/user/userid/com.android.providers.media/databases
+```
+
+## 如何设置fm、music的耳机声音提示等级
+
+```
+frameworks/base/core/res/res/values/config.xml 中的 config_safe_media_volume_index 值
+```
+
+## 手机加密默认开关方法：
+
+```
+/device/sagetel/sr6735m_35gu_l/fstab.mt6735，encryptable=/dev/block/platform/mtk-msdc.0/by-name/metadata表示默认关闭，而替换成forceencrypt表示默认开启
+该文件可能位于project、platform、common下，优先级从前到后，以优先级最高的属性为准
+手动开启加密方法：
+1.电量在80%以上
+2.连接usb或者充电器
+3.设置锁定屏幕 PIN 或密码
+点击加密菜单进行加密，刚刚刷的软件一般加密需要几分钟时间，加密成功后会自动重启手机，再进入菜单会显示“已加密”，菜单点击无效
+
+此功能可以用来加密手机上的所有数据，包括 Google 帐户、应用数据、音乐和其他媒体信息、已下载的信息等。如果执行了加密操作，您每次开机时都必须输入数字 PIN 或密码。
+请注意，上述 PIN 或密码与您在未加密状态下解锁手机时所用的相同，无法单独设置。
+警告：加密操作无法撤消。要将手机恢复为未加密状态，唯一的方法是恢复出厂设置，但这会清除您的所有数据
+
+三百四十四、客户希望在通话过程中我方开始录音时，对方能够收到提示音；
+我们发现在通话过程中点击拨号盘会有声音发出，且对方能够听到，于是我们在通话录音开启的时候使用拨号盘的发声方式去解决此问题；
+方法很简单：
+alps/packages/apps/InCallUI/src/com/android/incallui/CallButtonFragment.java
+在onVoiceRecordClick方法中添加如下：
+
+Call mRecordCall=CallList.getInstance().getActiveCall();
+TelecomAdapter.getInstance().playDtmfTone(mRecordCall.getId(), '0');
+TelecomAdapter.getInstance().stopDtmfTone(mRecordCall.getId());
+TelecomAdapter.getInstance().playDtmfTone(mRecordCall.getId(), '9');
+TelecomAdapter.getInstance().stopDtmfTone(mRecordCall.getId());
+TelecomAdapter.getInstance().playDtmfTone(mRecordCall.getId(), '0');
+TelecomAdapter.getInstance().stopDtmfTone(mRecordCall.getId());
+代码连续播放了三个键的tone，用来区分录音和普通按键音
+```
+
+## Google app安全检查
+
+```
+该项的修改在/alps/frameworks/base/packages/SettingsProvider/res/values/defaults.xml中的def_package_verifier_enable，该项需要设置为true；该项设置为true后会有一个问题，当在有数据连接或wifi的情况下安装app，大多数情况下会出现一个弹出框，详见redmine46265。而客户的sfr应用会在有网络的情况下自动下载app，因此会弹出这个框，客户要求将此框去掉，只要将该值设定为false即可，在KK上是这么做的；但是最新google认证中，需要有这个弹出框，因此将其设置为true，google认证软件以google认证优先
+```
+
+## 在 init.rc 文件里面添加回调
+
+```
+//监听 sys.camera_standby 的值，如果设置为0则把 0100 00 写入到 /proc/driver/camsensor 文件中
+on property:sys.camera_standby=0
+    write /proc/driver/camsensor "0100 00"
+
+on property:sys.camera_standby=1
+    write /proc/driver/camsensor "0100 01"
+```
+
+## 如何隐藏settings-->apps里面的一些apk
+
+``` Java
+packages/apps/Settings/src/com/android/settings/applications/ApplicationsState.java，在该文件中的handleRebuildList()方法中的 filteredApps.add(entry);下面加上
+for(int j=0;j<HIDE_APPS.length;j++){
+    if(HIDE_APPS[j].equals(info.packageName)){
+        filteredApps.remove(entry);
+    }
+}
+
+而
+public final static String[] HIDE_APPS=new String[] {
+	"com.mediatek.mtklogger",
+	"com.example.factorydevelop",
+	"com.example.factorydevelopx",
+	"com.mediatek.ygps",
+	"com.mediatek",
+	"com.android.simmelock",
+	"com.android.location.fused",
+	"com.mediatek.engineermode",
+	"com.mediatek.weather",
+	"com.mediatek.appwidget.weather",
+	"com.android.keyguard",
+	"com.mediatek.thermalmanager",
+	"com.android.printspooler",
+	"com.mediatek.apst.target",
+	"org.simalliance.openmobileapi.service",
+};
+```
+
+## [FAQ12880]锁屏界面如何延长亮屏到灭屏的等待时间
+
+```
+默认锁屏界面无操作情况下到灭屏的等待时间是10S.如想延长锁屏界面到灭屏的等待时间, 可参考如下solution.
+可以修改KeyguardViewMediator.java文件中常量AWAKE_INTERVAL_DEFAULT_MS的值:protected static final int AWAKE_INTERVAL_DEFAULT_MS = 10000;
+可自行修改，但需注意:
+(1)锁屏界面亮屏到灭屏的等待时间不会大于系统设置中休眠时间的值, 例如系统设置->显示->休眠中 设置为一分钟, 而AWAKE_INTERVAL_DEFAULT_MS的值为修改两分钟，则锁屏界面亮屏到灭屏的等待时间为一分钟。
+(2)如果AWAKE_INTERVAL_DEFAULT_MS的值设置为小于10S, 则锁屏到灭屏的等待时间为10S.
+```
+
+## settings-->more-->Mobile networks-->Access Point Names里面的默认值
+
+```
+这些默认值都是在mediatek/frameworks/base/telephony/etc/apns-conf.xml里面设置的，具体哪项用哪句话去写（比如说要apns protocol默认为IPV4/IPV6，那就要在apns-conf.xml文件中加上protocol="IPV4V6"，至于为什么用protocol,因为这些默认值都是写在com.android.providers.telephony中的，默认的值是直接解析apns-conf.xml文件的，所以到底为什么用protocol，我们可以进入packages/providers/TelephonyProvider/src/com/android/providers/telephony/TelephonyProvider.java中getRow(XmlPullParser parser)方法去看，里面都有解析的方法）
+ps：如果默认为ipv4的话，protocol="IP"；如果默认为ipv6，protocol="IPV6"；如果默认为ipv4、ipv6的话，protocol="IPV4V6"
+```
+
+## 如何抓取操作数据库的log的方法（因为操作数据库的log较大且多，所以mtklogger一般不会把这块的代码放入到mobilelog里面，要进行以下操作）
+
+```
+新建一个local.prop文件，里面填入
+log.tag.SQLiteStatements=VERBOSE
+log.tag.SQLiteTime=VERBOSE
+log.tag.SQLiteLog=VERBOSE
+log.tag.SQLiteQueryBuilder=VERBOSE
+log.tag.SQLiteDatabase=VERBOSE
+log.tag.SQLiteConnection=VERBOSE
+log.tag.ContactsProvider=VERBOSE
+log.tag.ContactAggregator=VERBOSE
+log.tag.ContentService=VERBOSE
+然后
+adb remount
+adb push ./local.prop ./data/
+adb shell chmod 750 ./data/local.prop
+adb reboot
+添加以上log后，帮忙复现问题，抓取mobilelog来分析，并且给出复现问题时手机显示的时间。
+复现后请不要再继续操作
+```
+
+## 如何看陀螺仪是否支持
+
+```
+进入projectConfig.mk文件后，搜索CUSTOM_KERNEL_GYROSCOPE即可，如何后面没有写东西，就是不支持，反之，亦然
+```
+
+## 关于modem mak文件的命名长度问题--不要超过38个字符，否则手机链接cat抓取log会出现log挂掉的情况
+
+## IMEISV的修改   [FAQ02072]关于IMEI、IMEISV、SVN
+
+```
+IMEI(International Mobile Equipment Identity)是国际移动设备身份码的缩写，固化于手机中，每个手机的IMEI应该是唯一、不变的。
+IMEI码由GSM（全球移动通信协会）统一分配，授权BABT（英国通信认证管理委员会）审受。
+2004年以前的标准中，IMEI共15位（取值必须是0~9的数字），依次分别是6位TAC、2位FAC、6位SNR、1位CD校验位。
+2004年以后的标准中删去了最后的1位CD校验位，新加入了2位SVN(software version number)，故称IMEISV，共16位（取值仍必须是0~9的数字）。
+SVN的取值也必须是0~9的数字，而且99这个值是被保留的。
+网络检查的时候会指明检查IMEI还是IMEISV，如果是检查IMEI，则手机许上报前14位IMEI（1位CD校验位不上报），如果是检查IMEISV，则手机上报16位IMEISV
+1、IMEI SV 的修改，可以通过AT COMMAND ：AT+EGMR=1,9,”00”;
+2、在modem端修改，custom/service/nvram/nvram_data_items.c文件中的
+SYS_CACHE_ENTRY(NVRAM_SYS_SVN,
+            NVRAM_APP_RESERVED,
+            KAL_FALSE,
+            "NVRAM_SYS_SVN",
+            0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00),
+```
+
+## ro.product.device以及ro.product.name里面不可以有非法字符（如"."）,会导致google的play store连接不上
+
+## [FAQ13432][Dialer]如何使拨号盘搜索支持葡萄牙文？     http://unicode-table.com/cn/#control-character
+
+```
+packages/providers/ContactsProvider/src/com/android/providers/contacts/HanziToPinyin.java中添加的
+static {
+    sMuiSupportMap.put('\u00c0', '2'); //   -->'\u00c0'这个unicode对应的字符可以用2搜索出来
+    sMuiSupportMap.put('\u00c0', 'a'); //   -->'\u00c0'这个unicode对应的字符可以用a搜索出来
+
+    sMuiSupportMap.put('\u00e3', 'a'); //ã
+    sMuiSupportMap.put('\u00e2', 'a'); //â
+    sMuiSupportMap.put('\u00e1', 'A'); //Á
+    sMuiSupportMap.put('\u00c3', 'A'); //Ã
+    sMuiSupportMap.put('\u00c0', 'A'); //À
+    sMuiSupportMap.put('\u00c2', 'A'); //Â
+
+    sMuiSupportMap.put('\u00e9', 'e'); //é 
+    sMuiSupportMap.put('\u00ea', 'e'); //ê
+    sMuiSupportMap.put('\u00e8', 'e'); //è
+    sMuiSupportMap.put('\u00eb', 'e'); //ë
+
+    sMuiSupportMap.put('\u00ed', 'i'); // í
+    sMuiSupportMap.put('\u00ec', 'i'); // ì
+    sMuiSupportMap.put('\u00ee', 'i'); // î
+    sMuiSupportMap.put('\u00ef', 'i'); // ï
+
+    sMuiSupportMap.put('\u00f5', 'o'); // õ
+    sMuiSupportMap.put('\u00f4', 'o'); //ô
+    sMuiSupportMap.put('\u00f3', 'o'); //ó
+    sMuiSupportMap.put('\u00f2', 'o'); //ò
+
+    sMuiSupportMap.put('\u00e7', 'c'); // ç
+
+    sMuiSupportMap.put('\u00fa', 'u'); //ú
+    sMuiSupportMap.put('\u00f9', 'u'); //ù
+    sMuiSupportMap.put('\u00fb', 'u'); //û
+    sMuiSupportMap.put('\u00fc', 'u'); //ü
+
+    sMuiSupportMap.put('\u00ff', 'y'); //ÿ
+}
+具体所有的特殊字符的对应unicode值，可以看/home/jiangcunbin/Desktop/sagereal资料/自己总结/特殊字符unicode值 该文件
+```
+
+## 预置联系人的名字修改在
+
+```
+packages/apps/Contacts/src/com/mediatek/contacts/simservice/PresetContactsImportProcessor.java中的INSERT_PRESET_NAME[]
+问题点：如果在恢复出厂设置后预置联系人去写入数据库时断电，就会出现预置联系人只写入一部分，这时候去重启的时候，代码端检测到预置联系人数据库已经有值（不会去管你是否完全写入），这就导致预置联系人一直丢失一部分，这时候就需要一些保护措施。
+修改方法：packages/apps/Contacts/src/com/mediatek/contacts/simservice/PresetContactsImportProcessor.java文件中contactCursor != null && contactCursor.getCount() > 0下面的return修改为continue；packages/apps/Contacts/src/com/mediatek/contacts/simservice/PresetContactsImportProcessorOrange.java文件中contactCursor != null && contactCursor.getCount() > 0下面的return修改为continue；
+```
+
+## 如何关闭小区广播（Cell Broadcast）
+
+```
+在modem端修改，custom/service/nvram/nvram_cust_pack.c文件中COMMON_NVRAM_EF_SMSAL_COMMON_PARAM_DEFAULT[]项中
+#if defined (__CB_SETTING_OFF__)  //redmine 36063 CB setting modify by shiyujiao 2015-07-23 begin
+    0x00, 0x01,              -->关闭小区广播
+#else
+    0x01, 0x01,              -->打开小区广播
+#endif
+ps:有时候在modem端关闭小区广播后，发现插卡后刚进去是关闭的，过段时间进去就出现又打开的状态，这是去看下MTK_ETWS_SUPPORT是否关闭
+```
+
+## 当使用startActivityForResult()时，去启动一个acitivity的时候，前面千万不能有Intent.FLAG_ACTIVITY_NEW_TASK和Intent.FLAG_ACTIVITY_SINGLE_TOP，且被启动的apk
+
+```
+在androidManifest.xml文件中不可以有android:launchMode="singleInstance"，只能是默认的（也就是launchMode是standard模式），不然的话，会出现startActivityForResult()运行后，还没等到被调用的 Activity 返回，onActivityResult() 就被执行了，且返回的RESULT_CANCELED
+还有一种情况：startActivityForResult(intent, 0);是第二个参数的问题，该参数必须大于0才能在返回值，并激活onActivityResult方法。
+ps：也就是onActivityResult要这个有用被启动的activity只能是standard模式
+```
+
+## 短信编码方式(bit是位，byte是字节，1byte = 8bit)，短信最多输入140个字节（byte）
+
+```
+1、GSM编码 --> 7bit -->1个字节-->主要用来发送ASCII字符 --> 有abc、ABC、123、@主要是这四种类型的可以通过GSM编码发送
+2、UCS2编码 --> 16bit -->2个字节-->主要用来发送Unicode字符 -->除了ASCII字符，还加上了很多国家的语言，比如汉字，所以短信发汉字用的是2个字节
+1.GSM alphabet  表示用户编辑的短信内容都用7bit进行编码
+如果输入的都为ASCII字符，则最多可以输入的字符数为140x8(每个字节为8位)/7(该编码方式为7位)=160，但是如果输入中存在Unicode字符，则按照Unicode的编码方式进行编码，则最多可以输入的字符数为140x8(每个字节为8位)/16(Unicode编码方式为16位)=70
+2.Unicode    表示用户编辑的短信内容都用ucs2进行编码
+不管输入的是ASCII字符还是Unicode字符，都是按照16位的进行计算，则最多可以输入的字符数为140x8(每个字节为8位)/16(Unicode编码方式为16位)=70
+3.Automatic  先用7bit进行编码，如果有些字符无法用7bit编码（有些字符并没有在编码表里面定义），则用ucs2进行编码
+如果输入的都为ASCII字符，则最多可以输入的字符数为140x8(没个字节为8位)/7(该编码方式为7位)=160，但是如果输入中存在Unicode字符，则按照Unicode的编码方式进行编码，则最多可以输入的字符数为140x8(没个字节为8位)/16(Unicode编码方式为16位)=70     （同GSM alphabet的编码方式）
+由于默认的GSM alphabet和Automatic的编码方式相同，所以很多客户要求我们在选择GSM alphabet编码方式时，直接[FAQ10993]SMS内容强制用7bit编码[Orange operator]，当你输入Unicode字符时，发送出去的时候直接用“？”代替，而“？”就是ASCII字符，所以此时选择该编码方式，最多可以输入的字符数为140x8(没个字节为8位)/7(该编码方式为7位)=160
+```
+
+## 如何实现短信编码方式（M平台上）
+
+```
+[FAQ10993]SMS内容强制用7bit编码[Orange operator]
+[FAQ09191]信息设置里增加让用户选择短信编码方式的菜单    ----> 里面有修改默认值的方法
+vendor/mediatek/proprietary/packages/apps/Mms/src/com/android/mms/transaction/SmsSingleRecipientSender.java文件中sendMessage方法加上
+SharedPreferences pref = mContext.getSharedPreferences("com.android.mms_preferences", Context.MODE_WORLD_READABLE);
+String inputString = pref.getString("pref_key_sms_input_mode", "GSM alphabet");
+
+if ("GSM alphabet".equals(inputString)) {
+    mMessageText=mMessageText.replaceAll("ą","a");
+    mMessageText=mMessageText.replaceAll("ā","a");
+    mMessageText=mMessageText.replaceAll("á","a");
+    mMessageText=mMessageText.replaceAll("â","a");
+    mMessageText=mMessageText.replaceAll("ã","a");
+
+    mMessageText=mMessageText.replaceAll("Ą","A");
+    mMessageText=mMessageText.replaceAll("Ā","A");
+    mMessageText=mMessageText.replaceAll("Á","A");
+    mMessageText=mMessageText.replaceAll("À","A");
+    mMessageText=mMessageText.replaceAll("Â","A");
+    mMessageText=mMessageText.replaceAll("Ã","A");
+
+    mMessageText=mMessageText.replaceAll("č","c");
+    mMessageText=mMessageText.replaceAll("ç","c");
+    mMessageText=mMessageText.replaceAll("ć","c");
+
+    mMessageText=mMessageText.replaceAll("Č","C");	
+    mMessageText=mMessageText.replaceAll("Ć","C");
+
+    mMessageText=mMessageText.replaceAll("ê","e");
+    mMessageText=mMessageText.replaceAll("ë","e");
+    mMessageText=mMessageText.replaceAll("ė","e");
+    mMessageText=mMessageText.replaceAll("ę","e");
+    mMessageText=mMessageText.replaceAll("ē","e");
+
+    mMessageText=mMessageText.replaceAll("È","E");
+    mMessageText=mMessageText.replaceAll("Ê","E");
+    mMessageText=mMessageText.replaceAll("Ë","E");
+    mMessageText=mMessageText.replaceAll("Ė","E");
+    mMessageText=mMessageText.replaceAll("Ę","E");	
+    mMessageText=mMessageText.replaceAll("Ē","E");
+
+    mMessageText=mMessageText.replaceAll("î","i");
+    mMessageText=mMessageText.replaceAll("ï","i");
+    mMessageText=mMessageText.replaceAll("ī","i");
+    mMessageText=mMessageText.replaceAll("į","i");
+    mMessageText=mMessageText.replaceAll("í","i");
+
+    mMessageText=mMessageText.replaceAll("Ï","I");
+    mMessageText=mMessageText.replaceAll("Î","I");
+    mMessageText=mMessageText.replaceAll("Ī","I");
+    mMessageText=mMessageText.replaceAll("Į","I");
+    mMessageText=mMessageText.replaceAll("Ì","I");
+    mMessageText=mMessageText.replaceAll("Í","I");
+
+    mMessageText=mMessageText.replaceAll("ô","o");
+    mMessageText=mMessageText.replaceAll("õ","o");
+    mMessageText=mMessageText.replaceAll("ó","o");
+    mMessageText=mMessageText.replaceAll("ō","o");
+
+    mMessageText=mMessageText.replaceAll("Ô","O");
+    mMessageText=mMessageText.replaceAll("Õ","O");
+    mMessageText=mMessageText.replaceAll("Ò","O");
+    mMessageText=mMessageText.replaceAll("Ó","O");
+    mMessageText=mMessageText.replaceAll("Ō","O");
+
+    mMessageText=mMessageText.replaceAll("û","u");
+    mMessageText=mMessageText.replaceAll("ū","u");
+    mMessageText=mMessageText.replaceAll("ú","u");
+
+    mMessageText=mMessageText.replaceAll("Û","U");
+    mMessageText=mMessageText.replaceAll("Ù","U");
+    mMessageText=mMessageText.replaceAll("Ū","U");
+    mMessageText=mMessageText.replaceAll("Ú","U");
+
+    mMessageText=mMessageText.replaceAll("Ń","N");
+    mMessageText=mMessageText.replaceAll("ń","n");
+
+    mMessageText=mMessageText.replaceAll("Ÿ","Y");
+    mMessageText=mMessageText.replaceAll("ÿ","y");
+
+    mMessageText=mMessageText.replaceAll("Œ","OE");
+
+    mMessageText=mMessageText.replaceAll("œ","oe");
+
+    mMessageText=mMessageText.replaceAll("ž","z");
+    mMessageText=mMessageText.replaceAll("ż","z");
+    mMessageText=mMessageText.replaceAll("ź","z");
+    mMessageText=mMessageText.replaceAll("Ž","Z");
+    mMessageText=mMessageText.replaceAll("Ż","Z");
+    mMessageText=mMessageText.replaceAll("Ź","Z");
+
+    mMessageText=mMessageText.replaceAll("š","s");
+    mMessageText=mMessageText.replaceAll("ś","s");
+    mMessageText=mMessageText.replaceAll("Š","S");
+    mMessageText=mMessageText.replaceAll("Ś","S");
+
+    mMessageText=mMessageText.replaceAll("Ł","L");
+    mMessageText=mMessageText.replaceAll("ł","l");
+}
+int codingType;
+if ("GSM alphabet".equals(inputString)) {
+    codingType = SmsMessage.ENCODING_7BIT;
+}else{
+    codingType = SmsMessage.ENCODING_UNKNOWN;
+}
+```
+
+## 64位系统环境下，在eng版本中预置32位apk可以运行，在user版本中预置的32位apk运行报错？
+
+```
+原因：
+1、User版本的32位apk在64位系统环境下编译时，默认被编译解析为64位路径。当运行时找不到其32位的默认路径，报错。在Android.mk文件中加入LOCAL_MULTILIB := 32，可以编译解析为32位路径，运行不报错。
+2、Eng版本没有32位和64位区分，运行不报错
+```
+
+## [默认值]默认时间修改
+
+```
+72L：
+alps/vendor/mediatek/proprietary/frameworks/base/res/res/values/config.xml  修改default_restore_year值
+
+alps/frameworks/base/services/core/java/com/android/server/NetworkTimeUpdateService.java
+//today.set(1, 8, mDefaultYear);
+修改日月，第一位是日，从1开始，第二位是月，从0开始，即1，8代表9月1日，1月1日需要使用//today.set(1, 0, mDefaultYear);
+
+alps/kernel-3.10/arch/arm/mach-mt6572/sr6572_wet_l/rtc/rtc-mt.h
+alps/bootable/bootloader/lk/target/sr6572_wet_l/include/target/cust_rtc.h
+alps/bootable/bootloader/preloader/custom/sr6572_wet_l/inc/cust_rtc.h
+修改年月日，都是从1开始计数
+
+其他平台稍微有点变化，目前设定为2016-01-01会出现夏令时变为2015-12-31的情况；
+但是有些客户就是希望2016-01-01，因此出现夏令时情况的再单独与客户launcher沟通修改成其他时间；
+
+53L:alps/vendor/mediatek/proprietary/frameworks/base/res/res/values/config.xml  修改default_restore_year值
+alps/frameworks/base/services/core/java/com/android/server/NetworkTimeUpdateService.java
+//today.set(1, 8, mDefaultYear);
+修改日月，第一位是日，从1开始，第二位是月，从0开始，即1，8代表9月1日，1月1日需要使用//today.set(1, 0, mDefaultYear);
+
+/kernel-3.10/drivers/misc/mediatek/mach/mt6735/sr6735_65c_l1/rtc/rtc-mt.h 
+/bootable/bootloader/preloader/custom/sr6735_65c_l1/inc/cust_rtc.h
+
+kk：
+alps/vendor/mediatek/proprietary/frameworks/base/res/res/values/config.xml  修改default_restore_year值
+
+alps/frameworks/base/services/core/java/com/android/server/NetworkTimeUpdateService.java
+//today.set(1, 8, mDefaultYear);
+修改日月，第一位是日，从1开始，第二位是月，从0开始，即1，8代表9月1日，1月1日需要使用//today.set(1, 0, mDefaultYear);
+M:mediatek/custom/up40_h405f_sfr/kernel/rtc/rtc/rtc-mt.h
+M:mediatek/custom/up40_h405f_sfr/kernel/rtc/rtc/rtc-mt6575.h
+M:mediatek/custom/up40_h405f_sfr/preloader/inc/cust_rtc.h
+在以上三个文件中修改即可
+```
+
+## [shell]aapt解析apk文件
+
+```
+拷贝一个alps/out/host/linux-x86/bin/aapt文件到apk同目录下
+进入apk同目录打开终端，
+1、chmod 777 aapt
+2、./aaptdump badging DeskClock.apk  > log.txt，然后就可以在log.txt文件中看到很多该apk的数据，只是看部分apk信息建议用这个方法
+./aapt l -a DeskClockGoogle.apk > log.txt  ，解析了所有的apk信息
+./aapt dump resources DeskClockGoogle.apk > log_res.txt，解析了该apk的资源文件信息
+
+aapt d permissions example.apk //显示这个apk所添加的权限
+aapt d xmltree example.apk AndroidManifest.xml //查看apk压缩文件中AndroidManifest.xml内容
+```
+
+## 新建联系人时，把某些特殊的字母写入作为联系人的名字，保存后名字会变成保存的号码，即名字不会保存（redmine 62148）
+
+```
+[FAQ08018]系统语言为英语时，Contacts联系人名字含有特殊前缀后缀(Dr. Mr. Lt等)时的相关问题处理
+```
+
+## SIM卡相关问题
+
+```
+1、[FAQ02891][SIM]什么情况下显示Invalid SIM     Invalid SIM 表示注册网络，被网络reject.
+2、[FAQ17655]SIM卡联系人无法收藏
+3、[FAQ18208][SAT]如何不显示开机SIM卡欢迎语
+4、[FAQ14489]Android L SIM卡更新语言问题
+```
+
+## 修改分区
+
+```
+如何在L、M、GO/O项目中修改分区
+L、M：先进入projectConfig.mk文件中搜索sagereal_fat_config，如果后面有值就修改../sagereal/custom/fatconfig/SYSTEM2000M（sagereal_fat_config对应值命名）/partition_table_MT6580.xls；如果没有值就修改/device/mediatek/build/build/tools/ptgen/MT6580/partition_table_MT6580.xls
+
+GO/O：alps/device/mediatekprojects/$project/BoardConfig.mk中设定：
+BOARD_MTK_SYSTEM_SIZE_KB := 1024000
+BOARD_MTK_VENDOR_SIZE_KB := 307200
+BOARD_MTK_CACHE_SIZE_KB := 114688
+```
+
+## Tethering IPV4/IPV6相关
+
+```
+[FAQ08793]"Hotspot & tethering settings"的预设值IPv4,如何将它的預設值改為"IPv4 & IPv6"
+[FAQ08603][Dialup]测试IPv6拨号失败
+[FAQ15542]IPv6 tethering feature项介绍及通用配置
+[FAQ13289][PAN][KK]网络共享与便携式热点设置”设为“IPv4&IPv6”，无法共享网络
+[FAQ11563]请问平台是否支持IPv6？请帮忙确认IPv6相关需求是否支持?
+[FAQ15292]IPv4 or IPv6 Prefer       如果同时拥有IPv4和IPv6的地址，是会默认优先上报IPv6的地址，若需要修改为IPv4 prefer，可以按如下方式修改
+```
+
+## [FAQ11564]长按Home键唤起Google Now
+
+```
+1. 修改 frameworks/base/core/res/res/values/config.xml
+<integer name="config_longPressOnHomeBehavior">2</integer>
+注：这里的值可以设置三个
+1代表唤起recent app界面；
+2代表唤起搜索界面（Google Now)；
+3代表Nothing
+```
+
+## 通过fota升级一些nvram，必须修改lid的值
+
+```
+1、锁网的lid是在modem端的interface/service/nvram/nvram_editor_data_item.h文件中的NVRAM_EF_SML_LID_VERNO
+2、音频参数的lid是在mediatek/custom/up16_h502s_meo/cgen/inc/Custom_NvRam_LID.h文件中的AP_CFG_RDCL_FILE_AUDIO_LID_VERNO值(kk)
+vendor/mediatek/proprietary/custom/sr6580_weg_l/cgen/inc/Custom_NvRam_LID.h文件中的AP_CFG_RDCL_FILE_AUDIO_LID_VERNO值(L)
+PS:[FAQ14500][Audio Common] OTA升级音频参数后如果不恢复工厂设置也能生效
+3、小区广播的lid是在interface/service/nvram/nvram_editor_data_item.h文件中的NVRAM_EF_CB_CH_INFO_LID_VERNO
+4、IMEISV的lid是在interface/service/nvram/nvram_editor_data_item.h文件中的NVRAM_EF_IMEI_IMEISV_LID_VERNO
+```
+
+## 开机向导引起灭屏时间问题
+
+```
+文档位置/home/jiangcunbin/Desktop/sagereal资料/自己总结/GMS认证/GMS包引起问题分析_new/开机向导引起灭屏时间问题.txt
+开机向导正常整个过程就是 60000->121000->60000，在开机向导界面拔掉电池，这个行为是第二次时把121000->60000这个过程破坏了。导致开机向导没能把这个值修改回来。
+而我们的修改方式就是把60000->121000这个过程就不让走。这样自然就不会把这个时间给修改了。修改文件在frameworks/base/packages/settingsprovider/src/com/android/providers/settings/SettingsProvider.java文件中的isRedundantSetValue方法中加上
+if(name.equals("screen_off_timeout")&&value.equals("121000")) {
+    return true;
+}
+```
+
+## [adb]更新数据库命令
+
+```
+update secure set value = 1 where name="device_provisioned";
+```
+
+## 如何让user的也默认打开mtklog
+
+```
+L：alps/vendor/mediatek/proprietary/external/xlog/tools/mtklog-config-user.prop
+M/N：alps/device/mediatek/common/mtklog/mtklog-config-bsp-user.prop
+把这两个文件中的值都改为true
+```
+
+## 开机向导wifi skip置灰
+
+```
+sagereal资料/自己总结/GMS认证/GMS包引起问题分析_new/FAQ18056.pdf
+5.1_r3版本,按钮置灰一段时间后可以恢复,点击即可跳过  -->  主要因为GmsCore的3个dex文件做dex2oat时间太长导致,由于手机防盗功能,开机向导在wifi设置界面需要判断FRP的状态来决定是否一定需要网络来登录Google账户验证,FRP状态需要通过GmsCore的FrpService获取,而FrpService需要等待GmsCore的3个插件dex文件做dex2oat完成后才能启动.如果在开机向导的wifi设置界面,FrpService还没有启动起来,那么这个时候skip按钮就是置灰的;需要一直等待FrpService启动后获取到正确的FRP状态后skip按钮才可以点击
+6.0_r2版本,按钮置灰不能恢复,则此次开机一直不能跳过  -->   M版本GmsCore第一次运行时并不需要再做dex2oat,可是SetupWizard的机制有所变化,即:SetupWizard通过asyncTask调用GmsCore获取FRP Status,如果10s未返回结果则cancel掉此asyncTask(通过中断线程执行直接cancel,同时抛出InterruptedException异常),且设置必须要网络连接才可以进行下一步
+对于性能不够好的机器,10s有可能线程未能及时finished,则会导致开机向导状态错误
+
+ps：当打开数据流量的时候，不会按照上面描述的去走，会去连接google的服务器；当没有打开数据流量的时候，会通过上面的描述去走
+```
+
+## Play Store 无法连接 log 分析
+
+```
+10-08 14:00:04.374197: E/CheckinTask(1063): Checkin failed: https://android.clients.google.com/checkin (request #0): java.io.IOException: Rejected response from server: invalid hardware identifier: "Andy5.5EI" is not a valid device
+从log中可以明确的知道Andy5.5EI这个名字是不被play store认可的，所以ro.product.device以及ro.product.name两个值是不能带有空格或“.”这样的字符
+```
+
+## 手机可以发送flac格式的音频文件，但不能接收（redmine57636）
+
+```
+packages/apps/Bluetooth/src/com/android/bluetooth/opp/Constants.java 文件中 ACCEPTABLE_SHARE_INBOUND_TYPES 中加上 application/x-flac
+```
+
+## 如何把window里面的txt文件转换为linux系统下的文件（不转换会显示乱码）
+
+``` bash
+iconv -f gb18030 -t utf8 file1 -o file2
+```
+
+## [默认值][bug](名称)WIFI直连名称显示错误
+
+```
+kk：frameworks/base/wifi/java/android/net/wifi/p2p/WifiP2pService.java文件中的getPersistedDeviceName()方法
+L：frameworks/opt/net/wifi/service/java/com/android/server/wifi/p2p/WifiP2pServiceImpl.java文件中的
+```
+
+## [默认值][FAQ04794]如何修改默认数据连接开关(前提是数据库的默认值loadSetting(stmt, Settings.Global.MOBILE_DATA要修改好)
+
+```
+L(单卡)：frameworks/opt/telephony/src/java/com/mediatek/internal/telephony/dataconnection/DataSubSelector.java文件subSelectorForOm(Intent intent)方法中
+turnOffNewSimData(intent);  -->运行后关闭，不运行就是打开
+
+L(双卡)：把上面的修改后在修改后面的
+frameworks/opt/telephony/src/java/com/android/internal/telephony/dataconnection/DcTrackerBase.java文件handleMobileDataSettingNotFound()方法中
+Settings.Global.putInt(mResolver, Settings.Global.MOBILE_DATA + phoneSubId, 0);-->关闭
+Settings.Global.putInt(mResolver, Settings.Global.MOBILE_DATA + phoneSubId, 1);-->打开
+```
+
+## [默认值]修改蓝牙显示名称
+
+```
+mediatek/config/up39_h455_coppel/custom.conf 文件中 bluetooth.HostName 中
+```
+
+## 如何让每个apk里面的menu通过三个点显示出来
+
+```
+frameworks/base/core/res/res/values/config.xml 文件中的 <integer name="config_overrideHasPermanentMenuKey">0</integer> 值改为2
+```
+
+## 如何修改Settings-->Display-->Font size
+
+```
+L:frameworks/base/core/java/android/content/res/Configuration.java 中的 setToDefaults() 方法中的 fontScale 值，1.0f 为 normal，0.9f 是 small
+```
+
+## [FAQ12292]浏览器下载文件无法打开
+
+```
+浏览器下载文件时，有时会遇到下载后文件无法打开，比如ogg，3gp等格式，或者下载的apk无法安装等问题。这类问题一般是sever返回的mimetype有问题，导致打开时，发往其他app的Intent不能被正常处理。例如无法安装apk文件，一般通过搜索关键字"DownloadManager",会搜到类似如下的log:
+
+06-27 14:20:15.364   919   919 W DownloadManager: Failed to start Intent { act=android.intent.action.VIEW dat=content://downloads/all_downloads/9 typ=application/octet-stream flg=0x3 }: android.content.ActivityNotFoundException: No Activity found to handle Intent { act=android.intent.action.VIEW dat=content://downloads/all_downloads/9 typ=application/octet-stream flg=0x3 }
+
+从log信息可以看出：mime typ=application/octet-stream 不能被处理。
+主要原因是：下载apk时，server返回application/octet-stream,不是标准的mimetype: application/vnd.android.package-archive,
+导致htmlviewer无法打开该inent. 这类一般是server issue，若server返回的是标准的：application/vnd.android.package-archive就不会有
+这样的问题.
+
+[SOLUTION]
+先确认无法打开文件的正确mime type，然后在DownloadHandler.java中的DownloadStartNoStream()作特殊处理。将sever返回错误的mime强
+制修正成正确的mime type即可。下面给出以无法打开apk为例的修改方案，同理，其他格式的文件也是类似的。
+修改文件：\packages\apps\Browser\src\com\android\browser\DownloadHandler.java
+修改方法：onDownloadStartNoStream()
+
+具体修改：
+public static void onDownloadStartNoStream(Activity activity, String url, String userAgent, String contentDisposition, String mimetype, String referer, boolean privateBrowsing, long contentLength) {
+    String filename = URLUtil.guessFileName(url, contentDisposition, mimetype); 
+    Xlog.d(XLOGTAG, "Guess file name is: " + filename + " mimetype is: " + mimetype);
+
+    // modify start:   change Mime for apk
+    if (filename.endsWith(".apk") && mimetype.equal("application/octet-stream")) {
+        mimetype = "application/vnd.android.package-archive";
+    }
+    // modify end
+}
+```
+
+## M或者L项目的init.rc文件路径
+
+```
+alps/device/mediatek/mt6580/init.mt6580.rc
+```
+
+## 如果开机向导结束后到launcher起来之间有黑屏出现该怎么办？
+
+```
+去除Provision这个apk，sagereal_remove_apps=Provision
+```
+
+## 3G/2G preferred 和 3G/2G auto 的区别
+
+```
+3g/2g preferred这个模式是指3g优先，就是说只要有3g的网络，哪怕3g的信号很差，手机也会挂载到3g的，如非3g的信号一点都没有了，才会跳转到2g的；3g/2g auto这个模式是指当3g的网络信号差的时候，会自动的切换到2g去
+```
+
+## [adb]显示所有apk的包名等信息的adb命令
+
+``` bash
+adb shell pm list packages -f  ---> 显示所有apk的包名
+adb shell pm list packages laun ---->显示包含“laun”的包名
+-f：查看关联文件，即应用apk的位置跟对应的包名（如：package:/system/app /MusicPlayer.apk=com.sec.android.app.music）
+-d：查看disabled packages
+-e：查看enable package
+-s：查看系统package
+-3：查看第三方package
+-i：查看package的对应安装者（如：1、 package:com.tencent.qqmusic installer=null 2、package:com.tencent.qqpim installer=com.android.vending）
+-u：查看曾被卸载过的package。（卸载后又重新安装依然会被列 入）
+```
+
+## 如何把apk预置到system/priv-app?
+ 
+```
+Android.mk 中把 LOCAL_PRIVILEGED_MODULE := true，不写即为false，默认会预置到system/app下面
+```
+
+## [ICU][翻译]ICU相关
+
+```
+很多字符串翻译的都在icu资源中，在external/icu/icu4c
+[FAQ04011]如何编译ICU资源，按照编译出来后，可以直接进入adb shell --> cd system/usr/icu中，用external/icu/icu4c/source/data/out/tmp/icudt55l.dat把替换掉
+```
+
+## 有些项目工厂测试中imei和imsi都为null
+
+```
+把TelephonyManagerEx tm = TelephonyManagerEx.getDefault();修改为 TelephonyManager tm1 = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+```
+
+## [FAQ05658]手机解锁后，如果用户未处理未读信息/未接电话等notification，如何使指示灯继续闪烁。
+
+```
+当M平台上时，除了要注释掉文档里面的那句话以外，如果要求亮屏的时候也会闪烁的话，要在frameworks/base/services/core/java/com/android/server/notification/NotificationManagerService.java文件中的updateLightsLocked()方法中注释掉mScreenOn的判断
+```
+
+## [FAQ07381][Aduio Common]APP层如何控制loopback开启或关闭
+
+```
+AudioManager audiomanager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+audiomanager.setParameters("SET_LOOPBACK_TYPE=1,3");
+其中中传入的两个参数意义如下：
+第一个参数表示input device，1，2，3分别代码main mic，耳机mic，sub mic(dual mic项目才有效)
+第二个参数表示output device，1，2，3分别表示听筒，耳机，喇叭
+根据需要进行组合即可
+closeMic = "SET_LOOPBACK_TYPE=0"  --> 代表关闭对应的通路
+```
+
+## 如何让紧急拨号后显示在call history(通话记录)里面
+
+```
+M：packages/services/Telecomm/res/values/config.xml文件中修改allow_emergency_numbers_in_call_log即可
+N：frameworks/base/telephony/java/android/telephony/CarrierConfigManager.java文件中把sDefaults.putBoolean(KEY_ALLOW_EMERGENCY_NUMBERS_IN_CALL_LOG_BOOL, false)修改为sDefaults.putBoolean(KEY_ALLOW_EMERGENCY_NUMBERS_IN_CALL_LOG_BOOL, true)。
+```
+
+## 如何修改开机过程中的黑屏问题
+
+```
+eservice：ALPS02795990
+[FAQ18016]L/M版本开机黑屏问题区分
+
+1、L版本开机时，kernel logo与开机动画之间闪一帧黑屏，这个现在在kernel logo与开机动画相同并且开机动画是静态的时候表现的尤其明显,目前主要体现在455 digicel和5012 digicel项目上！-------> [FAQ14488]kernel logo到开机动画之间闪现黑屏（L）----> 这个现象是因为，在BootAnimation开始绘图之前，会先做一次clear screen的动作，避免出现前面的图干扰到BootAnimation的显示。这是Google default design，虽然不可避免，但是可以优化。
+ps：在该FAQ上有很多修改的点，但是 目前我们基本上是使用的bool BootAnimation::movie()函数，之后如需修改可修改在bool BootAnimation::movie()中。
+
+2、N项目上，（1）开机动画结束后，概率性闪现灰屏  （2）刷机后开机到语言界面时，有灰屏出现，这些在N上的项目是正常的，原因如下：   redmine86991
+Google在N上新增了Direct boot（file base encryption）feature，为了配合这个feature，定义了开机过程中的一个状态：user_unlocked, 指用户设置了锁屏，重启/开机第一次解锁（即使没有设置锁屏，也会经过user_unlocked的状态）。在user unlocked之前，只有定义了 encryption-aware=true的组件能被叫起，Launcher没有定义这个flag，所以无法被PMS查询到，AMS无法先启动Launcher；Fallbackhome有定义这个flag，即使优先级是-1000，但是PMS只能找到这个activity响应HOME intent，所以会先启动Fallbackhome。
+Google设计Fallbackhome的主要原因就是在user unlocked之前，必须至少要有个activity响应HOME intent，比如Launcher没有定义encryption aware，那么就需要Fallbackhome先起来。目前平台还没有找到比较根本的解决办法，google在MR1上也有增加一个patch来改善，但是也是治标不治本，用一个processing的dialog来缓解黑屏的体验，但是仍然会有黑屏。
+```
+
+## [VOLTE]如何配置VOLTE
+
+```
+首先要向mtk申请相应的patch，然后要对其进行配置，那么如何配置呢？
+1、进入online，然后 MediaTek On-Line> Quick Start> IMS功能专区(VoLTE/VoWifi/ViLTE)，在该功能专区可知，（1）如果你只要弄一个运营商的话，可以看里面的IMS Configuration,对应的可以SBP ID在可在[FAQ17597]各运营商IMS feature参数配置查看；（2）如果你要配置多个运营商能自由切换的话，可以看Dynamic SBP(D-SBP),在该项最下面有如何配置的分析
+How to Enable DSBP
+
+Under device/mediatek path
+[Project_Name]/ProjectConfig.mk, e.g. k55v1_64_om_lwg_volte_ss/ProjectConfig.mk
+Set MTK_IMS_SUPPORT = yes             --->37M上默认打开
+Set MTK_VOLTE_SUPPORT = yes           --->37M上默认打开
+Set MTK_DYNAMIC_SBP_SUPPORT = yes
+Set MTK_MD_SBP_CUSTOM_VALUE = 0
+Set OPTR_SPEC_SEG_DEF = NONE       -----> 同时要检查persist.operator.optr也要为空
+
+Under kernel-3.xx/arch/arm64/configs path
+[Project_Name]_defconfig, e.g. k55v1_64_om_lwg_volte_ss_defconfig
+Set CONFIG_MTK_MD_SBP_CUSTOM_VALUE = "0"
+
+[Project_Name]_debug_defconfig, e.g. k55v1_64_om_lwg_volte_ss_debug _defconfig
+Set CONFIG_MTK_MD_SBP_CUSTOM_VALUE = "0"
+
+ps:SBP ID在M平台上用16进制，在N平台上要转化为10进制
+
+VOWIFI 如何配置
+1、 MTK_MD_SBP_CUSTOM_VALUE = 0	
+2、MTK_MULTIPLE_IMS_SUPPORT = 2（双卡配置为2,单卡配置为1）
+3、MTK_WFC_SUPPORT = yes
+
+注意点：
+doro 智能机项目 客户反馈，在插卡情况下，拨打紧急号码，并快速挂断，多次后会出现挂不断现象，MTK 回复是由于打开了跟volte相关的两个宏：
+MTK_VOLTE_SUPPORT=YES
+MTK_IMS_SUPPORT=YES
+MTK原始代码对volte是没有配置的的，但是却开着这两个宏，如果当地网络支持IMS功能，手机就会出现挂不断现象。
+为了防止再次出现这个问题，请各位以后带项目的时候，检查一下这两个宏，如果项目没有配置volte，请将
+MTK_VOLTE_SUPPORT =no，
+MTK_IMS_SUPPORT=no
+
+问题：客户场测发现，插入当地卡，无法显示VOLTE
+原因：OPTR_SPEC_SEG_DEF = NONE，但是persist.operator.optr设置成CUST，才出现这个问题！只要persist.operator.optr变为空就行
+```
+
+## [小区广播]SAE（紧急小区广播）
+
+```
+具体可看redmine39255
+文件在 alps/vendor/mediatek/proprietary/packages/apps/CMASReceiver
+```
+
+## [adb]如何切换selinux的模式
+
+```
+adb shell setenforce 0(宽容模式，permissive);
+adb shell getenforce可以获取当前的selinux的模式
+```
+
+## 如何设置省电模式/[Bug](显示)更换电池，原先低电量保护显示机制不会消失(redmine76107)
+
+```
+后面的这个问题是由于没有默认设置低电量level值的原因（数据库已经存在，只是没有默认值），frameworks/base/packages/SettingsProvider/src/com/android/providers/settings/DatabaseHelper.java中加入loadIntegerSetting(stmt, Settings.Global.LOW_POWER_MODE_TRIGGER_LEVEL,
+R.integer.def_low_battery_level);即可
+其次，设置最低电量等级的是Settings.Global.LOW_POWER_MODE_TRIGGER_LEVEL这个数据库，直接去设置数据库即可
+
+如何在settings-->battery-->menu-->battery saver中低电量level的值，首先在packages/apps/Settings/res/values/arrays.xml中battery_saver_trigger_values值，可以去新加或者去修改，然后在packages/apps/Settings/src/com/android/settings/fuelgauge/BatterySaverSettings.java文件中onActivityCreated(Bundle savedInstanceState)方法中的new SettingPref中的默认值参数（这个去设置的时候必须是battery_saver_trigger_values中的其中一个才有效，因为他会去遍历这个battery_saver_trigger_values数组），也就是说哪怕没有设置默认值，当进入这个文件也会去设置上面数据库的值，所以我们在刚刷机后去进行默认值的设置的时候最好跟你settings中去重新设置的是一样的，这样就可以保持一致性。
+```
+
+## git 清空环境
+
+``` bash
+git reset --hard HEAD && git clean -xdf && git pull && git status
+```
+
+## 如何在静音模式下也有截图以及拍照声音
+
+```
+1、frameworks/base/core/res/res/values-mcc404/config.xml中的config_camera_sound_forced 的值设置为true，强制使用拍照声音
+如果设为false的话，会跟着情景模式走，当静音模式的时候就不会出现截图和拍照声音，如果是户外模式的时候就会出现截图和拍照声音
+2、也可以audioservice.java里的 readCameraSoundForced()， 返回结果强制返回一个false。
+```
+
+## OMACP
+
+```
+Omacp是一个功能，相当于是运营商给你发一个ota指令或者一条短信，你点击短信后会自动去更新运营商要求你更新的apn
+1、现有的状态：接收到Omacp后作为新的APN直接添加到数据库中，如有你要直接接收到Omacp设置APN信息后,用新的APN替换原有的APN，请参考[FAQ18292]Omacp Apn信息替换原有APN
+2、[FAQ09453]Omacp协议版本及可以支持的配置内容
+3、如果要有该功能的话，要打开MTK_OMACP_SUPPORT、MTK_OMADRM_SUPPORT、MTK_OMA_DOWNLOAD_SUPPORT的宏
+4、在某些国家Email参数SMTP不同，导致在收到Omacp message中含有Email参数的时候，配置无法安装。Omacp出错log如下：
+ActivityManager: Broadcast: Intent { act=com.mediatek.omacp.settings.result (has extras) } ordered=false callerApp=ProcessRecord{40b3cbd8 6138:com.android.email/10014}
+Omacp/OmacpMessageSettingsDetail: OmacpMessageSettingsDetail result received, appId is : 25 result is : false
+可参考[FAQ11680]由于Email参数SMTP_APPID不同，导致Omacp配置email失败的修改方法
+5、要接收到omacp的短信，一般都要有自己源生的短信apk，如果用google短信是不行的，如果只有google短信，修改OmacpMessageNotification.java的updateNotification函数,将
+otherAppContext = context.createPackageContext("com.android.mms",Context.CONTEXT_IGNORE_SECURITY);修改成otherAppContext = context.createPackageContext	("com.google.android.apps.messaging",Context.CONTEXT_IGNORE_SECURITY);
+```
+
+## 如何使<32M,手机内存就不能push或者复制进去东西
+
+```
+FAQ14938 关于文件系统空间预留的说明  --->可以修改第一点以及data区那个点即可实现，即kernel-3.18/fs/ext4/super.c文件中把resv_clusters = min_t(ext4_fsblk_t, resv_clusters, 4096)改为resv_clusters = min_t(ext4_fsblk_t, resv_clusters, 8192)，同时device/mediatek/mt6735/init.mt6735.rc文件中把exec /system/bin/tune2fs -O has_journal -u 10010 -r 4096 /dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/userdata修改为exec /system/bin/tune2fs -O has_journal -u 10010 -r 0 /dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/userdata
+```
+
+## 如何关闭多用户功能
+
+```
+设置为如下：
+MTK_2SDCARD_SWAP = yes(这个可能可有可无)
+MTK_OWNER_SDCARD_ONLY_SUPPORT=no
+sagereal_add_multiuser = no
+config_enableMultiUserUI = false
+config_multiuserMaximumUsers = 1
+
+[FAQ13688]【Multi-user】如何在L版本上打开Multi-user？
+[FAQ18300]如何确认M版本上Multi-user的配置是否ok？
+[FAQ13578]Multi-user模式下，user A设置的闹钟，在user B有铃声无画面，无法关闭
+[FAQ14403]【multi-user】android 5.1 如何打开 android.software.managed_users 功能
+```
+
+## 通话 log 抓取
+
+```
+当通话时出现问题，该抓取什么log（一般抓取vm log即可）
+通常Speech测试，提供一般通话log即可，如果有通话无声问题在确认为非网络原因导致，则需要按照通话无声重新提供log。
+VM log抓取：按*#*#3646633#*#*进入工模/Hardware Testing/Audio/speech logger,勾选上Enable speech log+EPL(Enhanced PCM Log),打开vmlog后每打一通电话便会在mtklog/audio_dump中生成一个*.vm文件，其以通话开始时间命名。
+```
+
+## 蓝牙 log 抓取
+
+```
+当关于蓝牙的时候的bug，应该抓取什么log ---->hci log
+HCI(Host Controller Interface，主机控制接口) HCI,属于蓝牙协议栈的一部分。
+蓝牙规范包含了一个符合标准的接口定义(主机控制器接口),它适用于蓝牙通讯模块的硬件部分。此定义描述了位于HCI驱动程序(主机的一部分,也即蓝牙通讯模块的使用者)和主机控制器固件(蓝牙通讯模块本身的一部分)之间的接口
+settings->developer options->enable bluetooth snoop hci log->勾选
+
+路径位置：不同平台位置有所不同：
+M平台：/sdcard/mtklog/btlog/
+L平台：adb命令：/data/@btmtk/
+```
+
+## [gps][FAQ05622]GPS问题所需要录制的log及方法
+
+```
+对于通常遇到的GPS问题，需要录制什么log，以及如何录制。
+
+[SOLUTION]
+对于GPS问题，请提供mobile log和GPS debug log。
+log 抓取办法如下：
+1. 进到工程模式，打开YGPS。
+2. 点击“NMEA Log->Enable dbg2file [Need Restart]”按钮和“NMEA Log->Enable dbg2ddms [Need Restart]”按钮。
+3. 退出YGPS，间隔至少3s后，再进入GPS应用程序（如导航软件，YGPS）开始测试，这样才能确保操作生效。
+4. log最后会存放在手机的/data/misc/gpsdebug.log.xxx，测试完后请将log提供给我们分析。
+5. 附上log的同时也请告知复现问题的操作步骤以及复现问题的时间点，如hh:mm:ss出现什么现象。
+note:
+1.测试时请选择GPS信号良好的空地（视野范围内无建筑物遮挡）进行测试，以排除环境因素导致无法定位，定位慢，定位漂移等问题。
+2.测试前请确保测试机有root 权限，可以访问/data/misc/路径，可以将gps debug log用adb拉出来。
+3.测试完成后请注意以下事项
+a.请进入YGPS，点击“NMEA Log->disable dbg2file [Need Restart]”按钮，然后退出YGPS，这样才能确保操作生效。否则，只要打开GPS，就会录制debug log，这样会占用更多的存储空间，导致不可预测的问题发生。
+b.将/data/misc/gpsdebug.log.xxx删除，因为即使disable dbg2file以后，这笔log仍然会在/data/misc/。
+【Mobile log抓取方法】
+1. 进入工程模式，找到system logger进行相应设置,打开mobile log、net log、modem log。
+2. 测试完成后，请将SD卡中mtklog文件夹中的所有log提供给我们。
+```
+
+## 如何快速抓取systrace （Systrace的功能用来debug performance问题）
+
+```
+前提条件：下载好android SDK，安装Python
+1，终端下，cd切换到SDK目录
+2，切换到systrace目录：……../platform-tools/systrace
+3,执行命令.
+python systrace.py --time=10 -o performanceTrace.html sched gfx view wm
+--time=10表示抓取10s的信息
+–o performanceTrace.html表示输出文件名
+sched gfx view wm 是TAG（python systrace.py -l 可以查看全部标签）
+4,在当前路径生成的performanceTrace.html即是报告文件。右键用google浏览器打开，即可查看。
+```
+
+## spn系统获取的优先级
+
+```
+在frameworks/opt/telephony/src/java/com/android/internal/telephony/uicc/SpnOverride.java文件lookupOperatorName方法中去获取那几个在system/etc下的spn文件，但是在显示过程中会先去判断，如下：
+if ((numeric.equals("46000")) || (numeric.equals("46002")) || (numeric.equals("46007")) || (numeric.equals("46008"))) {
+        operName = context.getText(com.mediatek.R.string.oper_long_46000).toString();
+    } else if ((numeric.equals("46001")) || (numeric.equals("46009"))) {
+        operName = context.getText(com.mediatek.R.string.oper_long_46001).toString();
+    } else if ((numeric.equals("46003")) || (numeric.equals("46011")) || getFromResource) {
+        operName = context.getText(com.mediatek.R.string.oper_long_46003).toString();
+    } else if (numeric.equals("46601")) {
+        operName = context.getText(com.mediatek.R.string.oper_long_46601).toString();
+    } else if (numeric.equals("46692")) {
+        operName = context.getText(com.mediatek.R.string.oper_long_46692).toString();
+    } else if (numeric.equals("46697")) {
+        operName = context.getText(com.mediatek.R.string.oper_long_46697).toString();
+    } else if (numeric.equals("99998")) {
+        operName = context.getText(com.mediatek.R.string.oper_long_99998).toString();
+    } else if (numeric.equals("99999")) {
+        operName = context.getText(com.mediatek.R.string.oper_long_99999).toString();
+    } else {
+        // If can't found corresspoding operator in string resource, lookup from spn_conf.xml
+        if (containsCarrier(numeric)) {
+            operName = getSpn(numeric);
+        } else {
+            Rlog.w(LOG_TAG, "Can't find long operator name for " + numeric);
+        }
+所以，有些比如说显示的CMCC、CU都是在这里判断显示的，并不是在spn文件中去写的
+ps：在这个方法中可以看到，获取显示名字的优先级为getSpnByEfSpn(etc/virtual-spn-conf-by-efspn.xml) 》 getSpnByImsi(etc/virtual-spn-conf-by-imsi.xml) 》 getSpnByEfPnn(etc/virtual-spn-conf-by-efpnn.xml) 》 getSpnByEfGid(etc/virtual-spn-conf-by-efgid1.xml) 》  etc/spn-conf.xml
+
+virtual-spn-conf-by-efspn.xml文件中的efspn一般是在log中去抓取的，其实就是写在sim卡中的，所以优先级相当于sim卡最高，至于为什么要出现这几个xml文件，就是为了区别网络运营商和运营商，因为这两个的mnc和mcc是一样的，所以就用网络运营商中的efspn等值来区别开来
+```
+
+## google包对应名称
+
+```
+Velvet ---> google search
+Phonesky ----> Google Play Store
+```
+
+## tac code是imei的前8位 （早期是6位） ？？？
+
+```
+TAC code 是什么鬼？？
+```
+
+## 单双卡配置，修改该宏的值：
+
+```
+MTK_MULTI_SIM_SUPPORT
+path:ALPS-MP-N0.MP2-V1_SR6580_WE_N/sagereal/mk/project**/ProjectConfig.mk
+1.ss -单卡
+2.dsds/dsda -双卡 （区别：dsds双卡双待，dsda双卡双通，我们公司基本都是dsds)
+3.tsts -三卡
+4.qsqs -四卡
+比如双卡配置：MTK_MULTI_SIM_SUPPORT = dsds
+```
+
+## 开机向导中一直会出现Permissions denied: You can change them in Settings > Apps的提醒
+
+```
+这是因为有两个日历（calendar）引起的，如果只有一个日历就不会出现这个问题
+如果客户一定要两个日历都存在，需要去把mtk日历的权限去默认打开；如果只存在其中一个日历，不会出现该问题
+```
+
+## 连上wifi后经常断开再连上
+
+```
+1、当碰到这种事情的时候，先去楼下环境（各种wifi或者热点比较少的环境下，可能会相互影响）去测试下，看是否ok
+2、如果还是NOK，就需要我们在main_log或者kenerl_log中去搜一下“reason”，一般是能搜到断开wifi的reason的
+3、再不行就要提MTK了，问问有没有patch  ALPS02358954
+```
+
+## [FAQ11754]KitKat版本如何将camera service修改为强占式
+
+```
+实现强占式camera service，当某些应用（如手电筒）在后台打开camera后，当camera app open camera时可以强占被后台应用占有的camera.
+```
+
+## [FAQ02941]ro.operator.optr属性问题
+
+```
+ro.operator.optr属性是代表工程中运营商的偏好行为，会在ProjectConfig.mk中由OPTR_SPEC_SEG_DEF的值来指定。目前这个属性只有八个值：OP01、OP02、OP03、OP06、OP07、OP08、OP09、OP10。
+OP01表示中国移动（CMCC）
+OP02表示中国联通（CU）
+OP03表示Orange
+OP06表示Vodafone
+OP07表示AT&T
+OP08表示TMO-US
+OP09表示中国电信（CT）
+OP10表示Tier-2 operator
+且这个属性值目前无法增加其他的值。
+```
+
+## 如何让camera在拍录像的同时能拍照
+
+```
+在camera的配置文件中，搜索KEY_VIDEO_SNAPSHOT_SUPPORTED，
+#if 1
+//  Video Snapshot
+FTABLE_CONFIG_AS_TYPE_OF_USER(
+KEY_AS_(MtkCameraParameters::KEY_VIDEO_SNAPSHOT_SUPPORTED), 
+    SCENE_AS_DEFAULT_SCENE(
+        ITEM_AS_DEFAULT_(MtkCameraParameters::TRUE),             ---->TRUE为支持，FALSE为不支持
+    ), 
+)
+#endif
+```
+
+## 如何跳转到某个apk的detail界面，即加权限界面
+
+``` Java
+Intent in = new Intent().setAction(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+    .setData(Uri.fromParts("package", "com.android.mms", null))
+    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+mContext.startActivity(in);
+
+如何通过 adb 的方式？？？
+```
+
+## *res/raw和assets的相同点和不同点
+
+```
+*res/raw和assets的相同点：
+1.两者目录下的文件在打包后会原封不动的保存在apk包中，不会被编译成二进制。
+
+*res/raw和assets的不同点：
+1.res/raw中的文件会被映射到R.java文件中，访问的时候直接使用资源ID即R.id.filename；assets文件夹下的文件不会被映射到R.java中，访问的时候需要AssetManager类。
+2.res/raw不可以有目录结构，而assets则可以有目录结构，也就是assets目录下可以再建立文件夹
+*读取文件资源：
+InputStream is =getResources().openRawResource(R.id.filename);
+2.读取assets下的文件资源，通过以下方式获取输入流来进行写操作
+AssetManager am = null;
+am = getAssets();
+InputStream is = am.open("filename"); 
+注意1：Google的Android系统处理Assert有个bug，在AssertManager中不能处理单个超过1MB的文件，不然会报异常，raw没这个限制可以放个4MB的Mp3文件没问题。
+注意2：assets 文件夹是存放不进行编译加工的原生文件，即该文件夹里面的文件不会像 xml， java 文件被预编译，可以存放一些图片，html，js, css 等文件。
+```
+
+```
+
+## 如果在非launcher界面，短信会以toast的形式显示出来  （一般都是直接在状态栏提醒下）
+
+```
+可以搜索enqueueToast，然后发现如下log，可以发现pkg是什么，也就是是因为哪个apk才出现该toast
+./mobilelog/APLog_2017_0306_212156/sys_log:03-06 21:22:21.511677   788  9291 I NotificationService: enqueueToast pkg=com.beyond.cineplanet callback=android.app.ITransientNotification$Stub$Proxy@83465a6 duration=0
+```
+
+## SeLinux相关
+
+```
+如何加selinux权限
+log：
+01-01 09:05:45.210000  8349  8349 W Thread-235: type=1400 audit(0.0:124): avc: denied { write } for name="brightness" dev="sysfs" ino=10091 scontext=u:r:system_app:s0 tcontext=u:object_r:sysfs:s0 tclass=file permissive=0
+01-01 09:05:45.220918  1630  8346 D NuPlayerRenderer: renderer set speed = 1
+01-01 09:05:45.221295  1630  8346 E NuPlayer: onScanSources
+01-01 09:05:45.221736  1630  8346 D Utils   : kKeyEndian in utils is 2
+01-01 09:05:45.221830  3024  8349 W System.err: java.io.FileNotFoundException: /sys/class/leds/green/brightness: open failed: EACCES (Permission denied)
+
+内置到system/priv-app/下的第三方apk，因selinux 权限问题，无法点亮LED
+
+解析：
+audit2allow -i 111.txt
+
+#============= system_app ==============
+allow system_app sysfs:file write;
+
+如果直接加在system_app.te中，会与externel下文件冲突，导致编译报错，可以重新定义类型：
+
+添加：
+------＞file.te
+#liangshuang add for green led 2016-12-28
+type sys_green_brightness_file, fs_type,sysfs_type;
+
+file_contexts
+#liangshuang add for green led 2016-12-28
+/sys/class/leds/green/brightness u:object_r:sys_green_brightness_file:s0
+
+system_app.te
+#liangshuang add for green led 2016-12-28
+allow system_app sys_green_brightness_file:file write;
+
+system_server.te
+#liangshuang add for green led 2016-12-28
+allow system_server sys_green_brightness_file:file write;
+
+快速编译验证
+mmm external/sepolicy
+make -j24 ramdisk-nodeps
+make -j24 bootimage-nodeps
+然后再重新刷bootimage 测试.
+
+ps：[FAQ13324] SELinux 常见问题汇总
+[FAQ13820] Android L APP 如何获取proc file system 中节点的写权限
+[FAQ13635] Android L APP 如何获取sys file system 中节点的写权限
+[FAQ11486] [SELinux Policy] 如何设置SELinux 策略规则 ? 在Kernel Log 中出现"avc: denied" 要如何处理？
+
+新加冲突的selinux权限方法：
+(1)、先在file.te/property.te/device.te等文件中定义
+(2)、在file_contexts/gen_contexts等对应文件中绑定第(1)步定义的label
+(3)、在对应的.te文件中申请权限，即allow system_server sys_green_brightness_file:file write;样式，如果用audit2allow跑出来的.te文件不存在，则可以重新新建一个
+```
+
+## sr6750_35g_n软件包中每个代表的信息
+
+```
+下图是6755 N的make文件，前4个数字代表平台（说明6750 & 6755都是用这套代码）；
+第5个数字，是3或6，3代表32位系统，6代表64位系统。64位系统的CTS测试case要比32位多很多
+第6个数字，是5或者6，5代表5模，6代表6模
+g代表GMO版本，GMO的特点是MTK裁剪了某些feature，用于节省ram，以便512M内存也可以用
+n代表android版本为N
+```
+
+## 有些4+512的项目安装大型第三方apk会出现安装时间长，在安装过程中去操作系统会出现卡顿的现象  ----->5012_LP的项目（M）
+
+```
+在L、M版本上：art/dex2oat/dex2oat.cc文件中最上面定义如下代码：
+#define IS_APP(appname) ((!oat_filename_.empty() && (oat_filename_.find(appname) != std::string::npos)) ||  \
+    (!zip_location_.empty() && (zip_location_.find(appname) != std::string::npos)) ||  \
+    (!oat_location_.empty() && (oat_location_.find(appname) != std::string::npos)))
+然后在compiler_options_.reset(new CompilerOptions这句话前面加上如下代码：
+if( IS_APP("facebook") || IS_APP("youtube") || IS_APP("skype") || IS_APP("twitter") ) {
+    compiler_filter = CompilerOptions::kInterpretOnly;
+    LOG(INFO) <<" This apk is in whitelist, so set interpret-only ";
+}
+```
+
+## [FAQ06165][NVRAM][SIM_ME_LOCK]protect_f和protect_s分区的作用是什么？
+
+```
+[Description]
+protect_f和protect_s分区的作用是什么？
+
+[Solution]
+在没有Protect_s和Protect_f分区之前，SIM ME LOCK数据存在USER DATA分区内，详细路径为/data/nvram/md/NVRAM/IMPORTANT。
+当恢复出厂设置时，会将/data/nvram/md/下的文件全部清除，其后开机时会将NVRAM BIN Region中备份的数据recovery到/data/nvram/md/下。
+
+如NVRAM BIN REGION中数据为空，则会按照默认值生成SIM ME LOCK数据。
+如NVRAM BIN REGION中数据不为空，则会将SIM ME LOCK数据恢复为NVRAM BIN REGION保存的状态。
+
+针对case 2，由于NVRAM BIN REGION中保存的状态并不总是同恢复出厂之前/data/nvram/md/NVRAM/IMPORTANT下的SIM ME LOCK数据状态一致，因此可能无法满足SML 的更新一致性要求。
+
+为了对SML数据进行持久化保存以及更新一致性的目的，我们将SML数据移入Protect_s和Protect_f分区。
+
+Protect_s和Protect_f分区的特点有：
+Download的时候若要format USERDATA分区时，不会format Protect_s和Protect_f。
+恢复出厂设置时，也不会清除 Protect_s和Protect_f。但若此时BIN Region中无内容，开机时会判断出USERDATA分区中/data/nvram/md不存在且BIN Region中无内容，进而断定是第一次开机从而根据默认值生成SIM ME LOCK。
+
+[FAQ04454][NVRAM]modem内的哪些NVRAM会被备份到BIN Region?
+Protect_s和Protect_f分区数据是不会被备份到bin区的。
+把数据放入到product_info就能实现该数据在回恢复出厂设置的时候不丢失
+```
+
+## gps默认关闭
+
+```
+当把gps默认关闭后，开机向导会把gps去打开（此时打开的是network，即battery saving），此时要关闭的话，必须在开机向导结束后去修改数据库
+1.首先需要将def_location_providers_allowed置为空，即系统认为的默认关闭  2.默认关闭后仍然开启，则抓取第一次开机log，搜索gps字段的关键字location_providers_allowed
+3.在sys log中搜索到call_put(secure:location_providers_allowed=+network) for 0   4.同样定位到SettingsProvider.java的call方法，我们也可以在这里做处理
+继续查看redmine对应提交记录，我们最终是在Settings.java的putStringForUser方法中修改的，我们可以看到putStringForUser中，最后调用了cp.call(cr.getPackageName(), mCallSetCommand, name, arg);
+这句代码最终调用的就是SettingsProvider.java里面的call方法
+在Settings.java的putStringForUser方法中加上如下代码
+if (Secure.getInt(cr,Secure.USER_SETUP_COMPLETE,0) == 0 && name.equals(Secure.LOCATION_PROVIDERS_ALLOWED)) {
+    if(!android.util.FeatureOption.SAGEREAL_GPS_WORKON_WIZARD){
+        return true;
+    }
+}
+具体可参考如下文档：/home/jiangcunbin/Desktop/sagereal资料/自己总结/GMS认证/GMS包引起问题分析_new/GMS包引起问题分析.ppt
+```
+
+## 多用户相关
+
+```
+FAQ13688 【Multi-user】如何在L版本上打开Multi-user？
+FAQ14403 【multi-user】android 5.1 如何打开 android.software.managed_users 功能
+1. 在sagereal/mk/Project_name/ProjectConfig.mk文件中开以下宏
+config_enableMultiUserUI = true
+config_multiuserMaximumUsers = 8  //此宏值不小于2,
+/*
+以上两个宏也可以在alps/frameworks/base/core/res/resalues/config.xml文件中直接设置默认值
+<bool name="config_enableMultiUserUI">true</bool>
+<integer name="config_multiuserMaximumUsers">8</integer>
+*/
+MTK_2SDCARD_SWAP = no
+MTK_OWNER_SDCARD_ONLY_SUPPORT = yes
+MTK_SHARED_SDCARD = yes
+2. 在alps/devicegetel/sr6572_wet_l/system.prop文件中ro值
+ro.config.low_ram=false
+若上面文件中没有该值，可以去alps/devicegetel/sr6572_wet_l/device.mk文件中找到ro.config.low_ram，并设置为false
+3. 在alps/frameworks/native/data/etc/handheld_core_hardware.xml文件中打开手机多功能系统服务
+<feature name="android.software.managed_users" />
+<feature name="android.software.device_admin" />
+4. AndroidForWork.apk is mandatory to preload on all GMS devices.  //Google App中必须包含该APK
+注意：若要添加多用户功能，必须配置好以上4点，否则CTS测试会有15项测试不通过。
+
+1，Check managered_users configuration:
+adb shell pm list features
+看是否有android.software.managed_users
+2，check multi-user number
+adb shell pm  get-max-users
+获取到的个数应该大于1
+3，check multi-user UI
+adb shell getprop fw.show_multiuserui
+这个值应该是true。
+```
+
+## [术语]VOLTE、VOWIFI
+
+```
+VOLTE：用流量打电话，用LTE承载，但是用分钟数收钱，优点是用数据流量传输数据，音质更好，电话接通更快
+VOWIFI：用wifi打电话，用wifi承载
+```
+
+## 如何添加widevine 
+
+```
+http://172.16.78.132:8002/gitweb/?p=repositories/ALPS-MP-N0.MP2-V1_SR6580_WE_N.git;a=commitdiff;h=b942425cc932e1cdfb716cda72a37183ed87c995;hp=a9460b27dce8bb4163bf92522aae534af9ade5bf
+修改方法：
+(1)、alps/device/mediatek/common/device.mk
+ifeq (yes, $(strip $(SAGEREAL_WIDEVINE_SUPPORT)))
+$(shell cp $(TOPDIR)device/mediatek/common/widevine_on/SECRO_GMP.ini  $(TOPDIR)vendor/mediatek/proprietary/custom/common/secro/SECRO_GMP.ini)
+else
+$(shell cp $(TOPDIR)device/mediatek/common/widevine_off/SECRO_GMP.ini  $(TOPDIR)vendor/mediatek/proprietary/custom/common/secro/SECRO_GMP.ini)
+endif	
+(2)、alps/device/mediatek/common/widevine_off/SECRO_GMP.ini 	新建的文件
+(3)、alps/device/mediatek/common/widevine_on/SECRO_GMP.ini 	新建的文件
+(4)、sagereal/mk/VP40_H4007/ProjectConfig.mk   ---->  SAGEREAL_WIDEVINE_SUPPORT = yes
+(5)、sagereal/script/makesagerealAction.sh
+把make -j8 sign-image 2>&1 | tee sign-image_build.log修改为make -j8 sign-image-nodeps 2>&1 | tee sign-image_build.log
+```
+
+## [默认值][FAQ20101]增加National data roaming 菜单定制
+
+```
+这里的漫游，是指手机使用一个运营商的SIM卡，注册上另一个运营商的网络。
+International Roaming: Operator A的sim卡注册到了和Operator A不同国家的其他Operator的plmn上；
+National Roaming: Operator A的sim卡注册到了和Operator A相同国家的其他Operator的plmn上；
+ps:[FAQ09599]如何默认勾选DATA ROAMING
+```
+
+## 如何修改默认camera插值
+
+```
+默认的插值都是默认插值为最后一个，有时候客户需要默认插值为某个值，可以按照下面这个FAQ进行修改。
+[FAQ14380]L版本上如何修改默认picture size
+```
+
+## Android 手机上的 USB MIDI 是做什么用的?怎么用? 
+
+```
+goole 从 M 平台开始就有这一功能，这个功能是USB可以插入MIDI 键盘，手机就会成为音源，弹奏键盘，手机就能发出声音
+```
+
+## DuraSpeed（快霸）功能   ----> [FAQ19932]快霸(DuraSpeed)功能介绍
+
+```
+DuraSpeed 是 MTK 开发的进程管理软件, 目的是“缓解手机长时间使用后的性能下降”.
+DuraSpeed 在 APP 启动时开始执行, 在后台限制“被保护之外”的进程. 从而为前台进程提供更多的系统资源.
+DuraSpeed 有一套进程保护规则, 并提供 APP List 允许使用者编辑应用保护列表.
+快霸透过抑制后台应用的活动来加速前台应用的速度，但可能导致部分通知无法正常接收
+ps：这是一个apk，无源码，路径在alps/vendor/mediatek/proprietary/packages/apps/RunningBooster
+```
+
+## widevive和secureboot
+
+```
+数字版权管理 Digital Rights Management----简称DRM，这个google的默认都有，而且打开了，但是怎么保护这个DRM，这时候就需要使用widevine技术了。
+DRM 是一系列访问控制技术的集合，它不仅用来控制对作品或设备的拷贝。而且也控制使用、查看、打印及修改等内容。最简单的话说对那些音乐，视频，电子书，游戏等很容易被复制的内容进行控制，防止盗版。MTK平台，实现DRM保护使用的就是widevine技术。
+因此widevine与secure boot的关系是：其实两者是两个不同的东西。widevine只是一家提供了相应DRM解决方案的公司，我们提到widevine，是指该公司提供的解决方案，它实现了Android平台的版权保护，它针对数字媒体提供了与格式无关的加密解密方式来保护版权。而secure boot是mtk的在刷机，启动，升级等过程中的安全机制，只是两者绑定了。我们要想启用widevine，必须enable serure boot。
+
+ps：widevine的机制本身就存在，但是必须打开serure boot才能启用。
+
+当终端产品enable了该功能，相关的安全机制如下。
+1）：Secure Download Check:编译时期，image会被客户的key签名。而Flashtool在下载时，会检查签名。
+2）：Secure Boot Check：终端在启动时，image也会被检查key签名。如果检查失败， 那终端启动会失败。
+3）：Secure Version Check：image会配置security version number和custom name，下载的时候，会被检查。（可以高，不能低）。
+```
+
+## [术语]CSFB
+
+```
+电路回落 Call Service Fall Back
+```
+
+## 如何加默认权限
+
+```
+frameworks/base/services/core/java/com/android/server/pm/DefaultPermissionGrantPolicy.java文件，如果要加某个package的权限，可以使用PackageParser.Package coppelPackage = getPackageLPr("com.esoft.movil.coppel")方法，“com.esoft.movil.coppel”为包名
+```
+
+## [adb]查看cpu信息
+
+``` bash
+adb shell cat /proc/cpuinfo
+```
+
+## [术语][RDS]FM中的RDS功能  ----> 目前MTK的chip都是支持RDS功能的。
+
+```
+一、支持RDS功能的FM收音机就是指具有“无线数据广播系统”功能的收音机。
+二、所谓RDS是英国BBC广播公司开发的一种特殊无线电广播。即“无线数据广播系统”（Radio Data System). 它是在调频广播发射信号中利用副载波把电台名称，节目类型，节目内容及其它信息以数字形式发送出去。通过具有RDS功能的调谐器就可以识别这些数字信号，并做响应处理，RDS广播精髓在于其AF和TA功能，AF既自动频率调整，当信号低于某个水平时，AF功能会自动搜索当前电台的其他发射频率串。
+三、RDS收音系统还独有“交流信息”功能（TA功能，也称交通公告），若有紧急事件，电台就会发送特殊信号，令收音机强行播放，另外，还有时间基准发射，自动调准收音机时间等功能，RDS在汽车，手机等移动设备上使用很方便。
+四、目前国内支持RDS的电台已知的有：
+上海 FM91.4 中央人民广播电台经济之声
+北京 FM88.7 中国国际广播电台 HIT FM
+上海 FM87.9 中国国际广播电台 HIT FM
+广州 FM88.5 中国国际广播电台 HIT FM
+```
+
+## 如何把四个cpu同时打开，提高速度
+
+```
+echo 0 > /proc/hps/enabled
+echo 1 > /sys/devices/system/cpu/cpu0/online
+echo 1 > /sys/devices/system/cpu/cpu1/online
+echo 1 > /sys/devices/system/cpu/cpu2/online
+echo 1 > /sys/devices/system/cpu/cpu3/online
+```
+
+## 省晶体软件 （GPS）  ----> gps需要校准
+
+```
+1、Coclock是会节省一颗TCXO物料。
+2、通过check log中CO、C1的值是否为0，为0表示校准失败 ，否则校准成功。
+mnl_linux: linux_gps_init: init_cfg.C0 = 0
+mnl_linux: linux_gps_init: init_cfg.C1 = 0
+3、关于GPS校准，针对的是采用coclock 方案的项目:
+1.涉及到的宏及路径：
+MTK_GPS_CO_CLOCK_DATA_IN_MD
+ 
+M版本在project.mak中
+ 
+N版本在
+/vendor/mediatek/proprietary/hardware/connectivity/gps/mtk_mnld/Android.mak
+ 
+2.开关宏的标准：
+看平台是否support LTE，若平台support LTE，則C0/C1是從MD NVRAM讀取，则
+要打开这个宏控；若平台not support LTE，則C0/C1是從AP NVRAM讀取(如6580)，则
+要关闭这个宏控。
+4、备份GPS参数具体有哪些？
+[GPS COClock Coefficients]
+C0=0
+C1=-0.224999994039536
+initU=0
+lastU=0
+如果C0/C1是從MD NVRAM讀取，则可以直接用用meta工具（modem版本）去备份出这些参数。如果C0/C1是從AP NVRAM讀取(如6580)，则需要用张迪最新开发的apk
+```
+
+## RTC 有其自己的供电系统,所以在手机处于关机状态时,RTC仍然可以正常工作，关机闹钟的时候就是通过RTC的自己的供电系统去检测
+
+## webview 是个什么应用？和chromewebview有什么区别？
+
+## system/priv-app 和 system/app 的区别？？
+
+## 永久解锁码算法 ???
+
+## 如何在 Gedit 中添加 CodeSnippets ???
+
+## [FAQ11012]如何为锁屏设置一张不同于launcher的，固定加载的背景图片
+
+## [FAQ09296]如何将APN设置为不可编辑 ???
 
 ## TextView去掉上下边距？？？？
 
