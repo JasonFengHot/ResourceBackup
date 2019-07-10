@@ -5205,11 +5205,6 @@ O版以后内置可卸载可恢复的第三方APK时可将该语句LOCAL_MODULE_
 六百六十九、Gerrit的使用
 	git push origin HEAD:refs/for/master
 
-六百七十、NXP官网网址及登录的账户密码
-	网址：https://www.docstore.nxp.com
-	账户：jian.xu@mobiwire.com.cn  密码：Mobiwire@2018
-
-六百七十一、提供给NXP的PGP Key的密码是mobiwire2018
 
 六百七十二、[FAQ17991] 【Phone SS】如何禁掉+COLP功能 --》  拨号界面和电话接通界面显示的号码不一致
 	如上是mtk提供的方法，如下是传音提供的方法：
@@ -5219,8 +5214,6 @@ O版以后内置可卸载可恢复的第三方APK时可将该语句LOCAL_MODULE_
 六百七十三、插入某些卡， 拨号界面和电话接通界面显示的号码不一致（比如拨打的时候前面有0，通话记录上没有0）
 	[FAQ17991] 【Phone SS】如何禁掉+COLP功能 + [FAQ04051] 拨号过程中显示“Unknown Caller”
 	关于FAQ04051，go上的项目在MtkGsmCdmaConnection.java文件的update (DriverCall dc)方法中equalsHandlesNulls(mAddress, dc.number)前面加上（mAddress == null || mAddress.isEmpty() && equalsHandlesNulls(mAddress, dc.number)就行了
-
-六百七十四、需要用trustview打开，帐号：zhangzhefeng@sagereal.com 密码:sagereal2020
 
 六百七十五、有时候selinux权限可以加上去，但是没起效果，加上权限后还是报同样的权限问题，这时候要去加如下话
 	/device/mediatek/sepolicy/bsp/non_plat/device.te 文件中加上typeattribute ttyMT_device mlstrustedobject;
@@ -5233,26 +5226,7 @@ O版以后内置可卸载可恢复的第三方APK时可将该语句LOCAL_MODULE_
 
 六百七十七、[FAQ11194] 添加彩信附件时，拍摄视频不会保存，而拍摄照片、录音都能够保存问题
 
-六百七十八、Vodafone的QC
-	目前我们这边能进入Vodafone的bug系统QC
-	Vodafone QC账号：
-	1.地址：[图片]https://alm.vodafone.com/qcbin/
-	2.jingwanjie账号和密码：
-	Account：MOW_wjing
-	Password:ToThe$208Sun
 
-大家登入以后只能去看bug和下载附件，不要做任何的修改，目前江存斌已经完全掌握，大家可以直接向他请教或问我
-再说一次：不能在上面更新任何的修改，如果有要更新的，可以直接和Nour说，她这边会更新
-浏览器：IE11
-
-六百七十九、
-	1、\\192.168.3.85\SW_Release
-	研发内部帐号： gsm\sw123456 密码： sr123456 （读写）
-	2、江存斌组：  192.168.3.81（原维护人李佳敏）
-                      192.168.3.84 （原维护人周王威）
-	   严军科组：  192.168.3.82 （原维护人冯莹）
-                      192.168.3.83  （原维护人蒋金丹）
-           帐号：integration_1 密码：1234567
 
 六百八十、VOLTE 基于LTE的语音通话(VO = voice)   VILTE 基于LTE的视频通话（VI = video）  VOWIFI 基于wifi的语音通话(VO = voice)  ，这三个都是基于运营商的功能
 	 VOIP 是互联网通话，跟运营商应该没啥关系，需要第三方的apk去实现
@@ -5319,8 +5293,7 @@ O版以后内置可卸载可恢复的第三方APK时可将该语句LOCAL_MODULE_
 
 六百八十六、如何用终端命令去给手机输入字符串
 	普通字符 eg:输入 "666@qq.com" 命令:adb shell input text "666@qq.com"
-	特殊字符 eg:输入 "#" 命令: adb shell input text "\#"  无法输入某些
-	字符时，给该字符前加入反斜线即可"\"
+	特殊字符 eg:输入 "#" 命令: adb shell input text "\#"  无法输入某些字符时，给该字符前加入反斜线即可"\"
 
 六百八十七、手机重启数次进入recovery模式
 

@@ -1,64 +1,76 @@
 在注释中添加生效的路径
 研究输入法
 把培训做成视频
-lint怎么用？？？？？？？？？
 整理bug并归类？？？？？？？
 
-# mtk开发论坛
+## mtk开发论坛
 
+```
 http://bbs.16rd.com/forum-263-1.html
+```
 
-# 常用Base类
+## 常用Base类
 
+```
 BaseActivity
 BaseAdapter
 BaseFragment
+```
 
-# 常用工具类
+## 常用工具类
 
+```
 https://github.com/Blankj/AndroidUtilCode/blob/master/utilcode/README-CN.md
 https://github.com/BolexLiu/DevNote
 文件操作工具类
+```
 
-# 更新jdk版本
+## 更新jdk版本
 
+``` bash
 sudo update-alternatives --config java
 sudo update-alternatives --config javac
+```
 
-# 常用jar包
+## 常用jar包
+
+```
 操作excel的包
 操作json的包
 jsoup
 爬虫的包
+```
 
-# 整理语言列表
+## TODO : 整理语言列表
 
-# 常用缩写的意思(单开一个)
+## TODO : 常用缩写的意思(单开一个)
 
-# 常用默认值的修改(单开一个)
+## TODO : 常用默认值的修改(单开一个)
 
-# 常用sql语句
+## TODO : 常用sql语句
 
-# 常用库(AndroidStudio)
+## TODO : 常用库(AndroidStudio)
 
-# 常用adb命令
+## TODO : 常用adb命令
 
 [awesome-adb](https://github.com/mzlogin/awesome-adb)
 
-# 常用git命令
+## TODO : 常用git命令
 
-# 常用工具安装
+## TODO : 常用工具安装
 
+```
 qgit
 vscode
+```
 
-# 打印当前所使用的类名、方法名、行号
+## 打印当前所使用的类名、方法名、行号
 
-``` bash
+``` Java
 android.util.Log.e("zhangqi8888", Thread.currentThread().getStackTrace()[2].getMethodName()+"  "+Thread.currentThread().getStackTrace()[2].getMethodName()+"  "+Thread.currentThread().getStackTrace()[2].getLineNumber());
 ```
 
-# android:duplicateParentState 属性详解
+## android:duplicateParentState 属性详解
 
 [android:duplicateParentState](https://blog.csdn.net/sodino/article/details/8809778)
 
@@ -66,13 +78,17 @@ android.util.Log.e("zhangqi8888", Thread.currentThread().getStackTrace()[2].getM
 setDuplicateParentStateEnabled(true)
 ```
 
-# Android进阶学习网站
+## Android进阶学习网站
+
+```
 https://github.com/lizhangqu/CoreLink
 https://github.com/GcsSloop/AndroidNote?utm_source=gold_browser_extension
+```
 
-# 反射代码模板
+## TODO : 反射代码模板
 
-# OnClickListener
+## [Snippet]OnClickListener
+
 ``` Java
 button.setOnClickListener(new android.view.View.OnClickListener() {
     @Override
@@ -82,7 +98,8 @@ button.setOnClickListener(new android.view.View.OnClickListener() {
 });
 ```
 
-# OnKeyListener
+## [Snippet]OnKeyListener
+
 ``` Java
 button.setOnKeyListener(new android.view.View.OnKeyListener() {
     @Override
@@ -99,7 +116,8 @@ button.setOnKeyListener(new android.view.View.OnKeyListener() {
 });
 ```
 
-# 对话框的按键监听
+## [Snippet]对话框的按键监听
+
 ``` Java
 mDialog.setOnKeyListener(new android.content.DialogInterface.OnKeyListener() {
     @Override
@@ -120,7 +138,8 @@ mDialog.setOnKeyListener(new android.content.DialogInterface.OnKeyListener() {
 });
 ```
 
-# OnFocusChangeListener
+## [Snippet]OnFocusChangeListener
+
 ``` Java
 view.setOnFocusChangeListener(new android.view.View.OnFocusChangeListener() {
     @Override
@@ -133,7 +152,7 @@ view.setOnFocusChangeListener(new android.view.View.OnFocusChangeListener() {
 });
 ```
 
-# onLongClickListener
+## [Snippet]onLongClickListener
 
 ``` Java
 view.setOnLongClickListener(new android.view.View.OnLongClickListener() {
@@ -145,7 +164,7 @@ view.setOnLongClickListener(new android.view.View.OnLongClickListener() {
 });
 ```
 
-# onLayoutChangeListener 监听布局的变化
+## [Snippet]onLayoutChangeListener 监听布局的变化
 
 ``` Java
 getListView().addOnLayoutChangeListener(new android.view.View.OnLayoutChangeListener() {
@@ -156,7 +175,7 @@ getListView().addOnLayoutChangeListener(new android.view.View.OnLayoutChangeList
 });
 ```
 
-# ListView onItemClickListener
+## [Snippet]ListView onItemClickListener
 
 ``` Java
 mListView.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener(){
@@ -166,7 +185,7 @@ mListView.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListe
 });
 ```
 
-# CheckBox.setOnCheckedChangeListener
+## [Snippet]CheckBox.setOnCheckedChangeListener
 
 ``` Java
 mSwitch.setOnCheckedChangeListener(new android.widget.CompoundButton.OnCheckedChangeListener(){
@@ -179,7 +198,7 @@ mSwitch.setOnCheckedChangeListener(new android.widget.CompoundButton.OnCheckedCh
 });
 ```
 
-# 监听全局布局的变化
+## [Snippet]监听全局布局的变化
 
 ``` Java
 getWindow().getDecorView().addOnLayoutChangeListener(new android.view.View.OnLayoutChangeListener() {
@@ -193,7 +212,7 @@ getWindow().getDecorView().addOnLayoutChangeListener(new android.view.View.OnLay
 });
 ```
 
-# ListView上seekbar的按键监听
+## [Snippet]ListView上seekbar的按键监听
 
 ``` Java
 getListView().setOnKeyListener(new android.view.View.OnKeyListener() {
@@ -212,7 +231,8 @@ getListView().setOnKeyListener(new android.view.View.OnKeyListener() {
 });
 ```
 
-# 监听音量的变化
+## [Snippet]监听音量的变化
+
 ``` Java
 mAudioManager.listenRingerModeAndVolume(new AudioProfileListener() {
     public void onRingerVolumeChanged(int oldVolume, int newVolume, String extra) {
@@ -222,7 +242,8 @@ mAudioManager.listenRingerModeAndVolume(new AudioProfileListener() {
 }, AudioProfileListener.LISTEN_RINGER_VOLUME_CHANGED);
 ```
 
-# 监听sim状态的变化
+## [Snippet]监听sim状态的变化
+
 ``` Java
 android.telephony.TelephonyManager mTelephonyManager = (android.telephony.TelephonyManager)getSystemService(TELEPHONY_SERVICE);
 mTelephonyManager.listen(mPhoneServiceListener, PhoneStateListener.LISTEN_SERVICE_STATE);
@@ -258,7 +279,7 @@ private PhoneStateListener mPhoneServiceListener = new PhoneStateListener() {
 };
 ```
 
-# Handler handleMessage
+## [Snippet]Handler handleMessage
 ``` Java
 private android.os.Handler mHandler = new android.os.Handler() {
     public void handleMessage(android.os.Message msg) {
@@ -281,9 +302,10 @@ msg.obj = new Object();
 mHandler.sendMessage(msg);
 ```
 
-# 通过handler处理长按的消息？？？？
+## TODO : 通过handler处理长按的消息？？？？
 
-# 启动线程
+## [Snippet]启动线程
+
 ``` Java
 new Thread(new Runnable() {
     public void run() {
@@ -298,7 +320,8 @@ new Thread(new Runnable() {
 }).start();
 ```
 
-# try-catch模板
+## [Snippet]try-catch模板
+
 ``` Java
 try {
     Object mObject = null;
@@ -309,15 +332,95 @@ try {
 }
 ```
 
-# 滚动条不消失
+## 滚动条不消失
 
 ``` xml
 android:fadeScrollbars="false"
 ```
 
-# apn-conf.xml 文件中各个参数的含义？？？？
+## TODO : apn-conf.xml 文件中各个参数的含义？？？？
 
-# listenRingerModeAndVolume 监听情景模式的变化
+```
+Background
+apns-conf.xml is an XML file containing APN configurations for different operators. Telephony Provider will load content of apns-conf.xml into database, and User can check and edit APN from Settings application, also Data Framework will read APN configuration and use it for data connection.
+
+apns-conf.xml provides APN configuration for world-wide operators, as the xml file has special format, there is something you need to know for apn data check in.
+
+L	vendor/mediatek/proprietary/frameworks/base/telephony/etc/apns-conf.xml
+M/N	device/mediatek/common/apns-conf.xml
+O0	device/mediatek/config/apns-conf.xml
+O1  device/mediatek/config/apns-conf.xml  + wifi-apns.xml
+P0	device/mediatek/config/apns-conf.xml
+
+APN parameters
+The above figure is a sample of one APN item
+
+The apn item must be included in <apn /> mark.
+The fields marked red are usually mandatory, the other fields are optional according to the APN type and decided by operator.
+For specific mcc/mnc, the same apn entry with the same type should be unique, update the original data instead of adding a new item.
+authtype   0: None,  1: PAP,  2: CHAP,  3: PAP or CHAP. 
+If this field is not specified but user item exists, default value is 3 PAP or CHAP.
+If this field is not specified and user item is not configured too, default value is 0 None.
+protocol/roaming_protocol   The valid values are "IP" "IPV6" "IPV4V6". Please don't use IPV4, use IP instead. If not specified, default value is IP.
+type   The valid values are "default", "mms", "supl"(used by GPS), "dun"(used by tethering, hotspot), "hipri", "fota", "ims", "cbs", "ia", "emergency", "dm", "wap", "net", "cmmail", "tethering"(phase out, don't use!), "rcse", "xcap", "rcs", "*". If not specified, it will be "*". * matches all. Normally we shouldn't use "*".
+bearer_bitmask This field is used to specify under which bearers the APN can be used. E.g. to add support of WFC we need to modify it. (this field is replaced by network_type_bitmask after P0 Branch)
+If configured as "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19", that means this apn can be used by mobile data and wifi both.
+If configured as "18", it means this apn can only be used by wifi.
+If configured as "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|19", it means all kinds of mobile data network bearer can use it except wifi.
+If it's not configured, it is treated same as "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|19" described above. The only difference is that Settings App will not show the apn Bearer item if not configured.
+On N1 and later, we should use "1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19" to represent all bearers  instead of 1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18. Bit 19 means LTE_CA which is a new type added since N1. The number used by bearer_bitmask is defined in ServiceState.java, from RIL_RADIO_TECHNOLOGY_GPRS to RIL_RADIO_TECHNOLOGY_LTE_CA.
+On P0 and later branches please use network_type_bitmask, the same config logic and value as bearer_bitmask. Android uses this to replace bearer_bitmask, the number used by network_type_bitmask is defined in TelephonyManager.java, from NETWORK_TYPE_GPRS to NETWORK_TYPE_LTE_CA.
+user_visible the value can be "true" or "false", which is supported since M1. Default is true. If configed as false, the apn will be hidden, not shown in apn list of Settings.
+user_editable the value can be "true" or "false", which is supported since O1. Default is true. If configed as false, the apn will be read only, shown in grey on UI.
+mvno_type the value can be "imsi", "spn", "gid", "pnn".
+mvno_match_data the value defined by OP.
+For MORE items, please check Telephony Provider code about how it parses the apns-conf.xml. Generally the above information is enough.
+How to modify the apns-conf.xml and update DB on mobilephone
+adb pull system/etc/apns-conf.xml
+modify...
+adb push apns-conf.xml system/etc
+delete telephony.db
+N/O：adb shell rm -r data/user_de/0/com.android.providers.telephony/databases/telephony.db
+Before N：adb shell rm -r data/data/com.android.providers.telephony/databases/telephony.db
+adb reboot
+O1 specific config file wifi-apns.xml
+Note: This section is specially for O1 Branch, so please skip it if your project is not based on O1.
+
+On O1 branch we have a specific file wifi-apns.xml for WiFi configurations.
+
+If the APN is support:
+
+Cellular only
+Do not need to add bearer_bitmask field and no entry in wifi-apns.xml
+Wifi only
+Need add bearer_bitmask=18 in apns-conf.xml's apn entry
+Cellular(All Rat) + WiFi
+Do not add bearer_bitmask in apns-conf.xml. Add apn in wifi-apns.xml
+IMPORTANT NOTE: all key fields (mcc, mnc, apn, mvno_type, mvno_match_data) in wifi-apns.xml should be exactly same as those in apns-conf.xml; in wifi-apns.xml you should add seprated item for each type if the APN has several types supported in apns-conf.xml (example3)
+
+example1:
+apns-conf.xml:
+<apn carrier="IMS" mcc="202" mnc="01" apn="ims" type="ims" protocol="IPV4V6" roaming_protocol="IP"/>
+wifi-apns.xml:
+<apn mcc="201" mnc="01" apn="ims" type="ims"/>
+
+example2: 
+apns-conf.xml:
+<apn carrier="IMS" mcc="525" mnc="05" apn="ims" type="ims" protocol="IPV4V6" roaming_protocol="IP" mvno_type="gid" mvno_match_data="0A"/>
+wifi-apns.xml:
+<apn mcc="525" mnc="05" apn="ims" type="ims" mvno_type="gid" mvno_match_data="0A"/>
+
+example3: 
+apns-conf.xml:
+<apn carrier="HOS" mcc="260" mnc="02" apn="hos" mmsc="http://mms/servlets/mms" mmsproxy="213.158.194.226" mmsport="8080" type="mms,xcap" protocol="IPV4V6" roaming_protocol="IP"/>
+wifi-apns.xml:
+<apn mcc="260" mnc="02" apn="hos" type="mms"/> <apn mcc="260" mnc="02" apn="hos" type="xcap"/>
+
+Cellular(Partial Rat) + WiFi
+Specify the bearer_bitmask in apns-conf.xml,  ex: bearer_bitmask=1|14|18
+```
+
+## [Snippet]listenRingerModeAndVolume 监听情景模式的变化
 
 ``` Java
 mAudioManager.listenRingerModeAndVolume(new AudioProfileListener(){
@@ -331,13 +434,13 @@ mAudioManager.listenRingerModeAndVolume(new AudioProfileListener(){
 }, AudioProfileListener.LISTEN_RINGERMODE_CHANGED);
 ```
 
-# setTextSize
+## [Snippet]setTextSize
 
 ``` Java
 setTextSize(android.util.TypedValue.COMPLEX_UNIT_DIP, 21.0f);
 ```
 
-# 调节情景模式
+## [Snippet]调节情景模式
 
 ``` Java
 AudioProfileManager mProfileManager = (AudioProfileManager) mContext.getSystemService(Context.AUDIOPROFILE_SERVICE);
@@ -352,7 +455,7 @@ if(indexToRingerMode(index) == AudioManager.RINGER_MODE_NORMAL){
 }
 ```
 
-# onKeyDown / onKeyUp
+## [Snippet]onKeyDown / onKeyUp
 
 ``` Java
 @Override
@@ -365,13 +468,13 @@ public boolean onKeyUp(int keyCode, android.view.KeyEvent event) {
 }
 ```
 
-# 下拉通知栏
+## [Snippet]下拉通知栏
 
 ``` Java
 ((android.app.StatusBarManager)getSystemService("statusbar")).expandNotificationsPanel();
 ```
 
-# 获取View的几种方法
+## [Snippet]获取View的几种方法
 
 ``` Java
 //通过id的名称获取id
@@ -379,7 +482,7 @@ int id = getContext().getResources().getIdentifier("android:id/search_src_text",
 View mView = findViewById(id);
 ```
 
-# 启动service
+## [Snippet]启动service
 
 ``` Java
 Intent intent = new Intent("xxx");
@@ -388,15 +491,15 @@ intent.setComponent(new ComponentName("aaa", "bbb"));
 startService(intent);
 ```
 
-# 绑定service bindService
+## [Snippet]绑定service bindService
 
 ``` Java
 mContext.bindService(new Intent("android.intent.action.START_MMS_SETTINGS_SERVICE_AIDL"), conn, Service.BIND_AUTO_CREATE);
 ```
 
-# 用代码写LinearLayout
+## TODO : 用代码写LinearLayout
 
-# 常用View控件的xml模板
+## [Snippet]常用View控件的xml模板
 
 ``` xml
 <ImageView
@@ -442,7 +545,7 @@ mContext.bindService(new Intent("android.intent.action.START_MMS_SETTINGS_SERVIC
     android:paddingBottom="10dp" />
 ```
 
-# 常用属性
+## [Snippet]常用属性
 
 ``` xml
 android:focusable="true"
@@ -455,19 +558,19 @@ android:ellipsize="marquee" 　　　//跑马灯跑动的几个条件, selected=
 <item name="android:textColorSecondary">#ffffff</item>
 ```
 
-# 修改actionbar的颜色
+## [Snippet]修改actionbar的颜色
 
 ``` Java
 getWindow().getDecorView().findViewById(com.android.internal.R.id.action_bar_container).setBackgroundColor(android.graphics.Color.parseColor("#ffffff"));
 ```
 
-# 发送广播
+## [Snippet]发送广播
 
 ``` Java
 sendBroadcast(new Intent(""));
 ```
 
-# 发送通知模板Notification
+## [Snippet]发送通知模板Notification
 
 https://blog.csdn.net/lilu_leo/article/details/6608101
 
@@ -491,7 +594,7 @@ n.deleteIntent = PendingIntent.getBroadcast(context, 0, hideIntent, 0);
 notMgr.notify(id, n);
 ```
 
-# 动态注册监听广播
+## [Snippet]动态注册监听广播
 
 ``` Java
 registerReceiver(new android.content.BroadcastReceiver() {
@@ -502,14 +605,14 @@ registerReceiver(new android.content.BroadcastReceiver() {
 }, new android.content.IntentFilter("$1"));
 ```
 
-# 颜色解析
+## [Snippet]颜色解析
 
 ``` Java
 textView.setTextColor(android.graphics.Color.parseColor("#0096ff"));
 textView.setTextColor(0x0000ff00);
 ```
 
-# 反色相关代码(color inversion)
+## 反色相关代码(color inversion)
 
 ``` Java
 ACCESSIBILITY_DISPLAY_INVERSION_ENABLED
@@ -524,7 +627,7 @@ framework/base/core/java/com/android/server/wm/WindowManagerService.java:       
 framework/base/core/java/com/android/server/wm/WindowManagerService.java:                    Settings.Secure.ACCESSIBILITY_DISPLAY_INVERSION_ENABLED, 0, currentUserId);
 ```
 
-# 更新界面显示
+## [Snippet]更新界面显示
 
 ``` Java
 try {
@@ -533,9 +636,9 @@ try {
 }
 ```
 
-# 给apk签名
+## TODO : 给apk签名
 
-# Android.mk模板(各个属性的含义)
+## [Snippet][Android.mk]Android.mk模板(各个属性的含义)
 
 ``` Makefile
 LOCAL_PATH:= $(call my-dir)
@@ -553,7 +656,8 @@ include $(BUILD_PACKAGE)
 include $(call all-makefiles-under,$(LOCAL_PAT))
 ```
 
-## 常用权限????TODO
+## TODO : 常用权限
+
 ``` xml
 //T卡读写权限
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -563,9 +667,10 @@ include $(call all-makefiles-under,$(LOCAL_PAT))
 <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 ```
 
-# Style常用属性
+## TODO : Style常用属性
 
-# SharedPreference保存读取
+## [Snippet]SharedPreference保存读取
+
 ``` Java
 //保存
 getSharedPreferences("prefs", Context.MODE_APPEND).edit().putBoolean("isFirst", true).apply();
@@ -574,14 +679,15 @@ getSharedPreferences("prefs", Context.MODE_APPEND).edit().putBoolean("isFirst", 
 boolean isFirst = getSharedPreferences("prefs", Context.MODE_APPEND).getBoolean("isFirst", false);
 ```
 
-# ro值的读取(在某些地方可能需要用到反射)
+## [Snippet]ro值的读取(在某些地方可能需要用到反射)
+
 ``` Java
 android.os.SystemProperties.get("ro.build.type", "null");
 ```
 
-# persist值的保存读取？权限问题
+## TODO : persist值的保存读取？权限问题
 
-# ContentObserver监听某个数据库的值
+## [Snippet]ContentObserver监听某个数据库的值
 
 ``` Java
 getContentResolver().registerContentObserver(android.provider.Settings.System.getUriFor(android.provider.Settings.System.AIRPLANE_MODE_ON), false, new android.database.ContentObserver(new android.os.Handler()) {
@@ -593,13 +699,13 @@ getContentResolver().registerContentObserver(android.provider.Settings.System.ge
 });
 ```
 
-# Toast
+## [Snippet]Toast
 
 ``` Java
 android.widget.Toast.makeText(getContext(), "", 2000).show();
 ```
 
-# Toast高级版
+## [Snippet]Toast高级版
 
 ``` Java
 private Toast mToast;
@@ -614,11 +720,11 @@ public void showToast(String msg){
 }
 ```
 
-# Toast自定义版
+## TODO : Toast自定义版
 
-# Toast开源库
+## TODO : [Snippet]Toast开源库
 
-# Dialog模板
+## [Snippet]Dialog模板
 
 ``` Java
 Dialog mDialog = new Dialog(this, R.style.dialog_theme);
@@ -634,7 +740,7 @@ mDialog.setContentView(dialogView);
 mDialog.show();
 ```
 
-# AlertDialog模板
+## [Snippet]AlertDialog模板
 
 ``` Java
 android.app.AlertDialog.Builder builder = new android.app..AlertDialog.Builder(mContext);
@@ -656,11 +762,10 @@ builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
 builder.create().show();
 ```
 
-# 全局对话框
-
-使用 Application 作为 Dialog 的 Context 将对话框的window类型设置为 WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
+## [Snippet]全局对话框
 
 ``` Java
+//使用 Application 作为 Dialog 的 Context 将对话框的window类型设置为 WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
 AlertDialog.Builder builder = new AlertDialog.Builder(mApplicationContext);
 ...
 AlertDialog alertDialog = builder.create();
@@ -674,7 +779,7 @@ alertDialog.show();
 <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 ```
 
-# AlertDialog状态不变黑
+## [Snippet]AlertDialog状态不变黑
 
 ``` Java
 public class CustomDialog extends AlertDialog {
@@ -699,7 +804,7 @@ public class CustomDialog extends AlertDialog {
 }
 ```
 
-# showProgressDialog
+## [Snippet]showProgressDialog
 
 ``` Java
 android.app.ProgressDialog mProgressDialog = new android.app.ProgressDialog(this);
@@ -715,7 +820,7 @@ mProgressDialog.setCancelable(true);
 mProgressDialog.show();
 ```
 
-# 隐藏toolbar上的 NavigationView
+## [Snippet]隐藏toolbar上的 NavigationView
 
 ``` Java
 Toolbar mToolbar = (Toolbar) findViewById(com.android.internal.R.id.action_bar);
@@ -724,7 +829,7 @@ if (mToolbar != null) {
 }
 ```
 
-# PreferenceActivity的使用
+## [Snippet]PreferenceActivity的使用
 
 ``` Java
 public class Setting extends PreferenceActivity {
@@ -747,22 +852,20 @@ Setting.xml:
     android:summaryOn="@stringseting1summaryOff"/>
 ```
 
-# 通话录音之前播放DTMF声音通知对方
+## 通话录音之前播放DTMF声音通知对方
 
 ``` Java
 CallCommandClient.getInstance().playDtmfTone('9', true);
 CallCommandClient.getInstance().stopDtmfTone();
 ```
 
-# 按键转发
+## [Snippet]按键转发
 
 ``` Java
-import android.view.KeyEvent;
-
 private long mKeyRemappingSendFakeKeyDownTime;
 private void keyRemappingSendFakeKeyEvent(int action, int keyCode) {
     long eventTime = android.os.SystemClock.uptimeMillis();
-    if (action == KeyEvent.ACTION_DOWN) {
+    if (action == android.view.KeyEvent.ACTION_DOWN) {
         mKeyRemappingSendFakeKeyDownTime = eventTime;
     }
     android.view.KeyEvent keyEvent = new android.view.KeyEvent(mKeyRemappingSendFakeKeyDownTime, eventTime, action, keyCode, 0);
@@ -772,11 +875,11 @@ private void keyRemappingSendFakeKeyEvent(int action, int keyCode) {
 
 mEditTextFrequency.setOnKeyListener(new View.OnKeyListener() {
     @Override
-    public boolean onKey(View view, int i, KeyEvent keyEvent) {
-        if(keyEvent.getAction() == KeyEvent.ACTION_UP && keyEvent.getKeyCode() == KeyEvent.KEYCODE_STAR){
+    public boolean onKey(View view, int i, android.view.KeyEvent keyEvent) {
+        if (keyEvent.getAction() == android.view.KeyEvent.ACTION_UP && keyEvent.getKeyCode() == android.view.KeyEvent.KEYCODE_STAR) {
             //转发
-            keyRemappingSendFakeKeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_NUMPAD_DOT);
-            keyRemappingSendFakeKeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_NUMPAD_DOT);
+            keyRemappingSendFakeKeyEvent(android.view.KeyEvent.ACTION_DOWN, android.view.KeyEvent.KEYCODE_NUMPAD_DOT);
+            keyRemappingSendFakeKeyEvent(android.view.KeyEvent.ACTION_UP, android.view.KeyEvent.KEYCODE_NUMPAD_DOT);
             return true;
         }
         return false;
@@ -784,26 +887,28 @@ mEditTextFrequency.setOnKeyListener(new View.OnKeyListener() {
 });
 ```
 
-# 去掉状态栏
+## [Snippet]去掉状态栏
 
 ``` Java
 //注意在setContentView()之前调用，否则无效。
 requestWindowFeature(Window.FEATURE_NO_TITLE);
 ```
 
-# 设置窗口格式为半透明
+## [Snippet]设置窗口格式为半透明
 
 ``` Java
 getWindow().setFormat(PixelFormat.TRANSLUCENT);
 ```
 
-# 全屏
+## [Snippet]全屏
+
 ``` Java
 //注意在setContentView()之前调用，否则无效。
 getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 ```
 
-# Android中在非UI线程里更新View的不同方法
+## Android中在非UI线程里更新View的不同方法
+
 ``` Java
 Activity.runOnUiThread( Runnable )
 View.post( Runnable )
@@ -812,7 +917,8 @@ Hanlder
 AsyncTask
 ```
 
-# 通话静音
+## 通话静音
+
 ``` Java
 ITelephony telephonyManager = ITelephony.Stub.asInterface(ServiceManager.checkService(Context.TELEPHONY_SERVICE));
 if (telephonyManager != null) {
@@ -827,12 +933,14 @@ if (telephonyManager != null) {
 }
 ```
 
-# 禁止截屏
+## 禁止截屏
+
 ``` Java
 getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
 ```
 
-# 判断屏幕旋转方向
+## 判断屏幕旋转方向
+
 ``` Java
 // 判断Android当前的屏幕是横屏还是竖屏。横竖屏判断
 if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -843,11 +951,13 @@ if (this.getResources().getConfiguration().orientation == Configuration.ORIENTAT
 ```
 
 # 通过代码动态设置屏幕方向
+
 ``` Java
 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 ```
 
 # 通过InputFilter禁止输入特殊字符
+
 ``` Java
 /** 禁止输入表情以及特殊字符 */
 public static class EmojiExcludeFilter implements InputFilter {
@@ -870,11 +980,12 @@ public static class EmojiExcludeFilter implements InputFilter {
     }
 }
 
-//调用如下
+// 调用方法如下
 edtRemark.setFilters(new InputFilter[]{new UIHelper.EmojiExcludeFilter()});
 ```
 
-# ViewPager无限滑动
+## ViewPager无限滑动
+
 ``` Java
 mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
     @Override
@@ -894,7 +1005,8 @@ mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
 });
 ```
 
-# 判断ViewPager的滑动方向
+## 判断ViewPager的滑动方向
+
 ``` Java
 vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
     float lastPositionOffset = 0L;
@@ -919,7 +1031,8 @@ vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 });
 ```
 
-# 根据百分比计算颜色值
+## 根据百分比计算颜色值
+
 ``` Java
 /**
  * 根据当前的百分比 计算两个颜色之间的值
@@ -960,12 +1073,14 @@ public static Integer evaluate(float fraction, Integer startValue, Integer endVa
 }
 ```
 
-# 解析图片的几种方法
+## 解析图片的几种方法
+
 ``` Java
 Bitmap bitmap = BitmapFactory.decodeResource(R.drawable.ic_launcher);
 ```
 
-# HttpClient
+## HttpClient
+
 ``` Java
 DefaultHttpClient httpClient = new DefaultHttpClient(); 
 HttpGet method = new HttpGet("http://www.baidu.com/1.html"); 
@@ -1065,7 +1180,8 @@ try {
 </shape>
 ```
 
-# 文字根据状态更改颜色的Selector模板
+## 文字根据状态更改颜色的Selector模板
+
 ``` Xml
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
@@ -1092,7 +1208,8 @@ ImageView imageView = new ImageView(mContext);
 imageView.setImageTintList(mTintColor);
 ```
 
-# 背景色根据状态更改颜色的Selector模板
+## 背景色根据状态更改颜色的Selector模板
+
 ``` Xml
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true">
@@ -1123,7 +1240,8 @@ imageView.setImageTintList(mTintColor);
 Drawable selector = getResources().getDrawable(com.android.internal.R.drawable.item_background_selector);
 ```
 
-# 设置Activity透明
+## 设置Activity透明
+
 ``` Xml
 <style name="TransparentActivity" parent="AppBaseTheme">
     <item name="android:windowBackground">@android:color/transparent</item>
@@ -1134,7 +1252,8 @@ Drawable selector = getResources().getDrawable(com.android.internal.R.drawable.i
 </style>
 ```
 
-# 切换系统中某个组件的状态,设置其enable或disable
+## 切换系统中某个组件的状态,设置其enable或disable
+
 ``` Java
 public void toggleComponent(View view){
     PackageManager pm = getPackageManager();
@@ -1151,7 +1270,8 @@ public void toggleComponent(View view){
 }
 ```
 
-# 代码设置activity全屏/非全屏
+## 代码设置activity全屏/非全屏
+
 ``` Java
 //切换到全屏
 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
@@ -1162,12 +1282,14 @@ getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 ```
 
-# 调用开发者选项中显示触摸位置功能
+## 调用开发者选项中显示触摸位置功能
+
 ``` Java
 android.provider.Settings.System.putInt(getContentResolver(), "show_touches", 1);
 ```
 
-# px-dp转换
+## px-dp转换
+
 ``` Java
 public static int dip2px(Context context, float dpValue) {
     final float scale = context.getResources().getDisplayMetrics().density;
@@ -1180,7 +1302,8 @@ public static int px2dip(Context context, float pxValue) {
 }
 ```
 
-# px-sp转换
+## px-sp转换
+
 ``` Java
 public static int px2sp(Context context, float pxValue) {
     final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
@@ -1193,24 +1316,28 @@ public static int sp2px(Context context, float spValue) {
 }
 ```
 
-# dip转px
+## dip转px
+
 ``` Java
 public static int dipToPX(final Context ctx, float dip) {
     return (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, ctx.getResources().getDisplayMetrics());
 }
 ```
 
-# 手机号码正则表达式
+## 手机号码正则表达式
+
 ``` Java
 public static final String REG_PHONE_CHINA = "^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$";
 ```
 
-# 邮箱正则表达式
+## 邮箱正则表达式
+
 ``` Java
 public static final String REG_EMAIL = "\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*";
 ```
 
-# 收集设备信息
+## 收集设备信息
+
 ``` Java
 public static Properties collectDeviceInfo(Context context) {
     Properties mDeviceCrashInfo = new Properties();
@@ -1249,21 +1376,24 @@ public static String collectDeviceInfoStr(Context context) {
 }
 ```
 
-# 判断是否有SD卡
+## 判断是否有SD卡
+
 ``` Java
 public static boolean haveSDCard() {
     return android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);
 }
 ```
 
-# 查看是否有存储卡插入
+## 查看是否有存储卡插入
+
 ``` Java
 String status=Environment.getExternalStorageState();
 if(status.equals(Enviroment.MEDIA_MOUNTED)){
 }
 ```
 
-# 动态隐藏软键盘
+## 动态隐藏软键盘
+
 ``` Java
 public static void hideSoftInput(Activity activity) {
     View view = activity.getWindow().peekDecorView();
@@ -1280,7 +1410,8 @@ public static void hideSoftInput(Context context, EditText edit) {
 }
 ```
 
-# 动态显示软键盘
+## 动态显示软键盘
+
 ``` Java
 public static void showSoftInput(Context context, EditText edit) {
     edit.setFocusable(true);
@@ -1291,7 +1422,8 @@ public static void showSoftInput(Context context, EditText edit) {
 }
 ```
 
-# 动态显示或隐藏软键盘
+## 动态显示或隐藏软键盘
+
 ``` Java
 public static void toggleSoftInput(Context context, EditText edit) {
     edit.setFocusable(true);
@@ -1302,7 +1434,8 @@ public static void toggleSoftInput(Context context, EditText edit) {
 }
 ```
 
-# 主动回到home
+## 主动回到home
+
 ``` Java
 public static void goHome(Context context) {
     Intent mHomeIntent = new Intent(Intent.ACTION_MAIN);
@@ -1312,7 +1445,7 @@ public static void goHome(Context context) {
 }
 ```
 
-# 设置状态栏的颜色
+## 设置状态栏的颜色
 
 ``` Java
 //需要在Android.mk文件中添加v4包的支持
@@ -1341,7 +1474,7 @@ public void onAttachedToWindow() {
 }
 ```
 
-# 设置状态栏透明
+## 设置状态栏透明
 
 ``` Java
 //方法1
@@ -1362,13 +1495,15 @@ LayoutParams.flags = (WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | local
 ```
 
 
-# 修改状态栏高度
+## 修改状态栏高度
+
 frameworks/base/core/res/res/values/dimens.xml
-``` Java
+``` xml
 <dimen name="status_bar_height">48dp</dimen>
 ```
 
-# 获取状态栏高度
+## 获取状态栏高度
+
 ``` Java
 public static int getStatusBarHeight(Activity activity) {
     Rect frame = new Rect();
@@ -1377,7 +1512,8 @@ public static int getStatusBarHeight(Activity activity) {
 }
 ```
 
-# 获取状态栏高度
+## 获取状态栏高度
+
 ``` Java
 public static int getStatusBarHeight(Context context){
     Class<?> c = null;
@@ -1397,20 +1533,23 @@ public static int getStatusBarHeight(Context context){
 }
 ```
 
-# 获取状态栏高度＋标题栏(ActionBar)高度
+## 获取状态栏高度＋标题栏(ActionBar)高度
+
 ``` Java
 public static int getTopBarHeight(Activity activity) {
     return activity.getWindow().findViewById(Window.ID_ANDROID_CONTENT).getTop();
 }
 ```
 
-# 清空手机上的cookie
+## 清空手机上的cookie
+
 ``` Java
 CookieSyncManager.createInstance(getApplicationContext());
 CookieManager.getInstance().removeAllCookie();
 ```
 
-# 建立gprs链接
+## 建立gprs链接
+
 ``` Java
 private boolean openDataConnection() {
     // Set up data connection.
@@ -1423,7 +1562,8 @@ private boolean openDataConnection() {
 }
 ```
 
-# 获取MCC+MNC代码 (SIM卡运营商国家代码和运营商网络代码)
+## 获取MCC+MNC代码 (SIM卡运营商国家代码和运营商网络代码)
+
 ``` Java
 // 仅当用户已在网络注册时有效, CDMA 可能会无效（中国移动：46000 46002, 中国联通：46001,中国电信：46003）
 public static String getNetworkOperator(Context context) {
@@ -1432,7 +1572,8 @@ public static String getNetworkOperator(Context context) {
 }
 ```
 
-# 获取运营商名称
+## 获取运营商名称
+
 ``` Java
 // (例：中国联通、中国移动、中国电信) 仅当用户已在网络注册时有效, CDMA 可能会无效)
 public static String getNetworkOperatorName(Context context) {
@@ -1441,7 +1582,8 @@ public static String getNetworkOperatorName(Context context) {
 }
 ```
 
-# 获取移动终端类型
+## 获取移动终端类型
+
 ``` Java
 // PHONE_TYPE_NONE :0 手机制式未知
 // PHONE_TYPE_GSM :1 手机制式为GSM，移动和联通
@@ -1453,7 +1595,8 @@ public static int getPhoneType(Context context) {
 }
 ```
 
-# 判断手机连接的网络类型(2G,3G,4G)
+## 判断手机连接的网络类型(2G,3G,4G)
+
 ``` Java
 public class Constants {
     /**
@@ -1484,9 +1627,7 @@ public class Constants {
 }
 
 public static int getNetWorkClass(Context context) {
-
     TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-
     switch (telephonyManager.getNetworkType()) {
         case TelephonyManager.NETWORK_TYPE_GPRS:
         case TelephonyManager.NETWORK_TYPE_EDGE:
@@ -1515,7 +1656,8 @@ public static int getNetWorkClass(Context context) {
 }
 ```
 
-# 获取网络类型名称
+## 获取网络类型名称
+
 ``` Java
 public static String getNetworkTypeName(Context context) {
    if (context != null) {
@@ -1574,7 +1716,8 @@ public static String getNetworkTypeName(int type) {
 ```
 
 
-# 判断当前手机的网络类型(WIFI还是2,3,4G)
+## 判断当前手机的网络类型(WIFI还是2,3,4G)
+
 ``` Java
 public static int getNetworkStatus(Context context) {
     int netWorkType = Constants.NETWORK_CLASS_UNKNOWN;
@@ -1845,7 +1988,6 @@ public static int getDeviceWidth(Context context) {
 
 @ SuppressWarnings("deprecation")
 public static int getDeviceHeight(Context context) {
-
     WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
     return manager.getDefaultDisplay().getHeight();
 }
@@ -1877,7 +2019,7 @@ public static String getDeviceIMEI(Context context) {
 }
 ```
 
-# 获取SIM卡的IMSI号码
+## 获取SIM卡的IMSI号码
 
 ``` Java
 //方法1
@@ -2029,7 +2171,7 @@ try {
 https://blog.csdn.net/lilu_leo/article/details/6597302
 https://blog.csdn.net/lilu_leo/article/details/6589510
 
-# 保存文件
+## TODO : 保存文件
 
 ## 拷贝文件
 
@@ -3286,9 +3428,11 @@ canvas.setHighContrastText(mAttachInfo.mHighContrastText);
 setSpan(new ForegroundColorSpan(android.graphics.Color.parseColor("#0096ff")), before, buf.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
 ```
 
-## 39go默认壁纸(其他的一些属性也会在 device/mediatek/common/overlay/ago/ 目录下overlay)
+## 39Ogo默认壁纸(其他的一些属性也会在 device/mediatek/common/overlay/ago/ 目录下overlay)
 
+```
 device/mediatek/common/overlay/ago/frameworks/base/core/res/res/drawable-nodpi/default_wallpaper.jpg
+```
 
 ## TextView设置跑马灯效果
 
@@ -5072,11 +5216,36 @@ DynamicGrid.java文件
 hotseatAllAppsRank = (int) (numColumns/2); //默认是列数除以2取整，可以设置为需要的值,(比如说(int) (numColumns/2)-1就是相当与把Allapp Button向左移动了一位，当然在default_workspace.xml中要把原来在Allapp Button左边的那个应用的位置给让出来！)
 ```
 
-## [6504]（设置）选择使用网络自动更新时间后，时间不准确
+## [NTP]选择使用网络自动更新时间后，时间不准确
 
 ```
 frameworks/base/services/java/com/android/server/NetworkTimeUpdateService.java
 进入文件，然后把"203.160.128.59","2.android.pool.ntp.org","time-a.nist.gov"中的"203.160.128.59"注销掉，因为这个通过这个服务器获得的时间是有问题，导致了这个时间不准确！
+```
+
+## [NTP]修改自动对时服务器
+
+```
+How to change server address?
+There are two ways:
+1. change Android default server address. Just replace this value that in "/frameworks/base/core/res/res/values/config.xml"with your own server address.
+2. Add your server in NetworkTimeUpdateService.java. use ((NtpTrustedTime) mTime).setServer(custom_server) to set custom NTP server before call mTime.forceRefresh(). Then 
+NtpTrustedTime will connect to custom_server to update time.
+
+How to verify modify?
+initialization:
+Make sure handset can access internet, enter settings -> Date & time, enable Automatic time from network. Disable Automatic time zone.
+
+test:
+reboot phone, check mainlog/syslog:
+
+07-12 08:56:09.770370   943   943 D NtpTrustedTime: getServer:[time.android.com]   // this address should be custom server 
+07-12 08:57:07.184321   943  1172 D NetworkTimeUpdateService: New default network 100; checking time.
+07-12 08:57:07.184816   943  1172 D NetworkTimeUpdateService: onPollNetworkTime start
+07-12 08:57:07.191897   943  1172 D NetworkTimeUpdateService: Stale NTP fix; forcing refresh
+07-12 08:57:07.192420   943  1172 D NetworkTimeUpdateService: mTryAgainCounter = 0;mNtpServers.size() = 3;index = 0;mNtpServers = time.android.com
+07-12 08:57:07.192835   943  1172 D NtpTrustedTime: setServer:[time.android.com]
+07-12 08:57:07.555810   943  1172 D SntpClient: round trip: 84ms, clock offset: 200ms  // means success
 ```
 
 ## [6509](情景模式)勾选触摸提示音，每次约5s后第一次触摸时触摸音较小，之后触摸声音会变大一点（第二十三条有详细步骤）
@@ -5777,7 +5946,6 @@ public static void readZipFile2(File file) {
         ZipFile zipfile = new ZipFile(file); //创建ZipFile对象
         System.out.println(zipfile.getName()); //打印Zip文件路径
         System.out.println("ZIP条目数：" + zipfile.size()); //打印Zip文件条目数
-         
         Enumeration<? extends ZipEntry> en = zipfile.entries(); 
         ZipEntry entry; 
         while (en.hasMoreElements()) { 
@@ -6383,8 +6551,9 @@ UAProfile文件描述了手机的功能，包括供应商、型号、分辨率�
 [FAQ04656]如何修改Android自带浏览器的User Agent
 
 可以查看 UA 的网址
-186.148.57.28/browser/httpreq
+186.148.57.28/browser/httpreq   //不可用了～
 www.ua.yeswap.com
+www.show-ip.net/browserinfo     //不可用了～
 
 browser.UserAgent所在位置
 alps/device/sagetel/sr6572_wet_l/custom.conf中的
@@ -7116,13 +7285,26 @@ PS:[FAQ14500][Audio Common] OTA升级音频参数后如果不恢复工厂设置�
 4、IMEISV的lid是在interface/service/nvram/nvram_editor_data_item.h文件中的NVRAM_EF_IMEI_IMEISV_LID_VERNO
 ```
 
+## 通过IMEI算解锁码
+
+``` Java
+String imeiCode = "354648020000251";
+for (int i = 0;i<8;i++) {
+    int sum = 0;
+    for (int k = 0 ; k < 8; k++) {
+	    sum+=Integer.parseInt(imeiCode.charAt(i+k)+"");
+    }
+    System.out.print(sum%10);
+}
+```
+
 ## 开机向导引起灭屏时间问题
 
 ```
 文档位置/home/jiangcunbin/Desktop/sagereal资料/自己总结/GMS认证/GMS包引起问题分析_new/开机向导引起灭屏时间问题.txt
 开机向导正常整个过程就是 60000->121000->60000，在开机向导界面拔掉电池，这个行为是第二次时把121000->60000这个过程破坏了。导致开机向导没能把这个值修改回来。
 而我们的修改方式就是把60000->121000这个过程就不让走。这样自然就不会把这个时间给修改了。修改文件在frameworks/base/packages/settingsprovider/src/com/android/providers/settings/SettingsProvider.java文件中的isRedundantSetValue方法中加上
-if(name.equals("screen_off_timeout")&&value.equals("121000")) {
+if (name.equals("screen_off_timeout")&&value.equals("121000")) {
     return true;
 }
 ```
@@ -7376,6 +7558,31 @@ MTK_IMS_SUPPORT=no
 ```
 具体可看redmine39255
 文件在 alps/vendor/mediatek/proprietary/packages/apps/CMASReceiver
+```
+
+## [小区广播]国内使用8960模拟小区广播功能
+
+```
+因为中国大陆地区的运营商不支持小区广播，所以只能通过使用仪器的方式模拟测试小区广播。以下文档说明如何使用Agilent 8960仪器测试GSM 小区广播
+
+测试需要用到以下设备材料，请提前准备好：
+1，一台支持小区信令测试的射频综测仪：Agilent 8960/R&S CMW500等（下面的SOP以Agilent  8960为例）
+2，测试仪器对应的白卡（一张和仪器配套的SIM卡），以及用于连接手机和仪器的射频线
+3，一台支持小区广播功能的测试手机
+
+Step-by-step guide
+1，手机插入白卡，然后开机，确保小区广播开关处于开启状态
+2，按开关按钮启动8960仪器
+3，仪器启动完成之后点击仪器面板上的System Config按钮进入系统配置界面
+4，在配置界面查看当前运行的Application，确认当前运行的是“GSM/GPRS Lab App”,如果不是该应用请通过UI上的“Application Switch”切换到该应用（切换应用会自动重启仪器）。
+5，按操作面板上的“Call SETUP”按钮，进入Call Setup Screen，然后按“Active Cell”按钮，选择Operation Mode为"Active Cell(GSM)"
+6, 完整以上配置之后，再将手机和仪器通过射频线连接（注意当前测试的是GSM，请连接到手机上的GSM的射频口）
+7，等待手机注册到仪器，注册上之后在手机的状态栏可以看到信号图标。
+     如果长时间没有注册上网络，可以在手机上通过开启飞行模式再关闭的方式触发手机端的驻网流程
+8，确认注册上网络之后在Call Setup 界面按“1 of 4” 按钮翻到下一页，选中“Short Message Service”
+9，进入"Short Message Service"界面，选中“CellBroadcast”
+10，进入“Cell Broadcast”界面，可以通过Message Setup设定CB信息的“Geographical Scope”/"Message Code"/"Message Identifier"/DCS/content等信息.
+11, 按“Start Cell Broadcast”按钮仪器就会下发设定的CB Message给手机。
 ```
 
 ## [adb]如何切换selinux的模式
@@ -7811,11 +8018,15 @@ adb shell getprop fw.show_multiuserui
 这个值应该是true。
 ```
 
-## [术语]VOLTE、VOWIFI
+## [术语]VOLTE、VILTE、VOWIFI、VOIP、SDN、FDN
 
 ```
-VOLTE：用流量打电话，用LTE承载，但是用分钟数收钱，优点是用数据流量传输数据，音质更好，电话接通更快
-VOWIFI：用wifi打电话，用wifi承载
+VOLTE 基于LTE的语音通话(VO = voice)，用流量打电话，用LTE承载，但是用分钟数收钱，优点是用数据流量传输数据，音质更好，电话接通更快
+VILTE 基于LTE的视频通话（VI = video）
+VOWIFI 基于wifi的语音通话(VO = voice) ，用wifi打电话，用wifi承载，这三个都是基于运营商的功能
+VOIP 是互联网通话，跟运营商应该没啥关系，需要第三方的apk去实现
+SDN 预制默认联系人
+FDN 固定联系人
 ```
 
 ## 如何添加widevine 
@@ -7954,6 +8165,606 @@ lastU=0
 ```
 
 ## RTC 有其自己的供电系统,所以在手机处于关机状态时,RTC仍然可以正常工作，关机闹钟的时候就是通过RTC的自己的供电系统去检测
+
+## calendar日历中有个pop-up notification
+
+```
+M/N：该功能实现就是出悬挂式的notification，悬挂式Notification是android5.0新增加的方式，和前两种显示方式不同的是，前两种需要下拉通知栏才能看到通知，而 悬挂式Notification不需要下拉通知栏就直接显示出来悬挂在屏幕上方并且焦点不变仍在用户操作的界面因此不会打断用户的操作，过几秒就会自动消失。
+和前两种Notification不同的是，他需要调用setFullScreenIntent来将Notification变为悬挂式Notification
+notificationBuilder.setFullScreenIntent(pendingIntent1, false);// 横幅，悬挂式
+```
+
+## PAI
+
+```
+如果一个apk是在system区的，另一个apk是在data区的，当两个apk的包名都相同且版本号不一样的时候，在data区的apk也算是在system区且会直接覆盖system区里面的apk
+ps：详细见PAI原理
+```
+
+## TEE
+
+```
+关于tee
+如何查看tee.bin的版本？
+	---> 在终端中执行如下密令：strings tee.bin | grep "gp" （其中tee.bin就是客户提供的tee.bin文件）,出来的结果就是tee的版本
+如何查看preloader是否升级上去?
+	---> 可以抓取升级前后的串口log，在log中搜索[TZ_INIT] TEE start entry即可，看看起始地址是否相同
+```
+
+## 如何将默认滑动解锁改为 pin/password 解锁
+
+```
+[DESCRIPTION]
+目前 google 采用默认滑动解锁的方式
+如果想改成默认其它的解锁方式, 必设定一个初始密码
+请参考如下 solution:
+
+[SOLUTION]
+在 KeyguardViewMediator.java 的 onSystemReady 方法中的开始位置
+判断是否为首次开机, 如果是就加入下面这段 code 去设置密码
+
+public void onSystemReady(){
+       ...
++       if(mUpdateMonitor.isDeviceProvisioned()){//判断是否首次开机
++             mLockPatternUtils.saveLockPassword("password",DevicePolicyManager.PASSWORD_QUALITY_ALPHABETIC);    //设置password为默认解锁类型
++       }
+       doKeyguardLocked(null);
+       ...
+}
+
+如要修改成PIN, 用如下部分替换上述红色代码
+mLockPatternUtils.saveLockPassword("1234",DevicePolicyManager.PASSWORD_QUALITY_NUMERIC);
+
+请自行修改上述参数达到设置不同解锁方式及密码的效果
+```
+
+## 当长时间播放视频或者播放音乐出现无声音现象
+
+```
+可以搜下no more track availble这块log，然后是否有如下类似的log
+Dear customer,
+06-07 12:55:30.413251 299 6231 E AudioFlinger_Threads: no more track availble
+06-07 12:55:30.413311 299 6231 E AudioFlinger_Threads: track name: 4104, ID 10097
+06-07 12:55:30.413362 299 6231 E AudioFlinger_Threads: track name: 4101, ID 10097
+06-07 12:55:30.413411 299 6231 E AudioFlinger_Threads: track name: 4117, ID 10097
+06-07 12:55:30.413459 299 6231 E AudioFlinger_Threads: track name: 4120, ID 10097
+06-07 12:55:30.413507 299 6231 E AudioFlinger_Threads: track name: 4123, ID 10097
+06-07 12:55:30.413558 299 6231 E AudioFlinger_Threads: track name: 4106, ID 10097
+06-07 12:55:30.413610 299 6231 E AudioFlinger_Threads: track name: 4108, ID 10097
+06-07 12:55:30.413658 299 6231 E AudioFlinger_Threads: track name: 4111, ID 10097
+06-07 12:55:30.413710 299 6231 E AudioFlinger_Threads: track name: 4114, ID 10097
+06-07 12:55:30.413764 299 6231 E AudioFlinger_Threads: track name: 4126, ID 10097
+06-07 12:55:30.413812 299 6231 E AudioFlinger_Threads: track name: 4113, ID 10097
+06-07 12:55:30.413895 299 6231 E AudioFlinger_Threads: track name: 4110, ID 10097
+06-07 12:55:30.413950 299 6231 E AudioFlinger_Threads: track name: 4103, ID 10097
+06-07 12:55:30.414009 299 6231 E AudioFlinger_Threads: track name: 4119, ID 10097
+06-07 12:55:30.414062 299 6231 E AudioFlinger_Threads: track name: 4107, ID 10097
+06-07 12:55:30.414113 299 6231 E AudioFlinger_Threads: track name: 4100, ID 10097
+06-07 12:55:30.414165 299 6231 E AudioFlinger_Threads: track name: 4098, ID 10097
+06-07 12:55:30.414214 299 6231 E AudioFlinger_Threads: track name: 4099, ID 10097
+06-07 12:55:30.414282 299 6231 E AudioFlinger_Threads: track name: 4102, ID 10097
+06-07 12:55:30.414363 299 6231 E AudioFlinger_Threads: track name: 4105, ID 10097
+06-07 12:55:30.414412 299 6231 E AudioFlinger_Threads: track name: 4109, ID 10097
+06-07 12:55:30.414465 299 6231 E AudioFlinger_Threads: track name: 4112, ID 10097
+06-07 12:55:30.414518 299 6231 E AudioFlinger_Threads: track name: 4115, ID 10097
+06-07 12:55:30.414572 299 6231 E AudioFlinger_Threads: track name: 4118, ID 10097
+
+根据google设计，track最多只能有32个。
+出现audiotrack报错，是因为track被占满了，如上LOG。
+在events log可以看到10097是水果忍者进程：
+06-07 12:48:56.314997 940 3309 I am_proc_start: [0,4207,10097,com.halfbrick.fruitninjahd,activity,com.halfbrick.fruitninjahd/com.halfbrick.fruitninja.FruitNinjaActivity]
+通话没有问题是因为通话不需要audio track，数据不经AP，直接走MODEM。
+综上，这个应该是属于水果忍者第三方APK的问题，使用了以后没有释放track导致的。
+请知，谢谢！
+```
+
+## Android O以后版本内置第三方APK可卸载可恢复的方法变更
+
+```
+由于Android O以后使用了vendor分区在编译时会生成 vendor.img，使用之前内置第三方APK可卸载可恢复的方法时在编译时会报错无法生成 vendor.img。
+O版以后内置可卸载可恢复的第三方APK时可将该语句
+
+LOCAL_MODULE_PATH := $(TARGET_OUT)/vendor/operator/app
+
+修改为：
+
+LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/operator/app
+
+P平台预置可卸载可恢复APK
+1.预置方式和O平台一样：
+预置路径：LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/operator/app
+2.有些APK（eg:facebook）中会包含动态、或者静态库文件，预置后点击会因找不到库报错，一般是缺少SELinux权限，可以抓取LOG，生成权限后加入即可。
+（一般需要该权限：allow untrusted_app_27 system_data_file:file {open execute r_file_perms};）
+3，对于可卸载可恢复的APK注意：
+P版本的vendor/operator/app将不再直接具有uninstall的功能，需要在可删除系统的list文件中加入对应的package name才可以。
+alps/vendor/mediatek/proprieta
+```
+
+## 如何编译userdebug版本
+
+```
+/home/jiangcunbin/project/80M/WM05_GMO/ALPS-MP-M0.MP1-V2.34_SR6580_WE_M/sagereal/script/makesagerealAction.sh文件中把
+if [ $1 == "yes" ]; then
+	lunch full_${sagereal_target_project}-user
+else
+	lunch full_${sagereal_target_project}-eng
+fi
+把对应的修改为lunch full_${sagereal_target_project}-userdebug即可
+
+或
+
+source build/envsetup.sh
+lunch full_${sagereal_target_project}-userdebug
+```
+
+## [mtklog]关于抓取mtklog
+
+```
+1、eng版本在抓取log的时候，可以把mtklog中的taglog关闭，taglog的作用：当系统有exception(如NE，ANR)发生时会弹出这个Tag Log的框，作用是把当前exception的log保存到SD card的，做记录Log之用，当ANR等情况下会把log压缩至mtklog/taglog/文件下；如果关闭该功能的话，按照正常的log抓取，具体可参考[FAQ03748] TagLog功能简述
+2、userdebug版本有时候会出现无法抓取到aee_exp文件的情况，这是因为Android M/N, 因受security 限制, aee 如果mode 开到3, 权限太大, 会导致安全问题， 后续user/userdebug build 默认设置成了mode 4 , 并且mobile log 无法  直接切成mode 3. 导致开了mtklogger 后也只能抓到fatal db （见下表），而不能抓到普通exception db;具体修改
+如果需要在user load 中打开mobilelogd 后，能够切换到aee mode3 抓到普通exception db ，可以参考以下修改：关闭强制性约束.
+/vendor/mediatek/proprietary/external/aee/config_external/init.aee.customer.rc 文件中添加
+on init
+setprop ro.aee.enforcing no
+（在出货版本中，切记把此行 注释掉）
+具体可以参考[FAQ20159] Android M/N user load，在打了aee security enhance patch 后，如何抓到普通aee db？
+```
+
+## [adb]adb相关命令
+
+```
+adb shell ls -aal dev/pm ---> 会把dev/pm文件的权限路径等显示出来
+adb shell find system -name "*app*" ----> 会把system下名字中有app的都显示出来，需要会使用*
+adb logcat | egrep -i "nfc|nxp|AEE_AEDV|ERR"   ---> 抓取log时可以查找多个关键字
+依次执行如下两个指令打开mobilelog及taglog
+adb shell am broadcast -a com.mediatek.mtklogger.ADB_CMD -e cmd_name switch_taglog --ei cmd_target 1
+adb shell am broadcast -a com.mediatek.mtklogger.ADB_CMD -e cmd_name start --ei cmd_target 1
+```
+
+## [recovery][ota]升级modem
+
+```
+FAQ18188 [Recovery][Common]Android M 版本如何升级logo等rawdata分区方法？  ---> 比如说modem端的MD1IMG等分区的升级
+同时要参考FAQ17441 [Recovery] [Common] Android M 版本如何升级lk 、preloader
+```
+
+## 如何让apk只能当签了某个特定的key后才能安装？
+
+```
+http://192.168.3.76:8007/gitweb/?p=MT6572_JB3_LCA_MP3.git;a=commitdiff;h=8c9ab90ee555e59a1f518dfb938c7851bc073cd3;hp=2a633d6df3a3f83d41826376e31fdd9db1321f36
+原理：在 PackageInstallerActivity.java 文件中去获取安装的apk的签名信息（2进制），然后和某个特定的key去对比是否相同，如果相同的话，就直接正常安装（安装apk的方法一直存在），如果不同的话，就是跳出一个对话框而已，不去走安装的方法，原理上platform还是正常的平台签名，key只是某个客户提供的普通key而已，不能认为把platform改成了某个key了，只是当你只签平台签名的时候，不可安装而已，但是当你只安装特定key的时候，该apk不会有平台签名的权限！
+```
+
+## [术语]subid和slotid区别
+
+```
+slotid或者phoneid是指卡槽，双卡机器卡槽一值为0，卡槽2为1，依次类推，不过国内也就双卡和单卡机器了，三卡机器只听说在遥远的印度有。
+
+subid用过数据库的同学比较好理解，subid就是主键递增项，值从1开始，机器每插入一个新卡（iccid是没有见的，值就会加1，iccid每个sim卡是唯一的）。插入双卡后数据库中就会有subid值为1和2的两个数据条目，拔卡插卡交换卡槽数据库并不会增加新项，只有插入一张新的sim卡才会增加一条id为3的数据条目
+
+subid是跟卡走的，slotid是跟卡槽走的。一般来说slotid比较好理解，subid不好理解。
+
+Android5.0之后google终于加入了多sim卡的代码，5.0之前的多卡（一般也就是双卡）机制是各写各的，mtk和高通的代码各有千秋，但是基本上用slotid较多，subid只有mtk在用也很少。Google一统千秋后subid反而用的比slotid多了，
+
+三方app获取slot和subId
+这个小节是针对文章下面的评论加的。
+
+frameworks/base/telephony/java/android/telephony/SubscriptionManager.java
+
+public int getDefaultDataPhoneId() 　默认数据slotId
+public static int getDefaultDataSubscriptionId()　默认数据subId
+
+public int getDefaultSmsPhoneId() 　默认短信slotId 
+
+public static int getDefaultSmsSubscriptionId() 默认短信subId
+
+public static int getDefaultVoicePhoneId() 　默认通话slotId
+public static int getDefaultVoiceSubscriptionId() 默认通话subId
+
+public static int getDefaultSubscriptionId()　获取默认subId，上述三个都返回-1的话使用这个
+双卡设置中短信和通话的设置只是设置SettingsProvider中的一个字段，而设置数据业务卡槽除了设置数据库字段外还会导致modem的重启、网络类型切换（数据业务卡能上4G，而另一张卡只能用2G）等一系列操作。所以手机开发厂商一般说主卡就是数据业务卡。
+```
+
+## 手机重启数次进入recovery模式，log分析
+
+```
+您好！从贵司的log中有看到大量JE如下：
+01-04 03:15:30.424174  1994  2030 E AndroidRuntime: FATAL EXCEPTION: pool-3-thread-1
+01-04 03:15:30.424174  1994  2030 E AndroidRuntime: Process: ru.appspress.android.eguarantee.bq, PID: 1994
+01-04 03:15:30.424174  1994  2030 E AndroidRuntime: java.lang.IllegalStateException: Apps may not schedule more than 100 distinct jobs
+01-04 03:15:30.424174  1994  2030 E AndroidRuntime:     at android.os.Parcel.readException(Parcel.java:2013)
+01-04 03:15:30.424174  1994  2030 E AndroidRuntime:     at android.os.Parcel.readException(Parcel.java:1951)
+01-04 03:15:30.424174  1994  2030 E AndroidRuntime:     at android.app.job.IJobScheduler$Stub$Proxy.schedule(IJobScheduler.java:180)
+01-04 03:15:30.424174  1994  2030 E AndroidRuntime:     at android.app.JobSchedulerImpl.schedule(JobSchedulerImpl.java:44)
+01-04 03:15:30.424174  1994  2030 E AndroidRuntime:     at androidx.work.impl.background.systemjob.SystemJobScheduler.scheduleInternal(SystemJobScheduler.java:85)
+01-04 03:15:30.424174  1994  2030 E AndroidRuntime:     at androidx.work.impl.background.systemjob.SystemJobScheduler.schedule(SystemJobScheduler.java:64)
+01-04 03:15:30.424174  1994  2030 E AndroidRuntime:     at androidx.work.impl.Schedulers.scheduleInternal(Schedulers.java:98)
+01-04 03:15:30.424174  1994  2030 E AndroidRuntime:     at androidx.work.impl.Schedulers.schedule(Schedulers.java:69)
+01-04 03:15:30.424174  1994  2030 E AndroidRuntime:     at androidx.work.impl.WorkManagerImpl.rescheduleEligibleWork(WorkManagerImpl.java:398)
+01-04 03:15:30.424174  1994  2030 E AndroidRuntime:     at androidx.work.impl.utils.ForceStopRunnable.run(ForceStopRunnable.java:66)
+01-04 03:15:30.424174  1994  2030 E AndroidRuntime:     at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1162)
+01-04 03:15:30.424174  1994  2030 E AndroidRuntime:     at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:636)
+01-04 03:15:30.424174  1994  2030 E AndroidRuntime:     at java.lang.Thread.run(Thread.java:764)
+
+java.lang.IllegalStateException: Apps may not schedule more than 100 distinct jobs
+看起来是某些app使用job过多，属于APK issue。
+贵司可以pull出data/system/job/jobs.xml ，查看到底是哪个APP使用job过多。
+
+目前 job service 这边没有保护机制，之前的类似issue只是将jobs.xml 删除掉之后，暂时解决问题。 
+
+如果某些app 恶意使用大量 job，目前看起来没好的方式避免。 
+```
+
+## 如何打开zsd
+
+```
+go:vendor/mediatek/proprietary/custom/mt6580/hal/sendepfeature/gc2385_mipi_raw/config.ftbl.gc2385_mipi_raw.h
+#if 1
+//  Zsd
+FTABLE_CONFIG_AS_TYPE_OF_DEFAULT_VALUES(
+    KEY_AS_(MtkCameraParameters::KEY_ZSD_MODE),
+    SCENE_AS_DEFAULT_SCENE(
+        ITEM_AS_DEFAULT_(MtkCameraParameters::ON),    ----> 这一条是是否打开ZSD
+        ITEM_AS_VALUES_(
+            MtkCameraParameters::OFF,
+            MtkCameraParameters::ON
+        )
+    ),
+)
+
+MtkCameraParameters::OFF,
+MtkCameraParameters::ON同时存在的时候，camera的界面中会出现这个选项，如果只有一个的话，camera的界面中不会出现这个问题
+```
+
+## 如何确认生成的某个so文件从哪里代码拷贝过去的？
+
+```
+1、source build/envsetup.sh    --> 导入环境
+2、godir fingerprint.default.so   --> 搜索这个文件的具体代码路径
+3、md5sum fingerprint.default.so   --> 获取唯一值
+5656a7e732354b53d1e3b1b67b12a67a  fingerprint.default.so
+因为步骤2会搜索出好几个结果，那么如何确认是哪个路径拷贝的呢？首先先在out中找到对应的文件，然后用md5sum fingerprint.default.so 获取出唯一值，然后在把步骤2搜索出来的路径每个都用md5sum的命令去获取唯一值，然后相同的就是对应的文件路径
+```
+
+## 反编译.vdex文件
+
+```
+O版本，vdex文件直接通过vdexExtractor 直接生成dex文件
+./vdexExtractor  -i xxxx.vdex  -o . --deps -f
+
+P版本，会生成中间.cdex文件，需要使用compact_dex_converters临时转换成dex文
+件, 生成的boot-framework_classes.cdex.new其实就是.dex文件，重命名成.dex后
+缀，直接jadx解开即可看到java文件
+
+工具同步更新到如下目录：smb://192.168.3.127/02_sw/127文件目录/02_工具dTOOL/02%20智能机/10_Tools/Extra-vdex/
+```
+
+## 拍照速度慢、美颜状态下拍照速度慢
+
+```
+1、美颜拍照的原图可以从capbufMgr中取图，即参考zsd的方法（不使用normalshot的取图），这样可以直接从内存取图，缩小取图的时间。
+2、开启postview功能，并在app中是用postview做小图的显示，这样显示小图的时间可以加快约800ms（即美颜算法处理时间）。
+3、调整美颜算法所在线程的优先级，减少算法处理时间。
+4、打开ZSD功能
+```
+
+## 如何修改wqhl导致的usb连接模式在重启后会不停变化
+
+``` Java
+frameworks/base/services/usb/java/com/android/server/usb/UsbDeviceManager.java 文件中 
+trySetEnabledFunctions(String functions, boolean forceRestart) 方法内增加如下方法
+if (functions.equals("adb")){
+    functions = "mtp,adb";
+}
+```
+
+## android 无法休眠查看
+
+```
+1：检查userspace wakelock状态
+dumpsys power
+cat /sys/power/wake_lock
+
+2：检查kernel wakelock状态
+cat /sys/kernel/debug/wakeup_sources
+查看actvie_since列，大于0的会导致无法suspend
+
+cat /proc/wakelocks
+```
+
+## [FAQ20290]modem NvRAM 四个分区的基本知识
+
+```
+nvdata：手机运行过程中，使用(读写)的NVRAM(除了存在protect_f和protect_s中的NVRAM)都是该分区的nvram文件。存储着普通NVRAM数据、 IMEI、barcode、Calibration数据等。对应的modem path是Z:\NVRAM。NVRAM目录下有CALIBRAT、NVD_DATA、NVD_CORE和NVD_IMEI四个目录，后续第三点会对这四个目录进行介绍。
+
+protect_1、protect_2 ：一般我们也称为protect_f和protect_s分区，protect_s是对protect_f中部分NVRAM的复制。
+主要存储着SIM Lock数据。具有NVRAM_CATEGORY_IMPORTANT_L4属性的NVRAM LID会存在protect_f分区(这个叫A file)，如果还具有NVRAM_ATTR_MULTIPLE属性(锁卡LID都有MULTIPLE属性)，会存一个B文件到protect_s中。正常情况下protect_f中的A文件和protect_s中的B文件是相同的，因为写的时候都会去写两只nvram文件。（同时这两个分区的两只文件是互为备份的[即如果A file损坏,可以使用B file的来还原、 B file损坏,使用A file来还原;但如果两只文件都被被异常破坏或者删除, nvram将让modem assert）.
+
+nvram：一般我们也称为binregion分区，是一个备份分区，备份具有NVRAM_CATEGORY_IMPORTANT和NVRAM_CATEGORY_CALIBRAT属性的NVRAM LID，备份的也就是CALIBRAT和NVD_IMEI两个目录，具体有IMEI、 barcode、Calibration数据和4G RF driver参数这些NVRAM。备份可以由META Tool触发 ，ATE校准完会自动触发备份，SN Writer tool写完号后也会自动触发备份。
+```
+
+## 升级方式对各个NVRAM分区的影响
+
+```
+Format All+Download
+会擦除所有分区，所有NVRAM LID都会用code中的默认值重新生成。全擦后只有触发备份过，binregion中才会有备份内容，否则binregion是空的(Flash默认的全0 or 全f)。
+
+Firmware Upgrade 、Factory Reset(恢复出厂设置)
+只会擦除nvdata分区，开机时AP会将binregion中备份的CALIBRAT和NVD_IMEI两个目录还原到nvdata分区。具体NVRAM LID是IMEI、 barcode、Calibration数据和4G RF driver参数。
+protect_f和protect_s分区不会被擦除，所以SIM Lock保持不变。
+其他NVRAM LID恢复为code中的默认值。
+如果binregion是空的，那么IMEI、 barcode、Calibration数据和4G RF driver参数也会用code中的默认值重新生成。
+
+Download Only、OTA、SD upgrade 、Push modem
+不会擦除任何分区。这种升级方式下，如果有修改code中的default值，那么需要将相应NVRAM LID的VERNO+1，才会生效，即将会利用code中的默认值重新生成新文件。
+
+注意：这里所说的所有分区和任何分区均指Modem NVRAM的四个分区：nvdata分区、 protect_f分区、protect_s分区和binregion分区。
+```
+
+## 如何设置MTKlogger是否开机自启动
+
+```
+1. 第一次开机MTKlogger是否开启
+1) 配置prop文件:   true则开启，false则关闭 
+com.mediatek.log.mobile.enabled = true/false
+com.mediatek.log.modem.enabled = true/false
+com.mediatek.log.net.enabled = true/false
+com.mediatek.log.gps.enabled = true/false
+
+2) prop文件路径
+KK版本: alps/mediatek/external/xlog/tools/mtklog-config-eng.prop或mtklog-config-user.prop  
+L 版本:  alps/vendor/mediatek/proprietary/external/xlog/tools/mtklog-config-eng.prop或mtklog-config-user.prop
+M/N/O/P版本:  alps/device/mediatek/common/mtklog/mtklog-config-bsp-eng.prop或mtklog-config-bsp-user.prop
+
+2. 非第一次开机是否开启的配置方法有如下两种
+1) 勾选Start Automatically进行设置
+MTKlogger UI——》Settings——》MobileLog/ModemLog/NetworkLog/GPSLog——》Start Automatically
+
+2) 通过adb发送广播设置
+adb shell am broadcast -a com.mediatek.mtklogger.ADB_CMD -e cmd_name set_auto_start_1/set_auto_start_0 --ei   cmd_target 23
+set_auto_start_1表示开启开机自启动, set_auto_start_0表示关闭开机自启动
+cmd_target is a combination or just a single of each Log type
+MobileLog: 1 ModemLog: 2 NetworkLog: 4 GPSLog: 16
+```
+
+## [mtklog]mlog
+
+```
+mlog 为内存debug机制，会不停的记录系统内存使用情况，可以用来查看系统运行过程各类型各进程内存变化等
+JE , swt , NE , 等exception db 解开后可以从 SYS_MEMORY_LOG得到mlog讯息
+（SYS_MEMORY_LOG   是从  /d/dmlog  抓取而来） 
+ 
+由于/d/dmlog 为ring buffer ， 有固定的buffer size , 
+发生exception 后打包db时间如果间隔过久有可能把前面mlog讯息冲掉而获取不到问题时间点的mlog讯息
+此时可以加大mlog buffer size 
+修改方式如下
+/kernel-xx/drivers/misc/mediatek/mlog/mlog_logger.c
+#define CONFIG_MLOG_BUF_SHIFT   16  /* 64KB for 32bit, 128kB for 64bit */
+修改成
+#define CONFIG_MLOG_BUF_SHIFT   17
+即为buffer size    128KB -> 256KB  for 64bit   ， 也可以更大， 不过由于会占用固定系统内存， 建议适量修改
+
+修改后adb pull /d/dmlog 可以明显看到文件变大
+
+抓取mlog的几种方法
+adb shell cat /sys/kernel/debug/mlog > mlog
+adb shell cat /d/mlog        (持续每秒记录mlog讯息)
+adb shell cat /d/dmlog       (一次性打印 mlog buffer 所有讯息)
+
+使用 adb shell cat /sys/kernel/debug/mlog 的方式查看内存的Log，可以查看当时状态的整体状况，同时包含当前程序内存使用情况
+该信息是每1秒钟打印1条，从而可以看到连续的内存状况。
+
+/sys/module/mlog/parameters/timer_intval
+mlog记录默认为每秒更新，通过修改此参数可以减小(或加大)记录时间间隔
+
+swfree  空间逐渐变为0 , 代表那个时间需要大量的使用内存，同时这个时间点数据压到内存比较积极
+
+FAQ21497 mlog 信息查看及其初步的分析
+FAQ21888 mlog 信息抓取时间间隔以及其它有用的调整参数
+FAQ21889 mlog (SYS_MEMORY_LOG) 的 buffer size 如何修改
+```
+
+## 抓取开机trace
+
+```
+1). Enables tracing during boot-up
+
+     Android O: In frameworks/native/atrace/atrace.rc, change:
+        write /sys/kernel/debug/tracing/tracing_on 0
+        To:
+        #write /sys/kernel/debug/tracing/tracing_on 0
+        This enables tracing (which is disabled by default).
+
+     Android P0: In frameworks/native/cmds/atrace/atrace.rc
+        # Tracing disabled by default
+        write /sys/kernel/debug/tracing/tracing_on 0
+        To:
+        # write /sys/kernel/debug/tracing/tracing_on 0
+
+
+2). Set systrace tags
+     In the device/mediatek/mt67××/device.mk file, add the following line:
+        PRODUCT_PROPERTY_OVERRIDES += debug.atrace.tags.enableflags=0x1fe9fe
+     For enableflags's bit, please refer to "system/core/include/cutils/trace.h"
+
+
+3). Add ftrace tags which you wanted
+     In the project's BoardConfig.mk file, add the following:
+        BOARD_KERNEL_CMDLINE := ... trace_buf_size=64M trace_event=sched_wakeup,sched_switch,sched_blocked_reason,sched_wakeup_new,sched_waking,cpu_frequency,cpufreq_interactive,cpu_frequency_limits,cpu_idle
+     For detailed I/O analysis, also add "block android_fs ext4..." trace tags
+     If you want catch more trace log, you can increase trace_buf_size. But if the phone memory size is less then 1GB, you need reduce trace_buf_size, such as "trace_buf_size=32M" for 512MB devices.
+
+4). Disable tracing after boot-up completed
+     In the device-specific init.mt67**.rc file, make the following changes, such as:
+        on property:sys.boot_completed=1 (this stops tracing on boot complete)
+        write /sys/kernel/debug/tracing/tracing_on 0
+        write /sys/kernel/debug/tracing/events/ext4/enable 0
+        write /sys/kernel/debug/tracing/events/block/enable 0
+        write /sys/kernel/debug/tracing/events/android_fs/enable 0
+
+5). After boot up, fetch trace
+     adb root && adb shell "cat /d/tracing/trace" > boot_trace 
+
+6). Open trace
+     Use chrome://tracing can open boot_trace
+```
+
+## 从 Q0 开始 mtklog 改名了
+
+```
+用户手册 http://dms.mediatek.inc/Explorer/index/238136/2
+```
+
+## [FAQ21836]Skia软件绘制基础知识介绍
+
+```
+Android apk 里面的画图分为2D和3D两种：
+2D是由Skia 来实现的，也就是我们在框架图上看到的SGL，SGL也会调用部分opengl 的内容来实现简单的3D效果；
+3D部分是由OpenGL|ES实现的，OpenGL|ES是Opengl的嵌入式版本。具体请参考blog:https://blog.csdn.net/yili_xie/article/details/4803565
+Skia绘制分三种，分别是：
+skia软件绘制、skia硬件绘制和PDF绘制；
+1)skia软件绘制执行的是SkbitmapDevice
+2)Skia硬件绘制执行的是SkGpuDevice，SkiaGpuDevice实际上就是之前的openGL/HWUI绘制，从Android P开始，Android 取消OpenGL，改为Skia GL，走如下框图中的SkGpuDevice，SkGpuDevice下面同以前的OpenGL，不是今天的重点
+3)PDF绘制执行的是SkPDFDevice，目前只遇到一个APK使用这种绘制方式
+```
+
+## 通过OTA升级 SVNumber
+
+```
+通过OTA升级时，data分区的NVRAM文件并不会被清除，因此升级后SVN和data分区下的其他nvram数据前后都没有变化。
+如果需要确保OTA升级后SVN值或某一nvram file更新为新版本默认值，那么有如下方法：
+
+1. 对于非IMPORTANT data(IMEI\SIM ME LOCK属于IMPORTANT data), 可以通过更新NVRAM LID VERNO，确保前后版本的NVRAM LID VERNO不一样即可。
+例如更新SVN值， SVN默认保存在NVRAM_EF_SYS_CACHE_OCTET_LID，因此需要做如下修改：
+File: Nvram_editor_data_item.h(mcu\interface\service\nvram)
+#define NVRAM_EF_SYS_CACHE_OCTET_LID_VERNO "004"
+修订为:
+#define NVRAM_EF_SYS_CACHE_OCTET_LID_VERNO "005"
+
+2. 由于SVN值保存在NVRAM_EF_SYS_CACHE_OCTET_LID，该NVRAM LID中保存了其他system information（FLIGHTMODE_STATE，SIM_PLUS_SETTING，SVN，USB_BOOT_MODE，USB_TETHERING_MODE等），那么升级后这些值也会更新为新版本的默认值。
+因此做到OTA升级后只更新SVN值，那么我们需要采取另外一种方法来实现。
+
+在nvram init完成后进行客制化来写入新版本的SVN值，例如下：
+FILE: custom_nvram_int_config.c(mcu\custom\service\nvram\) 
+Function:custom_nvram_config(void) 
+
+在custom_nvram_config接口内部添加写入SVN操作，demo code可以参考如下： 
+kal_uint8 data[] = {0x87, 0x00, 0x00,0x00, 0x00, 0x00, 0x00, 0x00}; 
+nvram_external_write_data (NVRAM_EF_SYS_CACHE_OCTET_LID, NVRAM_SYS_SVN, data, NVRAM_EF_SYS_CACHE_OCTET_SIZE); 
+
+其中配置的0x87就是SVN，从nvram读取出来为'78',需要参考BCD编码方式来配置。
+举例说明： 如果写入NV中的值为0x17,那么读取出来值为'71';如果写入NV中的值为0x35，那么读取出来的值为'53'.
+
+
+也可以通过发送AT命令的方式更新
+发送AT命令： AT+EGMR=1,9,"78"   //78即为需要设置的SVN
+```
+
+## [FAQ21709]Camera HAL3 内存优化
+
+```
+内存用量大头（Graphics部分）分解：adb shell cat /sys/kernel/debug/ion/ion_mm_heap > ion_1
+查看优化效果，对比优化前后meminfo中的total即可.
+那么会有哪些省内存办法呢？请看下文.
+
+1.拍照后buffer立即释放
+优点：拍照过程中产生的buffer使用完毕后即释放，不影响拍照后的内存用量；
+缺点：内存存量不高的情况下，拍照速度会受影响;
+优化量：与拍照实际feature有关，拍照feature越多占用内存越大，优化量越大;
+
+/vendor/mediatek/proprietary/hardware/mtkcam3/feature/core/featurePipe/capture/buffer/CaptureBufferPool.cpp
+
+mpTuningBufferPool->setAutoFree(0); //拍照后release tuning buffer
+pImagePool->setAutoFree(0);//拍照后release image buffer
+
+【重要提醒】如果使用此优化，务必保证YUVNode.cpp中有如下修改，如无，请申请patch ALPS04338041.
+mtkcam3\feature\core\featurePipe\capture\nodes\YUVNode.cpp
+
+1090:     pPlgRequest->mIBufferFull  = (iBufferFullHandle == NULL) ? PluginHelper::CreateBuffer(pNodeReq, TID_MAN_FULL_YUV, INPUT) : std::move(iBufferFullHandle);
+
+1091:     pPlgRequest->mIBufferClean = PluginHelper::CreateBuffer(pNodeReq, TID_MAN_FULL_PURE_YUV, INPUT);
+
+1092:     pPlgRequest->mIBufferDepth = PluginHelper::CreateBuffer(pNodeReq, TID_MAN_DEPTH, INPUT);
+
+1093:     pPlgRequest->mOBufferFull  = (oBufferFullHandle == NULL) ? PluginHelper::CreateBuffer(pNodeReq, TID_MAN_FULL_YUV, OUTPUT) : std::move(oBufferFullHandle);
+ 
+2.减少ZSL buffer number
+优点：优化整个camera使用期间的内存用量
+缺点：如果设定值过小，重载时会影响preview帧率.
+优化量：实际减少的buffer数据有关，也与sensor大小有关.
+
+/vendor/mediatek/proprietary/hardware/mtkcam3/pipeline/model/zsl/hbc/HistoryBufferContainerImp.cpp
+
+mMaxBufNum = (pInfo->getMaxBufNum()>mMaxBufNum)? pInfo->getMaxBufNum() : mMaxBufNum;//此值即是
+基于MAX_HISTORY_DEPTH 和app设定的streaminfo信息
+
+3.修改P1Node buffer格式（需满足条件）
+使用条件：Raw格式在一次configure后不会发生改变. 举例，4-cell功能以及Raw HDR功能均会在使用期间切换Raw格式.则不可使用此优化;
+优点：P1Node输出buffer格式由BloB改为Bayer10;
+缺点:无法实时做格式转换;
+优化量：与sensor实际大小有关.
+
+/vendor/mediatek/proprietary/hardware/mtkcam3/pipeline/policy/config/P1HwSettingPolicy.cpp
+
+bool isLowMem = ::property_get_bool("ro.config.low_ram", false); //强制将isLowMem置为True.
+
+如果平台支持UFO，也可使用UFO格式，P1输出可以有多种格式，格式选择的逻辑判断均在P1HwSettingPolicy.cpp中，而各值的对应列表可查阅：
+/vendor/mediatek/proprietary/hardware/mtkcam/include/mtkcam/def/ImageFormat.h
+
+4.提高MFNR的门限，尽量避免使用MFNR，减少mfnr张数
+优点：极大的改善内存以及cpu 资源的消耗，提升拍照速度，提升系统流畅度；
+缺点：高光感下的图像噪点略高，影响图片质量，有些可以通过tuning 其他nr参数弥补回来;
+
+/vendor/mediatek/proprietary/custom/mtXXXX/hal/inc/camera_custom_nvram.h
+
+MUINT16 mfll_iso_th // tunning 参数 各家不同 ，默认800;
+MUINT8 capture_frame_number; //mfnr张数，最低3张，默认4张;
+
+对应的参数tunning的同事会较清楚，或者在/vendor/mediatek/proprietary/custom/mtxxxx/hal/imgsensor/ver1/sensorname 下全搜mfll_iso_th即可.
+ 
+5.关闭ZSL
+优点：拍照的buffer不再受preview处理效率的影响，同时节省buffer;
+缺点：与Hal1上关闭zsd不同的是，关闭zsl仅拍照瞬间画面略有停顿.而Hal1上关闭zsd是整个拍照未完成期间均停顿.
+优化量：节省zsl buffer pool的大小，一般会达到100M以上.
+
+Control.capture.default.zsl.mode 设为off
+Control.capture.zsl.mode configure和request时，均需设定为off，否则会出现re-configuresesion的问题，影响启动时间;
+ 
+6.拍照相关限制
+原理：限制同时在hal层处理的capture 数目，变相的优化内存峰峰值.
+缺点：对内存存量要求高，则容易影响shot2shot的实际效果.
+
+Shot2shot：
+
+/vendor/mediatek/proprietary/hardware/mtkcam3/pipeline/model/capture/
+
+#define MIN_FREE_MEM (300000000) // 300M，只有内存可用量大于300M时，才会告知app可以拍下一张.
+
+最大request size：
+
+maxAppJpegStreamNum //变相限制max request size
+ 
+以上是通用法则.还有些可能会用得上的优化点：
+
+8.streaming场景的优化
+
+a)确认P1Node输出的size，等于preview size值. 如若不是，请查看P1Node输出的size来源.逻辑判断来源
+/vendor/mediatek/proprietary/hardware/mtkcam3/pipeline/policy/config/P1HwSettingPolicy.cpp
+
+需要注意的是：P1Node输出size大于preview size有助于减轻锯齿问题，客户需自行斟酌是否优化此项;
+
+b )确认streaming的三方算法要求的size<=preview size. 三方算法所需size可通过下述API设定：
+
+if( mUseSize ) sel.mIBufferMain1.setSpecifiedSize(mSize)
+
+此修改，除了可优化内存外，同样可提升三方算法处理效率，但是需要看三方是否都支持；
+
+总的来说，内存相关的优化，与手机状态强相关，所有的参数均需实验后方可得出，即使同一个hw，但不同的OS系统，不同的feature，都无法使用同一套优化参数，以上仅仅是提供优化思路与相关参数，具体的数值，请大家多多实验，在性能与内存之前找到项目的平衡点，做到最优.
+ 
+Good Luck！
+```
+
+## [FAQ20977] 如何配置VoLTE, ViLTE and VoWifi(IMS config for VoLTE, ViLTE and VoWifi)
 
 ## webview 是个什么应用？和chromewebview有什么区别？
 

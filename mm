@@ -435,7 +435,7 @@ remount;
 adb shell settings put system screen_off_timeout 300000;
 
 # set big font
-adb shell settings put system font_scale 3.0;
+adb shell settings put system font_scale 1.0;
 
 # MTK_BUILD_VERSION
 BUILD_VERSION=`cat ../sagereal/mk/$new_project/ProjectConfig.mk | grep "MTK_BUILD_VERNO" | awk '{print $3}'`;

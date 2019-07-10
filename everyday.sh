@@ -9,7 +9,7 @@ notice(){
 cd ~/github/MyResources;git add .;git commit -m "update automatically!";git push origin master;
 
 # check in readfree.me everyday
-export DISPLAY=:1 && google-chrome %U https://readfree.me/;
+#export DISPLAY=:1 && google-chrome %U https://readfree.me/;
 
 # compile project everyday
 notice "auto_new_begin!";

@@ -1,6 +1,6 @@
 import java.io.File;
 
-public class Main {
+public class LibParser {
     public static void main(String[] args) {
         File file = new File("vendor/mediatek/proprietary/packages/inputmethods/KikaIME/lib");
         for (String fileName : file.list()) {

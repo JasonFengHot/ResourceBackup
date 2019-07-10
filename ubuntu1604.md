@@ -1636,7 +1636,7 @@ git push 之后延时10秒左右发送一个通知提示可以查看gerrit？？
 为什么crontab中执行打开浏览器的脚本不成功？ google-chrome %U http://readfree.me
 在终端gedit打开文件不会弹出来显示？
 在chrome中会双击删除？
-如何创建微信的快捷方式到docker?
+如何创建微信的快捷方式到 docker?
 
 mysql
 
