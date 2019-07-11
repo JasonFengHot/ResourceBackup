@@ -338,9 +338,18 @@ try {
 android:fadeScrollbars="false"
 ```
 
-## TODO : apn-conf.xml 文件中各个参数的含义？？？？
+## [APN]APN相关知识
 
 ```
+apn常见type及使用场景:
+default:用于普通的上网，如浏览器，qq，微信等
+mms:收发彩信时建立
+dun:tethering时使用
+xcap:ss操作
+supl:定位使用
+ims:volte call,vilte call,wfc,sms over ip
+bip:bip相关操作
+
 Background
 apns-conf.xml is an XML file containing APN configurations for different operators. Telephony Provider will load content of apns-conf.xml into database, and User can check and edit APN from Settings application, also Data Framework will read APN configuration and use it for data connection.
 
@@ -418,6 +427,8 @@ wifi-apns.xml:
 
 Cellular(Partial Rat) + WiFi
 Specify the bearer_bitmask in apns-conf.xml,  ex: bearer_bitmask=1|14|18
+
+APN数据保存在 /data/user_de/0/com.android.providers.telephony/databases/telephony.db 中
 ```
 
 ## [Snippet]listenRingerModeAndVolume 监听情景模式的变化
@@ -4747,7 +4758,7 @@ device/mediatek/common/aapt/aapt_config.mk
 PRODUCT_AAPT_PREF_CONFIG := xhdpi
 AAPT会将xhdpi的资源打包。如果此时找不到xhdpi资源, AAPT会去找其他分辨率。这种情况下，为避免资源缺失，至少会包一种类型的资源进来。所以这种case下，可能会发生系统编译进多种其他分辨率资源，导致rom变大的情况。
 
-注意1：PRODUCT_AAPT_PREF_CONFIG只能设置一种dpi。不能设置为PRODUCT_AAPT_PREF_CONFIG := xhdpi  xxhdpi 这种错误形式。
+注意1：PRODUCT_AAPT_PREF_CONFIG只能设置一种dpi。不能设置为PRODUCT_AAPT_PREF_CONFIG := xhdpi xxhdpi 这种错误形式。
 注意2: PRODUCT_AAPT_CONFIG在L1上已经失效.
 
 ## makefile 中打 log
@@ -6709,8 +6720,9 @@ LOCAL_CERTIFICATE := PRESIGNED 表示 这个apk已经签过名了，系统不需
 
 ```
 KK：alps/mediatek/platform/mt65**/ kernel/core/mt_devs.c中定义CONFIG_MTK_USB_UNIQUE_SERIAL
-L：alps/bootable/bootloader/lk/app/mt_boot/mt_boot.c中定义CONFIG_MTK_USB_UNIQUE_SERIAL
-M：alps/vendor/mediatek/proprietary/bootable/bootloader/lk/app/mt_boot/mt_boot.c中定义CONFIG_MTK_USB_UNIQUE_SERIAL
+L ：alps/bootable/bootloader/lk/app/mt_boot/mt_boot.c中定义CONFIG_MTK_USB_UNIQUE_SERIAL
+M ：alps/vendor/mediatek/proprietary/bootable/bootloader/lk/app/mt_boot/mt_boot.c 中定义CONFIG_MTK_USB_UNIQUE_SERIAL
+
 PS：在c文件中定义该CONFIG_MTK_USB_UNIQUE_SERIAL，即为#define CONFIG_MTK_USB_UNIQUE_SERIAL
 
 FAQ10923[USB serial number客制化][系列2]：如何实现每台手机的序列号唯一？10924[USB serial number客制化][系列3]：如何修改手机序列号为Barcode ？
@@ -8458,7 +8470,7 @@ if (functions.equals("adb")){
 }
 ```
 
-## android 无法休眠查看
+## android 无法休眠查看，查看哪個wakelock擋到系統進入suspend的步驟
 
 ```
 1：检查userspace wakelock状态
@@ -8470,6 +8482,33 @@ cat /sys/kernel/debug/wakeup_sources
 查看actvie_since列，大于0的会导致无法suspend
 
 cat /proc/wakelocks
+
+#查看哪個wakelock擋到系統進入suspend的步驟
+
+當測試者認為現在系統可以進入suspend(如暗屏+無接usb/ac充電)，系統卻還一直打印uart log。
+su (讓uart console變成root權限)
+每一秒執行cat /sys/kernel/debug/wakeup_sources一次，共5次左右，若有某個wakelock的active_since值一直在增加(如下表)，就是此wakelock擋到系統進入suspend。
+若碰到是PowerManagerService.WakeLocks的active_since值一直在增加，則需要更進一步執行"dumpsys power"，查看是哪個PARTIAL_WAKE_LOCK擋到系統進入suspend。
+
+#查看系統內有多少個wakelock - 範例
+
+Command: cat /sys/kernel/debug/wakeup_sources
+
+name active_count event_count wakeup_count expire_count active_since total_time max_time last_change prevent_suspend_time
+PowerManagerService.Broadcasts	3	3	0	0	0	12408	10881	282326	0
+PowerManagerService.WakeLocks	91	91	7	0	57415	177029	70793	269483	0
+ 
+#查看PowerManagerService.WakeLocks裡哪個PARTIAL_WAKE_LOCK在使用，因此擋到系統進入suspend - 範例
+
+Command: dumpsys power
+
+Wake Locks: size=6 (PowerManagerService.WakeLocks裡有6個PARTIAL_WAKE_LOCK在使用，所以PowerManagerService.WakeLocks不能釋放，進而擋到系統進入suspend)
+PARTIAL_WAKE_LOCK 'GnssLocationProvider' (uid=1000, pid=1100, ws=null)
+PARTIAL_WAKE_LOCK 'CMWakeLock' (uid=10012, pid=1926, ws=WorkSource{10012 com.google.android.gms})
+PARTIAL_WAKE_LOCK 'Checkin Service' (uid=10012, pid=2311, ws=WorkSource{10012 com.google.android.gms})
+PARTIAL_WAKE_LOCK '*net_scheduler*' (uid=10012, pid=1926, ws=WorkSource{10083 com.google.android.youtube})
+PARTIAL_WAKE_LOCK 'NetworkTimeUpdateService' (uid=1000, pid=1100, ws=null)
+PARTIAL_WAKE_LOCK '*net_scheduler*' (uid=10012, pid=1926, ws=WorkSource{10012 com.google.android.gms})
 ```
 
 ## [FAQ20290]modem NvRAM 四个分区的基本知识
@@ -8512,7 +8551,7 @@ com.mediatek.log.net.enabled = true/false
 com.mediatek.log.gps.enabled = true/false
 
 2) prop文件路径
-KK版本: alps/mediatek/external/xlog/tools/mtklog-config-eng.prop或mtklog-config-user.prop  
+KK版本: alps/mediatek/external/xlog/tools/mtklog-config-eng.prop或mtklog-config-user.prop
 L 版本:  alps/vendor/mediatek/proprietary/external/xlog/tools/mtklog-config-eng.prop或mtklog-config-user.prop
 M/N/O/P版本:  alps/device/mediatek/common/mtklog/mtklog-config-bsp-eng.prop或mtklog-config-bsp-user.prop
 
@@ -8764,13 +8803,775 @@ if( mUseSize ) sel.mIBufferMain1.setSpecifiedSize(mSize)
 Good Luck！
 ```
 
+## Android 5.0及以上版本如何编译user+root版本？
+
+```
+source build/envsetup.sh && lunch full_k82v12-user && source ./mbldenv.sh && make MTK_BUILD_ROOT=yes -j24 2>&1 | tee build.log
+备注：
+1.&& source ./mbldenv.sh  这个是MTK内部员工才需要带的build option，客户不需要带这个options
+2.红色字体的k82v12是指project name，build之前请务必改为自己的project name
+3.-j24后面的24是指编译系统核心数，请根据自己的编译环境进行设置
+```
+
+## [Browser]如何客制化Android内置浏览器，使用其它应用打开某些特定的URL?
+
+``` 
+请修改DefaultBrowserUrlExt.java或OpxxBrowserUrlExt.java(仅对对应的运营商生效)的
+public boolean redirectCustomerUrl(SharedPreference mPrefs)，
+在这个函数中添加对特定URL特征的判断和处理并返回true，浏览器将不再处理该URL；
+如果不是特定的URL则返回false，由浏览器处理。
+```
+
+## [Browser]webview的相关问题
+
+```
+1.Mtk Webview的作用:
+敝司内部load都是双webview配置。其中mtk webview主要是给mtk browser使用。里面主要是对browser一些必须功能的
+支持，此外还有一些webview的bug fix
+
+2.设置webview:
+可以从settings选择默认使用的webview，通常设置为Android/Google webview。即其他APP使用webview时，会使
+用默认配置
+
+3.Mtk webview与chrome差别：
+首先，chromium版本不同。Mtk webview基于chromium 58。
+另外，chrome为google app，内部没有source，无法得知google的相关修改
+
+4.双webview的使用:
+双webview并不会引起其他问题，APP使用时会去拿默认配置，敝司并没有针对双webview的专门测项。
+对于webview功能，可采用单webview的测试即可。
+简单来说，内部采用双webview架构主要是支持Mtk browser的一些特殊测试需求。
+对于mtk browser而言，无需设置mtk webview为默认项，启动时会优先使用mtk webview。
+而其他APP只会使用默认配置的webview。即使手机中有两个webview，也不会造成其他APP同时加载两个
+webview或者引起其他相关问题。
+
+5.cts测试时webview的选择:
+CTS应该没有对webview做要求。但是建议使用Google webview做CTS测试。
+Google webview会不断升级，CTS case也可能会做针对性调整。
+而MTK webview版本比较老，且无法同步升级。 CTS测试时，可以有两个webview。
+会使用settings中设置的默认值,除mtk webview。
+
+6.卸载mtk webview:
+若有使用mtk browser,建议不要卸载mtk webview,MtkBrowser.apk搭配MtkWebView.apk，有些feature的改动会同
+时涉及2个module
+卸载方法:删除掉/vendor/mediatek/proprietary/apps/MtkWebView/Android.mk 及之前build出的apk再
+full build,避免把之前的apk烧进去 
+```
+
+## [Dialer]如何客制化长按"*","#"显示"P"，"W"
+
+```
+M及之后的版本 DialpadFragment.java
+
+1 在DialpadFragment.java的onLongClick()中添加如下代码：
+
+case R.id.star: {
+    removePreviousDigitIfPossible();
+    keyPressed(KeyEvent.KEYCODE_P);
+    mPressedDialpadKeys.remove(view);
+    return true;
+}
+
+case R.id.pound: {
+    removePreviousDigitIfPossible();
+    keyPressed(KeyEvent.KEYCODE_W);
+    stopTone();
+    mPressedDialpadKeys.remove(view);
+    return true;
+}
+
+2 (frameworks\base\telephon\java\android\telephony\PhoneNumberUtils.java)修改如下函数：
+
+public static String convertKeypadLettersToDigits(String input) {
+    if (input == null) {
+        return input;
+    }
+    int len = input.length();
+    if (len == 0) {
+        return input;
+    }
+    char[] out = input.toCharArray();
+    for (int i = 0; i < len; i++) {
+        char c = out[i];
+        // If this char isn't in KEYPAD_MAP at all, just leave it alone.
+        if(c=="P"||c=="W"||c==("p"||c=="w") {
+            out[i] = c;
+        } else {
+            out[i] = (char) KEYPAD_MAP.get(c, c);
+        }
+    }
+    return new String(out);
+}
+3.
+public static String normalizeNumber(String phoneNumber) {
+    if (phoneNumber == null) {
+        return null;
+    }
+    StringBuilder sb = new StringBuilder();
+    int len = phoneNumber.length();
+    for (int i = 0; i < len; i++) {
+        char c = phoneNumber.charAt(i);
+        // Character.digit() supports ASCII and Unicode digits (fullwidth, Arabic-Indic, etc.)
+        int digit = Character.digit(c, 10);
+        if (digit != -1) {
+            sb.append(digit);
+        } else if (i == 0 && c == '+') {
+           sb.append(c);
+        } else if (c == 'p' || c == 'w' || c == 'P' || c == 'W') {
+            Rlog.d(LOG_TAG,"normalizeNumber() remove letter (p w P W)");
+        } else if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
+            return normalizeNumber(PhoneNumberUtils.convertKeypadLettersToDigits(phoneNumber));
+        }
+    }
+}
+```
+
+## android P UserDebug 软件 adb remount 失败的原因和解决方案
+
+```
+在android P版本上如果按照“FAQ18076 android 6.0 M userdebug版本执行adb remount失败”的做法在userdebug版本上执行adb remount会提示以下错误：
+remount of the / superblock failed: Permission denied
+remount failed
+原因是android P版本后google启用avb(Android Verified Boot)2.0，verified boot and DM-verity默认启用策略发生了变化。详情如下：
+DM-Verity behavior changes from vboot1.0 to avb2.0.
+On vboot1.0, dm-verity is turned off on eng build and is enabled on userdebug/user build.
+DM-verity could be disabled with adb (not fastboot) on userdebug build without unlocking device first.
+DM-Verity could not be disabled on user build.
+On avb2.0, dm-verity behavior are the same on all build variants.
+It's turned on by default and could only be disabled after device is unlocked.
+dm-verity disable flag is moved from system image dm-verity metadata(vboot1.0) to vbmeta image(avb2.0), and you have two ways to disable it: adb and fastboot.
+
+[SOLUTION]
+* Android P + kernel-4.4 or kernel-3.18
+- download preloader with verified boot disabled which location is the same as scatter file //preloader_<PROJECT>_SBOOT_DIS.bin
+- adb root
+- adb disable-verity
+- adb reboot
+- adb root
+- adb remount
+
+* Android P + kernel-4.9 or after 
+- download preloader with verified boot disabled which location is the same as scatter file. //preloader_<PROJECT>_SBOOT_DIS.bin
+- boot to Home Screen
+- go to setting -> system -> Developer options -> OEM unlocking
+- adb reboot bootloader
+- fastboot flashing unlock
+- press volume up key
+- fastboot reboot
+- adb root
+- adb disable-verity
+- adb reboot
+- adb root
+- adb remount
+ 
+After Android P, preloader_<PROJECT>_SBOOT_DIS.bin will be generated automatically after building preloader.
+ 
+* 请注意下载最新的adb/fastboot tool
+Windows
+https://dl.google.com/android/repository/platform-tools-latest-windows.zip
+Mac
+https://dl.google.com/android/repository/platform-tools-latest-darwin.zip
+Linux
+https://dl.google.com/android/repository/platform-tools-latest-linux.zip
+```
+
+## [FAQ20989] How to make built-in APK compile filter with speed mode 开启应用加速
+
+```
+./target/product/core.mk
+
+# The set of packages we want to force 'speed' compilation on.
+- PRODUCT_DEXPREOPT_SPEED_APPS += \
++ PRODUCT_DEXPREOPT_SPEED_APPS += MtkTeleService
+
+查看是否生效
+adb shell "dumpsys package com.**.** | grep compila -A1"
+
+Dexopt state:[com.android.camera]
+path: /system/priv-app/Camera/Camera.apk
+status: /system/priv-app/Camera/oat/arm64/Camera.odex [compilation_filter=speed, status=kOatUpToDate]   //compilation_filter=speed 表示已加速
+```
+
+## 应用加固厂商
+
+```
+1、加固厂商：加固宝360、娜迦nagapt、梆梆bangcle、爱加密ijm、阿里、百度，盛大，腾讯，网秦通付盾
+2、加固厂商对应的特征：
+娜迦libchaosvmp.so,libddog.so,libfdog.co
+爱加密libexec.so，libexemain.so
+梆梆libsecexe.so,libsecmain.so,libDexHelper.so,libSecShell.so 
+360libprotectClass.so,libjiagu.so
+通付盾libegis.so
+网秦libnqshield.so
+百度libbaiduprotect.so
+```
+
+## [adb]adb 无法连接问题排查
+
+```
+ 确认usb debugging有开启;
+
+确认PC adb driver有安装;
+可能出现VID/PID未添加导致PC不识别： 
+文件： android_winusb.inf：
+可能用到如下的写法：
+%CompositeAdbInterface% = USB_Install, USB\VID_0E8D&PID_201D
+上面这种可能出现driver无法正常安装的情况，必须把最后的MI_XXX也加上(MI_00从设备管理器硬件ID确认)：
+%CompositeAdbInterface% = USB_Install, USB\VID_0E8D&PID_201D&MI_00
+
+adb kill-server/start-server重启PC adb server.
+
+排除第三方软件干扰adb server: 比如豌豆荚等.
+因为豌豆荚会强占某端口，比如5037端口，导致包括GAT和adb client都没法正常连接到adb server. 可以尝试卸载豌豆荚.
+
+确认adb version是新版本：
+如果版本较旧，请更新GAT或者单独下载adb包，并加入adb.exe所在路径到环境变量中(建议加到最开始避免其他位置的adb.exe被混用).
+
+交叉测试： Device1 + PC1 ,  Device1 + PC2,   PC1 + Device1, PC1 + Device2  确认可能是PC还是Device的问题.
+
+确认adb版本没被混用：
+不同的三方软件或者包括GAT等都会单独包含一份adb.exe(及相关dll)， 所以很可能出现这个进程用的xxxx1/adb.exe, 另外进程使用的是xxxx2/adb.exe, 造成不预期的问题.
+可能出现系统路径  XXX:\Windows\System32 存在adb.exe,  恰好在此路径下执行adb, 会优先执行此路径的adb.exe, 而不会执行上面环境变量adb.exe第一个所在路径.
+windows系统通过PATH寻找可执行文件的方式与类unix系统不同，比如linux完全从环境变量PATH中找，而windows会优先从当前目录找, 所以需要注意.
+windows系统可执行文件一般有扩展名，即环境变量：PATHEXT. 
+一般会是.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC.
+所以如果存在adb.com, 会优先于adb.exe执行.  如果根本没有跑adb.exe, 尝试从这个方向去查.
+如果想确认adb.exe进程对应的可执行文件的准确路径，可通过任务管理器查看: 映像路径名称/命令行.
+
+更换USB线测试.
+usb cable质量偏差和连接不良.
+
+
+PC主机前面的USB Port可能出现供电问题，后面的USB Port供电更稳定：
+如出现某个Port始终无法识别，可能是因为之前使用的设备抽电过多导致PC disable此端口，此时建议切换到主机后面的另外一个USB Port.
+
+
+如果是fastboot模式不能识别:
+请尝试用最新google fastboot 工具包;
+已有实例确认旧版本fastboot只能识别某些特定的VID/PID, 新版本已修正. 在linux系统可以更新新版本的fastboot.
+设备管理器VID/PID如果是0BBD/0C01, 请尝试在android_winusb.inf中增加再更新driver.
+
+
+排除PC端安装不同来源/不同版本的usb driver导致问题.
+请使用干净的PC环境安装MTK SP Driver确认是否可以识别到.
+
+
+某些usb组合模式，如rndis,adb出现问题:
+已查明rndis PC端驱动版本过旧可能导致识别问题：
+
+请卸载rndis驱动，重新更新最新驱动.
+重新安装MTK SP Driver.
+重启PC.
+```
+
+## [FAQ21073] [Android 7.0]切换阿拉伯语，QuickSetting界面图标左右翻转。
+
+```
+切换手机语言为阿拉伯语，下拉状态栏到Quicksetting界面，快捷图标左右翻转。
+
+如果不想要这个左右翻转效果，修改方法如下：
+
+frameworks/base/packages/SystemUI/src/com/android/systemui/qs/QSTile.java
+-public boolean autoMirrorDrawable = true;
++public boolean autoMirrorDrawable = false;
+```
+
+## 无法同步正常的时区
+
+```
+TimeUtils.getTimeZone() 返回NULL,导致无法得到正确的时区，导致调整时区失败。
+vendor/mediatek/proprietary/frameworks/opt/telephony/src/java/com/mediatek/internal/telephony/MtkServiceStateTracker.java
+中传给getTimeZone的参数中，
+ zOffset=7200000 是以毫秒为单位传进去的参数，但是TimeUtils.java里面调用lookupTimeZoneByCountryAndOffset
+时，需要以秒为单位来算时区的offset，这样就会导致返回NULL的TIMEZONE, 可以按下面的修改解决该问题
+xref: /frameworks/base/core/java/android/util/TimeUtils.java
+修改
+private static android.icu.util.TimeZone getIcuTimeZone(int offset, boolean dst, long when, String country) {
+    if (country == null) {
+        return null;
+    }
+    android.icu.util.TimeZone bias = android.icu.util.TimeZone.getDefault();
+    // 修改一下，这里需要传的单位是秒，而以前版本传给getIcuTimeZone是 offset都是以毫秒为单位的，而google 这里没有除1000,故返回NULL
+    return TimeZoneFinder.getInstance().lookupTimeZoneByCountryAndOffset(country, offset/1000, dst, when, bias);
+}
+```
+
+## [FAQ15121]Ubuntu 下 QT Flashtool 不能使用
+
+```
+1, ubuntu shell cmd:  sudo apt-get purge modemmanager
+2, Double confirm if the ModemManager is under the root directory /bin, if yes, remove it or rename the software.
+3, Using configuration in udev to avoid USB device to be recognized as modem device.
+    -- add the file "99-ttyacms.rules" in the path "/etc/udev/rules.d"
+    -- add the following content in the file "99-ttyacms.rules"
+    ATTRS{idVendor}=="0e8d", ENV{ID_MM_DEVICE_IGNORE}="1"
+
+Note: If after that the QT flashtool still can not flash, there are some notics need to be checked also while download under ubuntu OS,
+the detail please refer to [FAQ09734] [FlashTool]Qt FlashTool在Linux下不能下载，提示S_COM_PROT_OPEN_FAIL
+```
+
+## [FAQ11483]修改SeLinux policy之后快速验证
+
+```
+在Android KK 4.4 版本后，Google 有正式有限制的启用SELinux, 来增强android 的安全保护。
+KK 版本: 在MTK Solution 中，我们将SELinux Policy 文件存放在三个目录中。
+1). Google 原生目录 alps/external/sepolicy
+2). MTK 配置目录 alps/mediatek/custom/common/sepolicy
+3). 客户配置目录 alps/mediatek/custom/{Project}/sepolicy (默认没有配置)
+在编译时，系统会以文件为单位整合替换，优先级: 客户配置目录 》MTK 配置目录 》 Google 原生目录.
+
+L/M版本: 将SELinux Policy 文件存放在下面目录。
+1). Google 原生目录 alps/external/sepolicy
+2). MTK 配置目录 alps/device/mediatek/common/sepolicy
+3). MTK 配置目录 alps/device/mediatek/{platform}/sepolicy (M版本后才添加使用，主要是针对平台客制化)
+在编译时, 系统会以合并的方式(union), 将MTK 配置目录下的policy 附加到Google 原生的policy 上，而非替换.
+如果在alps/device/mediatek/common/sepolicy 下面新增SELinux Policy file, 在L 版本需要更新alps/device/mediatek/common/BoardConfig.mk 中的BROAD_SEPOLICY_UNION 增加对应的xxxx.te, M 版本已经取消了这个宏，无需再操作.
+
+N 版本: 将SELinux Policy 文件存放在下面目录
+1). Google 原生目录 alps/system/sepolicy
+2). MTK 配置目录 alps/device/mediatek/common/sepolicy/  注意的是里面有basic, bsp, full 目录. 其中basic 目录所有的版本都会吃到; bsp 目录则是bsp 版本 + Turnkey 版本都会吃到;  full 目录则是只有Turnkey 版本会吃到。
+
+O 版本: 将SELinux Policy 文件存放在下面目录
+1). Google 原生目录 alps/system/sepolicy
+2).  MTK 配置目录 alps/device/mediatek/sepolicy 这个的设定已经大改, 需要大家参考MOL 上的 sepolicy O 版本更新.
+
+1). 确认问题是否与SELinux 相关，可以参考FAQ: [SELinux] 如何设置确认selinux 模式?
+
+2). 快速编译验证
+
+在已经编译过的版本上,  首先编译出新的selinux policy, 然后打包boot image.
+KK:  ./mk project_name mm external/sepolicy
+./mk project_name bootimage
+
+L/M:
+mmm external/sepolicy
+make -j24 ramdisk-nodeps
+make -j24 bootimage-nodeps
+
+N:
+mmm system/sepolicy
+make -j24 ramdisk-nodeps
+make -j24 bootimage-nodeps
+
+然后再重新刷bootimage 测试.
+
+O:
+mmm system/sepolicy
+然后再根据对应的sepolicy 是存放在system image, 还是 vendor image 对 system, vendor image 分别打包.
+
+
+[相关FAQ]
+[FAQ11414] android KK 4.4 版本后，user 版本su 权限严重被限制问题说明
+[FAQ11486] 在Kernel Log 中出现"avc: denied" 要如何处理？
+[FAQ11485] 权限(Permission denied)问题如何确认是Selinux 约束引起
+[FAQ11484] 如何设置确认selinux 模式
+```
+
+## [FAQ20658] [Shutdown]如何初步定位异常关机问题
+
+## [FAQ18208] [SAT]如何不显示开机SIM卡欢迎语
+
+## [FAQ20994] Android O版本发送广播受限问题
+
+## [FAQ20745] Launcher无Notification Dots feature
+
+```
+/vendor/mediatek/proprietary/packages/apps/Launcher3/src/com/android/launcher3/badge/BadgeRenderer.java
+private static final boolean DOTS_ONLY = true;
+修改为：
+private static final boolean DOTS_ONLY = false;
+```
+
+## [FAQ20215] 如何动态关闭fast starting window？？？？？？fast starting window是什么东西？？？
+
+```
+关闭方法如下,ENG版本有效
+adb shell setprop debug.disable_fast_start_win 1
+adb shell stop
+adb shell start
+```
+
+## [FAQ20862] 介绍framework-res__auto_generated_rro.apk
+
+```
+在Android O上面 Google增加了一个enforced RRO的方法，可以把之前的build time overlay强制转换成runtime resource overlay.
+如果overlay的是framework-res的资源包，那么会自动生成一个file在/vendor/overlay/framework-res__auto_generated_rro.apk. 里面会包含overlay的资源.
+这个framework-res__auto_generated_rro.apk.不要删除，请保留。
+```
+
+## [FAQ19034] 数据库权限问题分析
+
+```
+应用报数据库相关错误，强制关闭
+以01-01 08:05:07.572 E/SQLiteLog( 2276): (14) os_unix.c:30090: (13) open(/data/user/0/com.android.providers.calendar/databases/calendar.db)为例；
+
+首先根据[FAQ11485][SELinux Debug]权限(Permission denied)问题如何确认是Selinux 约束引起？
+如是selinux引起，则请使用QAAT工具进行扫描log获取分析结果和解决方案；
+
+如果不是selinux引起，则对比正常机器和异常机器的如下信息，看下差异点，
+如有差异，则把正常机器修改为异常机器的内容；如果复现，则找到问题点； 
+
+adb shell ls -aZl /data > 1.txt
+adb shell ls -aZl /data/user > 2.txt
+adb shell ls -aZl /data/user/0 > 3.txt
+adb shell ls -aZl /data/user/0/com.android.providers.contacts > 4.txt
+adb shell ls -aZl /data/user/0/com.android.providers.contacts/databases > 5.txt
+adb shell ls -aZl /data/data > 6.txt
+adb shell ls -aZl /data/data/com.android.providers.contacts > 7.txt
+adb shell ls -aZl /data/data/com.android.providers.contacts/databases > 8.txt
+adb shell mount > 9.txt
+adb shell ps > 10.txt
+
+对于问题点，如果没有复现问题的完整log，通常较难分析根本原因；
+不过可以尝试recovery下的root-check，看下手机是否有被root或者image被破坏的可能；
+
+对于案例的原因为：data下面的user文件夹权限被修改为：drwx------ root root （正常是：drwx--x--x system system），即访问A/B/C.txt，需要拥有A、B、C.txt三个权限。
+
+对应的workaround为：
+/system/core/rootdir/init.rc
+
+on post-fs-data
+
+mkdir /data/system/heapdump 0700 system system
+
+mkdir /data/user 0711 system system //添加此行
+
+对于其他DB的分析方法类似。。。
+```
+
+## [FAQ20741] [FM APP]如何做到可以在客户端卸载内置的FM
+
+```
+如何做到可以在客户端卸载内置的FM？ 
+
+1.  O版本之前，需要 patch，可提eService 申请。
+2.  patch之后(O后不需要)，需要按如下修改：
+
+/vendor/mediatek/proprietary/frameworks/base/data/etc/pms_sysapp_removable_vendor_list.txt
+添加： com.android.fmradio
+
+/system/core/rootdir/etc/public.libraries.android.txt
+添加 libfmjni.so
+
+Add in /device/mediatek//device.mk
+PRODUCT_PROPERTY_OVERRIDES += persist.sys.pms_sys_removable=1
+```
+
+## [FAQ20491] [Android O] AEE 在android o上的变化 以及 提交log需要注意的问题
+
+```
+在android o 中， systemimg 和vendorimg 中的daemon 不能直接通信，aee 为此在android O 上做出了一些变化；
+导致在提case时，不能在第一时间提供全面的log信息；
+ 
+一， AEE 的变化：
+ 1. 架构的改变。
+Before：
+AEE只存在与system/bin/下，daemon的名字叫debuggerd(debuggerd64)
+After:
+AEE在system/bin和vendor/bin下各有一套，daemon名字改为：aee_aed(aee_aed64)---system/bin下；aee_aedv(aee_aedv64)---vendor/bin/下
+
+2.不同异常类型DB存放路径
+Before：
+/data/aee_exp;
+/sdcard/mtklog/aee_exp;
+After:
+JE/ANR/SWT                           db存放在data/aee_exp
+KE/HWT/HW_REBOOT/EE/NE   db存放在data/vendor/mtklog/aee_exp
+
+3. 注意 注意：不能手动删除/data/aee_exp, /data/vendor/mtklog/aee_exp 目录：
+aee db 存放路径 /data/aee_exp, /data/vendor/mtklog/aee_exp 的selinux标签如下， 这个标签是在init 创建目录的时候打下去的：
+/data/aee_exp(/.*)? u:object_r:aee_exp_data_file:s0
+/data/vendor/mtklog/aee_exp(/.*)? u:object_r:aee_exp_data_file:s0
+如果删除aee db 的存放目录， 再创建的时候会沿用父目录的selinux 标签（ system_data_file），导致aee 没有selinux 权限不能正确产生db（重新开机后，init不会强制更新标签，还是会使用 system_data_file 的签名）；
+solution：有root权限的手机有可能误删，会影响抓DB。解决办法，执行restorecon -R xxx/aee_exp命令即可
+
+4. Android user load，如何抓到所有异常的aee db？
+FAQ20159   Android user/userdebug load，如何抓到所有异常的aee db？
+
+5. aee 对三方app exception handle的过滤
+public void handle(String type, String info, String pid) {
+    Log.w(TAG, "Exception Log handling...");
+    if (type.startsWith("data_app") && !info.contains("com.android.development")
+            && (SystemProperties.getInt("persist.mtk.aee.filter", 1) == 1)) {
+        Log.w(TAG, "Skipped - do not care third party apk");
+        return;
+    }
+aee 有对上层三方app 进行过滤， 如需抓三方app 的exception， 可以设置属性：setprop persist.mtk.aee.filter  0
+
+6. user load ：三方app 默认不做ANR dump
+1608    /**
+1609     * Reduce the 3rd party's anr dump info in user load for performance
+1610     */
+1611    private boolean needReduceAnrDump(ApplicationInfo appInfo) {
+1612        return IS_USER_LOAD && !isBuiltinApp(appInfo) && !(SystemProperties.getInt(
+1613                "persist.anr.dumpthr",NORMAL_ANR_FLOW) == ENABLE_ANR_DUMP_FOR_3RD_APP);
+1614    }
+如需抓三方app 的ANR exception， 可以设置属性：setprop persist.anr.dumpthr  1
+
+二， 提交log需要注意的问题
+Android O ,mtklog 和db 不在同一个目录，提交log 时需要同时导出来：
+1, adb pull /sdcard/mtklog
+2, adb pull /data/aee_exp
+3, adb pull /data/vendor/mtklog/aee_exp
+```
+
+## [FAQ20659] How to kill a native process and remake it re-launch
+
+```
+user load开启android malloc debug机制，在设置property之后，需要将该进程kill并且重新re-launch
+
+[SOLUTION]
+
+请在user load设置property之后，按以下步骤进行：
+
+1.kill -9 pid(该进程的pid)
+2.ps | grep processname(该进程的name)
+如果该进程存在，则该进程在kill 掉之后自动re-launch了
+3.如果该进程不存在，则setprop ctl.start processname(该进程的name)
+4.ps | grep processname(该进程的name)
+如果该进程存在，则重新re-launch了
+```
+
+## [FAQ20594] 如何定位分析不开机及开机时间长问题
+
+```
+1、客退机问题：请先参考DCC文档《RMA_SOP.pptx》进行初步定位，厘清软件问题还是硬件问题。
+2、非客退机问题：
+a、不能正常开机并且会自动重启：
+请在eService的title和description中标注“重启”的信息，保留问题复现版本codebase及问题现场，提交eService处理；
+b、开机卡住，不能进入HomeScreen，不发生重启：
+请下载DCC文档《[SOP]Bootup_Issue_Checking_SOP_V1.0.rar》进行初步分析定位，如仍未解决还请填写文档中相关信息后提交eService处理（同步上传文档）；
+c、开机时间长：
+请下载DCC文档《[SOP]Bootup_Issue_Checking_SOP_V1.0.rar》进行初步分析定位，如仍未解决还请填写文档中相关信息后提交eService处理（同步上传文档）；
+```
+
+## [VPN][FAQ19293] [Framework-VPN]使用VPN 之前为何要设定lock screen PIN or password
+
+```
+第一次使用vpn，在添加profile 的时候，系统会提示“You need to set a lock screen PIN or password before you can use credential storage”,有什么作用？可否去掉？
+ 
+vpn 的信息都是需要加密的，在目前的设计里面，这个密码是用来加密要保存的账号信息的。如果去掉，账号信息很容易泄露，不建议去掉。
+
+Android Default就只支持IPSec，这个可以通过Settings中的VPN查看，不支持 TLS 和 SSHv2。
+
+Android VPN支持以下几种协议：
+PPTP
+L2TP/IPSec PSK
+L2TP/IPSec RSA
+IPSec Xauth PSK
+IPSec Xauth RSA
+IPSec Hybrid PSK
+```
+
+## [mtklog]MTKlog 常见问题汇总
+
+```
+1) Quick Start
+1 .深入了解Logging Tools
+http://online.mediatek.com/_layouts/15/mol/topic/ext/Topic.aspx?mappingId=844fde79-3e58-4f1f-bba7-cf0be27cee45
+
+2 .深入了解MTKLogger
+http://online.mediatek.com/_layouts/15/mol/topic/ext/Topic.aspx?MappingId=4116ea3e-1d44-4f6c-a150-19c57118bd11
+
+2) FAQ 系列
+NEW- 1 FAQ19560 user版本开启mtklog
+http://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ19560
+
+NEW- 2 FAQ20491 [Android O] AEE 在android o上的变化 以及 提交log需要注意的问题
+http://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ19560
+
+3 .FAQ19362 如何设置mobilelog modemlog networklog size大小
+http://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ19362
+
+4 .FAQ15308 FactoryMode下用SD卡抓取mobilelog及modemlog
+http://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ15308
+
+5 .FAQ14184 Factory Mode下USB抓取modem log的方法
+http://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ14184
+
+6 .FAQ14339 MTK各boot up mode下 log的抓取方法
+http://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ14339
+
+7 .FAQ06944 Meta mode以及其他模式如何抓取mobilelog 
+http://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ06944
+
+8 .FAQ20071 KERN_DEBUG 等级log打印 & MTK Logd Filter Mechanism
+http://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ20071
+
+9 .FAQ15320 不同模式下如何保持uart log一直打开
+http://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ15320
+
+10.FAQ03891如何在User版本开启串口(Uart),抓取上层Log,开启输入控制台
+http://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ03891
+
+11 FAQ19689 kernel_log.boot从时间0s开始抓取(加大kernel log buffer)的修改方法
+http://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ19689
+
+12 FAQ20108 How to enable kernel dynamic debug log?
+http://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ20108
+
+13 FAQ20241 第一次开机加解密，开机解密过程中log 抓不到/丢失问题
+http://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ20241
+
+14 FAQ18335 Modem Exception提交eservice要提供哪些文件
+http://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ18335
+
+15 FAQ17814 如何设置MTKlogger是否开机自启动
+http://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ17814
+
+16 FAQ06939 如何用adb控制MTKLogger
+http://online.mediatek.com/Pages/FAQ.aspx?List=SW&FAQID=FAQ06939
+```
+
+## [FAQ20599] 单机高概率问题处理方法
+
+```
+这里针对的是死机重启类问题
+单机------是指出现问题的机器只有一两台
+高概率-------是指这一两台问题机很容易出现死机重启
+ 
+一旦机器符合"单机高概率" 这个特征都可以判定为硬件问题！
+原因是：如果是软件问题，如此高的概率必然会导致其他机器大规模复现！！因为机器的软硬件环境都是一样的
+ 
+对于单机高概率问题的处理流程：
+1、回读pl lk bootimg systemimg与下载前的对比，看是否OK，如果不一样要么说明被用户刷机，要么说明emmc有问题------此时客户可以重刷来验证emmc是否损坏
+ 
+2、如果步骤1 ok,请接下来做flash tool 的DDR test ,此步骤的目的是验证DDR是不是有明显的损坏
+ 
+3、如果上面2个步骤都OK，其他器件的排查请贵司硬件先排查，然后在求助弊司硬件
+```
+
+## [FAQ20589] 修改Camera拍照音效
+
+```
+frameworks/av/services/camera/libcameraservice/CameraService.cpp
+
+2096void CameraService::loadSoundImp() {
+2097    LOG1("[CameraService::loadSoundImp] E");
+2098    mSoundPlayer[SOUND_SHUTTER] = newMediaPlayer("/system/media/audio/ui/camera_click.ogg");
+2099    mSoundPlayer[SOUND_RECORDING_START] = newMediaPlayer("/system/media/audio/ui/VideoRecord.ogg");
+2100    mSoundPlayer[SOUND_RECORDING_STOP] = newMediaPlayer("/system/media/audio/ui/VideoStop.ogg");
+2101    LOG1("[CameraService::loadSoundImp] X");
+2102}
+```
+
+## [FAQ02918] [AT]如何在java层直接下发at cmd
+
+```
+目前AP端在PhoneBase.java中有方法invokeOemRilRequestStrings可以向modem透传AT，如果您想在modem 客制化自己的AT在ap端使用，可以用此方法；
+Tips: 必须是run在phone进程中的代码才可以如此，第三方apk是不可以的。如果允许第3方apk调telephony中的接口向modem下AT命令的话，对于手机，这个安全隐患太大！
+
+需要注意的地方：
+（1）modem端的客制化需要最后return OK，否则RILD收到response后不会handle
+（2）ap侧使用时需要定义长度为2的string数组；
+<1>第一个成员存放需要下的AT string
+<2>第二个成员存放这个AT的名字，用来处理modem上报response时区分的tag；他不会被下到modem侧
+例如需要读IMEI，那么可以定义如下：
+
+String imeiString = new String[2]; //第一个string是你要下的AT command的完整string
+imeiString[0] = "AT+EGMR=0,7";
+imeiString[1] = “+EGMR”;  //第二个string必须有，且名字是此AT名字，主要给rild用，不会下给modem；否则不会通过此channel返回上来
+
+////////////详细的例子如下//////////////////////////////////////////////////////////////////////////////////////////
+GPRS.java
+onClick
+String imeiString = new String[2]; //第一个string是你要下的AT command的完整string
+if(FeatureOption.MTK_GEMINI_SUPPORT){
+    int simId = phone.getMySimId();
+    if(simId == Phone.GEMINI_SIM_1){
+        imeiString[0] = "AT+EGMR=0,7";
+    }else if(simId == Phone.GEMINI_SIM_2){
+        imeiString[0] = "AT+EGMR=0,10";
+    }
+}else{
+    imeiString[0] = "AT+EGMR=0,7";
+}
+imeiString[1] = “+EGMR”;  //第二个string必须有，且名字是此AT名字，主要给rild用，不会下给modem；否则不会通过此channel返回上来
+Log.v(LOG_TAG, "IMEI String:" + imeiString[0]+imeiString[1]);
+phone.invokeOemRilRequestStrings(imeiString, mResponseHander.obtainMessage(EVENT_READ_IMEI));
+
+以上是common的处理，上述的phone对象如果获取的是卡1的GSMPhone对象，那么这个命令是发送给SIM1，同理，如果是卡2的GSMPhone对象，那么这个命令是发送给SIM2。
+
+【KK版本及以前】
+如果获取的是GeminiPhone对象，那么可以通过GeminiPhone中invokeOemRilRequestStringsGemini方法来发送，即public void invokeOemRilRequestStringsGemini(String[] strings, Message response, int simid)。
+卡1为PhoneConstants.GEMINI_SIM_1，卡2为PhoneConstants.GEMINI_SIM_2。
+
+【L版本】
+L版的C2K双卡项目上
+1'当主卡为C2K卡时
+要下AT至C2K Modem，可通过PhoneFactory.getDefaultPhone().getNLtePhone().invokeOemRilRequestStrings(,);方法实现；(其中getDefaultPhone()也可用getPhone(phoneId)来替换，下同)
+要下AT至GSM Modem 4/3/2G protocol，可通过PhoneFactory.getDefaultPhone().getLtePhone().invokeOemRilRequestStrings(,);方法实现；
+要下AT至GSM Modem 2G protocol，可通过
+PhoneFactory.getPhone(phoneId).getLtePhone().invokeOemRilRequestStrings(,);方法实现；
+2'当主卡为GSM卡时
+要下AT至GSM Modem 4/3/2G protocol，可通过PhoneFactory.getDefaultPhone().getLtePhone().invokeOemRilRequestStrings(,);方法实现；
+要下AT至C2K Modem，可通过PhoneFactory.getPhone(phoneId).getNLtePhone().invokeOemRilRequestStrings(,);方法实现；
+要下AT至GSM Modem 2G protocol，可通过
+PhoneFactory.getPhone(phoneId).getLtePhone().invokeOemRilRequestStrings(,);方法实现；
+L版的非C2K的其他项目上，直接通过PhoneFactory.getPhone(phoneId).invokeOemRilRequestStrings(,);方法下AT命令至相应卡槽对应的Modem。
+
+【M版本】
+M0.MP1仍保持L版本的写法，其他M版本如下：
+在之前的版本上，
+ap侧使用时需要定义长度为2的string数组；
+<1>第一个成员存放需要下的AT string
+<2>第二个成员存放这个AT的名字，用来处理modem上报
+在M上，因架构有所调整，如果要将AT命令发往C2K modem需在此添加第三个成员变量
+<3>第三个成员存放这个AT希望发向哪个modem，DESTRILD:C2K指定发向C2K MD，DESTRILD:GSM指定发向GSM MD。
+（第三个成员不设定的话，默认发向GSM MD）
+
+【N版本】
+参数<1> 和<2>处理与M上相同。
+参数<3> 在 N1.MP16(MT6763) 版本 和 N1.MP18(MT6739) 版本 由于C2K和GSM在同一个modem，所以不用添加。其他版本与M上相同。
+
+【O版本】
+参数<1> 和<2>处理与M上相同。
+参数<3> 在 搭配MT6763平台 和 MT6739平台的版本，由于C2K和GSM在同一个modem，所以不用添加。
+```
+
+## [FAQ20603] [Framework-VPN]设置Always-on VPN 如何保存
+
+## [FAQ20612] [Android O Build]如何正确的添加环境变量
+
+## [FAQ19089] 状态栏时间不更新
+
+## [FAQ20622] [SP FlashTool]SP Flashtool编译环境Qt Creator安装
+
+## [FAQ20644] Android O、N版本修改dex2oat编译选项，减少占用ROM空间或者加快安装速度
+
+## [FAQ20665] O1版本定制长按电源键弹出菜单选项
+
+## [mtklog][FAQ12427] 如何监测MTKLogger的状态改变
+
+## [IME][FAQ14050] 如何删除LatinIME中的特定表情
+
+## [IME][FAQ04327] 如何修改默认输入法
+
+## [IME][FAQ06649] Latin输入法怎么默认勾选几种语言？
+
+## [FAQ20328] 如何减少lowmemory的发生几率
+
+## [FAQ12532] 如何更新时区data文件
+
+## [FAQ02484] [BMT]关机充电动画客制化以及错位调整
+
+## [FAQ03426] 当系统存在多个Launcher时，如何设置开机自动进入默认的Launcher？
+
+## [FAQ20670] Android GO版本上 非首次进入应用过程中有从模糊到清晰的过程
+
+## [FAQ18332] 如何修改android log buffer 大小
+
+## 学习使用 QAAT 工具？？？
+
+## efuse????
+
+## [FAQ04306] 如何通过 Eclipse 远端调试framework和APK？
+
 ## [FAQ20977] 如何配置VoLTE, ViLTE and VoWifi(IMS config for VoLTE, ViLTE and VoWifi)
 
 ## webview 是个什么应用？和chromewebview有什么区别？
 
 ## system/priv-app 和 system/app 的区别？？
-
-## 永久解锁码算法 ???
 
 ## 如何在 Gedit 中添加 CodeSnippets ???
 
@@ -8815,3 +9616,6 @@ Good Luck！
 ## SystemProperties的模板类
 
 ## 反射模板
+
+
+FAQ看到了38页

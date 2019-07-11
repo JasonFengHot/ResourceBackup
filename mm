@@ -35,6 +35,10 @@
 
 # TODO : 如何从编译的log中提取出 install， push 的时候直接从编译出来的文件中获取出目标路径
 
+# TODO : 如何通过commitid列表连续编译，并保存编译结果newbuild.txt和刷机包(重命名成commitid)
+
+# TODO : 通过爬虫自动抓取 FAQ 上的内容
+
 # TODO : push 之后点亮屏幕
 
     # TODO : 如何判断下面的这些基础命令是否存在？adb, mocp
@@ -80,10 +84,10 @@
 
 # TODO : 把 Logcat 整合成一条命令 logcat
 
-# TODO : 把 adb shell settings get/set 整合成一条命令 settings get/set
-#adb shell cat /data/system/users/0/settings_system.xml
-#adb shell cat /data/system/users/0/settings_secure.xml
-#adb shell cat /data/system/users/0/settings_global.xml
+    # TODO : 把 adb shell settings get/set 整合成一条命令 settings get/set
+    #adb shell cat /data/system/users/0/settings_system.xml
+    #adb shell cat /data/system/users/0/settings_secure.xml
+    #adb shell cat /data/system/users/0/settings_global.xml
 
 # TODO : 把 adb shell pm clear 整合成一条命令 adbclear
 
@@ -110,9 +114,9 @@
 
 # TODO : 格式化JSON的工具
 
-#####################################################
+# TODO : 把开关机动画的制作流程做成脚本
 
-# TODO : ERP管理系统？
+#####################################################
 
     # TODO : 自动登录签到系统？自动签到已通过crontab实现
 
@@ -275,6 +279,18 @@ if [ -f /usr/bin/adb ]; then
     adb version;
 else
     echo "adb does not exists, please config it!";
+    exit 0;
+fi
+
+# settings get/set
+if [ $1 == "get" ] ; then
+    keyName=$2;
+    echo "system:"
+    adb shell settings get system $keyName;
+    echo "global:"
+    adb shell settings get global $keyName;
+    echo "secure:"
+    adb shell settings get secure $keyName;
     exit 0;
 fi
 
