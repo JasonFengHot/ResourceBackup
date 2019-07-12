@@ -7396,10 +7396,41 @@ mediatek/config/up39_h455_coppel/custom.conf 文件中 bluetooth.HostName 中
 frameworks/base/core/res/res/values/config.xml 文件中的 <integer name="config_overrideHasPermanentMenuKey">0</integer> 值改为2
 ```
 
-## 如何修改Settings-->Display-->Font size
+## [FAQ04312][默认值]如何修改默认字体大小 Settings-->Display-->Font size
 
 ```
 L:frameworks/base/core/java/android/content/res/Configuration.java 中的 setToDefaults() 方法中的 fontScale 值，1.0f 为 normal，0.9f 是 small
+Android系统中在Settings->Display->Font Size设置系统字体大小，默认的系统字体大小为普通(Normal)，如果修改默认值，可以在下面这个文件中进行修改：
+在alps/frameworks/base/core/java/android/content/res/Configuration.java文件中如下
+public void setToDefaults() 这个方法中进行修改，
+如:把默认字体要改为超大，把fontScale值改为1.15f，然后重新build framework.jar这个模块即可；
+public void setToDefaults() {
+fontScale = 1.15f;  //normal value is 1
+mcc = mnc = 0;
+
+注意：Settings中系统的字体大小，在/packages/apps/Settings/res/values/arrays.xml文件中的”entryvalues_font_size”这个tag中定义
+Small:0.9
+Normal:1.0
+Large:1.1
+Extra Large:1.15
+
+fontScale值必须是上述中的一个。
+
+N版本上默认字体大小修改如下：
+（1）将/frameworks/base/core/java/android/provider/Settings.java文件中的DEFAULT_FONT_SCALE修改为所需要设置的值。
+（2）将/frameworks/base/packages/SettingsProvider/src/com/android/providers/settings/SettingsHelper.java文件中如下位置的1.0f，修改为所需要的值。
+case Settings.System.FONT_SCALE:
+return Settings.System.getFloat(mContext.getContentResolver(), name, 1.0f) != 1.0f;
+
+字体大小值 entryvalues_font_size 的定义，在N版本上 packages/apps/Settings/res/values/arrays.xml 文件中定义如下：
+<string-array name="entryvalues_font_size" translatable="false">
+    <item>0.85</item>
+    <item>1.0</item>
+    <item>1.15</item>
+    <item>1.30</item>
+</string-array>
+
+在设置所需的字体大小时请参考 entryvalues_font_size 的定义。
 ```
 
 ## [FAQ12292]浏览器下载文件无法打开
@@ -9529,6 +9560,556 @@ ap侧使用时需要定义长度为2的string数组；
 参数<3> 在 搭配MT6763平台 和 MT6739平台的版本，由于C2K和GSM在同一个modem，所以不用添加。
 ```
 
+## [FAQ20503] 如何查找某个语言在Setting语言列表中是哪项
+
+```
+举例说明：若需要找到语言列表下的孟加拉语，可以通过如下方式进行找到孟加拉语显示的字串是怎么样的？
+（1）通过https://zh.wikipedia.org/wiki/ISO_639-1这个网站可以查到某个语言的language code，如要找孟加拉语，在这个网站上查到孟加拉语的language code是bn；
+（2）进入 /external/icu/icu4c/source/data/lang/目录，根据要查看语言的language code，找到对应这个语言icu中字串的定义文件，如孟加拉语对应的文件bn.txt；
+（3）打开这支文件查看languages下bn的定义，就是孟加拉语在settings中语言列表的显示；
+（4）拖动Settings的语言列表即可查看到孟加拉语对应的名字，其他语言的查找方式类似。
+```
+
+## [FAQ20453] flash tool抓取串口log
+
+```
+flash tool下载或者做memory test时的一些log需要通过串口来打印，典型的是DDR模块相关的信息；但抓串口log常要飞uart 线，带来诸多不便
+
+使用device.cfg.xml来让USB抓取串口log，不需要飞UART线。
+device.cfg.xml放在flash tool目录的根目录，
+文件内容如下：
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <!--log_level: trace, debug, info, warning, error, fatal -->
+    <log_level>info</log_level>
+    <!--log_channel: none, uart, usb, uart_usb -->
+    <log_channel>usb</log_channel>
+    <!--end_stage: 1stDA, 2ndDA-->
+    <end_stage>2ndDA</end_stage>
+</config>
+
+说明：log_channel选择usb代表使用usb抓取串口log，抓到的串口log和flash tool原有的log在相同目录，C:\ProgramData\SP_FT_Logs\SP_FT_Dump_**-**-20**-**-**-**\DA_20******-******_0.log，选择uart代表需要硬件飞uart线抓取。
+end_stage：1stDA代表是memory test时抓取，2ndDA代表是下载时抓取 
+USB抓串口log相比飞线抓串口log会增加一点时间，1G大小的bin全擦下载大概多15S；
+```
+
+## [FAQ20309] 在N版本上如何编译SDK
+
+```
+首先，要编译SDK，需要向MTK申请banyan sdk的代码
+其次，编译分两种，一种是Android SDk包，一种是Mediatek SDk包
+Android SDK包
+source build/envsetup.sh
+lunch full_banyan_x86-eng
+make BUILD_MTK_SDK=sdk -j24 -k sdk  2>&1 | tee android.log
+
+Output: out/host/linux-x86/sdk/full_banyan_x86
+
+note: The out does not contains system.img part.
+
+Mediatek SDK包
+
+source build/envsetup.sh
+lunch full_banyan_x86-eng
+make BUILD_MTK_SDK=sdk -j24 -k banyan_sdk_addon  2>&1 | tee android.log
+
+Output: out/host/linux-x86/sdk_addon
+
+note: The out does not contains system.img part.
+```
+
+## [FAQ20263] 设置中选择时区列表新增时区的显示如何随语言变化
+
+```
+在Settings->Date & time->Select time zone中增加某个时区后，如何使这个时区的显示，跟随语言变化。如：在系统语言为英语时时区名字显示英语，为俄语时显示俄语，等等。
+若需要切换到某个语言下，新增时区在这个语言下显示的字串变成当前语言，那么需要对这个语言下新增时区的字串定义进行修改，如，添加了新时区Europe/Astrakhan，但是当切换到俄语的时候这个时区的显示没有变成俄语，具体修改方法如下：
+（1）找到俄语下时区信息的定义文件，/external/icu/icu4c/source/data/zone/ru.txt
+（2）在ru.txt中的zoneStrings域中添加新增时区的定义
+
+zoneStrings{
+    "Europe:Astrakhan"{
+        ec{"xxx"}  //xxx为这个时区在当前语言下需要显示的字串
+    }
+}
+Europe:Astrakhan添加的位置需要按照字母顺序进行排序，所以需要添加在Europe:Athens之前。
+（3）修改之后重新编译icu，并重新编译版本即可生效。
+其他语言修改方式一样，找到这个语言/external/icu/icu4c/source/data/zone/下对应的xxx.txt文件，并添加新增时区的定义即可。
+```
+
+## [FAQ19857] 采用Signature Scheme v2签名方式的APK预置失败
+
+```
+Google在N上引入了一项新的应用签名方案Signature Scheme v2，它能提供更快的应用安装时间和更多针对APK文件更改的保护
+在N上预置APK时，如果APK是采用的Signature Scheme v2签名，采用原有的预置应用方式预置APK会失败：
+
+Failure [INSTALL_PARSE_FAILED_NO_CERTIFICATES: Failed to collect certificates fr
+om /data/app/vmdl1483607312.tmp/base.apk: META-INF/CERT.SF indicates /data/app/v
+mdl1483607312.tmp/base.apk is signed using APK Signature Scheme v2, but no such
+signature was found. Signature stripped?]
+
+经过BUILD_PREBUILT后的apk与原apk是有差异的，因为v2是对apk整体签名，所以这个差异导致签名失效。
+1、app预置到到工程中，用android.mk编译之后的APK是有区别的，android编译系统会用zipalign对APK进行字节对齐等操作
+2、APK Signature Scheme v2这个是Google在N上新引入的签名方式。v2 签名将验证归档中每个文件的已压缩文件内容，如有任何自定义任务篡改 APK 文件或对其进行后处理（无论以任何方式），那么v2 签名会有作废的风险
+
+在预置APK build进系统时候不让其走编译流程，在其他模块的 android.mk 加入下面的cp脚本：
+$(shell cp $(LOCAL_PATH)/***/*.apk     $(TARGET_OUT)/vendor/operator/app)
+
+APK能通过PMS扫描安装成功，可能还会报so找不到的问题，可以参考：
+ID: FAQ19894  N上预置APK失败提示找不到so文件
+
+
+如何知道APK是不是采用Signature Scheme v2签名？可参考：
+FAQ20235	如何知道APK是不是采用Signature Scheme v2签名？
+
+使用apksigner.jar工具的verify命令。这个工具位于SDK目录的build-tools目录下。打开cmd，把目录切到SDK\build-tools\版本号\lib下。
+注：v2签名方式时在Android7.0后才推出的，所以只有版本>25的 SDK\build-tools\ 中才能找到apksigner.jar
+
+java -jar /home/zq/Android/Sdk/build-tools/27.0.3/lib/apksigner.jar verify -v xxx.apk
+
+Verifies
+Verified using v1 scheme (JAR signing): true
+Verified using v2 scheme (APK Signature Scheme v2): false
+Number of signers
+
+具体可以参考：https://developer.android.com/studio/command-line/apksigner.html#usage
+```
+
+## [FAQ20246] [EM]N版本User-Load工模中没有以往的功能项
+
+```
+从M1.MP3 branch开始（包含N0 N1 branch），对于User Load，出于系统安全或功能必要性的考虑，有些测试功能在工模UI上已移除入口。如确实有需要，可以按照SOLUTION的流程打开。
+以打开User Load工模中Hardware Testing页面的Power项为例：
+
+1.根据工模UI上显示的英文字符串，在以下文件中找到对应的name.
+/vendor/mediatek/proprietary/packages/apps/EngineerMode/res/values/strings.xml
+例如： <string name="power">Power</string>
+
+2.根据1中找到的name，在以下文件找到对应Preference的key.
+/vendor/mediatek/proprietary/packages/apps/EngineerMode/res/xml/telephony.xml
+/vendor/mediatek/proprietary/packages/apps/EngineerMode/res/xml/connectivity.xml
+/vendor/mediatek/proprietary/packages/apps/EngineerMode/res/xml/hardware_testing.xml
+/vendor/mediatek/proprietary/packages/apps/EngineerMode/res/xml/location.xml
+/vendor/mediatek/proprietary/packages/apps/EngineerMode/res/xml/log_and_debugging.xml
+/vendor/mediatek/proprietary/packages/apps/EngineerMode/res/xml/others.xml
+例如：Hardware Testing页面对应hardware_testing.xml文件，在该文件可以找到：
+<Preference android:key="power" android:title="@string/power"
+
+3.根据2的key，在以下文件的 removeUnsupportedItems()函数的if ( FeatureSupport.isUserLoad())代码块中，注释对应的removePreference即可.
+/vendor/mediatek/proprietary/packages/apps/EngineerMode/src/com/mediatek/engineermode/PrefsFragment.java
+例如：removePreference(screen, "power"); 改成 //removePreference(screen, "power");
+
+PS:更加快捷的做法是，由于Preference的key值一般和工模UI显示的字串相像，于是一般可以跳到第三步直接注释代码。
+但是按照1.2.3步走下来必不会出错。
+```
+
+## [FAQ20255] [Recovery mode][Android N1]Recovery mode不进行任何操作，无法pull cache/recovery/last_log
+
+```
+遇到以下场景：
+
+1、按键进入recovery mode；不做任何操作。
+2、adb reboot recovery；不做任何操作。
+3、其他显示调用reboot recovery mode，但没有实质性的操作需求。
+
+如果再次reboot 到normal mode，执行如下操作会报错：
+
+adb shell pull cache/recovery/last_log
+/system/bin/sh: pull: not found
+
+/cache/recovery # ls -al
+total 32
+drwxrwx--- 2 system cache 4096 2010-01-04 03:44 .
+drwxrwx--- 7 system cache 4096 2010-01-01 00:04 ..
+-rw------- 1 root root 5 2010-01-04 03:47 last_locale
+No last_log
+[SOLUTION]
+这是Google原生的做法，如果比较介意，可以通过修改如下code:
+/bootable/recovery/recovery.cpp
+bool modified_flash = false; // 改成 true
+```
+
+## [FAQ20213] how to find which progress switch on/off the wifi
+
+```
+Many times ,we will meet this problem ,the wifi was disabled or enabled  without the user swith the switcher ;
+so next ,i will introduce the way which will be used to  find the  real "operator"?
+from log ,
+main_log ,search the key log :setwifistate
+Line 25438: 04-25 14:35:26.382642 892 954 D WifiStateMachine: setWifiState: disabling
+Line 26117: 04-25 14:35:26.793326 892 954 D WifiStateMachine: setWifiState: disabled
+Line 26650: 04-25 14:35:29.152201 892 954 D WifiStateMachine: setWifiState: enabling
+Line 26854: 04-25 14:35:29.432136 892 954 D WifiStateMachine: setWifiState: enabled
+sys_log,search the key log :setwifienabled
+Line 22510: 04-25 14:35:26.312304 892 906 D WifiService: setWifiEnabled: false pid=6102, uid=10081
+Line 23459: 04-25 14:35:27.253092 892 1572 D WifiService: setWifiEnabled: true pid=6102, uid=10081
+ok,next step is to find the pid = 6102 uid = 10081 maps who?
+
+event_log ,search the key log :6102;
+04-25 11:25:08.720815   892   907 I am_pss  : [6102,10081,com.cshare.transfer,132882432,109949952]
+
+it means is the app whose packect name is com.cshare.transfer turn on/off the wifi ;
+
+ps:
+a progress only has one UID ,but a UID maybe correspond to many progress ;
+PID is the progress ID,every progress's pid is different;
+TID is the thread ID ,a progress include many thread;
+
+so if only want to find the progress ,we can use PID;
+if we need find the TID ,we need conbine the PID with TID;
+if we want to find the user group,we can use UID;
+```
+
+## [FAQ20206] 如何使用adb command来设置cpu频率和核数
+
+```
+透過ADB Shell設定CPU開核與freq的command與用法如下:
+# Disable PPM
+echo 0 > /proc/ppm/enabled
+# Enable PPM (Default)
+echo 1 > /proc/ppm/enabled
+echo 0 > /proc/ppm/enabled
+Fixed # Core for each cluster
+echo X Y > /proc/ppm/policy/ut_fix_core_num Where,
+X = -1, 0 ~ 4. Core# for cluster 0
+Y = -1, 0 ~ 4. Core# fot cluster 1
+echo 4 4 > /proc/ppm/policy/ut_fix_core_num
+
+Fixed OPP for each cluster
+echo X Y > /proc/ppm/policy/ut_fix_freq_idx Where,
+X = -1, 0 ~ 15. OPP for cluster 0
+Y = -1, 0 ~ 15. OPP for cluster 1
+echo 1 2 > /proc/ppm/policy/ut_fix_freq_idx
+範例:
+echo 1 > /proc/ppm/enabled
+echo 4 4 2 > /proc/ppm/policy/ut_fix_core_num   <= 開4小核 4大核 2最大核
+echo 0 0 0 > /proc/ppm/policy/ut_fix_freq_idx    <小核用最高頻，大核用最高頻，最大核用最高頻
+
+可以先從CPU最高效能全開來測試，然後逐步調降適當的設定
+建議可以安裝附件的PerMon的APK，可以即時顯示CPU 的核數與freq在畫面上
+可以用來確認CPU設定是否生效
+若有確定較好的設定，就可以修改custom folder的設定
+```
+
+## [FAQ20189] 如何关闭手机防盗
+
+```
+
+PPL（手机防盗）是我司为满足出货中国大陆的手机pass CTA安全等级能力测试开发的。
+出货海外的项目不需要这个apk的，可以直接拿掉。
+
+拿掉方法：
+1. 关闭MTK_PRIVACY_PROTECTION_LOCK
+2. init.rc中拿掉ppl_agent的启动
+
+service PPLAgent /vendor/bin/ppl_agent
+    class main
+    user root
+    group system cache
+```
+
+## N平台预置apk,无法打开
+
+```
+aaltool apk 点击打开失败；打印类似log；
+
+01-01 02:20:55.889 3100 3100 D DropBoxReport: java.lang.UnsatisfiedLinkError: dlopen failed: library "libaal.so" not found
+
+且在/system/vendor/lib/以及/system/vendor/lib64/下都有libaal.so
+
+[SOLUTION]
+Android N 之后, third party app 会被限定不能使用非AOSP library (ex: libaal)
+需用 eng load, push license file暫時打開權限
+
+1、build aaltool 时，build出来的libaaltool_jni.so push到手机/system/vendor/lib 和 /system/vendor/lib64 下；
+
+2、新建public.libraries.txt，内容如下：
+libc++.so
+libaal.so
+libaaltool_jni.so
+libbinder.so
+libutils.so
+libdpframework.so
+libandroid_runtime.so
+
+3、push public.libraries.txt到手机 /vendor/etc/目录，重启之后就可以正常使用；
+adb push public.libraries.txt /vendor/etc/
+```
+
+## [monkey] [FAQ20170] MTBF或monkey test中ArrayList/CopyOnWriteArrayList发生ArrayIndexOutOfBoundsException如何解决？
+
+```
+发生ArrayIndexOutOfBoundsException是直接使用了get()的原因。
+CopyOnWriteArrayList是ArrayList的一个线程安全变体，但CopyOnWriteArrayList的写操作是安全的，而读操作是不安全的，很可能在其他线程中已经将某个index值读走或者删除了。
+
+针对此问题的解法：
+解法一：可将该问题反馈至google，请google帮忙修改此问题
+解法二：使用迭代器来进行遍历来规避此问题
+
+下面是推荐的修改方法：
+// change begin
+// NOTE: because of the use of CopyOnWriteArrayList, we *must* use an iterator to
+// perform the dispatching. The iterator is a safe guard against listeners that
+// could mutate the list by calling the various add/remove methods. This prevents
+// the array from being modified while we iterate it.
+[SOLUTION]
+private void handleScreenTurnedOn() {
+    final int count = mCallbacks.size();
+    for (int i = 0 ; i < count; i++) {
+        KeyguardUpdateMonitorCallback cb = mCallback.get().get();
+        if (cb != null) {
+            cb.onScreenTurnedOn();
+        }
+    }
+}
+
+上面的用法可以改为如下用iterator遍历的方式
+
+private void handleScreenTurnedOn() {
+    if (mCallbacks != null && mCallbacks.size() > 0) {
+        for (WeakReference<KeyguardUpdateMonitorCallback> cb : mCallbacks) {
+            if (cb != null && cb.get() != null) {
+                cb.get().onScreenTurnedOn();
+            }
+        }
+    }
+}
+
+上面只是列举了一个Keyguard的例子，android整个代码范围还有很多这种case
+因为这些都是google design，而且涉及到的面很广，所以不便于在代码里面一个一个这样的做修改。
+目前采取的措施是：在遇到这种数组访问越界的地方，按照上述的修改思想做改动，平台代码这边不会release正式patch
+```
+
+## [FAQ20175] MTBF或monkey test中发生java.lang.IllegalArgumentException: pointerIndex out of range如何解决？
+
+```
+在test过程中，经常会碰到如下Java Exception：java.lang.IllegalArgumentException: pointerIndex out of range
+这是因为在多点触控操作下，在获取底层的pointer index的时候发生了异常导致返回值为-1
+详细log如下所示
+ 
+ 
+这是google code没有考虑到获取到的index为非法值导致的JE，因此在java层做法是加上一个判断，避免发生JE
+ 
+[SOLUTION]
+解法办法是：找到发生JE的文件，在处理touch event的地方，加上判断
+```
+
+## 如何关闭SIM热插拔功能
+
+```
+关闭SIM热插拔功能需在ap和modem端操作如下：
+1. AP端：在projectConfig.mk中将MTK_SIM_HOT_SWAP设置为no即可.
+2. modem端：makefile中设置SIM_HOT_SWAP = NONE
+```
+
+## [SIM ME lock][FAQ09894] [SIM_ME_LOCK]在锁卡时如何只锁MCC(移动国家码)
+
+```
+根据 MNC 的情况，有两种处理方式：
+【方法一】
+一个国家一般只有有限几个MCCMNC，比如国内中国移动，中国联通与中国电信三家运营商一共有：46000，46001，46002，46003，46005，46006，46007
+我们在锁卡配置时将以上7个MCCMNC 全部配置，就相当于我们锁了MCC 460 的卡。
+所以如果客户有这种要求，请要求他们提供该国家MCC下所有MNC，然后全部配置即可。注意，在smart phone 上默认最多锁 10 组MCCMNC，如果超出此个数，请参考： [FAQ14236]
+锁卡配置完成后，请一定 new 编译并全擦下载测试，否则可能会导致死机或者配置不生效。
+
+【方法二】
+如果只有 MCC，不确定MNC,  可以只配置MCC，并修改 sml_Check 比较部分的代码；只要比较3位，代码修改为下面即可；
+1） 在 sml_Check 中修改只比较前3 位；
+修改后(添加红色部分代码)：
+for (idx = 0; idx < meta->num; idx++) {
+    offset = idx * size_of_cat;
+    code_len = sml_GetCode(cat, imsi, gid1, gid2, sim_mnc_len, (pdata+offset), code);
+    kal_prompt_trace(MOD_SMU, "[LOCK MCC]: code[0]=%x,code[1]=%x, (*(pdata+offset))=%x, (*(pdata+offset+1))=%x", code[0],code[1],(*(pdata+offset)),(*(pdata+offset+1)));
+    if (size_of_cat == code_len) {
+        /* Just lock MCC, e.g.  MCC:460,  MCCMNC=0x46, 0x0F,0xFF */
+        /* if ((source == 1) && (cat == SML_CAT_N) && (((*(pdata+offset+1)) & 0x0F) == 0x0F))  */ /*If have slot 0 and slot 1, just lock slot 1*/
+
+        if ((cat == SML_CAT_N) && (((*(pdata+offset+1)) & 0x0F) == 0x0F)) { 
+            /*code is from SIM, pdata is from NVRAM, just compare 3 number */
+            if ((code[0]==(*(pdata+offset))) && ((code[1]& 0xF0)==((*(pdata+offset+1))& 0xF0))) {
+                kal_prompt_trace(MOD_SMU, "[LOCK MCC]: return true.");
+                result = KAL_TRUE;
+                break;
+            }
+        } else if (kal_mem_cmp(code, (pdata+offset), code_len)==0) {
+               kal_prompt_trace(MOD_SMU, "[LOCK common]: return true.");
+               result = KAL_TRUE;
+               break;
+        }
+    }
+}
+
+修改前：
+for (idx = 0; idx < meta->num; idx++) {
+    offset = idx * size_of_cat;
+    code_len = sml_GetCode(cat, imsi, gid1, gid2, sim_mnc_len, (pdata+offset), code);
+    if (size_of_cat == code_len) {
+        if (kal_mem_cmp(code, (pdata+offset), code_len)==0) {
+            result = KAL_TRUE;
+            break;
+        }
+    }
+}
+
+2）NVRAM_EF_SML_DEFAULT 中按照正常锁卡参数步骤配置
+2.1 set lock state
+要配置 SML_CAT_N；
+2.2 set lock key
+2.3 set lock code
+对于只锁 MCC的code，MNC需要设置为 FFF
+下面是code 部分举例：
+/* Category N code */
+{0x71,0x6F,0xFF, /*716*/
+0x46,0x00,0x2F, /*46002*/ 
+如果验证有任何疑问，需要在修改的代码前后各分支都加trace，同时把 code[0], code[1], (*(pdata+offset))), (*(pdata+offset+1)))  的值都打印出来，分析执行情况与预期的差异。
+```
+
+## [FAQ13063] [Bluetooth] [AT Command]如何在手机端显示蓝牙耳机电量
+
+```
+在 HeadsetStateMachine.java 文件中 processUnknownAt 方法中添加对此AT命令的处理函数
+实现此AT命令的处理函数 processAtIphoneaccev(),并在此函数中对此AT命令的参数做解析，并按照电池电量的参数来发出Notification更新状态栏的电量图片信息即可。UI显示部分需自己实现。
+在此AT命令处理函数中发出Notification即可在状态栏显示蓝牙耳机电量
+```
+
+## [FAQ14885] 在文件管理器中无法分享rar压缩包
+
+```
+在default情况下，Android无法通过蓝牙发送、接收rar文件。(可能是因为没有自带解压工具的原因)
+如果需要实现收发rar文件，可依据下面方法进行修改 。
+
+1.
+packages/apps/Bluetooth/AndroidManifest.xml 的 activity android:name=".opp.BluetoothOppLauncherActivity"
+的android.intent.action.SEND以及android.intent.action.SEND_MULTIPLE中分别加入了
+<data android:mimeType="application/rar" />
+
+2.
+packages/apps/Bluetooth/src/com/android/bluetooth/opp/Constants.java
+public static final String[] ACCEPTABLE_SHARE_INBOUND_TYPES = new String[]里
+添加了"application/rar"
+```
+
+## [FAQ12229] [Bluetooth][Settings]已配对蓝牙设备重命名，重新配对名字不更新
+
+```
+测试机蓝牙名称A5QP,辅助机蓝牙名称T650w，第一次配对成功后，再取消配对，修改辅助机的蓝牙名称为12345，此时再次配对，发现测试机显示配对T650W成功，而不是配对12345成功。
+修改\packages\apps\Bluetooth\src\com\android\bluetooth\btservice\RemoteDevices.java文件：
+添加1条语句，位置如下：
+void devicePropertyChangedCallback(byte[] address, int[] types, byte[][] values) {
+    switch (type) {
+        case AbstractionLayer.BT_PROPERTY_BDNAME:
+            device.mName = new String(val);
+            device.mAlias = device.mName;        //added MTK
+            intent = new Intent(BluetoothDevice.ACTION_NAME_CHANGED);
+            ......
+            break;
+        case AbstractionLayer.BT_PROPERTY_REMOTE_FRIENDLY_NAME:
+            break;
+    ｝
+｝
+```
+
+## [FAQ17562] 调用图片或视频文件时没有缩略图显示的原因和解决办法
+
+```
+设置墙纸、编辑邮件或者信息时调用图片或视频文件，最近显示的图片或视频没有缩略图显示，
+在选择界面按右上角的选项设置成网格视图，也没有缩略图显示，如下面两幅图所示：
+
+DocumentsUI中没有显示缩略图的原因，需要checkro.config.low_ram这个属性是否为true？
+ 
+用adb shell getprop ro.config.low_ram 即可查看
+相关代码在如下位置：
+/frameworks/base/packages/DocumentsUI/src/com/android/documentsui/dirlist/DirectoryFragment.java
+boolean svelte = am.isLowRamDevice() && (mType == TYPE_RECENT_OPEN);
+mIconHelper.setThumbnailsEnabled(!svelte);
+
+am.isLowRamDevice()最终是调用到下面的方法去做做判断
+frameworks/base/core/java/android/app/ActivityManager.java
+public static boolean isLowRamDeviceStatic() {
+    return "true".equals(SystemProperties.get("ro.config.low_ram", "false"));
+}
+ 
+如果项目开启了GMO feature，则low_ram的property会被设为true
+如何check是否有打开GMO feature？
+=>请参考ID: FAQ15139  如何确认项目是否打开GMO feature(LCA)？
+
+若GMO enable，则不显示缩略图为正常现象，这是GMO为了节省memory使用而做的调整，不是一个显示异常的问题。
+
+若GMO disable，却还是不显示缩略图，则需先排查需要通过DocumentsUI来打开图片或视频文件的那个app给这些文件所带的类型，是否有缩略图；
+若app(如Gallery)那边就没有，则需app那边先排查，若app里面显示缩略图正常，则需DocumentsUI这边去分析为何不显示缩略图的原因。
+
+何为GMO？要enable还是disable GMO？
+关于GMO feature要enable还是disable，是根据项目的RAM/ROM等配置来定，在项目开案的时候，CPM就会宣导GMO feature相关的信息。
+若不确定是否要enable或disale GMO feature，以及如何enable和disable的设置方法，都可以咨询CPM，他们会有文档指导如何操作。
+```
+
+## [FAQ20133] VoWifi连接之后，通知栏显示名称客制化
+
+```
+需要将com.mediatek.ims修改为运营商名称。 
+ 
+通知里面这个地方的值是由字段"android.substName"来决定，如果没有的话，就使用发送通知的Package的名称。
+另外要注意的是，如果设置这个字段，要求发送该通知的应用拥有对应的权限（android.permission.SUBSTITUTE_NOTIFICATION_APP_NAME）。
+ 
+如下修改方法验证可行：
+ 1. ImsNotificationController.java中所有发送通知的地方，都需要加入extras的参数，也就是下面添加了注释的地方，参考如下：
+/vendor/mediatek/proprietary/packages/services/Ims/src/com/mediatek/ims/ImsNotificationController.java
+final Bundle extras = new Bundle();//mtk add
+extras.putString("android.substName", "运营商名称");//mtk add
+Notification noti = new Notification.Builder(mContext)
+.setContentTitle(wfcText)
+.setContentText(mContext.getResources()
+.getString(R.string.wfc_notification_summary))
+.setSmallIcon(wfcIcon)
+.setTicker(wfcText)
+.setOngoing(true)
+.addExtras(extras)//mtk add
+.build();
+
+2. 添加权限：
+/vendor/mediatek/proprietary/packages/services/Ims/AndroidManifest.xml添加如下权限：
+<uses-permission android:name="android.permission.SUBSTITUTE_NOTIFICATION_APP_NAME" />
+```
+
+## [FAQ20153] 当下载数量多于3个，状态栏下载图标会合并成一个显示
+
+```
+1. 打开Chrome/Browser
+2.下载任意图片，视频或 apk
+3. 点击Link下载文件,连续下载3个文件后，在下载第4个文件时，状态栏下载图标会合并成一个显示
+ 
+这个就是google的design
+在N上google有新增notification group，第三方APP可以用setGroup去将notification设定到一个group；如果第三方APP没有设定group，那么google design会自动将4个相同的notification设定为一个group，所以会发生此问题
+
+如果这题要修改，那么可以尝试修改frameworks/base/packages/ExtServices/src/android/ext/services/notification/Ranker.java
+这个source code file里的private static final int AUTOBUNDLE_AT_COUNT = 4;就是自动group的number
+
+具体的做判断的地方是在public void onNotificationPosted(StatusBarNotification sbn) 方法中：
+if (notificationsForPackage.size() >= AUTOBUNDLE_AT_COUNT) {
+    for (String key : notificationsForPackage) {
+        notificationsToBundle.add(key);
+    }
+}
+建议不修改这个design，因为这个design会直接影响到所有第三方APP
+```
+
+## [FAQ11908] [FSA]进入图库编辑图片保存后，去掉原有图片被覆盖的方法
+
+## [FAQ09895] [SAT]怎么实现没插卡时launcher中不显示STK icon
+
+## [FAQ11770] [USB] MTK USB问题宝典
+
+## [FAQ20147] how to update wifi firmware?
+
+## [FAQ20366] 使用Android Studio debug Framework代码
+
+## [FAQ04306] 如何通过 Eclipse 远端调试framework和APK？
+
+## [FAQ19267] wifi: 连接网络时提示“已连接无法访问互联网”几秒钟后消失
+
+## [FAQ14409] [SIM]SIM卡默认名称客制化
+
+## [FAQ20546] android O定时开关机说明
+
 ## [FAQ20603] [Framework-VPN]设置Always-on VPN 如何保存
 
 ## [FAQ20612] [Android O Build]如何正确的添加环境变量
@@ -9565,7 +10146,13 @@ ap侧使用时需要定义长度为2的string数组；
 
 ## efuse????
 
-## [FAQ04306] 如何通过 Eclipse 远端调试framework和APK？
+## WAPI 是什么？？？
+
+## 如何读取和修改 SIM 卡里的文件？？
+
+## 如何自定义状态栏上的图标？？就像KIKA输入法那样？？
+
+## 如何自定义AT命令？？？怎么发送？？怎么接收处理？？
 
 ## [FAQ20977] 如何配置VoLTE, ViLTE and VoWifi(IMS config for VoLTE, ViLTE and VoWifi)
 
@@ -9616,6 +10203,8 @@ ap侧使用时需要定义长度为2的string数组；
 ## SystemProperties的模板类
 
 ## 反射模板
+
+## [FAQ14252] MT6735/35M/35P/53/53T软件包使用说明(L1.MP3&L1.MP3.TC7SP&M0.MP1适用)
 
 
 FAQ看到了38页
