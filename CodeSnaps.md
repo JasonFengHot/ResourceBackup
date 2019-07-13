@@ -10092,6 +10092,611 @@ if (notificationsForPackage.size() >= AUTOBUNDLE_AT_COUNT) {
 建议不修改这个design，因为这个design会直接影响到所有第三方APP
 ```
 
+## [FAQ20045] 设置中的添加语言列表多出XA和XB两种语言
+
+```
+如果不希望在添加语言列表中看到这两种语言可以使用如下方式进行修改：
+方法一：
+（1）将/frameworks/base/core/res/res/values/locale_config.xml中的：
+<item>ar-XB</item> <!-- Right-to-left pseudolocale -->
+和
+<item>en-XA</item> <!-- Left-to-right pseudolocale -->
+移除掉。
+（2） /frameworks/base/core/java/com/android/internal/app/LocaleStore.java文件中，
+public static void fillCache(Context context)   函数的如下代码都去掉：
+/* for (String localeId : LocalePicker.getPseudoLocales()) {
+    LocaleInfo li = getLocaleInfo(Locale.forLanguageTag(localeId));
+    if (isInDeveloperMode) {
+        li.setTranslated(true);
+        li.mIsPseudo = true;
+        li.mSuggestionFlags |= LocaleInfo.SUGGESTION_TYPE_SIM;
+    } else {
+        sLocaleCache.remove(li.getId());
+    }
+}*/
+ 
+方法二：
+不需要修改locale_config.xml文件，只需按照如下方式修改代码。
+/frameworks/base/core/java/com/android/internal/app/LocaleStore.java文件中，
+public static void fillCache(Context context)函数按照如下方式对代码进行屏蔽：
+for (String localeId : LocalePicker.getPseudoLocales()) {
+LocaleInfo li = getLocaleInfo(Locale.forLanguageTag(localeId));
+/* if (isInDeveloperMode) {
+li.setTranslated(true);
+li.mIsPseudo = true;
+li.mSuggestionFlags |= LocaleInfo.SUGGESTION_TYPE_SIM;
+} else {*/
+sLocaleCache.remove(li.getId());
+// }
+}
+```
+
+## [FAQ19971] SystemUI的数据类型图标定制
+
+```
+客户需求：
+PS注册某一种类型的网络时，插入不同的SIM卡，激活数据连接，显示不同的图标类型。
+如，PS注册LTE网络的时候，插入一些运营商的SIM，状态栏和下拉快速设置栏显示“4G”,插入另一些运营商的SIM时，显示为“LTE”。
+
+以"PS注册LTE类型,插入SIM：73211,显示“4G” "举例：
+
+方案一：根据不同的mccmnc配置不同的config文件
+framework/base/packages/SystemUI/res/values-mcc732-mnc111/config.xml 里面配置“config_show4GForLTE”为true
+缺点：由于config配置文件是否被执行到，涉及到编译框架的问题，一旦不生效，很难排查
+
+方案二：
+/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/policy/MobileSignalController.java mapIconSets()方法：获取SIM卡的mccmnc, 使用mccmnc进行定制
+if (mConfig.show4gForLte) {
+    mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_LTE, TelephonyIcons.FOUR_G);//显示成“4G”
+} else {
+    mNetworkToIconLookup.put(TelephonyManager.NETWORK_TYPE_LTE, TelephonyIcons.LTE);//显示成“LTE”
+}
+
+注意:以上两种方案适用于M & N 平台
+```
+
+## [FAQ17869] 某些应用发送粉色背景的通知
+
+```
+有时用户能在手机上看到下图中粉色背景的通知。这种粉色背景的通知很少见，个别应用才会有。
+这种通知背景色是google default design.
+以下图为例，这是一条stk notification，在StkAppService.java中launchIdleText(int slotId)中调用NotificationManager.notify()发送。
+
+应用发送的通知其layout最终是引用framework模板：alps\frameworks\base\core\res\res\layout\status_bar_latest_event_content.xml 
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     android:id="@+id/status_bar_latest_event_content"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     android:background="#FFFF00FF"
+     ......
+这里默认的notification layout背景色FFFF00FF就是图中粉红色。
+如果App最终调用该模板且没有重新定制background颜色，通知就是粉红色背景。
+ 
+如果希望修改，不建议直接修改status_bar_latest_event_content.xml.
+可以找到发送粉色背景通知的应用，在发送时设置通知背景色：
+mPublicNotificationBuilder = new Notification.Builder(context).setColor(r.getColor(com.android.internal.R.color.system_notification_accent_color));
+```
+
+## [FAQ12707] 如何修改navigationbar上按键的显示顺序
+
+```
+N上的方案：
+在N上，由NavigationBarInflaterView负责NavigationBar的view生成。而下方按钮顺序是由config_navBarLayout来决定。
+默认顺序，从左往右为：back,home,recent。对应的配置值为：
+<string name="config_navBarLayout">space,back;home;recent,menu_ime</string>
+
+可以按照需求，修改这个顺序，比如下面的顺序就是home，back，recent
+<string name="config_navBarLayout">space,home;back;recent,menu_ime</string>
+
+M、L、K上的方案：
+Navigation bar的layout定义在Navigation_bar.xml (frameworks\base\packages\systemui\res\layout)下。
+三个虚拟按键被包含在android:orientation="horizontal"的LinearLayout中，按照定义顺序默认从左至右依次显示BACK, HOME, RECENT。如需改变三个按钮的排列顺序，只需调整他们在LinearLayout中的定义位置即可。
+```
+
+## [FAQ13787] [WallPaper]如何去掉系统所有的动态壁纸？
+
+```
+1、请将alps/device/mediatek/$project/ProjectConfig.mk中的
+MTK_LIVEWALLPAPER_APP = yes
+MTK_LIVE_PHOTO_SUPPORT = yes
+修改为
+MTK_LIVEWALLPAPER_APP = no
+MTK_LIVE_PHOTO_SUPPORT = no
+2、请查看：
+alps/device/mediatek/common/device.mk 
+alps/device/mediatek/$platform/device.mk 
+alps/device/mediatek/$project/device.mk
+alps/build/target/product/full_base.mk
+这四只文件中是否有以下code：
+PRODUCT_PACKAGES += LiveWallpapers
+PRODUCT_PACKAGES += LiveWallpapersPicker
+PRODUCT_PACKAGES += MagicSmokeWallpapers
+PRODUCT_PACKAGES += VisualizationWallpapers
+PRODUCT_PACKAGES += Galaxy4
+PRODUCT_PACKAGES += HoloSpiralWallpaper
+PRODUCT_PACKAGES += NoiseField
+PRODUCT_PACKAGES += PhaseBeam
+如果有的话，请全部删除。
+ 
+修改后，请先执行make clean ，然后再重新new整个project 。
+```
+
+## [FAQ13630] [WallPaper]如何替换系统的默认静态壁纸？
+
+```
+请用目标壁纸替换掉
+alps/frameworks/base/core/res/res目录下
+drawable-nodpi
+drawable-xhpi
+drawable-xxhdpi
+drawable-xxxhdpi
+这四个folder下面的 default_wallpaper。
+```
+
+## [FAQ19575] [WallPaper]第一次开机只设置主屏幕壁纸，锁屏壁纸也变成桌面壁纸
+
+```
+这是Android N的默认设计，具体请参考WallpaperManagerService的setWallpaper方法，如下：
+
+if (which == FLAG_SYSTEM && mLockWallpaperMap.get(userId) == null) {
+    migrateSystemToLockWallpaperLocked(userId);
+}
+```
+
+## [FAQ17634] 哪些类型的DRM文件可以设置为壁纸？
+
+```
+DRM文件中，只有FL类型的可以设置为壁纸
+```
+
+## [FAQ17560] [WallPaper]当前Storage Low时设置壁纸失败
+
+```
+这个是正常现象，WallpaperManagerService.java在设置壁纸时，会先去判断当前是否Storage Low，如果是就return，不会再去设置壁纸。
+```
+
+## [FAQ12506] [WallPaper]如何实现壁纸不随着workspace的滑动而滑动
+
+```
+在Workspace.java中把调用updateOffset的地方全部注释掉。
+```
+
+## [FAQ08968] [WallPaper]设置动态壁纸后，手机使用过程中恢复为默认静态壁纸
+
+## [FAQ10982] [WallPaper]如何内置多张静态壁纸（图片）到系统中
+
+## [FAQ10958] [WallPaper]系统WallPaper图片可以设置成屏幕大小的图吗？
+
+```
+系统默认的Wallpaper图片都是两倍屏宽，主要有2个目的：
+1. 壁纸可以随着Launcher Workspace的滑动而滑动；
+2. 屏幕横屏时，设置了show wallpaper flag的应用背景可以正常显示。
+ 
+如果将Wallpaper宽高修改为与屏幕宽高相同，就会造成如下隐患：
+1. Launcher Workspace的背景会被拉伸，表现不美观；
+2. 设置了show wallpaper flag的应用背景在横屏时显示不全（右边会显示黑屏，例如recent界面)。
+ 
+隐患1可以通过修改代码解决（下面的代码就是为了解决隐患1），隐患2也是存在的。因此不建议这样修改。
+N/M： 
+1. 请在WallpaperUtils.java的getDefaultWallpaperSize方法中，请找到如下代码：
+if (res.getConfiguration().smallestScreenWidthDp >= 720) {
+   defaultWidth = (int) (maxDim * wallpaperTravelToScreenWidthRatio(maxDim, minDim));
+   defaultHeight = maxDim;
+} else {
+   defaultWidth = Math.max((int) (minDim * WALLPAPER_SCREENS_SPAN), maxDim);
+   defaultHeight = maxDim;
+}
+请先确认代码走哪个分支（这与手机分辨率有关），然后把defaultWidth 和defaultHeight 改为屏幕宽高。修改方法如下（以else分支示例）：
+Point realSize = new Point();
+windowManager.getDefaultDisplay().getRealSize(realSize);
+if (isScreenLarge(res)) {
+    defaultWidth = (int) (maxDim * wallpaperTravelToScreenWidthRatio(maxDim, minDim));
+    defaultHeight = maxDim;
+} else {
+    defaultWidth = realSize.x;
+    defaultHeight = realSize.y;
+}
+KK/L：
+1. 请在WallpaperCropActivity.java的getDefaultWallpaperSize方法中，请找到如下代码：
+if (isScreenLarge(res)) {
+    defaultWidth = (int) (maxDim * wallpaperTravelToScreenWidthRatio(maxDim, minDim));
+    defaultHeight = maxDim;
+} else {
+    defaultWidth = Math.max((int) (minDim * WALLPAPER_SCREENS_SPAN), maxDim);
+    defaultHeight = maxDim;
+}
+请先确认代码走哪个分支（这与手机分辨率有关），然后把defaultWidth 和defaultHeight 改为屏幕宽高。修改方法如下（以else分支示例）：
+Point realSize = new Point();
+windowManager.getDefaultDisplay().getRealSize(realSize);
+if (isScreenLarge(res)) {
+    defaultWidth = (int) (maxDim * wallpaperTravelToScreenWidthRatio(maxDim, minDim));
+    defaultHeight = maxDim;
+} else {
+    defaultWidth = realSize.x;
+    defaultHeight = realSize.y;
+}
+
+2. 请找到WallpaperManagerService.java的loadSettingLocked方法，去掉如下代码
+
+if (wallpaper.width < baseSize) {
+    wallpaper.width == baseSize;
+}
+```
+
+## [FAQ04295] 如何客制化Launcher的主菜单图标？
+
+```
+在Launcher上，为了保持手机UI风格的统一，希望把用户自己安装的第三方apk图标或者系统预置的应用图标用特定的图标来显示，如何修改？
+1. 请修改AppInfo.java的构造函数，如下：
+public AppInfo(Context context, LauncherActivityInfoCompat info, UserHandleCompat user, IconCache iconCache) {
+    this.componentName = info.getComponentName();
+    this.container = ItemInfo.NO_ID;
+    flags = initFlags(info);
+    firstInstallTime = info.getFirstInstallTime();
+    iconCache.getTitleAndIcon(this, info, true /* useLowResIcon */);
+    //mtk add
+    if ( (info.getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_SYSTEM) != 0) {
+        this.iconBitmap=Bitmap.createBitmap(72, 72, Bitmap.Config.ARGB_8888);  // 具体方法可以自行决定，这里只是例子
+    }
+    //mtk add 
+    intent = makeLaunchIntent(context, info, user);
+    this.user = user;
+}
+
+2. 如果是用户安装的第三方app，请修改AllAppsList.java，修改updatePackage方法如下：
+
+AppInfo applicationInfo = findApplicationInfoLocked( info.getComponentName().getPackageName(), user, info.getComponentName().getClassName());
+if (applicationInfo == null) {
+    add(new AppInfo(context, info, user, mIconCache));
+} else {
+    mIconCache.getTitleAndIcon(applicationInfo, info, true /* useLowResIcon */);
+    //mtk add
+    在此处添加修改applicationInfo.iconBitmap的代码（同上）
+    //mtk add 
+    modified.add(applicationInfo);
+}
+
+3. 如果是系统预置的某个应用，请修改IconCache.java文件的cacheLocked方法，将
+
+entry.icon = Utilities.createBadgedIconBitmap(info.getIcon(mIconDpi), info.getUser(), mContext);
+修改为客制化的图标
+举例如下：
+if ("com.android.contacts".equals(componentName.getPackageName())) {
+    Drawable drawable = getFullResIcon(mContext.getResources(), R.drawable.ic_hw_allbackup);
+    entry.icon = Utilities.createBadgedIconBitmap(drawable, info.getUser(), mContext);
+} else {
+    entry.icon = Utilities.createBadgedIconBitmap(info.getIcon(mIconDpi), info.getUser(), mContext);
+}
+PS：72/72表示主菜单Icon的图标大小，color format是ARGB8888。这个设置默认把用户自己安装的apk Icon刷成黑色。createBitmap这个方法有多种重载方式，用户可以根据实际需求，通过方法参数（颜色/bitmap/图片资源id等）来构造自己的主菜单Icon风格。
+```
+
+## [FAQ19916] 状态栏显示条纹
+
+```
+这是google default的行为，google 原生机也可以复现
+有两个问题导致现在的问题，一是异常情况下MinimizedSockShoadow 被异常画出，而DividerHandleView未被画出，刚好与正常情况相反，二是因为转屏原有DividerView 动画并没有被执行
+同时fix这两个问题 都需要在google 原本flow修改比较多的地方。 涉及到google drag multi window divider控制multi window 大小以及DividerView 出现/消失动画流程。
+无法做简单修改就可以完成，之前类似的问题我们也尝试过修改，但是有遇到过修改后验证通过了，但是给到客户后，又出现其他比较隐蔽且难fix的问题。导致客户花费更多时间去理清后来的问题。
+对于比较复杂的修改，我们综合考虑建议不要去修改这部分的代码，主要是担心出现side effect，反而让客户遇到更多的麻烦
+```
+
+## [FAQ12143][DeskClock][RTL] 从LTR的系统语言切换为RTL的语言，时钟的Tab和内容不对应
+
+```
+操作步骤：
+1.  当前系统语言为中文(LTR),进时钟界面查看
+2.  更改系统语言为阿拉伯语(RTL)，进时钟界面查看
+实际结果：
+时钟tab和内容不对应，如tab显示的是闹钟，页面内容显示的是秒表
+ 
+请贵司找到DeskClock.java文件，将用到getRtlPosition(int position)这个方法的地方，全部替换成直接使用position即可解决问题。
+也就是说不需要调用 isRtl() 和 getRtlPosition()方法，直接用position就可以。
+```
+
+## [FAQ12998] Alarm Group功能介绍
+
+```
+这个功能主要是考虑到，在日常生活中，手机大部分处于灭屏的suspend状态，有一些应用会通过设置定时时钟的方式唤醒系统(screen仍然保持off)，这些app大多在灭屏状态下对唤醒的时间并不敏感。
+为了减少background application透过设置(非)周期性的alarm 来trigger手机wake-up(screen off的状态下)，将这些alarm重新排队到同一个时间发生，减少手机wakup的次数，延长app被唤醒的时间间隔，以达到省电的效果。
+目前该feature是binary release的，仅对第三方apk才会起效，而且需要在灭屏后手机sleep后的一段时间后才会起作用。
+测试条件：
+1、打开MTK_BG_POWER_SAVING_SUPPORT这个feature option
+2、打开 设置->电池->后台智能省电 选项。
+3、安装第三方apk情况下
+4、不连接USB/Charger
+5、灭屏后一段时间后才可以起效。
+
+测试时可以通过勾选和不勾选的情况下对比测试电流情况，看看是否有省电效果。
+请注意测试时不能连接usb/Charger，而且需要观察的是灭屏后一段时间后的电流效果。
+
+本功能在KK2之后的版本会有支持。
+```
+
+## [FAQ11651] 闹钟响铃时拔电池，重启手机后，闹钟再次提醒
+
+```
+这是正常现象。
+闹钟到时后，会设置为fired 状态，如果由于未知原因而stop了（如拔掉电池），会在下一次系统启动的时候判断自己是不是fired 状态，如果是，那么会再判断是不是已经timeout了（正常情况下，一个闹钟响一定时间后会自动missed掉），如果没有timeout ，那么就启动自己，如果已经timeout了，那么就不会再起了。
+如果贵司觉得上述行为不是很好的话，可以自行修改AlarmStateManager.java文件中的 registerInstance 这个方法里面最前面的第二个 if 判断，将
+ if(instance.mAlarmState == AlarmInstance.FIRED_STATE) 这个判断以及里面的内容注释掉。
+鉴于目前设计有更好的用户体验，我司建议保持原始设计。
+```
+
+## [FAQ14939] 情景模式设置为静音模式，如何修改让闹钟仍然有声音
+
+```
+我司遵循google default design,当情景模式里的打扰为“禁止打扰”时，闹钟响铃不会有铃声和震动；当情景模式为静音时，打扰功能就是设置为“禁止打扰”的，因此闹钟是静音。
+若贵司一定要改，可以参考以下解法：
+DefaultZenModeHelperExt.java
+@PluginImpl(interfaceName = "com.mediatek.common.notification.IZenModeHelperExt")
+public class DefaultZenModeHelperExt implements IZenModeHelperExt {
+   private static final String TAG = "DefaultZenModeHelperExt";
+   @Override
+   public boolean customizeMuteAlarm(boolean muteAlarm) {
+       Log.d(TAG, "customizeMuteAlarm, muteAlarm = " + muteAlarm);
+       muteAlarm = false; //add
+       Log.d(TAG, "customizeMuteAlarm, muteAlarm = " + muteAlarm);
+       return muteAlarm;
+   }
+}
+```
+
+## [FAQ14094] 进入deskclock，background颜色发生变化
+
+```
+这个是google L之后的新design，会根据当前的时间来显示不同的background，可以提升用户体验。
+例如很晚的时候就是深色（从蓝色->暗色），比较中午的时候蓝色和进入的颜色一样.
+
+具体的代码：
+DeskClock.java # mBackgroundColorChanger # setBackgroundColor().
+
+会对24小时配置24种色彩，然后设置一个起始颜色，设置一个渐变动画切换到对应时间点的。
+如果要修改BACKGROUND_SPECTRUM[hourOfDay]可以采用一种配色。
+```
+
+## [FAQ10862] 如何抓取关机闹钟（Poweroff Alarm）相关log?
+
+## [FAQ04293] 如何预置桌面上的应用程序图标、快捷方式图标、窗口小部件或者文件夹？
+
+## [FAQ18449] Launcher主菜单图标从模糊变清晰
+
+```
+Launcher开机启动或者因为某些原因重启时，进入主菜单，主菜单图标会从模糊变清晰。 
+
+这是Launcher的默认设计，第一次加载主菜单图标时，会先去decode一张low resource icon，然后再解析清晰的图片。
+如果不想要这个效果，请按照以下修改：
+1、修改AllAppsList.java的updatePackage方法为如下：
+// Find enabled activities and add them to the adapter
+// Also updates existing activities with new labels/icons
+for (final LauncherActivityInfoCompat info : matches) {
+    AppInfo applicationInfo = findApplicationInfoLocked(
+        info.getComponentName().getPackageName(), user,
+        info.getComponentName().getClassName());
+    if (applicationInfo == null) {
+        add(new AppInfo(context, info, user, mIconCache));
+    } else {
+        mIconCache.getTitleAndIcon(applicationInfo, info, false /* useLowResIcon */);//mtk modify
+        modified.add(applicationInfo);
+    }
+}
+
+2、修改AppInfo.java：
+public AppInfo(Context context, LauncherActivityInfoCompat info, UserHandleCompat user, IconCache iconCache) {
+    this.componentName = info.getComponentName();
+    this.container = ItemInfo.NO_ID;
+    flags = initFlags(info);
+    firstInstallTime = info.getFirstInstallTime();
+    iconCache.getTitleAndIcon(this, info, false /* useLowResIcon */);//mtk modify
+    intent = makeLaunchIntent(context, info, user);
+    this.user = user;
+}
+```
+
+## [FAQ18346] 如何减小桌面的空白区域？
+
+```
+参考“FAQ04350 如何去除Launcher默认的google search bar？”去掉google search bar后，发现桌面上面的空白区域比较大（即下图红框框出来的区域）。要如何修改才能减少空白区域？
+
+请调整DeviceProfile.java的layout(Launcher launcher)方法中Workspace的位置，尽量往上调，即修改如下的代码：
+ 
+// Layout the workspace
+PagedView workspace = (PagedView) launcher.findViewById(R.id.workspace);
+lp = (FrameLayout.LayoutParams) workspace.getLayoutParams();
+lp.gravity = Gravity.CENTER;
+Rect padding = getWorkspacePadding(isLayoutRtl);
+workspace.setLayoutParams(lp);
+workspace.setPadding(padding.left, padding.top, padding.right, padding.bottom);
+workspace.setPageSpacing(getWorkspacePageSpacing(isLayoutRtl));
+```
+
+## [FAQ13194] 如何去掉Home Sample？
+
+```
+用户要求去掉Launcher3，只使用第三方桌面。但是在去掉Launcher3后系统会多出Home Sample的桌面,请问如何去掉 Home Sample？ 
+请将alps/build/target/product/core_base.mk中PRODUCT_PACKAGES 这个tag下面的Home项去掉即可。
+```
+
+## [FAQ19430] Launcher是否支持unread feature？
+
+```
+M之前，Launcher支持unread feature。默认只支持电话、短信、邮件、日历，三方App无法支持。
+N之后，Unread Feature phase out。
+如果您需要此Feature，请自行从M版Merge这个feature，MTK不再支持。因为此feature不仅要Launcher支持，还要Settings/Apps的支持。
+```
+
+## [FAQ14512] Launcher3如何让快捷方式默认创建在第一屏？
+
+```
+Launcher3在收到广播:com.android.launcher.action.INSTALL_SHORTCUT后，会自动在桌面上创建快捷方式，默认会创建在第二屏。如果让快捷方式默认创建在第一屏？ 
+N/M:
+请修改LauncherModel.java的findSpaceForItem方法，将如下代码：
+int preferredScreenIndex = workspaceScreens.isEmpty() ? 0 : 1;
+
+修改为：
+int preferredScreenIndex=0;
+
+L:
+请修改LauncherModel.java的addAndBindAddedWorkspaceApps方法，将如下代码：
+int startSearchPageIndex = workspaceScreens.isEmpty() ? 0 : 1;
+
+修改为：
+int startSearchPageIndex = 0;
+```
+
+## [FAQ11441] Launcher3中主菜单的布局如何调整(譬如从5*4调整为4*4)?
+
+```
+Launcher3中主菜单的布局如何调整(譬如从5*4调整为4*4)?
+N/M:
+M版本以后主菜单使用的是RecyclerView，类似于ListView的控件，不支持调整布局。
+L:
+Launcher3主菜单布局的行数和列数，都是在DynamicGrid.java中动态计算的，xml中无法配置。
+如果想修改主菜单的布局，调整行数和列数，请修改DynamicGrid.java中allAppsNumRows和allAppsNumCols的值。
+```
+
+## [FAQ08349] 如果Launcher支持横屏显示，如何避免Launcher重新创建？
+
+```
+如果Launcher可以横屏显示，开机时有时会创建两次。有时用户从横屏应用退出回到Launcher时，Launcher也会重新创建。如何避免Launcher重新创建？
+[SOLUTION]
+请修改Launcher的AndroidManifest.xml，对Launcher这个Activity添加android:configChanges属性，在这个属性中设置Launcher感兴趣的config变化(例如orientation)。
+
+关于android:configChanges，请参考：
+http://developer.android.com/guide/topics/manifest/activity-element.html#config
+```
+
+## [FAQ19891] 软件包对于32位和64位的支持情况
+
+```
+请打开软件包对应的ReleaseNote_for_MT6***_alps-mp-**.mp*.xlsx，找到Project_Package_Set_M6***这个sheet，查看右上角的Naming rule change。
+Project Naming rule: [MTKomer name][chip]_number1number2_M
+*Number is meaning in project name
+First number means 64 bit SW
+Second number means 6M / 5M / 4M / 3M SW
+*In 6/5M package set
+T means CMCC/TDD(OP01) project
+U means CU    /FDD (OP02) project
+*Bring "C" to identify that it's C2k/CT(OP09) project
+*Bring "G" to identify that it's GMO project
+*Bring "WW" to identify that it's WWOP project
+/device/mediatek/k35v1_64_tee_vdo/即代表是64bit
+64位和32位project不能自行切换，需要和敝司申请对应的project。
+```
+
+## [FAQ19897] how to modify the maximum connections of hotspot from frameworks?
+
+```
+In general,hotspot's maximam connection is limited by hardware,so if you want to modify the number,must to make sure the performance of hardware is enough;
+
+packages/apps/Settings/res_ext/values/mtk_arrays.xml
+<string-array name="wifi_ap_max_connection_entries">
+    <item>1 user</item>
+    <item>2 users</item>
+    <item>3 users</item>
+    <item>4 users</item>
+    <item>5 users</item>
+    <item>6 users</item>
+    <item>7 users</item>
+    <item>8 users</item>
+    //add to ten 
+    <item>9 users</item>
+    <item>10 users</item>
+    //add
+</string-array>
+so you can choose "10 users " when you setup hotspot;
+```
+
+## [FAQ11383] [others]手动关闭factory mode
+
+```
+为了防止end users在使用手机的过程中由于误操作进入factory mode,需要关闭factory mode.但是在产线流程中factory mode test又是必须存在的，这种情况下，就需要有一个打开或者关闭factory mode的“开关”存在，能够自由的控制factory mode。以72为例，介绍用pro_info来存储这个“开关”标记，这样既可以在LK/Uboot中访问这个标记，同时在上层APK中可以通过nvram的接口来读写设置这个标记。
+
+1.客制化一个nvram item，请参考《customization inNvRAM.ppt》
+注意事项_1：
+a) 如平台使用的是【eMMC】，新LID对应struct的size必须是512 byte的倍数；
+b) 如平台使用的是【NAND】，新LID对应struct的size必须是page size对齐（即4K或2K）。
+
+2.客制化pro_info，请参考《Customization in NvRAM Product Info feature.pptx》
+注意事项_2：
+a) 如平台使用的是【eMMC】，g_new_nvram_lid[]里面新LID的size必须要128K对齐；
+b) 如平台使用的是【NAND】， g_new_nvram_lid[]里面新LID的size必须要blocksize对齐（4K pagesize对应的是256K，2K pagesize对应的是128K）。
+
+3.上层APK读写设置factory mode关闭的标记,请参考FAQ ：FAQ04542
+4.lk中读取factory mode设置的标记.
+1）-in alps\mediatek\platform\mt6572\lk\factory.c  factory_detection()中判断factory_check_key_trigger()之前添加一个if判断，读取flag为1，返回false
+```
+
+## [FAQ11384] [SW相关]设置3个组合键进入factory mode
+
+```
+为了减少end users在使用手机的过程中由于误操作进入factory mode的几率，增加了1个键，让客户进入factory mode需要同时按下3个组合键（Power Key+VolumDown+物理按键）。
+
+1.在apls\mediatek\platform\mt65xx\lk\factory.c中的factory_check_key_trigger函数中修改
+if(mtk_detect_key(MT65XX_FACTORY_KEY)&&mtk_detect_key(MT65XX_FACTORY_KEY2))
+2.在cust_key.h中加入#define MTK65XX_FACTORY_KEY2 XX（参照MTK65XX_FACTORY_KEY定义对应的key）
+3.第2步添加的MTK65XX_FACTORY_KEY2的值必须是在Cust_kpd.h中KPD_INIT_KEYMAP中已定义的物理按键的数值。
+```
+
+## [FAQ18526] [SAT]使用过程中，欢迎语突然又弹出来，是否正常？
+
+```
+在Flight mode/掉卡/SIM Switch/World Mode/World Phone切换都有可能会导致欢迎语弹出两次，
+因为有重新给卡初始化的动作，
+除了掉卡问题，需要driver同仁解决，
+其他都是正常的，
+因为这些情况下都会导致SIM卡重新上电，重新上电的话，手机就一定要再发一次terminal profile给卡，告知卡手机支持哪些SAT命令，从而会触发卡新上报欢迎语。
+ 
+有些客户可能会考虑在界面上屏蔽这次欢迎语的上报，这样是不妥当的，因为有些卡是不会上报欢迎语的，第一条上报的display text是一些关键的信息。如果贸然屏蔽掉第一条上报的display text命令，会导致有些卡的关键信息看不到。
+ 
+ 在radio log里的关键log:
+掉卡的关键log:ESIMS:0,13；
+SIM SWITCH关键log:AT+ES3G=* 或者AT+ESIMMAP=*；
+World Mode切换：AT+ECSRA=2,*,*,*；
+World Phone切换：Switching to *DD CSFB modem,其中这个*有可能是F，也有可能是T,就是说FDD和TDD之间的切换；
+ 
+还有一些卡,是更新注册网络信息，或者没有任何原因的就会主动上报欢迎语,客户可以先自行在其他对比机插入同一张卡做对比测试，如在对比机上未发现类似情况，再提交eservice.
+```
+
+## [FAQ18531] [SAT]插入某种特定卡开机，点击STK Icon,显示STK未安装
+
+## [FAQ18919] [SAT]正常使用中toast提示“发送短信”
+
+## [FAQ09351] [Others]如何使用超级终端发送AT Command以及抓取Uart Log
+
+## [FAQ04013] 如何开启或关闭VOIP(sip call)功能
+
+## [FAQ19894] N上预置APK失败提示找不到so文件
+
+## [FAQ10023] [SP Meta][META MODE]恢复出厂设置API????在哪里写？？如何开发
+
+## [FAQ09795] [FastBoot]使用fastboot 下载image的方法
+
+## [FAQ19877] 如何使用GDB分析KE问题
+
+## [FAQ19917] [Android N] N版本 bluedroid蓝牙问题Log抓取
+
+## [FAQ10400] 如何在小部件列表中隐藏某个widget或者shortcut？
+
+## [FAQ18166] 从Play Store下载的App安装后，App在Launcher3的桌面自动生成的快捷方式图标为小机器人
+
+## [FAQ11476] Launcher3如何设置桌面的行数和列数？
+
+## [FAQ19902] 增加PIN/Password的密码最大长度
+
+## [FAQ08916] [ICU][Time]如何修改或精确设置出厂默认时间
+
+## [FAQ06452] [ICU][Time]如何修改时间中的上午/下午显示
+
+## [FAQ04421] [ICU][Time]修改某语言环境下默认日期的格式
+
+## [FAQ19932] 快霸(DuraSpeed)功能介绍
+
+## [FAQ15096] 如何在Navigation Bar上长按recent button弹菜单出来
+
+## [FAQ19780] How to auto update apn database by OTA
+
+## [FAQ08124] 关于状态栏的电量百分比
+
 ## [FAQ11908] [FSA]进入图库编辑图片保存后，去掉原有图片被覆盖的方法
 
 ## [FAQ09895] [SAT]怎么实现没插卡时launcher中不显示STK icon
@@ -10132,7 +10737,9 @@ if (notificationsForPackage.size() >= AUTOBUNDLE_AT_COUNT) {
 
 ## [FAQ20328] 如何减少lowmemory的发生几率
 
-## [FAQ12532] 如何更新时区data文件
+## [FAQ12532] [TimeZone]如何更新时区data文件
+
+## [FAQ19927] [TimeZone]执行生成tzdata脚本时遇到的问题
 
 ## [FAQ02484] [BMT]关机充电动画客制化以及错位调整
 
@@ -10147,6 +10754,8 @@ if (notificationsForPackage.size() >= AUTOBUNDLE_AT_COUNT) {
 ## efuse????
 
 ## WAPI 是什么？？？
+
+## ResourceOverlay 怎么用？？？
 
 ## 如何读取和修改 SIM 卡里的文件？？
 
