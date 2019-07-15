@@ -9560,6 +9560,8 @@ ap侧使用时需要定义长度为2的string数组；
 参数<3> 在 搭配MT6763平台 和 MT6739平台的版本，由于C2K和GSM在同一个modem，所以不用添加。
 ```
 
+## [FAQ19648] 如何发送AT命令
+
 ## [FAQ20503] 如何查找某个语言在Setting语言列表中是哪项
 
 ```
@@ -10648,7 +10650,7 @@ if(mtk_detect_key(MT65XX_FACTORY_KEY)&&mtk_detect_key(MT65XX_FACTORY_KEY2))
  
 有些客户可能会考虑在界面上屏蔽这次欢迎语的上报，这样是不妥当的，因为有些卡是不会上报欢迎语的，第一条上报的display text是一些关键的信息。如果贸然屏蔽掉第一条上报的display text命令，会导致有些卡的关键信息看不到。
  
- 在radio log里的关键log:
+在radio log里的关键log:
 掉卡的关键log:ESIMS:0,13；
 SIM SWITCH关键log:AT+ES3G=* 或者AT+ESIMMAP=*；
 World Mode切换：AT+ECSRA=2,*,*,*；
@@ -10656,6 +10658,1333 @@ World Phone切换：Switching to *DD CSFB modem,其中这个*有可能是F，也
  
 还有一些卡,是更新注册网络信息，或者没有任何原因的就会主动上报欢迎语,客户可以先自行在其他对比机插入同一张卡做对比测试，如在对比机上未发现类似情况，再提交eservice.
 ```
+
+## [FAQ14370] 如何让返回键具有删除编辑内容功能
+
+```
+在编辑界面，如果正在编辑，就删除编辑的内容。如果编辑的内容为空，按下返回键就返回上一界面，请问该如何实现？
+
+修改 Activity.java 中 onKeyUp 为如下：
+public boolean onKeyUp(int keyCode, KeyEvent event) {
+    if (getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.ECLAIR) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.isTracking() && !event.isCanceled()) {
+            if (isResumed()) { 
+                View decorView = this.getWindow().getDecorView();//MTK modifyBegin
+                if (decorView != null) {
+                    View focus = decorView.findFocus();
+                    if (focus!=null&&focus instanceof EditText) {
+                        EditText editText = (EditText)focus;
+                        CharSequence text = editText.getText();
+                        if (text!=null && text.length()>0) {
+                            editText.setText("");
+                            return true;
+                        }
+                    }
+                }
+                onBackPressed(); //MTK modify END
+                return true;
+            } else {
+                Log.v(TAG, "Tracking Key Up, activity is resumed: " + isResumed());
+                // Fix sub activity of tab activity which isn't in resumed state
+                // Return false means didn't handle this key event
+                return false;
+            }
+            /// @}
+        }
+    }
+    return false;
+}
+```
+
+## [FAQ19537] [Recovery][Common]recovery模式中选择Apply update from adb升级失败，电脑端提示“无法识别USB设备” 或"device not found"
+
+```
+建议参考下面的修改
+1、alps/bootable/recovery/etc/init.rc
+on property:cus.recoveryadb.prop=1
+write /sys/class/android_usb/android0/enable 0
+write /sys/class/android_usb/android0/idVendor 0E8D
+write /sys/class/android_usb/android0/idProduct 201C
+write /sys/class/android_usb/android0/f_ffs/aliases adb
+write /sys/class/android_usb/android0/functions adb
+write /sys/class/android_usb/android0/enable 1
+write /sys/devices/platform/mt_usb/cmode 1
+
+2、adb_install.cpp
+set_usb_driver(bool enabled)函数中
+添加property_set("cus.recoveryadb.prop", "1");
+
+3、device/mediatek/common/sepolicy/property.te
+添加type cus_recoveryadb_prop, property_type;
+device/mediatek/common/sepolicy/property_contexts
+添加cus.recoveryadb.prop u:object_r:cus_recoveryadb_prop:s0
+device/mediatek/common/sepolicy/recovery.te
+allow recovery cus_recoveryadb_prop:property_service set;
+ 
+adb sideload 使用方法可参考  "FAQ04559 [Recovery][Common]从JB版本开始支持adb sideload命令"
+```
+
+## [FAQ06239] [new feature]通话录音时如何播放提示音给对方？
+
+```
+因为涉及到通话隐私问题，部分客户要求在通话录音时播放提示音给对方
+下面这个修改同时会将本地的背景播放音乐等声音播放给对方
+
+BGS UL gain默认为0，所以本方播放的声音对方不会听到
+修改BGS UL gain，可以将本地播放的声音传给对方 
+ 
+在点击通话录音之后
+1.将BGS UL gain 设为最大
+2.播放声音
+3.播放完后将BGS UL gain还原为0
+
+packages/apps/Dialer/InCallUI/src/com/android/incallui/CallButtonPresenter.java 
+public void voiceRecordClicked() {
+    //1.set the mBGSUlGain to 0xFF in hal
+    AudioSystem.setParameters("SET_BGS_UL_GAIN=1");
+    //2.play the warning tone here
+    //3.set the mBGSUlGain to 0x0 in hal
+    AudioSystem.setParameters("SET_BGS_UL_GAIN=0");
+
+    TelecomAdapter.getInstance().startVoiceRecording();
+    ......
+}
+  
+AudioALSAHardware.cpp
+//add this
+static String8 keySET_BGS_UL_GAIN= String8("SET_BGS_UL_GAIN");
+ 
+status_t AudioALSAHardware::setParameters(const String8 &keyValuePairs)
+{
+......
+//add this start
+if (param.getInt(keySET_BGS_UL_GAIN, value) == NO_ERROR) { 
+param.remove(keySET_BGS_UL_GAIN); 
+ALOGD("+%s(): %s", __FUNCTION__, "SET_BGS_UL_GAIN");
+if(value==1){
+    mStreamManager -> mBGSUlGain = 0xFF; 
+}else{
+    mStreamManager -> mBGSUlGain = 0x0; 
+}
+//add this end
+}
+}
+```
+
+## [FAQ17344] [SIM]怎样判别是否为“白卡”（测试卡）
+
+```
+怎样判别一张卡是否为“白卡”（测试卡）
+
+[AP]
+AP端可以获取对应SIM卡的属性值进行判断，0表示普通SIM卡，1表示测试卡。
+"gsm.sim.ril.testsim",    --- 卡1
+"gsm.sim.ril.testsim.2", --- 卡2
+"gsm.sim.ril.testsim.3", --- 卡3
+"gsm.sim.ril.testsim.4", --- 卡4
+
+[Modem]
+
+“白卡”中有些文件内容会有一些特殊规定用于标识“白卡”的身份:
+A：MCC-MNC = 001-01 
+B：EF_AD文件中的 ms_operation 的值为0x80/0x81/0x02/0x04
+我们在读取EF_AD的时候会将之前读出的MCC/MNC满足情况一并做“白卡”判断，判断条件的关系有A&&B和A||B两种，判断条件的关系在test_sim_relation()中定义，若需要修改判断关系（&&或者||）直接修改此函数的return值即可，返回0对应||、返回1对应&&；
+判断结果存放在SIM的全局context中（this_sim->is_test_sim），客户可调用is_test_sim()接口获得判断结果，参数为想获得信息的SIM编号：0x00/0x01/0x02/0x03分别对应SIM1、SIM2、SIM3、SIM4。
+```
+
+## [FAQ19583] [Audio App]android N 版本铃声设置显示“更多铃声”选项
+
+```
+默认在android M版本铃声设置对话框里面包含“更多铃声”选项。实际上在N版本里面也包含这项功能，只是未让它显示。铃声
+设置对话框代码在 packages/providers/MediaProvider/src/com/android/providers/media/RingtonePickerActivity.java。
+在 RingtonePickerActivity.java 的 onCreate 函数我们发现如下:
+
+/// M: Get whether to show the 'More Ringtones' item
+mHasMoreRingtonesItem = intent.getBooleanExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_MORE_RINGTONES, false);
+
+因此我们只要在启动 RingtonePickerActivity 的时候把 RingtoneManager.EXTRA_RINGTONE_SHOW_MORE_RINGTONES
+设置成true就好了。在 packages/apps/Settings/src/com/android/settings/RingtonePreference.java 文件的
+onPrepareRingtonePickerIntent 函数添加代码如下:
+
+ringtonePickerIntent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_MORE_RINGTONES, true);
+```
+
+## [FAQ10495] [SEC]如何修改SIM ME LOCK校验界面上的输入密码次数
+
+```
+在AP端默认给SIM ME LOCK的输入密码次数是5次，
+如果想修改显示次数或屏蔽掉显示次数，请参考以下步骤。
+
+在收到卡被SIM ME LOCK住时才会去获取对应Category的retry count, 并记录在数组mSimMeLeftRetryCount中。
+Path: alps\frameworks\base\policy\src\com\android\internal\policy\impl\keyguard\KeyguardUpdateMonitor.java
+
+AP端显示界面处理:
+L版本上(M版本与L版本相同)，
+Path：alps\frameworks\base\packages\Keyguard\src\com\mediatek\keyguard\Telephony\ KeyguardSimPinPukMeView.java
+getRetryMeString () 这个方法就是来控制次数显示的。
+如果想屏蔽显示次数，这个方法return null。
+
+在KK版本上，
+Path: alps\frameworks\base\policy\src\com\android\internal\policy\impl\keyguard\KeyguardSIMPinPukView.java
+getRetryMe() 这个方法就是来控制次数显示的。
+如果想屏蔽显示次数，这个方法return null。
+
+如果想修改显示次数，
+不能直接修改方法 meRetryCount 为指定的值；而需要修改 modem 端。
+custom_nvram_sec.h(\custom\service\nvram), 修改对应category 的 SML_RETRY_COUNT_xxx_CAT 值。
+下面截图是修改前的状态，默认是 5.
+```
+
+## [FAQ03989] [Notification]如何让通知不被清除或者点击后不消失？
+
+```
+APP发送通知后，点击clear按钮，如何让通知不被清除？或者点击通知后，通知不消失？
+
+APP发送通知时，通知需要添加flag：
+notification.flags |= Notification.FLAG_ONGOING_EVENT;
+或者
+notification.flags |= Notification.FLAG_NO_CLEAR;
+```
+
+## [FAQ19254] [Recents]更改系统时间后，按recent键无法进入最近应用列表界面
+
+```
+在设置中将系统时间修改为早于当前系统的时间，recent键点击无效，无法正常叫出最近应用列表界面。
+这是google default design，用google 6.0对比机来测试也是这样的。
+建议维持google原有设计，对于google原生的设计，我们不做修改
+原因是：
+RecentApp通过AMS的getRunningTasks() API取得目前正在执行中的task记录.
+而通过最近一次使用的APP是否为RecentApp, 來判断按下HOME key时是否退出.
+AMS会将最近使用的时间资讯(系统时间)记录起来并排序, 但在调整系统时间后造成先后顺序错乱,
+导致RecentApp误判目前状态，进而无法退出。
+涉及的模块是AMS和RecentApp.
+如果AMS仿照RecentApp的修改, 將记录系统时间改为开机时间可能可以解决该问题，但会接影响AMS开放出去的API行为。Framework內部也会根据task时间资讯来做些判断(如Activity決定是否在开机时reset),得将这部分相关逻辑一并修正.
+目前敝司经过全面评估，修改该问题后风险依然存在，因此建议维持
+```
+
+## [FAQ19361] 如何预置一个WIFI热点
+
+```
+JB版本：
+请在  alps/external/wpa_supplicant_8/mtk-wpa_supplicant.conf  这个文件中增加 networt={} 即可。
+network需要字段的含义可以查看wpa_supplicant_8/wpa_supplicant.conf文件中的注释“network block fields:”后的说明即可。
+
+KK&L版本：
+请在/hardware/mediatek/wlan/config/mtk-wpa_supplicant-overlay.conf文件中增加networ={} 即可。
+
+M 版本路径：
+/vendor/mediatek/proprietary/hardware/connectivity/wlan/config/mtk-wpa_supplicant-overlay.conf
+
+如下面的例子，预置一个OPEN 和WPA2-PSK的网络：
+ctrl_interface=/data/misc/wpa_supplicant
+update_config=1
+device_name=rk30sdk
+manufacturer=rockchip
+model_name=ONE TOUCH EVO8HD
+model_number=ONE TOUCH EVO8HD
+serial_number=0123456789
+device_type=10-0050F204-5
+config_methods=physical_display virtual_push_button keypad
+
+network={
+     ssid="aaaa"
+     scan_ssid=1
+     key_mgmt=NONE
+}
+
+network={
+     ssid="bbbbb"
+     scan_ssid=1
+     psk="12345678"
+     key_mgmt=WPA-PSK
+}
+```
+
+## [FAQ19495] 调整开关机铃声音量大小
+
+```
+Android N:
+alps/frameworks/av/services/audioflinger/Threads.cpp
+AudioFlinger::PlaybackThread::mixer_state AudioFlinger::MixerThread::prepareTracks_l(Vector< sp<Track> > *tracksToRemove) {
+    .....
+#ifdef MTK_AUDIO
+    // Do not change the volume, when boot sound open
+    if (track->mFlags & IAudioFlinger::TRACK_BOOT) {
+        vlf = 0.25f; // 
+        vrf = 0.25f; // 改变vlf和vrf的值，取值范围0~1
+    }
+#endif
+    ......
+}
+
+
+Android M & L：
+alps/vendor/mediatek/proprietary/custom/(project)/hal/audioflinger/audio/Audio_Customization_Common.h 
+#define BOOT_ANIMATION_VOLUME (0.25)
+改变BOOT_ANIMATION_VOLUME的值，取值范围0~1
+```
+
+## [FAQ19357] N版本中，三方应用引用某些系统库导致无法运行
+
+```
+在N版本中为了增强安全性,三方应用也不能随意加载系统没有暴露出来的库，从而会导致三方应用无法运行。
+详细内容参考google 官方说明：https://source.android.com/devices/tech/config/namespaces_libraries.html
+ 
+如下图所示，系统的应用，可以调用系统库，而三方应用，只能调用或者加载NDK 暴露出来的一些库，如libc.so。。。之类的和他自身的一些库。
+但是如果某些应用有调用到系统 native库就会报出形如下面的Log：
+01-06 20:34:05.255959 4629 4629 E AndroidRuntime: java.lang.UnsatisfiedLinkError: dlopen failed: library "/system/lib64/libfmjni.so" needed or dlopened by "/system/lib64/libnativeloader.so" is not accessible for the namespace "classloader-namespace"
+01-06 20:34:05.255959 4629 4629 E AndroidRuntime: at java.lang.Runtime.loadLibrary0(Runtime.java:977)
+01-06 20:34:05.255959 4629 4629 E AndroidRuntime: at java.lang.System.loadLibrary(System.java:1530)
+01-06 20:34:05.255959 4629 4629 E AndroidRuntime: at com.android.fmradio.FmNative.(FmNative.java:45)
+01-06 20:34:05.255959 4629 4629 E AndroidRuntime: at com.android.fmradio.FmNative.openDev(Native Method)
+01-06 20:34:05.255959 4629 4629 E AndroidRuntime: at com.szwj.autoats.fmradio.FMRadioService.openDevice(FMRadioService.java:576)
+01-06 20:34:05.255959 4629 4629 E AndroidRuntime: at com.szwj.autoats.fmradio.FMRadioService.onCreate(FMRadioService.java:1361)
+01-06 20:34:05.255959 4629 4629 E AndroidRuntime: at android.app.ActivityThread.handleCreateService(ActivityThread.java:3253)
+01-06 20:34:05.255959 4629 4629 E AndroidRuntime: at android.app.ActivityThread.-wrap5(ActivityThread.java)
+01-06 20:34:05.255959 4629 4629 E AndroidRuntime: at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1617)
+01-06 20:34:05.255959 4629 4629 E AndroidRuntime: at android.os.Handler.dispatchMessage(Handler.java:110)
+01-06 20:34:05.255959 4629 4629 E AndroidRuntime: at android.os.Looper.loop(Looper.java:203)
+01-06 20:34:05.255959 4629 4629 E AndroidRuntime: at android.app.ActivityThread.main(ActivityThread.java:6251)
+01-06 20:34:05.255959 4629 4629 E AndroidRuntime: at java.lang.reflect.Method.invoke(Native Method)
+01-06 20:34:05.255959 4629 4629 E AndroidRuntime: at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:1063)
+01-06 20:34:05.255959 4629 4629 E AndroidRuntime: at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:924)
+
+如果被依赖的库评估安全性可以开放出来的，则可以将其添加到/device/mediatek/common/public.libraries.vendor.txt名单列表当中。
+如果不可以开放到，则此问题属于和N版本不兼容的，需要APP开发者自行处理。
+```
+
+## [FAQ15571] [SELinux] Android N 版本进程无法直接访问data目录的说明
+
+```
+Google 在android M 版本后, 通过SELinux 的neverallow 语法强制性限制了普通进程访问data 目录的权限. 严禁除init system_server installd system_app 之外的其他进程直接操作/data 目录比如在data 目录下面创建文件，写文件，重命名文件等等.
+
+有很多客户都会在data 目录下创建文件, 保存资讯, 在M 版本上这个操作会被SELinux 直接拦截下来，并且没法直接添加访问system_data_file 的权限，N版本上更加严格, system_app也会被拦截下来.
+ 
+N版本:
+neverallow appdomain system_data_file:dir_file_class_set { create write setattr relabelfrom relabelto append unlink link rename };
+ 
+M版本对system_app有是开放权限：
+neverallow { appdomain -system_app } system_data_file:dir_file_class_set { create write setattr relabelfrom relabelto append unlink link rename };
+ 
+需要按下面的流程操作：
+(1).  在init.rc 或者 其他的init.xxx.rc 的on post-fs-data 段 添加:
+mkdir /data/xxxx 0770 root system
+
+(2). 在/device/mediatek/common/sepolicy/file.te 里面添加：
+type xxxx_data_file, file_type, data_file_type;
+
+(3). /device/mediatek/common/sepolicy/file_contexts 里面添加：
+/data/xxxx(/.*)? u:object_r:xxxx_data_file:s0
+
+(4). 给你的进程添加权限, 比如你的进程的SELinux domain 是 yyyy
+allow yyyy xxxx_data_file:dir create_dir_perms;
+allow yyyy xxxx_data_file:file create_file_perms;
+
+这样你才能绕过Google 的设置. 这个xxxx 目录随你定义.
+```
+
+## [FAQ19362] 如何设置mobilelog modemlog networklog size大小
+
+```
+第一次开机之前就需配置
+配置路径：
+M\N 版本：\device\mediatek\common\mtklog
+mtklog-config-bsp-eng.prop
+mtklog-config-bsp-user.prop
+mtklog-config-basic-eng.prop
+mtklog-config-basic-user.prop
+
+默认存储大小：
+com.mediatek.log.mobile.maxsize = 500
+com.mediatek.log.mobile.total.maxsize = 1000
+com.mediatek.log.modem.maxsize = 2000
+com.mediatek.log.net.maxsize = 600
+按照需要修改对应选项即可, 需要注意com.mediatek.log.mobile.maxsize要小于com.mediatek.log.mobile.total.maxsize
+
+2. 其他情况：
+1）UI界面设置
+mtklogger UI---->Settings---->mobilelog---->Limit Current Log Size
+mtklogger UI---->Settings---->mobilelog---->Limit Total Log Size
+mtklogger UI---->Settings---->modemlog---->Limit Log Size
+mtklogger UI---->Settings---->networklog---->Limit Log Size
+
+2）adb shell command设置,请参考FAQ06939 如何用adb 控制MTKLogger
+
+注意：mobilelog涉及两个size大小设置，需要保证Limit Current Log Size < Limit Total Log Size
+```
+
+## [FAQ19217] wifi连接获取IP失败
+
+```
+连接WiFi获取ip失败，首先可查看MSG_ID_MMI_ABM_IPADDR_CHANGE_REQ中use_dhcp中是否有被设置为KAL_TRUE,具体log信息参考如下：
+
+请在以下函数中添加代码默认使用DHCP。
+void srv_dtcnt_wlan_ipaddr_change_req(MMI_BOOL use_dhcp, srv_dtcnt_wlan_ipaddr_update_struct *ipaddr_info) {
+/*----------------------------------------------------------------*/
+/* Local Variables */
+/*----------------------------------------------------------------*/
+      mmi_abm_ipaddr_change_req_struct *p;
+      srv_dtcnt_prof_wlan_struct *profile = NULL;
+
+/*----------------------------------------------------------------*/
+/* Code Body */
+/*----------------------------------------------------------------*/
+      MMI_TRACE(MMI_CONN_TRC_G6_DTCNT, SRV_DTCNT_WLAN_IPADDR_CHANGE_REQ, use_dhcp, g_srv_dtcnt_wlan_ctx.state);
+      if (g_srv_dtcnt_wlan_ctx.state != SRV_DTCNT_WLAN_STATE_CONNECTED) {
+           return;
+      }
+
+     p = OslAllocDataPtr(mmi_abm_ipaddr_change_req_struct);
+     DTCNT_SRV_ILM_MEMSET(p);
+
+     if (g_srv_dtcnt_wlan_ctx.connected_wlan_profile != NULL) {
+
+          kal_prompt_trace(MOD_MMI,"mtk_debug g_srv_dtcnt_wlan_ctx.connected_wlan_profile != NULL ");//添加trace跟踪
+          profile = g_srv_dtcnt_wlan_ctx.connected_wlan_profile;
+          p->use_dhcp = g_srv_dtcnt_wlan_ctx.connected_wlan_profile->use_dhcp;
+      } else {
+          use_dhcp = 1;//添加Code；
+          p->use_dhcp = use_dhcp;
+          if (!use_dhcp)
+          {
+                    MMI_ASSERT(ipaddr_info);
+           }
+       }
+       ...
+}
+```
+
+## [FAQ14131] 在预编译阶段提取apk的odex文件以加快开机速度
+
+```
+1 预编译提取apk的odex文件，请在BoardConfig.mk中定义：
+WITH_DEXPREOPT := true
+
+打开这个宏之后，无论是有源码还是无源码的预置apk预编译时都会提取odex文件。
+（如有发现user版本未提取odex，请检查device.mk文件配置：
+   ifeq ($(TARGET_BUILD_VARIANT),user)
+       WITH_DEXPREOPT := true
+       DONT_DEXPREOPT_PREBUILTS := true  //此句注释掉
+   endif 
+）
+
+对于64bit的芯片,若apk只有32bit的lib或者只能作为32bit运行，请在预置apk时在android.mk中添加下边的TAG标记此apk为32bit：
+
+LOCAL_MULTILIB :=32
+ 
+
+2 若需要在预编译时跳过一些apk的odex提取，可以使用下边的方法：
+\build\core\dex_preopt_odex_install.mk中添加：
+ifeq ($(LOCAL_MODULE),helloworld)
+LOCAL_DEX_PREOPT:=
+endif
+build_odex:=
+installed_odex:=
+....
+Ifeq包起来的部分为需要添加的,helloworld可替换为需要跳过提取odex的apk的LOCAL_MODULE名字
+ 
+注意：
+打开WITH_DEXPREOPT 的后，预置太多apk，会导致system.img 过大，而编译不过。遇到这种情况请调大system.img的大小限制。
+-------------------  more in   Android N   ----------------------
+N版本当中如果预置了GMS包，则对无源码的APK不做预编译处理。如果需要都做，需要在如下代码做修改：
+路径：/device/mediatek/common/BoardConfig.mk
+......
+ifeq ($(BUILD_GMS),yes)
+DONT_DEXPREOPT_PREBUILTS := true   ------------------>请把此处关掉，即赋值false。
+else
+ifeq ($(TARGET_BUILD_VARIANT),userdebug)
+DEX_PREOPT_DEFAULT := nostripping
+endif
+endif
+......
+ 
+修改完后，dex2oat操作即在编译时完成，不会影响开机时间。
+ 
+补充说明：Android N中平台添加该特性，是因为WITH_DEXPREOPT := true打开这个之后，就会将有源码以及无源码的所有预置APK在host上做预编译并且塞到system partition中。
+
+但由于內部project storage size的限制，这些预置APK做完dexpreopt之后会超过system partition的size. 因此选择一个折中方案，即加上限制，
+对于无源码的APK(ex: GMS)不做dexpreopt的行为。如果客户的system partition足够大塞的下这些预编译完的内容，可以把这段代码拿掉也不会有什么影响。
+```
+
+## [FAQ19348] [Audio volume]如何修改第三方来电提示音音量
+
+```
+第三方来电提示音 嘟嘟声 过小
+InCallTonePlayer.java
+private static final int RELATIVE_VOLUME_HIPRI = 80;
+修改RELATIVE_VOLUME_HIPRI的值
+范围0~100
+```
+
+## [FAQ12380] [Audio APP]如何在Google Play Music中播放Drm歌曲？
+
+```
+1、请使用adb shell ps，查看com.google.android.music的process的名称。Play Music应该会有两个process：
+com.google.android.music:ui
+com.google.android.music:main
+2、请在mediatek\frameworks\av\drm\mtkwhitelist\DrmMtkDef.cpp中的数组TRUSTED_APP和TRUSTED_PROC中添加com.google.android.music的process，并相应地修改mediatek\frameworks\av\include\drm\DrmMtkDef.h中TRUSTED_APP_CNT和TRUSTED_PROC_CNT的数值。
+3、请在packages\providers\MediaProvider\src\com\android\providers\media\DrmHelper.java的setDefaultProcessNames()内的数组permitedProcessNames中添加com.google.android.music的process。
+
+如果是 L 或 L 之后的版本, 上述文件(DrmMtkDef.cpp / DrmMtkDef.h )路径为:
+/vendor/mediatek/proprietary/frameworks/av/drm/mtkwhitelist/DrmMtkDef.cpp
+/vendor/mediatek/proprietary/frameworks/av/include/drm/DrmMtkDef.h
+
+M版本：
+vendor/mediatek/proprietary/frameworks/av/drm/mtkwhitelist/DrmMtkDef.cpp
+中向TRUSTED_APP和TRUSTED_PROC中添加com.google.android.music的process
+
+2，/packages/providers/MediaProvider/src/com/android/providers/media/DrmHelper.java
+中initDrmPermistProcessList中添加process。
+如果不生效，请查看log,如：
+
+MediaPlayerService: setDataSource with fd: untrusted client [10462][com.google.android.music:ui], denied to access drm fd [19]
+可知Google music的process的名称是：com.google.android.music:ui，将process的名称修改。
+```
+
+## [FAQ17975] Android M 首次开机不随sim卡自适应语言修改方案
+
+```
+不能更新的原因是在update config时Android M上去掉了对locale改变的update, 按如下方法改成与Android L上一致即可。如果修改之后仍不能自适应语言，请在修改之后再参考FAQ14489 Android L sim卡自适应语言问题 的修改方法。
+ 
+/frameworks/opt/telephony/src/java/com/android/internal/telephony/MccTable.java
+public static void updateMccMncConfiguration(Context context, String mccmnc,
+boolean fromServiceState) {
+Slog.d(LOG_TAG, "updateMccMncConfiguration mccmnc='" + mccmnc + "' fromServiceState=" + fromServiceState);
+
+if (Build.IS_DEBUGGABLE) {
+String overrideMcc = SystemProperties.get("persist.sys.override_mcc");
+if (!TextUtils.isEmpty(overrideMcc)) {
+mccmnc = overrideMcc;
+Slog.d(LOG_TAG, "updateMccMncConfiguration overriding mccmnc='" + mccmnc + "'");
+}
+}
+
+if (!TextUtils.isEmpty(mccmnc)) {
+int mcc, mnc;
+
+String defaultMccMnc = TelephonyManager.getDefault().getSimOperatorNumeric();
+Slog.d(LOG_TAG, "updateMccMncConfiguration defaultMccMnc=" + defaultMccMnc);
+//Update mccmnc only for default subscription in case of MultiSim.
+// if (!defaultMccMnc.equals(mccmnc)) {
+// Slog.d(LOG_TAG, "Not a Default subscription, ignoring mccmnc config update.");
+// return;
+// }
+
+try {
+mcc = Integer.parseInt(mccmnc.substring(0,3));
+mnc = Integer.parseInt(mccmnc.substring(3));
+} catch (NumberFormatException e) {
+Slog.e(LOG_TAG, "Error parsing IMSI: " + mccmnc);
+return;
+}
+
+Slog.d(LOG_TAG, "updateMccMncConfiguration: mcc=" + mcc + ", mnc=" + mnc);
+Locale locale = null; //添加这行
+if (mcc != 0) {
+setTimezoneFromMccIfNeeded(context, mcc);
+locale = getLocaleFromMcc(context, mcc); //添加这行
+}
+if (fromServiceState) {
+setWifiCountryCodeFromMcc(context, mcc);
+} else {
+// from SIM
+try {
+Configuration config = new Configuration();
+boolean updateConfig = false;
+if (mcc != 0) {
+config.mcc = mcc;
+config.mnc = mnc == 0 ? Configuration.MNC_ZERO : mnc;
+updateConfig = true;
+}
+if (locale != null) { //添加这行
+config.setLocale(locale); //添加这行
+updateConfig = true; //添加这行
+} //添加这行
+
+if (updateConfig) {
+Slog.d(LOG_TAG, "updateMccMncConfiguration updateConfig config=" + config);
+ActivityManagerNative.getDefault().updateConfiguration(config);
+} else {
+Slog.d(LOG_TAG, "updateMccMncConfiguration nothing to update");
+}
+} catch (RemoteException e) {
+Slog.e(LOG_TAG, "Can't update configuration", e);
+}
+}
+} else {
+if (fromServiceState) {
+// an empty mccmnc means no signal - tell wifi we don't know
+setWifiCountryCodeFromMcc(context, 0);
+}
+}
+}
+```
+
+## [FAQ16264] [Audio APP]首次进入收音机(FM) app，播放的频率不一定是代码中默认的频率，为什么？如何修改为代码中的频率？
+
+```
+烧机之后首次进入收音机，播放的频率不一定是代码中默认的频率，为什么？如何修改为播放的频率为代码中的频率？
+1、首次进入FM，播放的频率不一定是代码中写入的频率原因是：
+烧机之后首次进入FM，频率会使用DEFAULT_STATION，但使用时会判断DEFAULT_STATION是否是valid的station，若不是，则自动跳转到下一station。若是，则使用DEFAULT_STATION。
+ 
+2、修改方法是：不进行判断是否是valid Station，直接播放
+在FmService.java文件中firstPlaying修改如下：
+private boolean firstPlaying(float frequency) {
+Log.d(TAG, "firstPlaying, freq: " + frequency);
+if (mPowerStatus != POWER_UP) {
+Log.w(TAG, "firstPlaying, FM is not powered up");
+return false;
+}
+//delete below
+boolean isSeekTune = false;
+float seekStation = FmNative.seek(frequency, false);
+int station = FmUtils.computeStation(seekStation);
+if (FmUtils.isValidStation(station)) {
+isSeekTune = FmNative.tune(seekStation);
+if (isSeekTune) {
+playFrequency(seekStation);
+}
+}
+// if tune fail, pass current station to update ui
+if (!isSeekTune) {
+seekStation = FmUtils.computeFrequency(mCurrentStation);
+}
+//delete above
+
+//add below
+boolean isSeekTune =true; 
+playFrequency(frequency);
+//add above
+
+return isSeekTune;
+} 
+```
+
+## [FAQ15188] 通过NITZ获取时区出错
+
+```
+获取时区步骤分析： 
+1：有些基站发送NITZ的信息是没有包含时区信息的，
+2：需要通过国家码在ICU中获取时区，获取到的时区可能是多个时区，同时返回第一个时区。
+3：ICU返回的时区很可能与客户需求不匹配，因此我司定义了一个数组让客户可以自定义国家码与之对应的时区（一个国家码只能对应唯一的一个时区）
+我司原本定义与国家码对应的时区可能不符合贵司需求，或是没有定义就会引起这个问题
+
+可以通过LOG判定问题
+如果在radio_log 中出现下面的LOG则确定是此问题引起：
+uses TimeZone of Capital City:
+
+需要在GsmServiceStateTracker文件中mTimeZoneIdOfCapitalCity 这个数组加入或是修改对应的国家码以及时区；
+
+举例
+如获取到的是New_York时区而贵司需求是Los_Angeles时区
+请搜索LOG如果出现
+GsmSST  : [GsmSST0] uses TimeZone of Capital City:America/New_York
+确定是此问题
+修改如下
+private String[][] mTimeZoneIdOfCapitalCity = {
+{"us", "America/New_York"}，
+修改为
+{"us", "America/Los_Angeles"}， 
+};
+```
+
+## [FAQ14476] 手机时间最多只能选到2037年12月30日
+
+```
+这个是GOOGLE默认设计的。
+因为时间选择最后一天时候，切换时区会有问题.
+如在西八区,选最后一天的时间为2037年12月31日23:59分，此时切换到东八区，这时无法显示东八区的正确时间。
+因此建议接受这个设计。 
+```
+
+## [FAQ12388] 如何修改某种语言的默认时间格式(12小时制，24小时制)
+
+```
+如果没有设置默认系统的时间显示格式（12小时制或者24小时制），系统切换不同语言显示时间格式是不同的，
+比如波斯语是24小时制，中文是12小时制，这是在哪里控制的呢？
+[SOLUTION]
+这是icu的时间格式觉定的“H”代表24小时制，“h”代表12小时制，如波斯语如下
+android kk external\icu4c\data\locales\fa.txt
+android L   external\icu\icu4c\source\data\locales\fa.txt 
+gregorian{
+DateTimePatterns{
+"H:mm:ss (zzzz)",
+"H:mm:ss (z)",
+"H:mm:ss",
+"H:mm",
+"EEEE d MMMM y",
+"d MMMM y",
+"d MMM y",
+"y/M/d",
+}
+如果改成12小时制的话，只需把上面红色部分改成下面就行
+"H:mm:ss (zzzz)",
+"h:mm:ss (z)",
+"h:mm:ss",
+"h:mm",
+注意修改完后请先编译icu资源（ FAQ04011 ），在new工程，否则不会起效果。
+```
+
+## [FAQ03998] “日期和时间->自动确定日期和时间->使用网络提供时间”功能是怎样实现的？
+
+```
+现在android通过网络同步时间有两种方式：NITZ和NTP，它们使用的条件不同，可以获取的信息也不一样；勾选这个功能后，手机首先会尝试NITZ方式，若获取时间失败，则使用NTP方式
+
+1.NITZ(network identity and time zone)同步时间
+NITZ是一种GSM/WCDMA基地台方式，必须插入SIM卡，且需要operator支持；可以提供时间和时区信息
+
+中国大陆运营商基本是不支持的
+
+2.NTP(network time protocol)同步时间
+NTP在无SIM卡或operator不支持NITZ时使用，单纯通过网络（GPRS/WIFI）获取时间，只提供时间信息，没有时区信息（因此在不支持NITZ的地区，自动获取时区功能实际上是无效的）
+
+NTP还有一种缓存机制：当前成功获取的时间会保存下来，当用户下次开启自动更新时间功能时会结合手机clock来进行时间更新。这也是没有任何网络时手机却能自动更新时间的原因。
+
+此外，因为NTP是通过对时的server获取时间，当同步时间失败时，可以检查一下对时的server是否有效，并替换为其他server试一下。
+
+3.如何判断手机通过哪种方式更新时间
+设置一个错误的时区，查看时区是否有被更新正确，若时间和时区都有更新正确，那么就是GSM网路有送NITZ消息上来；
+
+若只有时间更新，而时区没有变化，就是NTP方式，即它通过网络（GPRS/WIFI）连接到server去获取时间。
+```
+
+## [FAQ06450] 【DatePicker】如何修改DatePicker月份显示
+
+```
+问题描述：在设置日期时会用到DatePicker这个控件，控件中分为年月日3个部分显示，在某些语言下（比如俄语），月份名称比较长，会超出控件范围。
+
+修改方法：以俄语为例，将月份改短。
+
+ICS版本：
+修改 frameworks\base\core\res\res\values-ru-rRU\donottranslate-cldr.xml文件
+
+下面的这几行：
+<string name="month_medium_january">1 月</string>
+<string name="month_medium_february">2 月</string>
+<string name="month_medium_march">3 月</string>
+<string name="month_medium_april">4 月</string>
+ 
+其他（GB，JB，KK）版本：
+修改external\icu4c\data\locales\ru.txt的monthNames。
+（L，M）版本：
+修改external\icu\icu4c\data\locales\ru.txt的monthNames。
+修改后需要重新编译ICU资源，可以参考另一个FAQ： FAQ04011
+```
+
+## [FAQ06455] 【Zone】如何在设置中添加时区
+
+```
+解决方案：以加入Nigeria时区为例，应该如下修改：
+1.找到该国家在zoneinfo中的时区信息。
+时区信息的文件可以从 ftp://munnari.oz.au/pub/ 下载到最新的，解压 tzdata201x*.tar.gz 后，在每个地区的txt文件中有城市的时区信息，搜索是否有您要添加的城市，则该时区可以添加；如果没有搜索到相关的国家或城市，则需要考虑使用别的城市的时区。
+比如在 africa.txt 中搜索 Nigeria，可以找到下面的内容：
+# Nigeria
+# Zone NAME  GMTOFF RULES FORMAT [UNTIL]
+Zone Africa/Lagos 0:13:36 - LMT 1919 Sep
+1:00 - WAT
+这样可以看到，尼日利亚只有一个城市可以作为时区ID，这个ID就是Africa/Lagos。
+
+2.修改 packages/apps/Settings/res/xml-xx-rYY/timezones.xml 或 packages/apps/Settings/res_ext/xml-xx-rYY/timezones.xml （xx-rYY表示不同的语言和区域）,添加下面的内容（notice:如果只在xml-en-rUS下加那只在设置为en_US时才会有该时区，需要在每种语言下都添加）：
+<!-- timezones.xml 用于在setting中增加一个时区设置项 -->
+<timezone id="Africa/Lagos">Lagos</timezone>
+( Android M )
+时区ID的定义是放在 frameworks/base/packages/SettingsLib/res/xml/timezones.xml 文件中的，在这里面添加时区需要从新编译frameworks.
+
+3.修改 framework/base/core/res/res/xml/time_zones_by_country.xml ，添加下面的内容
+<!--time_zones_by_country.xml 这个用于自动匹配时区时使用，通过country code找一个时区 -->
+<!-- Nigeria, 1:00 -->
+<timezone code="ng">Africa/Lagos</timezone>
+<!-- 这里的code="ri"表示国家代码，比如中国对应cn，美国对应us，不清楚可以维基百科查询ISO_3166-1-->
+
+4.重新编译Setting
+```
+
+## [FAQ04318] 如何修改出厂默认日期和默认时区
+
+```
+一、修改默认时间
+1、修改RTC默认日期：
+Android L之前：
+\alps\mediatek\custom\[project]\preloader\ inc\cust_rtc.h
+\alps\mediatek\custom\[project]\kernel\rtc\rtc\rtc-mt65XX.h
+Android L或M：
+bootable\bootloader\preloader\custom\[project]\inc\cust_rtc.h
+#define RTC_DEFAULT_YEA         2012
+#define RTC_DEFAULT_MTH        2
+#define RTC_DEFAULT_DOM        1
+
+2、修改默认日期：
+framework\services\java\com\android\server\NetworkTimeUpdateService.java
+systemReady()
+if(isFirstBoot){
+Time today = new Time(Time.getCurrentTimezone());
+today.setToNow();   // 将时间恢复到RTC时间
+today.set(1, 0, mDefaultYear ); //设立出厂默认日期，mDefaultYear是默认年份
+如果想恢复出厂设置后，系统时间不变，可使用today.setToNow();
+如果想恢复出厂设置后，系统时间也恢复成出厂时间，可使用today.set(1, 0, mDefaultYear );
+这个today.set方法有6个参数的重载，可以精确到秒，具体使用方法请自行查询API，所以在这里设置系统默认时间就可以了。
+
+如果要設置出廠默認年份需要修改
+1)   mediatek\frameworks\base\res\res\values\config.xml将default_restore_year 修改成 2013
+（Android L：vendor\mediatek\proprietary\frameworks\base\res\res\values）
+<!-- default year for first power on-->
+<integer name="default_restore_year">2013</integer>
+
+2)   frameworks\base\services\java\com\android\server\NetworkTimeUpdateService.java
+if(today.year <= 2010){ //删除此行判断条件
+    today.set(today.monthDay, today.month, 2013);
+    Log.d(TAG, "Set the year to 2013");
+    SystemProperties.set(BOOT_SYS_PROPERTY, "false");
+    SystemClock.setCurrentTimeMillis(today.toMillis(false));
+}
+
+修改后的表现可通过Setting菜单->时间日期设置):
+
+3、修改默认时区：
+在系统属性中增加下面字段(假设改为Moscow)
+Android L之前：
+mediatek\config\[project]\system.prop
+Android L:
+device\mediatek\[project]\system.prop
+persist.sys.timezone = Europe/Moscow注意：默认时区的修改会影响默认时间的值，会根据与格林尼治标准时间差来更新时间，这是正常现象。如当前设置为中国标准时间GMT+8:00，则手机的出厂时间会变为8:00。
+```
+
+## [FAQ11211] 使用一些字库后，字符整体偏上
+
+```
+有些字库字形设计不是很标准，字形高度偏小，这样导致使用字库后，字符相对icon整体上移，如下藏语显示问题：
+
+解决这个问题可以使用其他字库来解决，对于JB3、JB5、JB9也可以通过修改代码解决，如下
+修改文件：TextPaint.java(alps\frameworks\base\core\java\android\text)
+
+1、新增如下函数
+/**
+ * @hide
+ */
+public int getFontMetricsInt(String text, int start, int end, FontMetricsInt fm) {
+    Rect bounds = new Rect();
+    if (start < 0) {
+        start = 0;
+    }
+    if (end < 0) {
+        end = 0;
+    }
+    if (text == null) {
+        start = end = 0;
+    } else if (text.length() < end) {
+        end = text.length();
+    }
+    super.getTextBounds(text, start, end, bounds);
+    super.getFontMetricsInt(fm);
+    if (bounds.top < fm.top) {
+        fm.top = bounds.top;
+        fm.ascent = bounds.top;
+    }
+    if (bounds.bottom > fm.bottom) {
+        fm.bottom = bounds.bottom;
+        fm.descent = bounds.bottom;
+    }
+    return fm.descent - fm.ascent + fm.leading;
+}
+
+2、修改如下函数
+/**
+ * @hide
+ */
+public int getFontMetricsInt(char[] text, FontMetricsInt fm, int pos, int len) {
+    if (text == null || text.length == 0) {
+        return super.getFontMetricsInt(fm);
+    }
+    return getFontMetricsInt(String.valueOf(text) , 0, text.length, fm);
+}
+```
+
+## [FAQ10881] 数字、日期、时间客制化问题
+
+```
+世界各地的风俗和语言习惯不同，其数字、货币、时间、日期、国家名称显示形式也是不尽相同。
+Android引入了ICU4C(External)解决了这些国际化的问题，下面列出了常见的客制化的问题。
+
+1、数字、货币
+各个国家数字以及数值表示方式不同，如英文2.46，阿拉伯语为٢‎,٤‎٦‎，而俄文却是2，46。如果系统语言为俄文，想要把数字显示成英语格式，按照如下：
+NumberFormat inf = NumberFormat. getInstance(new Locale(“en”));
+String str = nf.format(2.46);
+有关货币、int、percent等类型格式化具体可参考NumberFormat.java
+
+2、时间、日期
+关于时间格式化和数字差不多，具体例子如下：
+SimpleDateFormat sdf = new SimpleDateFormat(“hh:mm”，new Locale(“en”));
+String result = sdf.format(mCalendar.getTime());
+SimpleDateFormat sdf = new SimpleDateFormat(“EEEE, MMMM d”，new Locale(“en”));
+String result = sdf.format(mCalendar.getTime());
+
+3、其他ICU资源
+一些ICU字串，如日期、语言、时区、国家等的翻译在External/icu4c/data/下各个子目录下，常见如：
+lang：各种语言对其他语言的翻译,常见地方为Setting的语言列表。
+locale：月份、星期、日期、AM/PM等日期相关的翻译。
+zone：时区名称定义。
+region：地区、国家名称。
+
+如果修改了ICU资源，必须重新编译ICU资源，在Remake工程，否则不会起效果。具体编译方法可以参考：FAQ04011
+```
+
+## [FAQ17708] 时区列表中名称无法修改
+
+```
+参考  FAQ08718【TimeZone】如何修改时区的显示名称。
+修改时区名字后时区列表某些时区没又效果,不过设置中的时区显示已经修改OK.
+
+请将timepicker.java中的
+private void addTimeZone(String olsonId) {
+
+//            if (mLocalZones.contains(olsonId)) {
+//                mZoneNameFormatter.setTimeZone(tz);
+//                displayName = mZoneNameFormatter.format(mNow);
+//                Log.d(TAG,"lijinhai addTimeZone  mLocalZones1 displayName="+displayName);
+//            } else {
+//              }
+
+将IF这个分支全部去掉，直接跑else里面的内容就OK了。
+```
+
+## [FAQ17514] [Recovery]Recovery mode FAQ搜寻指南
+
+```
+Recovery mode 依据不同问题归类为几个属性标签如下
+
+[Debug/Log]   :debug log , adb 相关问题
+[OTAError]      :升级过程报错相关问题
+[UI/Key]         : UI 界面与 custom key 配置相关问题
+[Otapackage]  : 制作升级包相关问题
+[SecureOTA]   : secure boot project 升级相关问题
+[FactoryReset]: 恢复出厂设置， 预置资源问题
+[Common]      : 典型问题
+[升级lk、Preloader]:lk、Preloader升级问题
+[Others]         : 其他未分类问题
+
+1.大版本升级相关问题
+FAQ18202 [Recovery][Common]Android L ->M版本OTA/T卡升级注意事项
+FAQ13472 [Recovery][Common]从KK(4.4)版本通过OTA升级到L(5.0)版本的问题集锦
+FAQ11465 [Recovery][OTAError]JB升级到KK在升级界面出现一个警告提示“Warning ,No file_contexts”
+FAQ11447 [Recovery][Common]从JB(4.2)版本通过FOTA升级到KK(4.4)版本的注意事项
+
+2.UI 界面与 custom key 配置相关问题
+FAQ14484 [Recovery][UI/Key]如何修改L版本recovery mode 小机器人界面进入菜单，由volume up&power改为直接按power(如同KK以前版本)
+FAQ13766 [Recovery][UI/Key]L 版本进入recovery mode的方式有改变
+FAQ09061 [Recovery][UI/Key]recovery相关按键的配置与客制化
+FAQ08110 [Recovery][UI/Key]如何修改recovery mode下字体的大小
+FAQ06386 [Recovery][UI/Key]JB2版本关机状态按PowerOn+VolUp键进入RecoveryMode直接显示菜单
+FAQ04463 [Recovery][UI/Key]android 4.1版本（Jelly Bean ）后的平台Recovery Mode下直接进入menu 
+FAQ03439 [Recovery][UI/Key]如何进入recovery mode立即显示menu菜单
+
+3.升级报错
+FAQ18367 [Driver - Recovery] Android M error: Invalid OTA package,missing scatter Installation aborted
+FAQ18250 [recovery][common]Android M upgrade occurs “Error: Invalid OTA package, missing scatter”
+FAQ14973 [Recovery][OTAError]Adb sideload OTA升级失败报错："E: unknown volume for path [/sideload/pakage.zip]”
+FAQ14782 [Recovery][OTAError]L版本开启MTK_SHARED_SDCARD 后OTA包放入内卡如何MOTA升级成功？
+FAQ14769 [Recovery][OTAError]L版本OTA升级遇到error："system has been remounted R/W; reflash device to reenable OTA updates"
+FAQ11475 [Recovery][OTAError]升级报错"Error: System property does not match"怎么办？
+FAQ11106 [Recovery][OTAError]SECURE OTA 升级包里面缺少SEC_VER.txt导致升级失败
+FAQ11048 [Recovery][OTAError]从外置SD卡升级过程断电，再升级，无法看到"apply sdcard2:update.zip"提示！
+FAQ04471 [Recovery][OTAError]MOTA/FOTA升级失败，怎么办？
+ 
+ 
+4.升级包制作与签名相关
+FAQ12479 [Recovery][Otapackage]为什么制作差分包时未使用-k 选项有时可以升级成功、有时却失败？
+FAQ11470 [Recovery][Otapackage]如何制作差分包且正确签名？
+FAQ11464 [Recovery][Otapackage]JB升级到KK如何正确编译差分升级包update.zip？
+FAQ03534 [Recovery][Otapackage]如何给OTA升级包重新签章
+FAQ03441 [Recovery][Otapackage]如何制作和使用OTA（sdcard）升级包
+FAQ03440 [Recovery][Otapackage]如何制作user版本的T卡升级包
+FAQ02507 [Recovery][Otapackage]如何编译完整升级包
+ 
+5.编译与编译报错问题
+FAQ14456 [Recovery][Otapackage]system.img>2G导致编译otapackage时报错如何处理
+FAQ14455 [Recovery][Otapackage]打开MTK_CIP_SUPPORT=yes后make otapackage报错KeyError:"/custom"
+FAQ10545 [Recovery][Otapackage]The "brom_lite" is not found in the SD card upgrade package for JB9？
+FAQ10544 [Recovery][Otapackage]MT6572+ UBIF文件系统build出来的OTA包不含system.img该怎么办？
+FAQ07599 [Recovery][Otapackage]./mk otapackage报错总结
+FAQ03436 [Recovery][Debug/Log]如何单独 build recovery image
+ 
+6.MTK_SHARED_SDCARD 宏相关问题
+FAQ12478 [Recovery][Common]关于打开MTK_SDCARD_SWAP 宏后MTK目前升级方案
+FAQ12477 [Recovery][Common]关于打开MTK_SHARED_SDCARD宏后MTK目前升级方案
+ 
+7.恢复出厂设置，预置资源问题
+FAQ17418 [Recovery][Build] 预置资源（如apk）到userdata，otapackage之后的userdata.img没有此资源 
+FAQ13434 [Recovery][FactoryReset]L 开启MTK_SHARED_SDCARD，恢复出厂设置还能实现keep_list功能吗？
+FAQ12384 [Recovery][FactoryReset]不打开Shared sdcard功能，内置SD卡中预制资源，删除资源，恢复出厂设置恢复
+FAQ11954 [Recovery][Others]如何实现恢复出厂后不重新启动手机？FAQ10734 [Recovery][FactoryReset]开启了MTK_SHARED_SDCARD之后；恢复出厂设置如何保留预置资源？
+FAQ06388 [Recovery][FactoryReset]89 JB2平台上factory reset从LK进入Recovery Mode画面切换有黄条
+FAQ05341 [Recovery][FactoryReset]如何避免data分区的.keep_list和.restore_list被意外损坏导致special factory reset不成功
+FAQ03437 [Recovery][FactoryReset]special factory reset preserve or restore apk to /data/app
+FAQ03434 [Recovery][Others]恢复出厂设置之后如何将时间变为初始值
+ 
+8.Secure boot project 的升级问题
+FAQ14751 [Recovery][SecureOTA]L 版本Security OTA升级方法
+FAQ11106 [Recovery][OTAError]SECURE OTA 升级包里面缺少SEC_VER.txt导致升级失败
+FAQ05739 [Recovery][SecureOTA]OTA升级secutiry device的注意点
+FAQ17784 [Recovery][Common]Android M OTA build (Include Security OTA)
+ 
+9.Debug log ,adb 功能相关
+FAQ15046 [Recovery][Debug/Log]L版本Recovery Mode打开adb功能
+FAQ12130 [Recovery][Common]如何通过adb command 完成自动SD卡升级？
+FAQ10547 [Recovery]adb shell df 命令显示的系统分区Size不准确 ？
+FAQ09814 [Recovery][Debug/Log]如何在recovery mode下抓取coredump
+FAQ08726 [Recovery][Debug/Log]How to enable adb in Recovery Mode
+FAQ04559 [recovery][Common]从JB版本开始支持adb sideload命令
+FAQ03442 [Recovery][Debug/Log]如何在recovery mode下抓取LOG
+ 
+10.升级包保存或删除问题
+FAQ12492 [Recovery][Others]SD卡升级包升级后，如何删除升级包文件？
+FAQ10759 [Recovery][Others]MOTA升级成功后想保留OTA升级包该怎么办？
+ 
+11.内外卡,data路径相关问题
+FAQ18251 [Recovery][common] Android M Adoptable SD卡无法在recovery mode识别和使用
+FAQ17442 [Recovery][Common]Android L和M 版本data加密后升级包放入/data分区如何升级？
+FAQ12491 [Recovery][Common]Recovery mode 选择"apply update from sdcard"直接进入data/目录是否正常？
+FAQ08109 [Recovery][Common]在recovery mode下同时挂载内置T卡和外置T卡
+FAQ05443 [Recovery][Others]从data区读取状态来确定升级用内外置卡导致升级不成功
+FAQ04366 [Recovery][Common]JB版本的recovery mode下使用外置T卡升级修改方法
+FAQ03432 [Recovery][Common]Recovery mode下mount外置T卡的方法(emmc)
+
+12.重启相关问题
+FAQ12481 [Recovery][Others]Recovery mode在cache/recovery目录下新建一支文件，重启后，新建文件消失了
+FAQ11015 [Recovery][Others]通过组合键进入recovery模式选择sdcard菜单升级，升级完如何自动重启？
+FAQ03431 [Recovery][Others]OTA升级在recovery mode下无法返回normal mode
+
+13.lk、Preloader等分区升级相关问题
+FAQ18188 [Recovery][Common]Android M 版本如何升级logo等rawdata分区方法？
+FAQ17441 [Recovery][Common]Android M 版本如何升级lk 、preloader ？ 
+FAQ12947 [Recovery]Update LOGO&LK&PRELOADER via OTA upgrade
+
+14.其他升级问题
+FAQ18467 add selinux policy in OTA
+FAQ14482 [Recovery][Others]如何在recovery mode下单独关闭selinux 而不影响normal mode
+FAQ04813 [Recovery]使手机设置菜单里的序列号为手机的barcode值
+FAQ03435 [Recovery][Common]如何查看手机上的build时间戳
+```
+
+## [FAQ12127] 插入俄罗斯SIM卡获取时区不对
+
+```
+手机插入俄罗斯SIM卡，发现根据MCC获取的时区不是Moscow，
+如KK版本插入俄罗斯卡，发现当前时区是Europe/Kaliningrad，L版本则是Europe/Andorra
+[SOLUTION]
+这是因为系统在通过MCC获取时区时是先获取sim卡所属国家所有的时区列表，然后把列表的第一个作为返回值。
+因为Moscow不是第一位，因此出现上面这种情况，
+一般从log中会有这样的下面的关键字打出，
+KK版本：
+06-03 10:05:27.069   864   864 D GSM     : [GsmSST0] pollStateDone: try to fixTimeZone mcc:250 mccTz:Europe/Kaliningrad
+06-03 10:05:27.069   864   864 D GSM     : [GsmSST0] pollStateDone: using default TimeZone
+06-03 10:05:27.069   864   864 D GSM     : [GsmSST0] pollStateDone: zone != null zone.getID=Europe/Kaliningrad
+Android L：
+04-14 05:21:51.436  3596  3596 D GSM     : [GsmSST1] pollStateDone: try to fixTimeZone mcc:250 mccTz:Europe/Andorra zone.getID=Europe/Andorra
+04-14 05:21:51.436  3596  3596 D GSM     : [GsmSST1] pollStateDone: using default TimeZone
+04-14 05:21:51.436  3596  3596 D GSM     : [GsmSST1] pollStateDone: zone != null zone.getID=Europe/Andorra
+这个问题可以修改defaultTimeZoneForMcc返回值解决如下：
+MccTable.java alps\frameworks\opt\telephony\src\java\com\android\internal\telephony 
+public static String defaultTimeZoneForMcc(int mcc) {
+    MccEntry entry;
+    entry = entryForMcc(mcc);
+    if (entry == null || entry.mIso == null) {
+        return null;
+    } else {
+        Locale locale;
+        if (entry.mLanguage == null) {
+            locale = new Locale("", entry.mIso);
+            Slog.d(LOG_TAG, "defaultTimeZoneForMcc: mcc=" + mcc + ", mIso=" + entry.mIso);
+        } else {
+            locale = new Locale(entry.mLanguage, entry.mIso);
+            Slog.d(LOG_TAG, "updateMccMncConfiguration: mcc=" + mcc +
+                                    ", mLanguage=" + entry.mLanguage +
+                                    ", mIso=" + entry.mIso);
+        }
+        String[] tz = TimeZoneNames.forLocale(locale);
+        if (tz.length == 0) return null;  
+         if(mcc==250) return "Europe/Moscow"；////add this line
+        return tz[0];
+    }
+}
+ 
+Android M: 
+/frameworks/opt/telephony/src/java/com/android/internal/telephony/MccTable.java
+public static String defaultTimeZoneForMcc(int mcc) {
+    MccEntry entry = entryForMcc(mcc);
+    if (entry == null) {
+        return null;
+    }
+    Locale locale = new Locale("", entry.mIso);
+    String[] tz = TimeZoneNames.forLocale(locale);
+    if (tz.length == 0) return null;
+    if(mcc==250) return "Europe/Moscow"；////add this line
+    return tz[0];
+}
+```
+
+## [FAQ17902] 如何关闭灭屏时colorFade渐变动画
+
+```
+在displayPowerController.java文件updatePowerState函数，将performScreenOffTransition的赋值修改为false
+```
+
+## [FAQ19228] [Audio APP] android 7.0 充电提示音无效
+
+```
+其实是需要无线充电的时候才会发出声音
+ 
+代码逻辑如下：
+这个设定是更改 setting 里面的 Settings.Global.CHARGING_SOUNDS_ENABLED
+最后会被 frameworks/base/services/core/java/com/android/server/power/Notifier.java 去检测
+private void playWirelessChargingStartedSound() {
+    final boolean enabled = Settings.Global.getInt(mContext.getContentResolver(),
+    Settings.Global.CHARGING_SOUNDS_ENABLED, 1) != 0; //更改的是 Settings.Global.CHARGING_SOUNDS_ENABLED
+    final String soundPath = Settings.Global.getString(mContext.getContentResolver(),
+    Settings.Global.WIRELESS_CHARGING_STARTED_SOUND);
+    if (enabled && soundPath != null) {
+        final Uri soundUri = Uri.parse("file://" + soundPath);
+        if (soundUri != null) {
+            final Ringtone sfx = RingtoneManager.getRingtone(mContext, soundUri);
+            if (sfx != null) {
+                sfx.setStreamType(AudioManager.STREAM_SYSTEM);
+                sfx.play();
+            }
+        }
+    }
+    mSuspendBlocker.release();
+}
+
+
+而这个检测方法是在 PowerManagerService 中被调用的
+看逻辑是只在无线充电的时候才会有声音
+
+PowerManagerService.java中updateIsPoweredLocked函数中，
+if (dockedOnWirelessCharger) {
+    mNotifier.onWirelessChargingStarted();
+}
+```
+
+## [FAQ19277] [Audio APP] android 7.0 FMRadio 的正确更新方式
+
+```
+有客户遇到原生的 FMRadio app 用 install 的方式安装后打开会出现 force close, 查看 log 是加载 library 出错
+01-01 04:35:22.406100 12311 12311 E AndroidRuntime: FATAL EXCEPTION: main
+01-01 04:35:22.406100 12311 12311 E AndroidRuntime: Process: com.android.fmradio, PID: 12311
+01-01 04:35:22.406100 12311 12311 E AndroidRuntime: java.lang.UnsatisfiedLinkError: dlopen failed: library "/system/lib64/libfmjni.so" needed or dlopened by "/system/lib64/libnativeloader.so" is not accessible for the namespace "classloader-namespace"
+01-01 04:35:22.406100 12311 12311 E AndroidRuntime: at java.lang.Runtime.loadLibrary0(Runtime.java:977)
+01-01 04:35:22.406100 12311 12311 E AndroidRuntime: at java.lang.System.loadLibrary(System.java:1530) 
+
+这是因为安装方式不正确，android 7.0 开始，FMRadio 默认是安装在 system/priv-app/FMRadio/下面，所以如果有开发过程中有验证需求，需要把 FMRadio.apk push 到 system/priv-app/FMRadio/ 下面，然后重启验证。
+
+如果是用 adb install 的方式，会安装到 data/app/ 下面, 不具有加载 system library 的权限
+```
+
+## [FAQ19280] 开机后，首次图案解锁失败
+
+```
+请如下修改：
+/system/gatekeeper/gatekeeper.cpp
+uint32_t GateKeeper::ComputeRetryTimeout(const failure_record_t *record) {
+    if (record->failure_counter > 0 && record->failure_counter <= 10) {
+        if (record->failure_counter % 5 == 0) {
+            return 30000;
+        }
+    } else {
+        return 30000;
+    }
+    return 0;
+}
+修改成如下：
+uint32_t GateKeeper::ComputeRetryTimeout(const failure_record_t *record) {
+    if (record->failure_counter > 0 && record->failure_counter <= 10) {
+        if (record->failure_counter % 5 == 0) {
+            return 30000;
+        }
+    } else if(record->failure_counter == 0){ //增加了fail次数为0的判断
+        return 0;
+    } else{
+        return 30000;
+    }
+    return 0;
+}
+```
+
+## [FAQ19296] 将歌曲设为闹钟铃声，删除该歌曲后，来闹钟后，铃声只响一声，如何修改为正常响很多声？
+
+```
+1，问题原因是当mRingtone == null时，未setloop，所以不会循环播放。
+2， 修改如下：
+AsyncRingtonePlayer.java (packages\apps\deskclock\src\com\android\deskclock)
+
+private static class RingtonePlaybackDelegate implements PlaybackDelegate {
+
+public void play(Context context, Uri ringtoneUri, boolean inCall) {
+
+LogUtils.d(TAG, "lll RingtonePlaybackDelegate Play ringtoneUri="+ringtoneUri,new Exception("callstack"));
+if (Looper.getMainLooper() == Looper.myLooper()) {
+LogUtils.e(TAG, "Must not be on the main thread!", new IllegalStateException());
+}
+
+LogUtils.i(TAG, "Play ringtone via android.media.Ringtone.");
+
+if (mAudioManager == null) {
+mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+}
+
+final boolean inTelephoneCall = inCall; //isInTelephoneCall(context);
+if (inTelephoneCall) {
+ringtoneUri = getInCallRingtoneUri(context);
+}
+
+// attempt to fetch the specified ringtone
+mRingtone = RingtoneManager.getRingtone(context, ringtoneUri);
+// Attempt to enable looping the ringtone.
+/// M: if the alarm's uri exists but the real file is missing
+if (mRingtone == null
+|| !AlarmClockFragment.isRingtoneExisted(context, ringtoneUri.toString())) {
+// fall back to the default ringtone
+final Uri defaultUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+mRingtone = RingtoneManager.getRingtone(context, defaultUri);
+}
+
+//该段代码移动如下
+try {
+mSetLoopingMethod.invoke(mRingtone, true);
+} catch (Exception e) {
+LogUtils.e(TAG, "Unable to turn looping on for android.media.Ringtone", e); 
+// Fall back to the default ringtone if looping could not be enabled.
+// (Default alarm ringtone most likely has looping tags set within the .ogg file)
+mRingtone = null;
+}
+//该段代码移动如上
+
+// if we don't have a ringtone at this point there isn't much recourse
+if (mRingtone == null) {
+LogUtils.i(TAG, "Unable to locate alarm ringtone.");
+return;
+}
+if (Utils.isLOrLater()) {
+mRingtone.setAudioAttributes(new AudioAttributes.Builder()
+.setUsage(AudioAttributes.USAGE_ALARM)
+.setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+.build());
+}
+// Attempt to adjust the ringtone volume if the user is in a telephone call.
+if (inTelephoneCall) {
+LogUtils.v("Using the in-call alarm");
+try {
+mSetVolumeMethod.invoke(mRingtone, IN_CALL_VOLUME);
+} catch (Exception e) {
+LogUtils.e(TAG, "Unable to set in-call volume for android.media.Ringtone", e);
+}
+}
+mAudioManager.requestAudioFocus(null, AudioManager.STREAM_ALARM,
+AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+mRingtone.play();
+}
+```
+
+## [FAQ19290] 如何查看TCP Buffer size大小
+
+```
+查看:
+情况1:log中包含数据连接的过程
+A.查看radio_log,搜索关键字setup_data_call,确定default PDP建立连接的时间点.
+B.查看sys_log,搜索关键字Setting tx/rx TCP buffers,查看测试时间点或建立数据连接时间点设置的值
+ 
+情况2:netlog中含有dump-networking log,搜索关键字tcp_rmem及tcp_wmem,查看readBuffer及writeBuffer.
+提示:只有手动停止mtklog,netlog中才会包含dump-networking log.
+ 
+修改:
+文件:DataConnection.java
+方法:搜索关键字 TCP_BUFFER_SIZES,会看到根据网络环境设置的各种buffer size,可以根据需要进行修改.
+如: private static final String TCP_BUFFER_SIZES_LTE="524288,1048576,2097152,262144,524288,1048576";
+表示4G环境下,设置的tcp buffer sizes的值,其中前三个值是readBuffer,后三个值是writeBuffer.
+```
+
+## [FAQ19263] 查看热点支持连接数
+
+```
+用 grok 在代码中搜索 max_num_sta 即可
+
+alps/kernel-4.9/drivers/staging/wilc1000/host_interface.h	19 #define MAX_NUM_STA	9 macro 
+
+1. find out the file( /data/misc/wifi/hostapd.conf ), in hotspot device;
+
+P:/data/misc/wifi/softap.conf
+
+2. find out the key (max_num_sta), the valuse of the key is the hotspot's capability.
+
+forexample:
+if the max_num_sta equal 8, so the hotspot's capability can support 8 stations at the same time.
+```
+
+## [FAQ11035] 如何通过USB接口抓UART log
+
+```
+M版本以及以后的版本不再支持此Feature！
+ 
+目前6572和6582 之后平台可以使用USB线抓取UART log，具体的操作方法如下
+
+[SOLUTION]
+L 版本：
+步骤1.请打开如下两个宏：
+
+preloader：
+alps/bootable/bootloader/preloader/platform/$platform/default.mk
+CFG_USB_UART_SWITCH
+
+kernel:
+alps/kernel-3.10/arch/arm/configs/xxx_defconfig
+CONFIG_MTK_UART_USB_SWITCH
+
+步骤2. enable from engineer mode
+输入*#*#3646633#*#*
+Hardware -> UART/USB Switch ->进去可以切换mode
+
+注意：
+1.切换前不能插入cable
+2.DP ->TX ; DM -> RX
+3. 连线需要连UART线，不能连USB线
+
+L以前版本：
+6572 6571平台：
+在 Mediatek/custom/<proj>/preloader/inc/cust_bldr.h 里将CFG_USB_UART_SWITCH 宏打开
+6582 6592平台：
+Mediatek/custom/<proj>/preloader/cust_bldr.mak里将 CFG_USB_UART_SWITCH 宏打开，
+
+具体代码您可以参考alps/mediatek/platform/mt6582/preloader/src/drivers/Platform.c的platform_pre_init（）函数~
+```
+
+## [FAQ19162] Android N 设置中语言列表介绍
+
+## [FAQ19202] 【Encryption】遇到加密问题，如何抓取log？
+
+## [FAQ17485] SP Flashtool和SP Multiport Download Tool的Checksum功能介绍
+
+## [FAQ13989] 【Phone Call】L版本上关于通话时间显示异常的处理
+
+## [FAQ11506] [SIM]如何客制化SIM默认颜色
+
+## [FAQ18298] 小区广播不要在短信列表里显示，只显示在notification
+
+## [FAQ18140] [Gallery]Gallery不能打开隐藏文件夹中的图片
+
+## [FAQ19618] 如何在ap获取拍照的yuv数据
+
+## [FAQ19621] 开关机时根据SIM卡动态适配开关机动画
+
+## [FAQ19779] Android N resource加载逻辑介绍（语言切换不成功等问题）
+
+## [FAQ15097] OTA升级后Home键失灵
+
+## [FAQ06210] 如何让主菜单的背景显示为壁纸?
+
+## [FAQ03858] 滑动锁屏状态下如何禁止下拉状态栏？
+
+## [FAQ12135] [SAT]怎么实现SAT icon一直显示在launcher菜单中
+
+## [FAQ10107] [SAT]STK icon name动态修改成STK一级菜单的title
 
 ## [FAQ18531] [SAT]插入某种特定卡开机，点击STK Icon,显示STK未安装
 
@@ -10755,6 +12084,8 @@ World Phone切换：Switching to *DD CSFB modem,其中这个*有可能是F，也
 
 ## WAPI 是什么？？？
 
+## PICS 是什么？？
+
 ## ResourceOverlay 怎么用？？？
 
 ## 如何读取和修改 SIM 卡里的文件？？
@@ -10815,5 +12146,6 @@ World Phone切换：Switching to *DD CSFB modem,其中这个*有可能是F，也
 
 ## [FAQ14252] MT6735/35M/35P/53/53T软件包使用说明(L1.MP3&L1.MP3.TC7SP&M0.MP1适用)
 
+flashtool 报错 STATUS_DA_HASH_MISMATCH : flash不兼容的问题
 
 FAQ看到了38页
