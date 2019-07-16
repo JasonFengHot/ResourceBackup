@@ -4839,6 +4839,23 @@ alps/vendor/mediatek/proprietary/packages/services/Telephony/src/com/android/pho
 +        //redmine139979 panhaoda modify for language not change from sim 2018 0704 end
 ```
 
+## P go 上关机对话框上会有两种 item 的颜色
+
+```
+vendor/mediatek/proprietary/packages/apps/SystemUI/src/com/android/systemui/globalactions/GlobalActionsDialog.java
+
+MyAdapter
+public View getView(int position, View convertView, ViewGroup parent) {
+    Action action = getItem(position);
+    View view = action.create(mContext, convertView, parent, LayoutInflater.from(mContext));
+    // Everything but screenshot, the last item, gets white background.
+    if (position == getCount() - 1) {
+        //HardwareUiLayout.get(parent).setDivisionView(view);   //这里会把最后一项变成其他颜色，去掉这一行代码就可以
+    }
+    return view;
+}
+```
+
 ## smaps 各个字段含义
 
 ``` bash
@@ -11949,12 +11966,1210 @@ Hardware -> UART/USB Switch ->进去可以切换mode
 
 L以前版本：
 6572 6571平台：
-在 Mediatek/custom/<proj>/preloader/inc/cust_bldr.h 里将CFG_USB_UART_SWITCH 宏打开
+在 Mediatek/custom/<proj>/preloader/inc/cust_bldr.h 里将 CFG_USB_UART_SWITCH 宏打开
 6582 6592平台：
 Mediatek/custom/<proj>/preloader/cust_bldr.mak里将 CFG_USB_UART_SWITCH 宏打开，
 
 具体代码您可以参考alps/mediatek/platform/mt6582/preloader/src/drivers/Platform.c的platform_pre_init（）函数~
 ```
+
+## [FAQ08879] [SIM]如何获取卡对应的plmn
+
+```
+获取卡对应的plmn 
+
+plmn 由MCC MNC组成
+MCC全称是Mobile Country Code，3位数组成，用户不同国家的一个识别码；
+MNC全称是Mobile Network Code，不同运营商的MNC有区别(MNVO除外)，2位或者3位，这个长度是存放在IccCard的EF_AD当中。
+
+MCC/MNC是从IccCard中读取出来的.以sim卡为例，SIMRecords.java读取，属于Phone 进程的模块。
+除了Phone进程，其他应用要获取MCC/MNC不能直接到SIMRecords.java中拿。
+所以有考虑到这一点，在读取出mcc/mnc时将其保存，PhoneInterfaceManager.java有提供接口给其他进程呼叫。
+L & M & N 版本:
+TelephonyManager.java           public String getSimOperator(long subId);
+
+L之前的版本:
+TelephonyManager.java           public String getSimOperator(int simId);
+
+使用方法:
+try{
+    ITelephony tel = ITelePhone.Stub.asInterface(ServiceManager.getService(Context.TELEPHONY_SERVICE));
+    String MccMnc = null;
+    if(tele != null) {
+        //L & M & N 版本
+        MccMnc = tel.getSimOperator(subId);
+        //L 之前的 版本
+        MccMnc = tel.getSimOperator(simId);
+    }
+}catch (RemoteException ex){
+}
+PS: 如果只取Mcc的话，MccMnc.subString(0,3)即可
+```
+
+## [FAQ19143] Android N common版本上中文英文字串网址识别错误
+
+```
+Android N上，接收短信时，如果收到的内容有中文和网址时，网址匹配不正确。例如：带有网址和中文时，中文和网址全部带有下划线，中文www.baidu.com中文，整个都会有下划线，需要改成只有www.baidu.com有下划线。Google原生的WEB_URL Pattern都是follow RFC spec定义的，建议不要修改，如果必须要改，可参照下面的solution. 此修改不影响CTS测项，但可能对其它Unicode URL的匹配有影响(如果是Android N之前的版本请参考FAQ13616)。
+
+vendor/mediatek/proprietary/frameworks/base/packages/FwkPlugin/src/com/mediatek/op/util/DefaultPatterns.java
+
+package com.mediatek.op.util;
+
+import android.util.Patterns;
+import android.util.Log;
+
+import com.mediatek.common.PluginImpl;
+import com.mediatek.common.util.IPatterns;
+import com.mediatek.common.util.IPatterns.UrlData;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+* Customize the web URL parsing.
+*
+*/
+@PluginImpl(interfaceName = "com.mediatek.common.util.IPatterns")
+public class DefaultPatterns implements IPatterns {
+    private static final String TAG = "DefaultPatterns";
+
+    // The regular expressions for filtering out bad url starting and ending
+    private static final String mValidCharRegex = "a-zA-Z0-9\\-_";
+    // First group: Find the invalid url characters before "xxxx:// or xxx.".
+    // Second group: "xxxx:// or xxx."
+    private static final String mBadFrontRemovingRegex = String.format(
+            "(^[^.]*[^%s.://#&=]+)(?:[a-zA-Z]+://|[%s]+.)", mValidCharRegex, mValidCharRegex);
+    // First group: Find the top level domain, ex:".xxx".
+    // The ending ")" is for google map url, which may end with a coordinate,
+    // ex:"(32.012345, 118.54321)"
+    // Second group: The rest characters after the TLD to the end of the string,
+    // except some special character may appear in url, ex: "./?=&%"
+    private static final String mBadEndRemovingRegex = String.format(
+            "([\\.\\:][%s)]+[/%s]*)([\\.\\:]?[^%s\\.\\:\\s/]+[^\\.=&%%/]*$)",
+            mValidCharRegex, mValidCharRegex, mValidCharRegex);
+
+    // Helper function for exgular expression group replacing.
+    private static final String replaceGroup(String regex, String source, int groupToReplace,
+             String replacement) {
+             return replaceGroup(regex, source, groupToReplace, 1, replacement);
+    }
+
+    // Helper function for exgular expression group replacing.
+    private static final String replaceGroup(String regex, String source, int groupToReplace,
+             int groupOccurrence, String replacement) {
+             Matcher m = Pattern.compile(regex).matcher(source);
+             for (int i = 0; i < groupOccurrence; i++) {
+                      if (!m.find()) {
+                               return source;
+                      }
+              }
+             return new StringBuilder(source).replace(m.start(groupToReplace), m.end(groupToReplace),
+                       replacement).toString();
+    }
+
+    @Override
+    public UrlData getWebUrl(String urlStr, int start, int end) {
+              Log.d("@M_" + TAG, "getWebUrl, " + urlStr + " start=" + start + " end=" + end);
+              if (urlStr != null) {
+                       /// Filter out invalid characters at the begin of the url
+                       Pattern p1 = Pattern.compile(mBadFrontRemovingRegex);
+                       Matcher m1 = p1.matcher(urlStr);
+                       if (m1.find()) {
+                                 urlStr = replaceGroup(mBadFrontRemovingRegex, urlStr, 1, "");
+                                 start = end - urlStr.length();
+                        }
+
+                       /// Filter out invalid characters at the end of the url
+                       Pattern p2 = Pattern.compile(mBadEndRemovingRegex);
+                       Matcher m2 = p2.matcher(urlStr);
+                       if (m2.find()) {
+                                  urlStr = replaceGroup(mBadEndRemovingRegex, urlStr, 2, "");
+                                  end = start + urlStr.length();
+                        }
+               }
+               Log.d("@M_" + TAG, "getWebUrl, return: " + urlStr + " start=" + start + " end=" + end);
+               return new UrlData(urlStr, start, end);
+    }
+
+    @Override
+    public int getPatternType() {
+               return PATTERN_CHINA;
+    }
+}
+```
+
+## [FAQ19188] 3G常用feature支持情况在log中查看方法
+
+## [FAQ19211] [Android5.1]开机动画desc.txt描述文件分析
+
+```
+1、desc.txt文件格式分析
+desc.txt文件由若干行组成，每一行代表一种描述。下面以一个具体的例子为例，具体说明
+
+480 640 20 
+p   1   0    folder1 
+p   2   20  folder2 
+c   0   0    folder3 
+c   1   0    folder4 
+
+  1行用来描述开机动画在屏幕显示的大小及速度。具体为：开机动画的宽度为480个像素，高度为640个像素，显示频率为每秒20帧，即每帧显示1/20秒。
+  下面的每一行代表一个片段，显示的时候会按照顺序从上到下依次显示。第1个字符为片段类型，有'c'和'p'两种，两者的区别后面会结合代码说明。
+  2个数字为该片段重复显示的次数，如果为‘0’，表示会无限重复显示；第3个数字为两次显示之间的间隔，单位为第一行中定义的每帧显示的时间；第4个字符串为该片段所在的文件夹，一个片段可以由多个png图片组成，都存放在folder文件夹中。
+“p 1 0 folder1”-------代表该片段显示1次，与下一个片段间隔0s，该片段的显示图片路径为bootanimation.zip/folder1。
+“p 2 20 folder2”--------代表该片段显示2次，且两次之间显示的间隔为20*(1/20)=1s，与下一个片段间隔20*(1/20)=1s，该片段的显示图片路径为bootanimation.zip/folder2。
+“c 0 0 folder3”-------代表该片段无限循环显示，且两次显示的间隔为0s，与下一个片段间隔0s，该片段的显示图路径为bootanimation.zip/folder3。
+“c 1 10 folder4”--------代表该片段显示1次，显示后暂停10*(1/20)=0.5s，该片段的显示图路径为bootanimation.zip/folder4。
+
+
+2、"p"片段和“c”片段的区别
+  在早期Android版本中只有“p”片段，且movie()中的显示代码如下：
+for (int i=0 ; i<pcount && !exitPending() ; i++) { 
+  const Animation::Part& part(animation.parts[i]); 
+  const size_t fcount = part.frames.size(); 
+  glBindTexture(GL_TEXTURE_2D, 0); 
+
+  for (int r=0 ; !part.count || r<part.count ; r++) { 
+       for (int j=0 ; j<fcount && !exitPending(); j++) { 
+            const Animation::Frame& frame(part.frames[j]); 
+            ....... 
+
+} 
+
+  里面的主要参数和函数说吗如下：
+pcount---显示片段的数量，比如上面的例子，pcount=4
+p.count---该片段的重复显示次数。
+fcount---该片段中png图片的数量
+exitPending()---如果SurfaceFlinger服务通知bootanimation停止显示动画，则该函数返回值为true，否则为false。
+  第一个for循环用于顺序显示所有片段，第二个for循环用于重复显示该片段，第三个for循环用于顺序显示该片段中所有的png图片。
+  分析代码，可知：若exitPending()返回值为true，即SurfaceFlinger服务要求bootanimation停止显示动画，则不管当前显示到哪个片段或png图片，都会导致退出for循环，从而停止开机动画的显示。
+  在Android5.1中，加入了“c”片段。对与以"c"标识的片段，即使exitPending()返回值为true，也会继续显示。
+我们分析一下源码，首先看一下movie()中解析desc.txt的代码：
+
+// Parse the description file 
+for (;;) { 
+...... 
+if (sscanf(l, "%d %d %d %d", &width, &height, &fps, &flg) >= 3) { 
+  animation.width = width; 
+  animation.height = height; 
+  animation.fps = fps; 
+} 
+else if (sscanf(l, " %c %d %d %s #%6s", &pathType, &count, &pause, path, color) >= 4) { 
+  Animation::Part part; 
+  part.playUntilComplete = pathType == 'c'; 
+  part.count = count; 
+  part.pause = pause; 
+  part.path = path; 
+  part.audioFile = NULL; 
+  if (!parseColor(color, part.backgroundColor)) { 
+        ALOGE("> invalid color '#%s'", color); 
+        part.backgroundColor[0] = 0.0f; 
+        part.backgroundColor[1] = 0.0f; 
+        part.backgroundColor[2] = 0.0f; 
+  } 
+  animation.parts.add(part); 
+} 
+  s = ++endl; 
+} 
+  可以看到，如果pathType==‘c’，part.playUntilComplete等于true，否则为false。接着，看一下显示代码：
+for (size_t i=0 ; i<pcount ; i++) { 
+  const Animation::Part& part(animation.parts[i]); 
+  const size_t fcount = part.frames.size(); 
+  glBindTexture(GL_TEXTURE_2D, 0); 
+
+  for (int r=0 ; !part.count || r<part.count ; r++) { 
+        // Exit any non playuntil complete parts immediately 
+        if(exitPending() && !part.playUntilComplete) 
+              break; 
+  ...... 
+
+        for (size_t j=0 ; j<fcount && (!exitPending() || part.playUntilComplete) ; j++) { 
+        ...... 
+        checkExit(); 
+  } 
+  usleep(part.pause * ns2us(frameDuration)); 
+  // For infinite parts, we've now played them at least once, so perhaps exit 
+  if(exitPending() && !part.count) 
+        break; 
+  } 
+  ...... 
+} 
+  可以看到，如果exitPending()返回值为true且part.playUntilComplete=false，则会break。即：当SurfaceFlinger服务要求bootanimation停止显示动画时，以‘p’标识的片段会停止，而以'c'标识的片段会继续显示。这就是两者之间的主要区别。
+  这里有个问题：重复循环显示的'c'标识片段，会不受任何约束的一直显示下去，这显然是不合适的。
+于是在第二个for循环体最后，有如下代码：
+
+// For infinite parts, we've now played them at least once, so perhaps exit 
+if(exitPending() && !part.count) 
+  break; 
+意思是，如果检测到SurfaceFlinger服务要求bootanimation停止显示，且该片段的显示次数为'0'，即重复循环显示，则会break停止显示。
+
+  估计"c"标识的意思是continue，即：即使SurfaceFlinger要求bootanimation停止动画，bootanimation也不会立刻停止动画，它会等c标识片段都显示完毕后，再停止。
+这样，我们可以利用'c'和'p'片段的区别，设计出更灵活的开关机动画。
+```
+
+## [FAQ17334] [SIM_ME_LOCK]MCCMNC锁卡失败
+
+```
+如果锁卡的目标合法MCC-MNC是:738002,可是锁卡后目标卡(即738002的卡)进不到待机界面。(提示:Enter NP/SP等等Code，输入正确密码后才能进入)。但是使用中国移动(46000)或是中国联通(46001)等MCC-MNC是5位的卡测试，锁网功能正常。 
+
+这个现象是这些特殊卡的EF_AD中没有指定MNC的长度造成的。
+
+  
+[SOLUTION]
+MCC-MNC 长度 = mcc_length + mnc_length;
+mcc_length : 固定是3。
+Mnc_length : 与SIM卡有关，2 或 3，初始值为0，mnc_length 是在SIM卡初始化时从 EF_AD 第四个字节获取，有效值是2 或 3;
+
+当 EF_AD 第四个字节无效时，mnc_length = 0；匹配失败，导致锁卡失败。
+
+所以，当SIM 卡 EF_AD 第四个字节无效，没有写 mnc_length 时，确保锁卡MCC-MNC为5位或6位都有效的方法：
+
+确保 SML_MNC_LENGTH_NEST 的值为 1，并修改 sml_GetCode 为如下：
+
+kal_uint8 sml_GetCode( sml_cat_enum cat, 
+
+kal_uint8 * imsi, 
+
+kal_uint8 * gid1, 
+
+kal_uint8 * gid2, 
+
+kal_uint8 sim_mnc_len,
+
+kal_uint8 * pdata,
+
+kal_uint8 * code) 
+{ 
+     kal_uint8 mnc_len=0;
+
+     if (SML_MNC_LENGTH_NEST == 1)     //Get mnc length from SIM 
+     {
+         if ((sim_mnc_len == 2) || (sim_mnc_len == 3)) 
+         { 
+            mnc_len = sim_mnc_len; 
+         } 
+         else
+         { 
+            if(((*(pdata+2)) & 0x0F) == 0x0F) 
+            { 
+                 mnc_len = 2; 
+            } 
+            else
+            { 
+                 mnc_len = 3; 
+            } 
+         } 
+     } 
+     else      //Get mnc length from NVRAM 
+     { 
+         if(((*(pdata+2)) & 0x0F) == 0x0F) 
+         { 
+             mnc_len = 2; 
+         } 
+         else
+         { 
+             mnc_len = 3; 
+         } 
+     } 
+     return sml_Catcode(cat, imsi, gid1, gid2, mnc_len, code); . 
+} 
+```
+
+## [FAQ12867] [SIM]如何读取SIM卡的EFspn
+
+```
+获取SPN值有两种方法：
+第一种：通过保存开机时上报的spn值。
+因为MMI operator string 显示的时候会用到，所以默认已经会在开机时报给MMI 了
+PRT_MSG_ID_MMI_CPHS_MMI_INFO_IND
+srv_nw_name_cphs_mmi_info_ind_hdlr
+srv_nw_name_cphs_mmi_info_ind_hdlr_int
+msg->spn 里有带SPN 的值，直接保存这个值。
+第二种：用SIM access 的API 去获得SPN。
+1）MMI_BOOL srv_sim_get_file_info(
+        U16 file_index,
+        U8 *file_path,
+        mmi_sim_enum sim_id,
+        SrvSimCallbackFunc callback,
+        void *user_data)
+获取SIM file 大小等信息 ，file_index ：FILE_SPN_IDX  callback 函数 是获得了SIM file info之后会被call 到
+参数 的structure(srv_sim_file_info_struct *)param->data
+然后实现call back 函数：主要去做的是 根据获得了file size ，再去读具体的SIM file 的内容。
+2）MMI_BOOL srv_sim_read_binary(
+        U16 file_index,
+        U8 *file_path,
+        U16 offset,
+        U16 length,
+        mmi_sim_enum sim_id,
+        SrvSimCallbackFunc callback,
+        void *user_data)
+调用这个去读SIM file 的内容 ，其中file_index FILE_SPN_IDX   ，length ：用之前第一步获得的file size
+
+注意：
+srv_sim_read_record  ： 用于读取SIM file 类型是 linear fixed 或者 cyclic  的sim 文件 ，即 文件的存储内容是一条一条的record 的，每条record 大小一样。例如EFsms 存sms 的sim file
+srv_sim_read_binary ：用于读取SIM file 类型是 transparent 的sim 文件即 文件的存储内容 没有record ，只是连续的一串data 。 像SPN就是transparent 的type
+SIM file 的类型 ，及数据内容各个byte 的含义 都可以在Spec 里找到，可以在网上down到ETSI 51.011
+```
+
+## [FAQ10433] [SEC]修改SIM ME lock解锁码与IMEI号保持对应关系
+
+```
+有运营商需求，SIM ME LOCK的解锁码由手机的IMEI根据一个算法动态计算而来.
+
+默认SIM ME LOCK的解锁码是由modem 配置固定的，无法根据IMEI来动态设置modem的密码，那么这个部分就需要客制化。
+
+建议客制化的做法如下:
+
+Modem 端原始密码继续按照文档doc进行锁网配置；
+AP 端用户密码需要用IMEI 经过一个算法计算后得到一个新密码；
+AP 端用户输入这个新密码后，再通过算法解密，判断密码是否有效，有效则用原始密码发给Modem进行解锁；
+这种方案相当于AP 端解锁密码界面处理多了一步算法处理。
+
+AP端处理密码的部分:
+1. 这个和IMEI 有关系的解密部分，还是要贵司自行完成
+a. 如何获取对应卡槽的IMEI，请参考FAQ02913 如何获取IMEI号
+
+解密的code可以添加在如下位置
+
+L 版本:
+
+alps\frameworks\base\packages\keyguard\src\com\mediatek\keyguard\telephony\KeyguardSimPinPukMeView.java
+
+//CheckSimMe.run()
+mResult = ITelephonyEx.Stub.asInterface(ServiceManager.getService("phoneEx"))
+
+.supplyNetworkDepersonalization(subId, mPasswd);
+
+//其中的mPasswd 就是从界面上输入的数字
+
+KK版本alps\frameworks\base\policy\src\com\android\internal\policy\impl\keyguard\KeyguardSimPinPukView.java 
+//CheckSimMe.run()
+mResult = ITelephonyEx.Stub.asInterface(ServiceManager.checkService("phoneEx")).supplyNetworkDepersonalization(mPasswd, mSimId);
+
+//其中的mPasswd 就是从界面上输入的数字
+
+解密的code 请在执行supplyNetworkDepersonalization() 之前进行
+
+解密完之后确认密码正确，则将原始密码作为参数mPasswd 传入
+
+另外对输入的数字有一个判断函数，目前只允许输入8个，而贵司输入IMEI计算后的密码如果超过8个数字则不符合spec要求，
+请参考FAQ12171 [SEC]锁网密码允许输入超过8个数字
+```
+
+## [FAQ03693] [AT Command][SIM]如何用AT命令修改PIN
+
+```
+如何用AT命令修改PIN
+
+1. 请用AT+CPWD修改PIN,要在enable PIN的情况下，才能修改PIN，所以要先用AT+CLCK enable PIN。
+参考以下步骤：
+AT+CLCK="SC",1,"1234"                //enable PIN，此操作需要PIN
+AT+CPWD="SC","1234","1111"       //修改PIN
+
+2. 如果需要disable PIN，那么需要先下AT+CPIN verify，再进行disable。
+参考如下步骤：
+AT+CPIN="1111"
+AT+CLCK="SC",0,"1111"                     //disable PIN
+```
+
+## [FAQ19185] android N 后无法读取个别 system property 说明.
+
+```
+某个system property 明明已经写入成功, 但是通过adb 无法读取到, 或者某个程序无法读取到.
+
+其原因是android N 版本上, Google 对System Property 的流程做了大的调整, 其中最大的影响就是对读取 system property 也做了限制, 统一由SELinux 来操作控制. 根据SELinux Context 分割成多个互不关联的buffer trie/binary tree structure. 这些buffer 统一采用mmap 的搭建, 而对应mmap 的file 都放在 /dev/__properties__. 通常SELinux Context 都是按照system property 前缀划分的, 可以审查property_contexts 来查看. 
+因为system property 太多, Google 并且这样的改动, 导致原本get prop 没有权限限制而都有了权限限制, 为了使得影响尽可能减小, Google 又对原本的system property 进行了划分. 除ctl.* 的控制属性之外, 常见的有:
+
+Google 默认:
+
+property_type : 是property 最基本的attribute, 定义时都必须包含.
+
+core_property_type: 系统基本property, 每个进程都可以访问的property.  //domain.te get_prop(domain, core_property_type)
+
+log_property_type: Log 类型的property, 每个进程都可以访问的property. //get_prop(domain, log_property_type)
+
+MTK 新增:
+
+mtk_core_property_type: mtk 系统基本property, 每个进程都可以访问的property. //get_prop(domain, mtk_core_property_type)
+
+特别注意的是, get prop 访问失败时, 不会有SELinux 提示, 因为Google 在domain.te 里面添
+
+dontaudit domain property_type:file audit_access;
+
+为了大家好统一撰写SELinux Policy, Google 定义了两个macro.  即get_prop 和 set_prop 
+
+
+[SOLUTION]
+
+如果你的system property 不涉及什么私密信息, 你就直接在定义你的prop 的SELinux type 时, 加一个core_property_type, 这样每个进程都可以看到. 如果比较私密, 那么对应要查看的process , 则要使用get_prop 宏添加SELinux 权限.
+
+然后最后提醒一点, get prop 读取不出来, 没有任何的异常的SELinux 打印.
+```
+
+## [FAQ02917] [SEC]SIM ME LOCK(锁网/锁卡)功能介绍和使用
+
+```
+做SIM-ME Lock 相关feature开发，请先参考DCC文档《SIM-ME Lock For Customer》 和《SIM_ME_Lock宝典》。
+```
+
+## [FAQ12103] [SEC]AP端怎样实现锁卡功能可无限次输入错误密码
+
+```
+实现这个功能需要在AP和modem同时做修改。
+一、Modem端:
+将sml_verify()函数中的如下代码注释掉之后make new重新编译：
+meta->retry_count--;
+
+二、AP 端:
+除了modem端的修改，还需要在AP的UI显示做修改。
+
+L 版本上:
+Path: alps\frameworks\base\packages\keyguard\src\com\android\keyguard\KeyguardUpdateMonitor.java
+public void minusSimMeLeftRetryCountOfPhoneId(int phoneId) {
+    int simMeRetryCount = mSimMeLeftRetryCount.get(phoneId) ;
+    if (simMeRetryCount > 0) {
+        //mSimMeLeftRetryCount.put(phoneId, simMeRetryCount - 1);  //去掉减1动作， 改为:
+        mSimMeLeftRetryCount.put(phoneId, simMeRetryCount);
+    }
+}
+
+KK版本:
+收到卡被SIM ME LOCK住时才会去获取对应Category的retry count, 并记录在数组mSimMeLeftRetryCount中。
+每输入一次错误密码，都会调用minusSimMeLeftRetryCount()来减少次数。
+修改如下：
+Path: alps\frameworks\base\packages\keyguard\src\com\android\keyguard\KeyguardUpdateMonitor.java
+public void minusSimMeLeftRetryCount(int simId) {
+    if (mSimMeLeftRetryCount[simId] > 0 ) {
+      //注释 mSimMeLeftRetryCount[simId]--;
+    }
+}
+关于界面上次数的显示如果也要同步修改
+请参考FAQ10495 [SEC]如何在AP端修改SIM ME LOCK输入密码次数
+```
+
+## [FAQ19165] [SEC]初次进入PIN/PUK校验界面显示PIN/PUK Retry剩余次数
+
+```
+需要修改文件位于
+/frameworks/base/packages/Keyguard/src/com/mediatek/keyguard/Telephony/KeyguardSimPinPukMeView.java
+修改代码如下：
+public void resetState(boolean forceReload) {
+    ......
+    if (simState == IccCardConstants.State.PIN_REQUIRED) {
+        msg = rez.getString(R.string.kg_sim_pin_instructions_multi, displayName);
+
+        //for PIN
+        msg += "Remaining Attemps: " + getRetryPinString(mPhoneId);
+        mUnlockEnterState = STATE_ENTER_PIN;
+    } else if (simState == IccCardConstants.State.PUK_REQUIRED) {
+        msg = rez.getString(R.string.kg_puk_enter_puk_hint_multi, displayName);
+
+        //for PUK
+        msg += "Remaining Attemps: " + getRetryPuk(mPhoneId);
+        mUnlockEnterState = STATE_ENTER_PUK;
+    }
+    ......
+}
+```
+
+## [FAQ02916] [Common]如何判断sim卡是否有插入
+
+```
+M版本：
+PhoneInterfaceManager.java里面有提供hasIccCardUsingSlotId 方法；
+
+使用方法如下：
+import com.android.internal.telephony.ITelephony;
+
+final ITelephony iTel=ITelephony.Stub.asInterface(ServiceManager.getService(“phone”));
+boolean isSimInsert = false;
+try {
+    if (iTel != null) {
+        isSimInsert = iTel.hasIccCardUsingSlotId(slotId);
+    }
+} catch (RemoteException e) {
+    e.printStackTrace();
+    isSimInsert = false;
+}
+
+L版本：
+PhoneInterfaceManagerEx.java里面有提供hasIccCard方法；
+使用方法如下：
+import com.mediatek.internal.telephony.ITelephonyEx;
+
+final ITelephonyEx phoneEx=ITelephony.Stub.asInterace(ServiceManager.checkSetvice(“phoneEx”));
+if(phoneEx!=null){
+// slotId: PhoneConstants.SIM_ID_1, PhoneConstants.SIM_ID_2
+long subId=getSubIdBySlot(slotId);
+boolean isInsert= phoneEx. hasIccCard (subId);
+}
+
+KK版本：
+PhoneInterfaceManagerEx.java里面有提供hasIccCard方法；
+使用方法如下：
+import com.mediatek.common.telephony.ITelephonyEx;
+
+final ITelephonyEx phoneEx=ITelephony.Stub.asInterace(ServiceManager.checkSetvice(“phoneEx”));
+if(phoneEx!=null){
+boolean isInsert= phoneEx. hasIccCard (slotId);
+}
+
+KK之前的版本：
+PhoneInterfaceManager.java里面有提供isSimInsert方法；
+使用方法如下：
+import com.android.internal.telephony.ITelephony;
+
+final ITelephony phone=ITelephony.Stub.asInterace(ServiceManager.checkSetvice(“phone”));
+if(phone!=null){
+boolean isInsert=phone.isSimInsert(slotId);
+}
+```
+
+## [FAQ02914] [Common]如何获取IMSI号
+
+```
+IMSI（International Mobile SubscriberIdentification Number）国际移动用户识别码
+是区别移动用户的标志，储存在SIM卡中。
+请参看 TelephonyManagerEx.java 里面的方法getSubscriberId().
+例如：
+L版本、以及以后版本：
+TelephonyManagerEx mTelephonyMgr = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE_EX);
+if (mTelephonyMgr != null) {
+    String sim1IMSI = mTelephonyMgr.getSubscriberId(PhoneConstants.SIM_ID_1);
+    String sim2IMSI = mTelephonyMgr.getSubscriberId(PhoneConstants.SIM_ID_2);
+}
+
+KK及之前版本：
+String imsi = "";
+TelephonyManagerEx mTelephonyMgr = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE_EX);
+if (mTelephonyMgr != null) {
+    String sim1IMSI = mTelephonyMgr.getSubscriberId(PhoneConstants.GEMINI_SIM_1);
+    String sim2IMSI = mTelephonyMgr.getSubscriberId(PhoneConstants.GEMINI_SIM_2);
+}
+```
+
+## [FAQ02913] [Common]如何获取IMEI号和MEID号
+
+```
+IMEI号是GSM的概念，CDMA对应的是MEID号。
+
+IMEI（International Mobile Equipment Identity）是国际移动设备身份码，目前GSM/WCDMA/LTE手机终端需要使用IMEI号码。在单卡工程中一个手机对应一个IMEI号；双卡工程中一张卡对应一个IMEI号，双卡共有两个IMEI号。
+
+MEID (Mobile Equipment Identifier) 移动设备识别码，是CDMA手机的唯一身份识别码。
+
+ 
+
+通过GSMPhone对象来调用getDeviceId()函数，获取到的就是IMEI号。
+
+通过CDMAPhone对象来调用getDeviceId()函数，获取到的就是MEID号。
+
+ 
+
+一、如何获取IMEI号
+
+M0.mp7/M0.mp9版本（包含C2K和非C2K项目）、
+
+M0.mp1版本非C2K项目、
+
+L版本非C2K项目上：
+
+GSMPhone.java中的getDeviceId()
+
+L上面已经没有GeminiPhone；
+
+使用方法如下：
+
+Phone mPhone1=PhoneFactory.getPhone(PhoneConstants.SIM_ID_1);
+
+Phone mPhone2=PhoneFactory.getPhone(PhoneConstants.SIM_ID_2);
+
+ 
+
+if (mPhone1 != null) {
+
+    String imei_sim1 =  mPhone1.getDeviceId();
+
+}
+
+if (mPhone2 != null) {
+
+    String imei_sim2 =  mPhone2.getDeviceId();
+
+}
+
+ 
+
+M0.mp1版本C2K项目、
+
+L版本C2K项目上：
+
+L版本C2K项目上，一张卡同时对应一个CDMAPhone和一个GSMPhone，要获取对应卡的IMEI号，需要先获取到对应的GSMPhone对象，具体可以通过下面的方法来获取：
+
+    SIM1-> CDMAPhone = PhoneFactory.getPhone(0).getNLtePhone()
+
+    SIM1-> GSMPhone = PhoneFactory.getPhone(0).getLtePhone()
+
+    SIM2->  CDMAPhone = PhoneFactory.getPhone(1).getNLtePhone()
+
+    SIM2->  GSMPhone = PhoneFactory.getPhone(1).getLtePhone()
+
+ 
+
+获取到GSMPhone对象后，通过该对象来调用getDeviceId()函数。
+
+ 
+
+KK版本上：
+
+GSMPhone.java    中getDeviceId()
+
+GeminiPhone.java 其中getDeviceIdGemini()已经没有了，而getDeviceId()获取的是default phone的IMEI；
+
+所以直接使用GSMPhone.java中getDeviceId()方法； 
+
+Demo code:
+
+GeminiPhone mGeminiPhone;
+
+String imei_sim1=mGeminiPhone.getPhonebyId(PhoneConstants.GEMINI_SIM_1).getDeviceId();
+
+String imei_sim2=mGeminiPhone.getPhonebyId(PhoneConstants.GEMINI_SIM_2).getDeviceId();
+
+ 
+
+KK之前的版本：
+
+下面是获得IMEI号的接口和demo code
+
+API：
+
+GSMPhone.java     中getDeviceId()
+
+GeminiPhone.java  中getDeviceId() 和 getDeviceIdGemini()
+
+ 
+
+Demo code:
+
+import com.android.internal.telephony.Phone;
+
+import com.android.internal.telephony.gemini.GeminiPhone;
+
+import com.android.internal.telephony.PhoneFactory;
+
+Phone phone;
+
+phone = PhoneFactory.getDefaultPhone();
+
+String  imei=(GeminiPhone)phone.getDeviceId();
+
+ 
+
+GeminiPhone mGeminiPhone;
+
+String imei_sim1 = mGeminiPhone.getDeviceIdGemini(PhoneConstants.GEMINI_SIM_1);
+
+String imei_sim2 = mGeminiPhone.getDeviceIdGemini(PhoneConstants.GEMINI_SIM_2);
+
+ 
+
+二、如何获取MEID号
+
+M0.mp7/M0.mp9版本C2K项目：
+
+通过CDMAPhone.java的getDeviceId()函数来获取。
+
+请在插入电信卡的情况下调用，避免插入非电信卡没有创建CDMAPhone对象，会获取不到。
+
+ 
+
+M0.mp1版本C2K项目、
+
+L版本C2K项目上：
+
+参考上面的说明，要获取MEID号，需要先获取对应卡的CDMAPhone对象，具体可以通过下面的方法来获取：
+
+    SIM1-> CDMAPhone = PhoneFactory.getPhone(0).getNLtePhone()
+
+    SIM1-> GSMPhone = PhoneFactory.getPhone(0).getLtePhone()
+
+    SIM2->  CDMAPhone = PhoneFactory.getPhone(1).getNLtePhone()
+
+    SIM2->  GSMPhone = PhoneFactory.getPhone(1).getLtePhone()
+
+ 
+
+获取到CDMAPhone对象后，通过该对象来调用getDeviceId()函数。
+
+ 
+
+如果电信卡插在卡1上，则使用上面SIM1的方法来获取卡1的CDMAPhone对象。
+
+如果电信卡插在卡2上，则使用上面 SIM2 的方式来获取卡2的CDMAPhone对象。
+
+ 
+
+如果同时插入两张电信卡，由于同一时刻只支持一张电信卡，则只有主卡可以获取到MEID号，可以通过PhoneFactory.getDefaultPhone().getNLtePhone() 来获取主卡的CDMAPhone对象。
+```
+
+## [FAQ19109] [Audio Framework] Soundpool java 类的使用说明
+
+```
+app 层在使用 soundpool java 类时，通常会用到以下几个方法：
+Soundpool sp = new SoundPool(x,x,x); //new 一个实例
+sp.load(x,x,x,x);//加载对应的音源
+sp.play(x,x,x,x,x,x); //播放对应的音源
+ 
+然而当上述方法调用之后，在 native 层其实会有一些 memory 被 native 的 soundpool 类所 cache 住
+如果 app 在使用上述三个方法之后，不调用相关的释放 native 资源的方法
+就会造成 native 的 memory leak.
+ 
+所以 app 在使用完 soundpool 之后，一定要记得调用 soundpool 的 release 接口
+sp.release();
+release 接口调用的次数要等同于new soundpool 的次数，这样才不会造成内存泄漏
+像其它 MediaPlayer, AudioTrack,ToneGenator java 类的使用也是一样的，在用完后必须调用其 release 接口
+ 
+FAQ:
+soundpool 在调用 release 之前是否需要调用 unload 接口去 unload 前面所 load 的资源呢？
+==》答案是否定的，在 release 接口被调用的时候会统一做 unload 资源的动作，因此release 之前无须逐一去 unload 所加载的资源
+```
+
+## [FAQ02911] [Common]如何判断是usim卡还是sim卡
+
+```
+L版本、及以后版本：
+参见PhoneInterfaceManagerEx.java中的getIccCardType()方法；
+
+import com.mediatek.internal.telephony.ITelephonyEx;
+
+final ITelephonyEx mTelEx = ITelephonyEx.Stub.asInterface(ServiceManager.getService("phoneEx"));
+// slotId: PhoneConstants.SIM_ID_1, PhoneConstants.SIM_ID_2
+long subId=getSubIdBySlot(slotId);
+if(mTelEx!=null)String Type = mTelEx.getIccCardType(subId);
+
+KK版本：
+参见PhoneInterfaceManagerEx.java中的getIccCardType()方法；
+
+import com.mediatek.common.telephony.ITelephonyEx;
+final ITelephonyEx mTelEx = ITelephonyEx.Stub.asInterface(ServiceManager.getService("phoneEx"));
+//slotId: PhoneConstants.GEMINI_SIM_1, PhoneConstants.GEMINI_SIM_2
+if(mTelEx!=null)String Type = mTelEx.getIccCardType(slotId);
+
+KK之前的版本：
+PhoneInterfaceManager.java中API: getIccCardTypeGemini
+
+import com.android.internal.telephony.ITelephony;
+final ITelephony iTel = ITelephony.Stub.asInterface(ServiceManager
+                                     .getService(Context.TELEPHONY_SERVICE));
+try {
+         if (FeatureOption.MTK_GEMINI_SUPPORT) {
+                if ("USIM".equals(iTel.getIccCardTypeGemini(slotId)))
+                   //do something
+         } else {
+                   if ("USIM".equals(iTel.getIccCardType()))
+                       //do something
+         }
+} catch (Exception e) {
+         Log.d(TAG, "catched exception.");
+         e.printStackTrace();
+}
+```
+
+## [FAQ18923] [Audio framework] 开启开机安全校验后，首次开机铃声播放不全
+
+```
+开启开机安全校验后，首次开机铃声播放不全，播到中途被截断掉
+其原因是：
+开启了开机安全校验后
+首次开机安全校验完毕后
+会重新启动 framework，此时会将 mediaserver 等一系列注册过的 service 都 kill 掉
+再重新启动
+因为音乐的播放需要依赖于 mediaserver
+当 mediaserver 被 kill 时，铃声便会随着中止
+ 
+此为正常现象，没有规避方法
+```
+
+## [FAQ18327] Android M 首次开机随sim卡自适应语言错误原因及修改方案
+
+```
+Android M上默认不会随sim卡去自适应语言。
+对于M上有些首次开机不是系统默认配置的语言问题，是因为安装了GMS包，M上虽然没有去自适应语言，但是有从sim卡的EF中去读取语言并保存起来（只是默认没有使用它去更新语言而已），GMS包中有使用这个保存的语言用它去更新语言，所以安装了GMS包后会自适应为EF文件中读取到的语言。 EF文件中读取到的语言一般是这个sim卡所属国家的语言，但有些坏的sim中EF文件存储的是其它国家的语言，所以自适应语言时也会自适应为其它国家的语言。
+
+对于有GMS包的情况如果想修改成不随卡中EF文件自适应的情况，可如下修改：
+packages/services/Telephony/src/com/android/phone/PhoneInterfaceManager.java
+@Override
+public String getLocaleFromDefaultSim() {
+    return null;//直接return null
+}
+
+如果想修改Ｍ的默认设计希望能随sim卡自适应，但不根据EF文件读取的语言自适应（根据sim卡mcc自适应）可去参考　FAQ17975　Android M 首次开机不随sim卡自适应语言修改方案。
+```
+
+## 支持OTA升级及OTA升级的相应资料、OTA升级与FOTA的区别
+
+```
+支持情况：目前MT6573/75/77都支持OTA升级
+相关资料：有关OTA升级的参考资料请参考DMS的以下路径：
+/3G Phone Data/Smart Phone/Software_Customer/Standard Package/MT6577 SW Doc Package/Application/OTA Update
+客户端的代码请参考：alps/mediatek/source/packages/GoogleOta*三支文件
+
+DM/fota和mota的区别：是两种软件版本升级的方式，只需采用其中之一即可。
+fota: 是需要拿到三方RedBend的license，升级包的发布与管理是由运行商控制的，在实现过程中需要从运行商那申请开通DM（增强售后服务）功能，在升级过程中需要收费；
+mota: 是敝司自行实现的一套升级方式，其中server端和客户端都已经实现，且免费提供给客户，是不需要三方介入。
+```
+
+## [FAQ09094] RTL语言下电话号码显示问题
+
+```
+1、一些复杂语言字符显示以及layout是从右向左的，比如阿拉伯语、波斯、乌尔都语、希伯来语。因此经常会遇到一些情况是，其他非RTL字符串(比如英文、数字等)在和这些语言字符组合时，当系统语言如果是RTL语言，那么非RTL字符串也会变成从右向左显示；还有就是一些ap，比如Phone、联系人等，在ap设置了一些属性之后电话号码会变成从右向左显示，例如：135 4567 4562 会变成4562 4567 135 如果要实现系统语言为阿拉伯语等RTL语言时，一些非RTL字串按照自己显示顺序(LTR)显示，可以按照如下方法修改,
+(A)    如果这些字串是在string.xml中定义，可以把相关字串加上控制符使其从左向右显示，如下
+<string name="lockpassword_pin_too_long"> RTL字串\u202D <xliff:g id="number" example="17">%d</xliff:g>\u202C RTL字串</string>
+
+也可以使用 '\u202A ，'\u202C';
+
+(B)    如果是在代码中动态生成可以新增如下函数，进行处理
+///M: to fix number display order problem in Dialpad in Arabic/Hebrew/Urdu
+private String numberLeftToRight(String origin) {
+    return TextUtils.isEmpty(origin) ? origin : '\u202D' + origin + '\u202C';// 也可以使用'\u202A ，'\u202C';
+}
+
+例如：通话界面拨打一个没有姓名的电话，如果在AndroidManifest.xml(JB2及以后版本) 声明文件的<application>元素中，添加了   android:supportsRtl=true这个属  性，电话号码就会出现如下情况
+
+解决方法就是修改CallCard.java(alps\packages\apps\Phone\src\com\android\phone)的函数如下红色部分
+
+private void updateDisplayForPerson(CallerInfo info,int presentation,boolean isTemporary,Call call,Connection conn)
+……
+// Promote the phone number up to the "name" slot:
+// displayName = number;
+displayName = numberLeftToRight(number);
+
+2、 对于RTL语言下TextView或者EditText“+18545784578”显示成“18545784578+”，这是google默认的问题，对比机也有类似的问题
+目前没有比较好的解决方法，如果确实要修改，可以在TexView地方加上特殊处理，如下对“+86”号码的处理。
+
+TextView.java  alps\frameworks\base\core\java\android\widget
+
+private void setText(CharSequence text, BufferType type,
+boolean notifyBefore, int oldlen) {
+if (text == null) {
+    text = "";
+}
+
+///add this code
+Configuration con = mContext.getResources().getConfiguration();
+String l = con.locale.getLanguage();
+if(l.equals("ar")||l.equals("fa")||l.equals("iw")){///RTL language
+
+Pattern pattern
+= Pattern.compile(                      // sdd = space, dot, or dash
+"(\\+[0-9]+[\\- \\.]*)?"        // +<digits><sdd>*
++ "(\\([0-9]+\\)[\\- \\.]*)?"   // (<digits>)<sdd>*
++ "([0-9][0-9\\- \\.]+[0-9])"); // <digit><digit|sdd>+<digit>
+Matcher matcher = pattern.matcher(text);
+while(matcher.find()){
+String subnumber = match.group(0);
+int index = text.toString().indexOf(subnumber);
+String newnumber = '\u202D' + subnumber + '\u202C';
+text = text.toString().replace(subnumber, newnumber);
+}
+
+}
+
+///add this code
+
+// If suggestions are not enabled, remove the suggestion spans from the text
+```
+
+## [FAQ04153] 如何内置/预置/预编译文件(执行程序，应用程序，apk, jar, lib 等任意文件)到系统中
+
+```
+方法一.
+假设要内置的软件名称为iperf.exe
+1. 将iperf.exe放到Codebase的任意一个目录下(该目录必须能够在搜索Android.mk时被搜索到)，比如system/iperf/iperf.exe
+2. 在system/iperf目录下添加一个Android.mk文件，内容如下：
+LOCAL_PATH:= $(call my-dir)
+PRODUCT_COPY_FILES += $(LOCAL_PATH)/iperf.exe:system/iperf/iperf.exe
+重新编译Codebase即可，该文件将被内置到手机的system/iperf目录下
+PS：这种方法禁止复制APK文件
+ 
+方法二.
+可采用prebuilt的方法，但是对文件格式有要求
+具体请参考DCC上如下文档：Android_Build_System_for_customer_4.1.pptx
+请参见“Build host/target prebuilt” 一节
+```
+
+## [FAQ10299] 如何加速./mk snod打包
+
+```
+mm命令快速编译一个模块之后，一般用adb push到手机看效果，如果环境不允许用adb push或模块不经常改，希望直接放到image里，则可以用./mk snod，这个命令仅仅将system目录打包成system.img，然后方便直接下载，但是这个命令还是很慢（慢在搜索所有的Android.mk），有一种方法可以加速该编译到1分钟以内
+
+./mk snod
+
+修改alps/build/core/main.mk：
+subdir_makefiles :=\
+    $(shell build/tools/findleaves.py --prune=out --prune=.repo --prune=.git $(subdirs) Android.mk)
+修改为：
+ifneq ($(MAKECMDGOALS),snod)
+subdir_makefiles :=\
+    $(shell build/tools/findleaves.py --prune=out --prune=.repo --prune=.git $(subdirs) Android.mk)
+endif
+
+以上避免了不必要的耗时操作，加速./mk snod编译
+```
+
+## [FAQ09811] [NW]如何区分MNO和MVNO
+
+```
+MVNO(Mobile Virtaul Network Operator)虚拟网络运营商，没有自己的实体网络，通过租用MNO(Mobile Network Operator)的网络来提供网络服务。
+我们知道Spec规定operator之间是通过MCC/MNC （Mobile Country Code/Mobile Network Code）来区分的；而MVNO和对应MNO的MCC/MNC是相同的，那就需要MVNO定义额外的栏位（通常都是SIM卡中某支文件）来和对应MNO做区分；具体这个额外的栏位是什么是每个MVNO自己定义的，需要向MVNO确认。
+ 
+[SOLUTION]
+ 
+目前MTK支持区分MVNO的方式有四种（KK以前没有EF_GID1方式），每种包含运营商名称Spn显示和APN两个方面的需求；Spn显示方面每种区分方式对应一个xml的配置表：
+1. EF_SPN方式，对应MVNO配置到Virtual-spn-conf-by-efspn.xml中
+2. EF_IMSI方式，对应MVNO配置到Virtual-spn-conf-by-imsi.xml中
+3. EF_PNN方式，对应MVNO配置到Virtual-spn-conf-by-efpnn.xml中
+4. EF_GID1方式，对应MVNO配置到Virtual-spn-conf-by-efgid1.xml中
+ 
+需要向MVNO确认的信息如下：
+1. 区分方式是以上哪种，从而决定相关信息需要配置到哪个xml中
+2. MVNO的MCC/MNC是什么
+3. MVNO的区分栏位的值是什么
+4. MVNO需要显示成什么
+5. MVNO是否有自己的APN需要配置（还是直接使用对应MNO的），如果需要，值是什么
+ 
+KK以前（JB*.MP）:
+一 SPN的设定：
+ 
+(1)通过EF_SPN区分
+这中方式是读取SIM中的文件EF_SPN，结合SIM的mccmnc+spn,在virtual-spn-conf-by-efspn.xml 中查找有没有对应的记录，如果有这表示这个SIM是MVNO的卡，同时取name字段的内容当作运营商名称。
+如果知道MVNO的SIM卡中的SPN是“abc”，MNO的MCC/MNC是10000，期望显示运营商名是”MVNO“，那就这样加记录(在Virtual-spn-conf-by-efspn.xml中)
+<virtualSpnOverride mccmncspn="10000abc“ name="MVNO">
+ 
+(2)通过EF_IMSI区分
+这中方式是imsi中有一段特殊的数字标识用于和MNO区分
+例如MNO的MCC/MNC是46692，MVNO的IMSI是466923302848289，IMSI的第9位(注意：是0 base, 所以index要填08)起连续2个数字为特殊标识(28)，期望显示的运营商名称是“MVNO”，那就这样加记录(Virtual-spn-conf-by-imsi.xml中)
+<virtualSpnOverride mccmnc="46692" index="08" length="02" pattern="28" name=“MVNO”>
+ 
+(3)通过EF_PNN区分
+EF_PNN是SIM中的一个option的文件，里面存放一组网络运营商名称(PLMN Network Name)。这种方式即是读取EF_PNN中的第一个pnn来匹配。如果MNO的MCC/MNC是10000，MVNO中EF_PNN的第一个pnn是“abc”，期望显示的运营商名称是“MVNO”，那就这样加记录(Virtual-spn-conf-by-efpnn.xml中)
+<virtualSpnOverride mccmncpnn="10000abc“ name="MVNO">
+ 
+ 
+二 APN的设定
+其对应的文件是apns-conf.xml，和spn-conf.xml相同的目录。对比SPN，APN就简单许多，APN填写和SPN区分选择有联系。 这里举例说明，原MNO的APN的设定
+ <apn carrier="Orange Entreprise"
+      mcc="100"
+      mnc="00"
+      apn="MNO的apn"
+      user="MNO的user"
+      password="MNO的password"
+      type="default,supl"
+  />
+ 
+(1)通过EF_SPN区分
+区分是通过spn字段，和spn记录中的spn字段相同
+假如spn中MVNO对应记录是<virtualSpnOverride mccmncspn="10000abc“ name="MVNO">;
+ <apn carrier="Orange Entreprise"  <<设定中显示的名称
+      mcc="100"
+      mnc="00"
+      spn="abc" <<增加这个字段
+      apn="MVNO的apn"
+      user="MVNO的user"
+      password="MVNO的password"
+      type="default,supl"
+  />
+ 
+(2)通过EF_IMSI区分
+通过imsi的pattern区分，和spn中的pattern相同。
+假如spn中的MVNO记录是<virtualSpnOverride mccmnc="46692" index="08" length="02" pattern="28" name=“MVNO”>
+那这个对应的MVNO的AP是
+ <apn carrier="Orange Entreprise"  <<设定中显示的名称
+      mcc="100"
+      mnc="00"
+      imsi="28" <<增加这个字段
+      apn="MVNO的apn"
+      user="MVNO的user"
+      password="MVNO的password"
+      type="default,supl"
+  />
+ 
+(3)通过EF_PNN区分
+区分是通过pnn字段，和spn记录中的pnn字段相同
+假如spn中MVNO对应记录是<virtualSpnOverride mccmncpnn="10000abc“ name="MVNO">;
+ <apn carrier="Orange Entreprise"  <<设定中显示的名称
+      mcc="100"
+      mnc="00"
+      pnn="abc" <<增加这个字段
+      apn="MVNO的apn"
+      user="MVNO的user"
+      password="MVNO的password"
+      type="default,supl"
+  />
+ 
+KK以后（包含KK）：
+一 SPN的设定：
+所有MVNO区分方式的virtual xml的构成都应该是mccmnc+pattern
+ 
+(1)通过EF_SPN区分
+这中方式是读取SIM中的文件EF_SPN，结合SIM的mccmnc+spn,在virtual-spn-conf-by-efspn.xml 中查找有没有对应的记录，如果有这表示这个SIM是MVNO的卡，同时取name字段的内容当作运营商名称。
+如果知道MVNO的SIM卡中的SPN是“abc”，MNO的MCC/MNC是10000，期望显示运营商名是”MVNO“，那就这样加记录(在Virtual-spn-conf-by-efspn.xml中)
+<virtualSpnOverride mccmncspn="10000abc“ name="MVNO">
+ 
+(2)通过EF_IMSI区分
+这中方式是imsi中有一段特殊的数字标识用于和MNO区分
+例如MNO的MCC/MNC是46692，MVNO的IMSI是466923302848289，IMSI的第9位起连续2个数字为特殊标识(28)，期望显示的运营商名称是“MVNO”，那就这样加记录(Virtual-spn-conf-by-imsi.xml中)
+<virtualSpnOverride imsipattern="4669246692×××28×××××" name=“MVNO”>
+ 
+(3)通过EF_PNN区分
+EF_PNN是SIM中的一个option的文件，里面存放一组网络运营商名称(PLMN Network Name)。这种方式即是读取EF_PNN中的第一个pnn来匹配。如果MNO的MCC/MNC是10000，MVNO中EF_PNN的第一个pnn是“abc”，期望显示的运营商名称是“MVNO”，那就这样加记录(Virtual-spn-conf-by-efpnn.xml中)
+<virtualSpnOverride mccmncpnn="10000abc“ name="MVNO">
+ 
+(4)通过EF_GID1区分
+EF_GID1是SIM中的一个option的文件，里面存放了n个byte的数据；如果MNO的MCC/MNC是10000，MVNO的EF_GID1的内容是"11"，期望显示的运营商名称是"MVNO"，那就这样加记录(Virtual-spn-conf-by-efgid1.xml中)
+<virtualSpnOverride mccmncgid1="1000011" name="MVNO">
+ 
+二 APN的设定
+其对应的文件是apns-conf.xml，和spn-conf.xml相同的目录。对比SPN，APN就简单许多，APN填写和SPN区分选择有联系。 这里举例说明，原MNO的APN的设定
+ <apn carrier="Orange Entreprise"
+      mcc="100"
+      mnc="00"
+      apn="MNO的apn" 
+      user="MNO的user"
+      password="MNO的password"
+      type="default,supl"
+  />
+ 
+(1)通过EF_SPN区分
+区分是通过spn字段，和spn记录中的spn字段相同
+假如spn中MVNO对应记录是<virtualSpnOverride mccmncspn="10000abc“ name="MVNO">;
+ <apn carrier="Orange Entreprise"  <<设定中显示的名称
+      mcc="100"
+      mnc="00"
+      apn="MVNO的apn"
+      user="MVNO的user"
+      password="MVNO的password"
+      type="default,supl"
+      mvno_type="spn"                  <<增加这两个字段
+      mvno_match_data="abc"
+  />
+ 
+(2)通过EF_IMSI区分
+通过imsi的pattern区分，和spn中的pattern相同。
+假如spn中的MVNO记录是<virtualSpnOverride imsipattern="4669246692×××28×××××" name=“MVNO”>
+那这个对应的MVNO的APN是
+ <apn carrier="Orange Entreprise"  <<设定中显示的名称
+      mcc="100"
+      mnc="00"
+      apn="MVNO的apn"
+      user="MVNO的user"
+      password="MVNO的password"
+      type="default,supl"
+      mvno_type="imsi"                  <<增加这两个字段
+      mvno_match_data="46692×××28×××××"
+  />
+ 
+(3)通过EF_PNN区分
+区分是通过pnn字段，和spn记录中的pnn字段相同
+假如spn中MVNO对应记录是<virtualSpnOverride mccmncpnn="10000abc“ name="MVNO">;
+ <apn carrier="Orange Entreprise"  <<设定中显示的名称
+      mcc="100"
+      mnc="00"
+      apn="MVNO的apn"
+      user="MVNO的user"
+      password="MVNO的password"
+      type="default,supl"
+      mvno_type="pnn"                  <<增加这两个字段
+      mvno_match_data="abc"
+  />
+ 
+(4)通过EF_GID1区分
+区分是通过gid1字段，和spn记录中的gid1字段相同
+假如spn中MVNO对应记录是<virtualSpnOverride mccmncgid1="1000011" name="MVNO">;
+ <apn carrier="Orange Entreprise"  <<设定中显示的名称
+      mcc="100"
+      mnc="00"
+      apn="MVNO的apn"
+      user="MVNO的user"
+      password="MVNO的password"
+      type="default,supl"
+      mvno_type="gid"                  <<增加这两个字段, 注意是gid而不是gid1
+      mvno_match_data="11"
+  />
+ 
+ 
+ 
+有些地区的MVNO要求忽略国内漫游（national roaming），如果有此需求可以参考：
+ID: FAQ11783
+[NW]MVNO忽略国内漫游（ignore national roaming）
+ 
+如果按照上述配置后，锁屏界面/下拉列表界面 显示的名字和配置的不同，可能按照spec显示了更高优先级的名字，比如NITZ/EONS…
+
+遇到这类问题属于网络运营商名称显示，可以同时参考如下FAQ：
+
+ID: FAQ08919
+[NW]网络运营商名称显示规则（锁屏界面，下拉列表）---网络名称 客制化方法 和 问题处理flow
+```
+
+## [FAQ13635] Android L APP 如何获取sys file system 中节点的写权限
+
+```
+Google 默认禁止app , 包括system app, radio app 等直接写/sys 下面的文件, 认为这个是有安全风险的。如果直接放开SELinux 权限, 会导致CTS 无法通过.
+
+通常遇到此类情况，你有两种做法:
+(1). 通过system server service 或者 init 启动的service 读写, 然后app 通过binder/socket 等方式连接APP 访问. 此类安全可靠, 并且可以在service 中做相关的安全审查, 推崇这种方法.
+
+(2). 修改对应节点的SELinux Security Label, 为特定的APP, 如system app, radio, bluetooth 等内置APP开启权限, 但严禁为untrsted app 开启权限. 具体的做法下面以 system app 控制/sys/class/leds/lcd-backlight/brightness 来说明.
+
+1. 在device/mediatek/common/sepolicy/file.te 定义brightness SELinux type
+type sys_lcd_brightness_file, fs_type,sysfs_type;
+
+2. 在device/mediatek/common/sepolicy/file_contexts 绑定 brightness 对应的label, 注意对应的节点是实际节点，而不是链接.以及整个目录路径中也绝不能包含链接(无数同仁有犯这个错误，特意提醒)
+/sys/devices/platform/leds-mt65xx/leds/lcd-backlight/brightness u:object_r:sys_lcd_brightness_file:s0
+
+3. 在device/mediatek/common/sepolicy/system_app.te 中申请权限.
+allow system_app sys_lcd_brightness_file:file rw_file_perms;
+
+4. 为其它的process 申请相关的权限，如system_server, 在device/mediatek/common/sepolicy/system_server.te
+allow system_server sys_lcd_brightness_file:file rw_file_perms;
+
+原则上我们都推崇使用第一种方式处理.
+```
+
+## [FAQ03718] 如何解包和打包boot.img/recovery.img/system.img/userdata.img
+
+## [FAQ13697] L 版本如何将第三方so库打包到apk
+
+## [FAQ03127] 当修改一些代码时,使用什么编译命令可以最有效率
+
+## [FAQ08775] 如何客制化IPO开机动画，使IPO开机动画播放完整
+
+## [FAQ04542] [NvRAM] APK（应用层）读写NvRAM
+
+## [FAQ19126] [Audio framework]车载蓝牙停止播放, 手机music UI 显示停止但车载端音乐继续播放
+
+## [FAQ10781] 如何开启与关闭adb 的认证机制(google adb secure) (adb RSA 指纹认证)
+
+## [FAQ19141] After M version,how to dump heap profile automatically
+
+## [FAQ12739] [CB] 如何设置小区广播的默认语言
+
+## [FAQ18246] M版本上如何实现恢复出厂设置不丢失数据 (nvram,proinfo 分区注意事项)
+
+## [FAQ17349] [SIM_ME_LOCK]SIM_ME_Lock_User_Guide文档中的枚举量的意思
+
+## [FAQ12953] [AT Command][SIM] 如何使用AT+CRSM读取SIM卡文件
+
+## [FAQ02097] [SIM]客制化"SIM卡已更改"提示
+
+## [FAQ09816] [SP FlashTool] FlashTool Console Mode使用说明
+
+```
+FlashTool 终端模式的使用方法
+```
+
+## [FAQ17416] SIM卡设置内的卡名称及运营商名称的语言类别随系统语言切换而改变
+
+## [FAQ06172] [AT Command][SIM_ME_LOCK]锁卡相关的AT+ESMLCK命令的用法
 
 ## [FAQ19162] Android N 设置中语言列表介绍
 
