@@ -24547,6 +24547,1755 @@ EGPRS multislot class: Bits are not available (0)
 我司关闭edge的方法可以参考： [FAQ14048]如何关掉EDGE功能
 ```
 
+## [FAQ05818] 如何默认打开或者关闭TagLog
+
+```
+Eng版本TagLog默认打开，user版本TagLog默认关闭。
+
+1.可通过修改\alps\mediatek\external\xlog\tools\目录下的mtklog-config-eng.prop和mtklog-config-user.prop文件（分别对应eng和user load）设定
+taglog是否默认开启，在文件的最后一段添加上以下描述：
+com.mediatek.log.taglog.enabled = false/true
+
+如果没有添加以上描述，则默认在eng load上开启，在user load上关闭。
+注：L版本该文件路径为\alps\vendor\mediatek\proprietary\external\xlog\tools
+
+2.Eng/User版本均可以进入工程模式手动打开/关闭Taglog，方法如下：
+拨*#*#3646633#*#* -> EngineerMode -> TagLog -> Start TagLog，勾选时表示打开，否则表示关闭。
+
+TagLog功能简述：FAQ03748
+```
+
+## [FAQ15156] Caused by: java.lang.ClassNotFoundException的解决办法
+
+```
+经常会发生三方apk出现ClassNotFoundException的异常，这个异常在android开发中无非就是告诉你类没有找到，那么什么原因导致没找到呢？这里会介绍几种发生场景供排除。
+
+ClassNotFoundException形如：
+Caused by: java.lang.ClassNotFoundException: Didn't find class "com.iflytek.inputmethod.FlyApp" on path: DexPathListlib
+
+[SOLUTION]
+一般分为以下几种情况：
+
+1、(常见)L版本上打开WITH_DEXPREOPT := true之后，预置apk的android.mk的配置不准确，导致32bit和64bit的兼容性问题，找不到对应apk的odex，自然就发生ClassNotFoundException，属于配置问题。
+
+log形如：
+Caused by: java.io.IOException: Failed to open oat file from /system/priv-app/ShanYao_StaticTimeWallpaper/arm64/ShanYao_StaticTimeWallpaper.odex (error Failed to open oat filename for reading: No such file or directory) (no dalvik_cache availible) and relocation failed.
+
+【Solution】: 参考“[FAQ14102]L版本开机提示“Android正在升级或启动””第一点进行配置。
+
+2、(常见)启动activity的时候，在AndroidManifest.xml中虽然有注册activity但是code中并没有定义，或者说activity的包名或者名字写错了。属于apk方问题。
+
+【Solution】: 检查AndroidManifest.xml和code对应的class。
+
+3、odex文件损坏，这一般是由于系统硬件问题，比如emmc不稳定，导致类似framwork.jar包被破坏。属于硬件问题。
+
+【Solution】: 从损坏角度出发考量，检查硬件是否稳定。
+
+4、L版本上FOTA/OTA升级后或一些特殊场景下会发生一类特殊的ClassNotFoundException，属于系统方问题。
+
+log形如：
+Caused by: java.io.IOException: Failed to remove obsolete file from /data/dalvik-cache/arm/data@app@com.handsgo.jiakao.android-1@base.apk@classes.dex when searching for dex file /data/app/com.handsgo.jiakao.android-1/base.apk: Permission denied
+
+【Solution】参考：“[FAQ14893]FOTA/OTA之後启动第三方APP出現APP Crash”
+
+
+5、在项目中重新定义了init.rc，但没有加入/system/framework/**.jar，这样会将类似mediatek\config\mt6595\init.rc覆盖，因此找不到**.jar。属于配置问题。
+
+6、使用的class，是一个外部的JAR包，当在工程中编译使用时，发布成APK并没有包含JAR文件，所以APK在执行的时候就找不到JAR文件，也会报错。属于apk方问题。
+
+7、使用了重复的类库，且版本不一致，导致低版本的被优先使用。此时应删除重复的类库，只保留最新的。属于apk方新旧版本问题。
+```
+
+## [FAQ11919] 【缅甸语专项】设置--日期和时间--设置日期和时间，弹出的对话框里面，默认日期或者时间看不到
+
+```
+【缅甸语专项】设置--日期和时间--设置日期和时间，弹出的对话框里面，默认日期或者时间看不到，拖动下又出来了。
+ 
+[SOLUTION]
+ 
+请修改 NumberPicker.java (path: \frameworks\base\core\java\android\widget\NumberPicker.java).
+
+修改如下:
+修改NumberPicker.java裡面的 filter() method:
+=== 將原本的 ===
+    CharSequence filtered = super.filter(source, start, end, dest, dstart, dend);
+    if (filtered == null) {
+        filtered = source.subSequence(start, end);
+    }
+=== 修改為:(中間插入一段code) ===
+    CharSequence filtered = super.filter(source, start, end, dest, dstart, dend);
+    if (filtered != null) {
+        int i;
+        for (i = start; i < end; i++) {
+            if (!Character.isDigit(source.charAt(i))) {
+                break;
+            }
+        }
+        if (i == end) {
+            /// the characters in source are all digit.
+            filtered = null;
+        }
+    }
+    if (filtered == null) {
+        filtered = source.subSequence(start, end);
+    }
+```
+
+## [FAQ10820] 针对某个APK，需要做到wifi/gprs分别做到允许/禁止两种策略
+
+```
+JB5开始已经default有这部分代码，只需要参照该FAQ后面的使用说明和方法调用即可。
+JB5之前的版本，可以按照下面完整的solution进行操作
+[SOLUTION]
+1.NetworkManagementService.java
+    public void setFirewallUidChainRule(int uid, int networkType, boolean allow) {
+        //enforceSystemUid();
+        final String MOBILE = "mobile";
+        final String WIFI = "wifi";
+
+        final String rule = allow ? ALLOW : DENY;
+        final String chain = (networkType == 1) ? WIFI : MOBILE;
+        
+        try {
+            mConnector.execute("firewall", "set_uid_fw_rule", uid, chain, rule);
+        } catch (NativeDaemonConnectorException e) {
+            throw e.rethrowAsParcelableException();
+        }
+    }
+    
+    /**
+     * @internal Configure firewall rule by uid and chain
+     * @hide
+     */
+    public void clearFirewallChain(String chain) {
+        //enforceSystemUid();
+        try {
+            mConnector.execute("firewall", "clear_fw_chain", chain);
+        } catch (NativeDaemonConnectorException e) {
+            throw e.rethrowAsParcelableException();
+        }
+    }    
+}
+2.CommandListener.cpp中
+1)最后一个类FirewallCmd的runCommand方法的
+    cli->sendMsg(ResponseCode::CommandSyntaxError, "Unknown command", false);
+    return 0;
+之前加上
+    if (!strcmp(argv[1], "set_uid_fw_rule")) {
+        if (argc != 5) {
+            cli->sendMsg(ResponseCode::CommandSyntaxError,
+                         "Usage: firewall set_uid_fw_rule <uid> <mobile|wifi> <allow|deny>",
+                         false);
+            return 0;
+        }
+
+        int uid = atoi(argv[2]);
+        FirewallChinaRule chain = parseChain(argv[3]);
+        FirewallRule rule = parseRule(argv[4]);
+
+        int res = sFirewallCtrl->setUidFwRule(uid, chain, rule);
+        return sendGenericOkFail(cli, res);
+    }
+
+    if (!strcmp(argv[1], "clear_fw_chain")) {
+        if (argc != 3) {
+            cli->sendMsg(ResponseCode::CommandSyntaxError,
+                         "Usage: firewall clear_fw_chain <chain>",
+                         false);
+            return 0;
+        }
+
+        const char* chain = argv[2];
+        
+        int res = sFirewallCtrl->clearFwChain(chain);
+        return sendGenericOkFail(cli, res);
+    }   
+2)以下两个数组改成如下;
+static const char* FILTER_INPUT[] = {
+        // Bandwidth should always be early in input chain, to make sure we
+        // correctly count incoming traffic against data plan.
+        BandwidthController::LOCAL_INPUT,
+// mtk03594: Support enhanced firewall @{
+        FirewallController::FIREWALL,
+///@}
+        FirewallController::LOCAL_INPUT,
+        NULL,
+};
+static const char* FILTER_OUTPUT[] = {
+        OEM_IPTABLES_FILTER_OUTPUT,
+// mtk03594: Support enhanced firewall @{
+        FirewallController::FIREWALL,
+///@}
+        FirewallController::LOCAL_OUTPUT,
+        BandwidthController::LOCAL_OUTPUT,
+        NULL,
+};
+3) 添加下面这个数组
+static const char* FILTER_FIREWALL[] = {
+        FirewallController::FIREWALL_MOBILE,
+        FirewallController::FIREWALL_WIFI,
+        NULL,
+};
+
+4) CommandListener.cpp的构造函数CommandListener::CommandListener() :的
+    createChildChains(V4, "nat", "PREROUTING", NAT_PREROUTING);
+    createChildChains(V4, "nat", "POSTROUTING", NAT_POSTROUTING);
+
+    // Let each module setup their child chains
+    setupOemIptablesHook();
+后添加
+createChildChains(V4V6, "filter", "firewall", FILTER_FIREWALL);
+
+
+3.FirewallController.cpp里
+1)加上以下两个函数
+int FirewallController::setUidFwRule(int uid, FirewallChinaRule chain, FirewallRule rule) {
+    char uidStr[16];
+    char cmdStr[128];
+    int res = 0;
+    const char* op;
+    const char* fwChain;
+
+    sprintf(uidStr, "%d", uid);
+
+    if (rule == ALLOW) {
+        op = "-I";
+    } else {
+        op = "-D";
+    }
+
+    if(chain == MOBILE) {
+        fwChain = "mobile";
+    }else{
+        fwChain = "wifi";
+    }
+
+    res |= execIptables(V4, op, fwChain, "-m", "owner", "--uid-owner", uidStr,
+            "-j", "REJECT", "--reject-with", "icmp-net-prohibited", NULL);
+    res |= execIptables(V6, op, fwChain, "-m", "owner", "--uid-owner", uidStr,
+            "-j", "REJECT", "--reject-with", "icmp6-adm-prohibited", NULL);
+
+    return res;    
+}
+
+int FirewallController::clearFwChain(const char* chain) {
+    int res = 0;
+
+    if(chain != NULL){
+        if(strlen(chain) > 0){
+            res |= execIptables(V4V6, "-F", chain, NULL);
+        }else{
+            ALOGD("Clear all chain");
+            res |= execIptables(V4V6, "-F", NULL);
+        }
+    }else{
+        ALOGE("Chain is NULL");
+    }
+
+    return res;
+}
+2).FirewallController.cpp文件里面添加
+const char* FirewallController::FIREWALL = "firewall";
+3).FirewallController.cpp文件下面这个方法改成如下;
+int FirewallController::setupIptablesHooks(void) {
+
+    // mtk03594: Support enhanced firewall @{
+    int res = 0;
+    res |= execIptables(V4V6, "-F", FIREWALL, NULL);
+    res |= execIptables(V4V6, "-A", FIREWALL, "-o", "ppp+", "-j", FIREWALL_MOBILE, NULL);
+    res |= execIptables(V4V6, "-A", FIREWALL, "-o", "ccmni+", "-j", FIREWALL_MOBILE, NULL);
+    res |= execIptables(V4V6, "-A", FIREWALL, "-o", "ccemni+", "-j", FIREWALL_MOBILE, NULL);
+    res |= execIptables(V4V6, "-A", FIREWALL, "-o", "usb+", "-j", FIREWALL_MOBILE, NULL);
+    res |= execIptables(V4V6, "-A", FIREWALL, "-o", "cc2mni+", "-j", FIREWALL_MOBILE, NULL);
+    res |= execIptables(V4V6, "-A", FIREWALL, "-o", "wlan+", "-j", FIREWALL_WIFI, NULL);
+    //@}
+    
+    return 0;
+}
+
+4.FirewallController.h里
+加上以下两个函数定义
+    int setUidFwRule(int, FirewallChinaRule, FirewallRule);
+    int clearFwChain(const char* chain);
+JB5开始的版本可以从此开始进行修改：
+完成以上代码添加后，可以在相应的APK里采用以下步骤使用添加的这些接口：
+１．在相关的文件里import并且定义及获得NetworkManagementService
+　　　　import android.os.INetworkManagementService;
+　　　　private INetworkManagementService mNetworkService;
+        mNetworkService = INetworkManagementService.Stub.asInterface(
+                ServiceManager.getService(Context.NETWORKMANAGEMENT_SERVICE));
+
+2.调用mNetworkService.setFirewallUidChainRule　or mNetworkService.clearFirewallChain设置和清空相应的APP的限制即可．
+
+PS:1.每次重新开机，其Iptable都会被清空，如果下次重新开机时，需要重新下一遍command
+     2.setFirewallUidChainRule这个方法,针对同一个AP其allow和deny要成对出现
+     如果是要禁止掉某个APP访问网络的话，应该是要下allow,而不是下deny，deny是不禁止，allow是允许禁止
+     clearFirewallChain是重置规则,一般在APK reset的时候使用,它里面传的参数可以为wifi 或者mobile
+```
+
+## [FAQ04537] 如何修改Kernel Log Buffer的大小？
+
+```
+我们采用可以增大kernel log buffer的方法来避免ring buffer的循环覆盖发生。
+ 
+1. 修改文件如下，其中${ARM}为arm或者arm64，根据架构不同选择不用的目录，${PROJECT}指代具体的项目名称。
+ENG: alps/kernel/arch/${ARM}/configs/${PROJECT}_debug_defconfig
+USER: alps/kernel/arch/${ARM}/configs/${PROJECT}_defconfig
+ 
+修改位置如下：
+CONFIG_LOG_BUF_SHIFT=17
+将其中的数值17修改为19或者更大，如：
+CONFIG_LOG_BUF_SHIFT=19
+ 
+17表示2^17=128KB, 18表示2^18=256KB, 以此类推。但是最大支持的值为21，即2MB buffer。
+ 
+2. 修改后需要重新build kernel并重新生成boot image
+$source build/envsetup.sh && lunch
+$mmm kernel-3.10:clean-kernel -j8
+$mmm kernel-3.10:kernel -j8
+$make bootimage-nodeps -j8
+ 
+3. 重新download boot.img即可。
+```
+
+## [FAQ12271] [USB]如何修改内置光盘中的内容(BICR, CD-ROM, ISO)
+
+```
+BICR 内置光盘 CD-ROM ISO
+ 
+在制作光盘ISO文件时设定需要的文件，然后将制作好的ISO文件放置于 alps/system/mobile_toolkit/ 下即可。
+ 
+其他相关可能的客制化，也可以参考如下FAQ：
+FAQ05690 [USB] How to add ISO files into BICR?
+FAQ04856 [USB名称修改系列]第4项-如何修改BICR在PC"我的电脑"中显示的label名称
+```
+
+## [FAQ10612] 【USB名称修改系列】第15项-如何修改USB设备在控制面板中显示的名称
+
+```
+可以在 kernel\drivers\usb\gadget\Android.c 中修改如下红色字段为所需显示的字段
+#define PRODUCT_STRING "MT65xx Android Phone"
+```
+
+## [FAQ05354] 如何在preloader、uboot、lk、kernel中预置obj文件
+
+```
+如何在preloader、uboot、lk、kernel中预置obj文件.docx 
+```
+
+## [FAQ02684] [SP FlashTool、SP Multiportdownload Tool]客制化实现下载完成后自动开机
+
+```
+一、flashtool:
+BCB版本的FlashTool：
+1. 修改version.cpp
+static const bool          CUSTOMER_VER     = false;
+ 
+2. 修改tboot_1.cpp
+//---------------------------------------------------------------------------
+int tboot_1::ArgFlashToolWatchDog(FlashTool_EnableWDT_Arg *p_wdt_arg) {
+    assert(NULL != p_wdt_arg);
+    memset(p_wdt_arg, 0, sizeof(FlashTool_EnableWDT_Arg));
+    //timeout to reset bootRom
+    p_wdt_arg->m_timeout_ms = 5000;
+    p_wdt_arg->m_async = _FALSE;
+    p_wdt_arg->m_reboot = _FALSE // _TRUE;=>_FALSE 
+    return 0;
+}
+ 
+QT版本的Flashtool:
+1. 修改version.cpp
+static const bool          CUSTOMER_VER     = false;
+ 
+2. 修改WatchDogCommand.cpp
+//---------------------------------------------------------------------------
+void WatchDogCommand::ArgFlashToolWatchDog(FlashTool_EnableWDT_Arg *p_wdt_arg) {
+     memset(wdt_arg, 0, sizeof(FlashTool_EnableWDT_Arg));
+     wdt_arg->m_timeout_ms = 3000;
+     wdt_arg->m_async = _FALSE;
+     wdt_arg->m_reboot = _FALSE;
+}
+二、SP Multiportdownload Tool:
+1，将SPMultiPortFlashDownloadProject.ini中的ForceWatchdogReset改为yes。
+2，工具界面的EnableAutoPulling不能勾选。
+ 
+注意：
+MTK official release的tool不会开启这个feature.
+产线tool也请不要开启这个功能, 会导致重启usb 枚举可能会受影响.
+```
+
+## [FAQ04080] 如何消除Phone模块导入Eclipse后产生的错误
+
+```
+一般来说，alps工程中的系统应用导入Eclipse后一般都会有很多编译错误，下面我们会以Phone模块为例来说明如何消除这些编译错误，方面我们使用Eclipse进行开发与debug。
+[SOLUTION]
+1、 将alps中的系统应用取出，例如我们取出./alps/package/apps/Phone/，在Eclipse中新建一个Android Project，将之前取出的Phone模块导入，然后我们就会发现有很多编译错误：
+2、 由于Google原生SDK中android.jar的限制，我们需要继续添加一些jar文件参与编译解决编译错误。在我们编译整个alps工程时，其实我们需要的jar文件已经产生，路径为：
+a) alps/out/target/common/obj/JAVA_LIBRARIES/framework_intermediates/classes.jar
+b) alps/out/target/common/obj/JAVA_LIBRARIES/core_intermediates/classes.jar
+c) alps/out/target/common/obj/JAVA_LIBRARIES/ext_intermediates/classes.jar
+将以上三个jar文件分别重命名为framework.jar\core.jar\ext.jar，然后导入之前Eclipse建立的工程中：
+
+查看一下效果，看看是否还有编译错误。
+这里建议将SDK自带的android.jar删除，因为它会被优先编译，导致编译错误。
+3、如果还有错误，可能是还要依赖其他的.java，将这些 .java 文件（.aidl / .java）copy 过来一起编译即可，这里注意package name要用对。
+4、若是有发现API level的的编译错误，可以尝试使用在工程上右键---Android Tools---Clear Lint Markers来尝试忽略。这样编译错误就基本清理完毕。
+
+注意事项：
+Android 4.1之后的版本，Google开始对framework做拆分，例如有可能还需要加入secondary-framework.jar/telephony-common.jar等。可以仿照以上方式将需要的jar档导入即可
+```
+
+## [FAQ11803] [USB]修改USB存储在PC"我的电脑"中显示的label名称，如何解决label中的小写字母全部变成大写字母的问题？
+
+```
+按照FAQ04906修改了USB存储在PC"我的电脑"中显示的label名称，代码中label名称由大小写字母组成，但是电脑端的显示全部变成了大写字母，比如新增的format()函数参数  -L  “AAbbCC"，但连接电脑显示的却是“AABBCC"。如何实现在电脑端的显示为实际的 “AAbbCC"？
+
+[KEYWORD]
+USB存储 PC"我的电脑" label名称 小写字母 大写字母
+
+[SOLUTION]
+
+请这样修改：
+system/core/toolbox/newfs_msdos.c
+static void
+mklabel(u_int8_t *dest, const char *src) {
+    int c, i;
+    for (i = 0; i < 11; i++) {
+    c = *src ? toupper(*src++) : ' '; //将此处toupper注释掉
+    *dest++ = !i && c == '\xe5' ? 5 : c;
+    }
+}
+```
+
+## [FAQ12212] [USB名称修改系列] 如何修改USB MTP模式下，“设备与打印机”中Model项的显示？
+
+```
+修改kernel/drivers/usb/gadget/f_mtp.c
+ 
+static struct usb_string mtp_string_defs[] = {
+ /* Naming interface "MTP" so libmtp will recognize us */
+ [INTERFACE_STRING_INDEX].s = "MTP", //修改此处
+ {  }, /* end of list */
+};
+```
+
+## [FAQ11787] [USB] KK user版本使用adb会提示error: device offline
+
+```
+KK user版本需要
+1.检查adb版本是1.0.31
+2.操作UI 点选弹出的框 OK
+才可以使用。
+
+原因是由于google升级SDK，将adb升级加入权限导致。您可以参考以下链接： 
+The reason to appearing "device offline" in android 4.2.2 is that android has a security feature in 4.2.2 that create a whitelist of usb ports that can be used as debugging port.
+After plugging deivce in usb and entering the command "adb devices" a popup window will be raised in your device and ask you to accept the connection:
+
+After accepting RSA fingerprint of you usb you can now issue the "adb devices" again and see the device is no longer offline,
+If you dont see the popup window, the reason is your adb version is old, your adb version must ne at least 1.0.31 (you can see the version using the command "adb version").
+
+http://stackoverflow.com/questions/15079211/android-4-2-2-device-offline
+```
+
+## [FAQ04354] 一些查看内存状况的adb command
+
+```
+请参考下面的1)2)3)抓取对应的信息，若需要MTK协助，请提供下面的信息，并将mtklog文件夹也一并附上
+
+1) Use adb shell cat /proc/meminfo to calculate the free memory, as usual the free memory is  MemFree + cached
+taking the follow example, te free memory is 5616K + 158632K
+cat proc/meminfo
+MemTotal:         483724 kB
+MemFree:            5616 kB
+Buffers:            2732 kB
+Cached:           158632 kB
+SwapCached:            0 kB
+Active:           277336 kB
+Inactive:          83232 kB
+Active(anon):     197452 kB
+Attention，in the phone menu setting->apps->running app, the free memory is MemFree + cached + background running app memory - SECOND_SERVER_MEM，you can refer to the follwoing for details：the function void refreshUi(boolean dataChanged) in RunningProcessView.java(/alps/package/apps/settings/src/com/android/setting/applications) (Related FAQ09452How to calculate cached free memory?)
+
+2) Use adb shell procrank (Just ENGload) to find which process consume most memory, please refer to PSS
+
+adb shell procrank
+PID      Vss      Rss      Pss      Uss  cmdline
+476   65312K   65284K   38499K   35560K  com.android.launcher
+268   54916K   54880K   30001K   27000K  system_server
+110   32196K   28988K   18924K   12432K  /system/bin/surfaceflinger
+347   42400K   42320K   15445K   10704K  com.android.systemui
+
+
+3) For the process in 2) who consume most memory， use adb shell showmap [pid] (Just ENG load) to more details.  Take system_server for example， first get the pid by adb shell ps system_server:
+adb shell ps system_server
+USER     PID   PPID  VSIZE  RSS     WCHAN    PC         NAME
+system    268   111   406736 54876 ffffffff 400e9c70 S system_server
+
+Then  adb shell showmap 268 to find every .so and heap, stack memory consume.  Refer to the PSS
+adb shell showmap 268
+virtual                     shared   shared  private  private
+size      RSS      PSS    clean    dirty    clean    dirty    # object
+-------- -------- -------- -------- -------- -------- -------- ---- ------------------------------
+72       20       20        0        0       20        0    1 /data/dalvik-cache/system@app@SettingsProvider.apk@classes.dex
+352      148      103       32       16       48       52   18 /data/dalvik-cache/system@framework@android.policy.jar@classes.dex
+1348       28        8       20        0        8        0    1 /data/dalvik-cache/system@framework@apache-xml.jar@classes.dex
+956       60       13       52        0        8        0    1 /data/dalvik-cache/system@framework@bouncycastle.jar@classes.dex
+24        8        0        8        0        0        0    1 /data/dalvik-cache/system@framework@core-junit.jar@classes.dex
+3292     1056      126     1012        0       44        0    1 /data/dalvik-cache/system@framework@core.jar@classes.dex
+
+
+其它内存相关FAQ，欢迎访问
+FAQ04223如何查看Modem/Kernel/FrameBuffer的Footprint?
+FAQ04354内存不足时查看内存使用情况的一些adb command
+FAQ07759如何查看当前项目的physical memory layout
+FAQ07760如何查看当前项目的virtual memory layout
+FAQ09452手机cached free memory(剩余内存)计算方法
+FAQ09454如何计算开机之后留给Linux Kernel可用的总内存
+FAQ09456zram(内存压缩)介绍
+FAQ10389如何关闭 zram/swap功能
+```
+
+## [FAQ09454] 如何计算开机之后留给Linux Kernel可用的总内存
+
+```
+众所周知，RAM的layout里面会包含modem 以及 framebuffer部分，那如何计算剩余留给Linux kernel的内存呢？
+
+[SOLUTION]
+请首先抓一份开机的uart log
+
+1、搜索“available”，你会看到Memory:xxxxx/xxxxx available，这个xxxxx就是linux kernel可用总内存
+[    0.000000]-(0)[0:swapper]Memory: 954092k/954092k available, 27924k reserved, 467968K highmem
+
+2、如何计算的呢？
+1) 搜索“PHY layout”，得到total ram size，modem size，以及framebuffer size
+[    0.000000]-(0)[0:swapper][PHY layout]avaiable DRAM size = 0x40000000
+[    0.000000]-(0)[0:swapper][PHY layout]FB       :   0xbfb00000 - 0xc0000000  (0x00500000)
+[    0.000000]-(0)[0:swapper][PHY layout]MD       :   0xbc000000 - 0xbe000000  (0x02000000)
+[    0.000000]-(0)[0:swapper][PHY layout]MD       :   0xba000000 - 0xbbc00000  (0x01c00000)
+2) memory avaliable = total ram size - (modem size + framebuffer size + reserved)
+        = 0x40000000 - (0x02000000 +0x01c00000 + 0x00500000 + 27924k  )
+        //本例有两个modem
+        = 954092k
+其它内存相关FAQ，欢迎访问
+FAQ04223如何查看Modem/Kernel/FrameBuffer的Footprint?
+FAQ04354内存不足时查看内存使用情况的一些adb command
+FAQ07759如何查看当前项目的physical memory layout
+FAQ07760如何查看当前项目的virtual memory layout
+FAQ09452手机cached free memory(剩余内存)计算方法
+FAQ09456zram(内存压缩)介绍
+```
+
+## [FAQ09452] 手机cached free memory(剩余内存)计算方法
+
+```
+计算方法请参考：RunningProcessView.java(/alps/packages/apps/settings/src/com/android/setting/applications)里面的void refreshUi(boolean dataChanged)接口：
+1、首先获取 /proc/meminfo信息
+2、availMem = mMemInfoReader.getFreeSize() + mMemInfoReader.getCachedSize()
+                - SECONDARY_SERVER_MEM; (因为不同平台，不同配置SECONDARY_SERVER_MEM会不同，如果想确定该值具体大小，建议您在这边自行加log打印该值)
+3、 mLastAvailMemory = availMem;
+      long freeMem = mLastAvailMemory + mLastBackgroundProcessMemory;
+ 
+4、freeMem即为可用内存，已用内存即为meminfo.total - freeMem
+ 
+所以，这里会包含background process占据的内存
+ 
+其它内存相关FAQ，欢迎访问
+FAQ04223 如何查看Modem/Kernel/FrameBuffer的Footprint?
+FAQ04354 内存不足时查看内存使用情况的一些adb command
+FAQ07759 如何查看当前项目的physical memory layout
+FAQ07760 如何查看当前项目的virtual memory layout
+FAQ09454 如何计算开机之后留给Linux Kernel可用的总内存
+FAQ09456 zram(内存压缩)介绍
+```
+
+## [FAQ09456] zram(内存压缩)介绍
+
+```
+下面是对Zram(内存压缩)一个简单介绍:
+1. zram 又称内存压缩，Linux kernel会把不常用的内存进行压缩，以换出更多的内存供系统使用
+    -- 平时空闲时候会做压缩，以备不时之需
+    -- kernel 申请不到内存，会触发压缩机制
+ 
+2. 只有user process的内存可被压缩
+ 
+3. 压缩是有成本的，会影响performance
+    -- 通常，launch app的时候会受影响
+    -- 代码执行中，突然要大量内存的时候也会受到影响
+ 
+4. 在LCA/non-LCA的项目都有可能Enable，目前为止只有72&82&92项目上面支持，其它暂不支持
+ 
+若有更细节问题，可提e-service与MTK讨论
+ 
+ 
+其它内存相关FAQ，欢迎访问
+FAQ04223如何查看Modem/Kernel/FrameBuffer的Footprint?
+FAQ04354内存不足时查看内存使用情况的一些adb command
+FAQ07759如何查看当前项目的physical memory layout
+FAQ07760如何查看当前项目的virtual memory layout
+FAQ09452手机cached free memory(剩余内存)计算方法
+FAQ09454如何计算开机之后留给Linux Kernel可用的总内存
+```
+
+## [FAQ01934] [Others] 如何单独build factory bin？
+
+```
+[Key Words]
+SW相关，Factory Mode，Factory bin
+[Description]
+当我们中修改factory的部分，则不需要在new整个工程，只需要重新make factory模块就好，然后使用ADB push到手机即可
+[Solution]
+1. 修改factory的source code（不然也不需要build bin）
+2. 进到工程目录使用下面的命令编译：mk mm mediate/source/factory，注意查看factory的生成时间，如果发现没有重新生成，则随便打开一支文件，添加个空格或回车，保存再执行mk操作
+3. 生成的bin会放在alps/out/target/product/[project]/system/bin/factory，注意，没有后缀
+4. 接下来使用下面的adb命令push factory到手机：
+adb remount
+adb push d:\factory /system/bin/factory （d:\factory为factory在PC上的路径，/system/bin/factory为要push到手机中的位置）
+adb shell chmod 777 /system/bin/factory
+adb reboot（重新开机验证即可）
+另外，第4个步骤也可以写成bat文件，每次只需要运行这个bat即可
+```
+
+## [FAQ11325] KitKat版本，keyguard上状态栏透明的实现
+
+```
+KitKat版本，android default实现了状态栏透明。
+statusbar透明的属性是WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
+navigationbar透明的属性是WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION;
+
+keyguard界面状态栏透明实现是在KeyguardViewManager.java中:
+if (shouldEnableTranslucentDecor()) {
+    mWindowLayoutParams.flags |= WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION;
+}
+如需要关闭/打开锁屏界面状态栏透明，修改frameworks/base/core/res/res/values/config.xml中config_enableLockScreenTranslucentDecor变量值即可。
+PS: 以上只针对锁屏界面的状态栏透明。
+```
+
+## [FAQ14863] perfomance问题的基本信息确认
+
+```
+1:确认是否为eng版本？　adb shell getprop ro.build.type.  eng版本本身对perofamnce影响比大．
+如果是eng版本出现的问题，请在user load确认是否有同样的问题．
+
+2:　uart 是否有打开，adb shell cat /sys/module/printk/parameters/disable_uart
+如果是Ｎ，表示你测试的版本是开uart的，很有可能你遇到perofamnce会跟这个相关．　
+如果uart是开的，可以在有root权限下命令: echo 0 > /proc/sys/kernel/printk,然后再测试看看是否有问题.
+```
+
+## [FAQ14787] 前置默认设置为美颜模式
+
+```
+CameraActivity.java函数内做如下修改：
+
+private PickerManager.PickerListener mPickerListener = new PickerManager.PickerListener() {
+@Override
+
+public boolean onCameraPicked(int cameraId) {
+
+函数内的语句mCameraAppUi.setViewState(ViewState.VIEW_STATE_CAMERA_CLOSED);前添加如下语句：
+
+if(cameraId==1)
+
+{
+
+mModePicker.setCurrentMode(ModePicker.MODE_FACE_BEAUTY);
+
+Log.i(TAG,"setCurrentMode facebeauty");
+
+}
+
+else
+
+{mModePicker.setCurrentMode(ModePicker.MODE_PHOTO);}
+
+2.private SettingManager.SettingListener mSettingListener = new SettingManager.SettingListener() {
+
+@Override
+
+public void onRestorePreferencesClicked() {
+
+函数内
+
+将如下语句
+
+if (ModePicker.MODE_PHOTO == mCameraActor.getMode() || !isNonePickIntent()
+
+|| ModePicker.MODE_PHOTO_SGINLE_3D == mCameraActor.getMode()
+
+|| ModePicker.MODE_PHOTO_3D == mCameraActor.getMode()) {
+
+if (ModePicker.MODE_VIDEO == mCameraActor.getMode() && !isNonePickIntent()) {
+
+mISettingCtrl.onSettingChanged(SettingConstants.KEY_VIDEO,"on");
+
+}
+
+mCameraDeviceCtrl.applyParameters(false);
+
+} else {
+
+mModePicker.setModePreference(null);
+
+mModePicker.setCurrentMode(ModePicker.MODE_PHOTO);
+
+}
+
+修改为
+
+if(getCameraId()==1){
+
+mModePicker.setCurrentMode(ModePicker.MODE_FACE_BEAUTY);
+
+}else if (ModePicker.MODE_PHOTO == mCameraActor.getMode() || !isNonePickIntent()
+
+|| ModePicker.MODE_PHOTO_SGINLE_3D == mCameraActor.getMode()
+
+|| ModePicker.MODE_PHOTO_3D == mCameraActor.getMode()) {
+
+if (ModePicker.MODE_VIDEO == mCameraActor.getMode() && !isNonePickIntent()) {
+
+mISettingCtrl.onSettingChanged(SettingConstants.KEY_VIDEO,"on");
+
+}
+
+mCameraDeviceCtrl.applyParameters(false);
+
+} else {
+
+mModePicker.setModePreference(null);
+
+mModePicker.setCurrentMode(ModePicker.MODE_PHOTO);
+
+}
+```
+
+## [FAQ12495] 如何用adb命令实现选择哪个麦克录音
+
+```
+adb shell setprop streamin.micchoose 0  //代表双麦克
+adb shell setprop streamin.micchoose 1  //代表主麦克
+adb shell setprop streamin.micchoose 2  //代表副麦克
+```
+
+## [FAQ12424] KK版本与JB版本拨号按键音的区别
+
+```
+部分客户反馈KK平台拨号音比JB时间较长
+[SOLUTION]
+kk版本拨号按键音时间长的原因是：
+DialpadFragment.java里
+private void keyPressed(int keyCode) {
+      switch (keyCode) {
+         case KeyEvent.KEYCODE_1:
+            playTone(ToneGenerator.TONE_DTMF_1, TONE_LENGTH_INFINITE);//这个值TONE_LENGTH_INFINITE代表按下拨号按键会一直有声音，您按的时间长声音出来的声音就会长。如果将这个值TONE_LENGTH_INFINITE改为TONE_LENGTH_MS ，其他按键类似的修改，这样就是每个按键音都是一个固定时间TONE_LENGTH_MS
+```
+
+## [FAQ12382] 如何修改LatinIME输入法空格键的显示
+
+```
+我要修改LatinIME空格键的显示为自定义的图片,该如何做？
+[SOLUTION]
+1:修改 MainKeyboardView.java (alps\packages\inputmethods\latinime\java\src\com\android\inputmethod\keyboard)
+中 drawSpacebar 函数,将绘制语言text的部分注释掉.
+//canvas.drawText(language, width / 2, baseline - descent - 1, paint);
+paint.setColor(mSpacebarTextColor);
+paint.setAlpha(mLanguageOnSpacebarAnimAlpha);
+//canvas.drawText(language, width / 2, baseline - descent, paint);
+2:修改
+Key_styles_common.xml (alps\packages\inputmethods\latinime\java\res\xml) 
+中spaceKeyStyle的实现为
+<key-style
+    latin:styleName="spaceKeyStyle"
+    latin:keyIcon="!icon/space_key"
+    latin:code="!code/key_space"
+    latin:keyActionFlags="noKeyPreview|enableLongPress" />
+3:修改Keyboard-icons-ics.xml (alps\packages\inputmethods\latinime\java\res\values)
+中 iconSpaceKey的实现为
+<item name="iconSpaceKey">@drawable/sym_keyboard_space_holo</item>
+这里将sym_keyboard_space_holo 定义为贵司希望修改成的图片。
+```
+
+## [FAQ12383] 如果选择Use system language，如何在键盘的空格上显示当前语言
+
+```
+方法1：直接在MainKeyboardView.java (alps\packages\inputmethods\latinime\java\src\com\android\inputmethod\keyboard)  的drawSpacebar函数中对mNeesToDisplayLanguage的判断去掉。
+//if(mNeesToDisplayLanguage){
+......
+//}
+方法2：修改SubTypesSwitcher.java中的
+needsToDisplayLanguages函数的返回值直接为true.
+```
+
+## [FAQ15086] 如何客制化自己的开机向导
+
+```
+在开发过程中，可能需要客制化自己的开机向导，可以参考如下的方案。
+[SOLUTION]
+可以参考一下之前敝司KK版本上的OOBE的实现，其主要有两个核心思想：
+1.需要将APK的主Activity的Category声明为"android.intent.category.HOME"，并且设置其优先级要高于默认的Launcher。基中的优先级，可以根据自己的需求灵活设置。因为可能其他的Activity也会有同样的需求。
+例如
+
+<activity 
+    android:name=".MainActivity"
+    android:label="@string/app_name" >
+    <intent-filter android:priority="10"> 
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.HOME" /> 
+    </intent-filter>
+</activity>
+ 
+2.在完成自己的开机向导之后，需要通过PMS的接口禁止掉自己的应用，这样才能在后面的home-key不再起来。
+
+例如：
+
+/mediatek/packages/apps/OOBE/src/com/mediatek/oobe/basic/MainActivity.java
+
+private void finishOOBE() {
+    //disable WizardActivity
+    PackageManager pm = getPackageManager();
+    ComponentName name = new ComponentName(this, WizardActivity.class);
+    int state = pm.getComponentEnabledSetting(name);
+    if (state != PackageManager.COMPONENT_ENABLED_STATE_DISABLED) {
+        pm.setComponentEnabledSetting(name, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+        PackageManager.DONT_KILL_APP);
+    }
+}
+```
+
+## [FAQ15071] ListView边缘的button经常点不中
+
+```
+这是L1的新特性决定的，因为在L1版本的
+/frameworks/base/core/java/android/widget/FastScroller.java
+中，isPointInsideX的实现如下：
+private boolean isPointInsideX(float x) {
+    final float offset = mThumbImage.getTranslationX();
+    final float left = mThumbImage.getLeft() + offset;
+    final float right = mThumbImage.getRight() + offset;
+
+    // Apply the minimum touch target size.
+    final float targetSizeDiff = mMinimumTouchTarget - (right - left);
+    final float adjust = targetSizeDiff > 0 ? targetSizeDiff : 0;
+
+    if (mLayoutFromRight) {
+        return x >= mThumbImage.getLeft() - adjust;
+    } else {
+        return x <= mThumbImage.getRight() + adjust;
+    }
+}
+相对于L0的版本，会增加一个adjust的值，
+而该函数又会影响listView是否会中断事件,导致事件传不到listItem上的button.
+ 
+故该问题可以调小framework resource中，即
+frameworks\base\core\res\res\values\dimens.xml
+frameworks\base\core\res\res\values-xxx\dimens.xml中
+R.dimen.fast_scroller_minimum_touch_target的值解决。
+或者可以调整isPointInsideX的实现为L0.MP版本中的实现(即不adjust)，也
+可以解决。
+L0版本的实现如下：
+private boolean isPointInsideX(float x) {
+    if (mLayoutFromRight) {
+        return x >= mThumbImage.getLeft();
+    } else {
+        return x <= mThumbImage.getRight();
+    }
+}
+```
+
+## [FAQ15089] Android L 版本后native process 无法使用am pm 等命令的说明
+
+```
+在android 5.0 后, 默认启用了Enforcing SELinux. Google 通过SELinux 严禁普通的native process 执行非system image 中的非exec类型的文件, 如data/dalvik-cache 下面的odex 文件, 从而native process 无法直接执行am, pm 等命令.
+//external/sepolicy/domain.te
+neverallow {
+    domain
+    -appdomain
+    -dumpstate
+    -shell
+    userdebug_or_eng(`-su')
+    -system_server
+    -zygote
+} { file_type -system_file -exec_type }:file execute;
+neverallow {
+    domain
+    -appdomain # for oemfs
+    -recovery # for /tmp/update_binary in tmpfs
+} { fs_type -rootfs }:file execute;
+
+通常我们解决的方式是，通过binder 直接使用 activity 等service接口, 直接向AMS 发送指令来规避这一条。 
+注意这个同样要求你的process 有操作binder 的SELinux 权限，这个Google 不会限制。
+在我们的代码中已经有很多类似的这样案例，大家可以参考：
+frameworks/av/media/libmediaplayerservice/ActivityManager.cpp
+/vendor/mediatek/proprietary/external/ds1_utility/ds1_utility.cpp
+/vendor/mediatek/proprietary/external/batterywarning/batterywarning.cpp
+/frameworks/av/services/audioflinger/AudioLosslessBTBroadcast.cpp
+/vendor/mediatek/proprietary/packages/apps/MTKThermalManager/jni/thermald.cpp
+
+通常首先：
+#include <unistd.h>
+#include <binder/IBinder.h>
+#include <binder/IServiceManager.h>
+#include <binder/Parcel.h>
+#include <utils/String8.h>
+
+(1). 获取am service 
+sp<IServiceManager> sm = defaultServiceManager();
+sp<IBinder> am = sm->getService(String16("activity"));
+
+(2). 填充传送参数Parcel data, 准备好Parcel reply
+data.writeInterfaceToken(String16("android.app.IActivityManager"));
+.....
+
+(3). 执行binder 
+status_t ret = am->transact(XXXXXX_TRANSACTION, data, &reply); 
+这些cmd 都定义在/frameworks/base/core/java/android/app/IActivityManager.java , 可选择查看.
+
+(4). 解析返回的ret 和 reply.
+比如：
+if (ret == NO_ERROR) {
+    int exceptionCode = reply.readExceptionCode();
+    if (exceptionCode) {
+        ALOGE("sendBroadcastMessage(%s) caught exception %d\n", action.string(), exceptionCode);
+        return false;
+    }
+} else {
+    return false;
+}
+
+Parcel 参数的填充过程可以参考：
+/frameworks/base/core/java/android/app/ActivityManagerNative.java
+CMD 参数列表可以参考：
+/frameworks/base/core/java/android/app/IActivityManager.java
+```
+
+## [FAQ15081] eng版本make命令生成不了odex的说明
+
+```
+在eng版本上打开宏WITH_DEXPREOPT:=true后，采用make命令生成不了odex文件(预置apk)，而采用mm或mmm命令是可以生成odex文件。
+ 
+[Reason]
+ 
+Android.mk中定义了LOCAL_MODULE_TAGS := debug导致；
+在full build下，如果是透過LOCAL_MODULE_TAGS為debug的方式安裝，在build system中會透過debug_MODULES此變數記錄安裝目錄下的目標，而目標只.apk並沒odex:
+out/target/product/cci6735m_65u_nj_l1/system/priv-app/WiFiTest/WiFiTest.apk
+
+然而透過PRODUCT_PACKAGES的方式安裝，比如将LOCAL_MODULE_TAGS改为optional,并在device/mediatek/common/device.mk中增加debug版本WiFiTest apk的安装，在build system中會透過product_FILES此變數記錄安裝目錄下的目標，這時目標除了.apk之外還多了.odex:
+out/target/product/cci6735m_65u_nj_l1/system/priv-app/WiFiTest/WiFiTest.apk 
+out/target/product/cci6735m_65u_nj_l1/system/priv-app/WiFiTest/arm64/WiFiTest.odex
+
+因此透過debug tag安裝的module只會生成.apk，而透過PRODUCT_PACKAES安裝的才會產生.odex。
+此設計與除錯會需要classes.dex關，因此帶debug tag的module才不做odex(因為會把.apk中的classes.dex刪除)。
+
+[SOLUTION]
+所以如果您需要在make 命令全编时产生WiFiTest.apk的odex,您需要将Android.mk中LOCAL_MODULE_TAGS改为：
+LOCAL_MODULE_TAGS := optional
+
+并在 device/mediatek/common/device.mk 中将如下设置增加eng时也需要安装此apk.(可以直接去掉判断)
+
+ifeq ($(TARGET_BUILD_VARIANT), eng)
+    PRODUCT_PACKAGES += WiFiTest
+endif
+```
+
+## [FAQ15083] user版本无充电动画
+
+```
+user版本无充电动画，而eng版本无此问题。如果把uartlog打开，无此问题，关闭uartlog，会有问题。
+[SOLUTION]
+请在project的init.charging.rc中的mount ubifs后面都加上wait ：
+mount ubifs ubi@system /system wait
+mount ubifs ubi@system /system ro remount wait
+mount ubifs ubi@userdata /data nosuid nodev wait
+```
+
+## [FAQ15079] L版本如何添加全局宏代码控制开关
+
+```
+L版本及之后，MTK采用google 编译架构，不再采用kk版本之前架构，android,kernel,lk,preloader各模块相互独立，
+projectconfig.mk 中定义的宏将仅作用到 android 层
+Version >= android 5.0
+[SOLUTION]
+由于Projectconfig.mk只作用于Android层,而kernel ，lk ，和preloader 是不起作用的，需要宏控制对应代码时，请分别在对应地方定义。具体可参考以下：
+
+preloader部分：
+如需宏控制pl这部分代码时，需在alps/bootable/bootloader/preloader/custom/$project/$(project).mk中增加需要的宏。
+
+lk部分：
+如需宏控制lk这部分代码时，需在alps/bootable/bootloader/lk/project/$(Project).mk文件中添加控制宏。
+
+kernel部分：
+如需宏控制kernel这部分代码时,参考以下步骤新增kernel config.
+1.请在您的driver code所在目录中的Kconfig文件增加您的宏定义
+具体怎么写可以参考Kconfig中的其他宏定义
+举个例子:
+config MTK_FB
+bool "MediaTek Framebuffer Driver"
+depends on FB
+default y
+select FB_SOFT_CURSOR
+---help---
+This selects the MediaTek(R) frame buffer driver.
+If you want to use MediaTek(R) frame buffer diver, say Y.
+2.在您对应的kernel defconfig配置文件中(如：kernel-3.10/arch/arm/configs/$(project)_defconfig(user及userdebug版本时需在此文件中配置)或$(project)_debug_defconfig(eng版本时需在此文件中配置))中设定您增加的宏的值,如 CONFIG_MTK_FB=y
+3.在您的kernel代码中就可使用CONFIG_MTK_FB这个宏了
+
+Android部分：
+如需宏控制Android c,c++代码时,参考以下步骤
+1.ProjectConfig.mk中定义您需要添加的宏CONFIG_XXX = yes
+2.Android.mk中根据ProjectConfig.mk中添加的宏设定LOCAL_CFLAGS
+ifeq ($(CONFIG_XXX),yes)
+LOCAL_CFLAGS += -DCONFIG_XXX=yes
+endif
+3.接下来，您的code中就可以使用您定义的CONFIG_XXX宏了
+务必注意，自L版本之后preloader/lk/kernel/android已经完全独立，代码不会有任何耦合，请参考以上方法设置控制宏。
+```
+
+## [FAQ14878] 如何打开binder的log
+
+```
+在分析perfromances问题时，常常会有些问题时卡在频繁的binder调用的地方，但binder调用如果时间小于500ms，是没有log出来的。
+那如何将这些binder调用信息打印出来了？ 
+[SOLUTION]
+可以在我司DCC(http://dcc.mediatek.inc/)上搜索HowToOpenbinderLog.docx，该文档内有详细介绍。
+```
+
+## [FAQ15065] 如何用命令行强制开关HWUI
+
+```
+强制开HWUI：
+adb shell setprop persist.sys.ui.hw true
+adb shell setprop debug.viewroot.disableHW false
+adb shell stop
+adb shell start
+
+强制关HWUI：
+adb shell setprop debug.viewroot.disableHW true
+adb shell setprop persist.sys.ui.hw false
+adb shell stop
+adb shell start
+```
+
+## [FAQ14814] 如何定义App的Max Adj
+
+```
+AMS 有一套完整的算法来调整进程的 ADJ. 比如当进程退出使用后, AMS 会将该进程的 ADJ 提高. 从而使得 Memory 不足时 Low Memory Killer 可以有依据杀死进程. 
+但在产品层面, 总有一些进程是产品特别关心的. 对于这些进程, 不希望 ADJ 调整太高, 避免被 LMK 杀死. 可以有几种方法实现该需求. 比如:
+1. 将进程设置为 Persistent. 使进程持续占据 Memory 不被杀死
+2. 调整 ADJ 的最大许可值. 在 Memory 不是特别紧张时, 可以保证该进程不被杀死. 而当 Memory 特别紧张时, 又可以被 LMK 杀死, 从而释放出 Memory 给前台进程使用.
+这里介绍方法 2.
+
+[SOLUTION]
+
+首先需要加入 Patch ALPS01995207.
+然后修改 /vendor/mediatek/proprietary/frameworks/base/packages/FwkPlugin/src/com/mediatek/op/amsplus/DefaultCustomizedOomExt.java 中的函数 getCustomizedAdj(String processName). 如果传入的是需要重新定义 ADJ 的进程, 则返回期望的 ADJ.
+需要注意的是, 这个修改对 AMS 的策略会产生影响. 必然会影响到其他进程. 所以请一定斟酌放入 getCustomizedAdj 中的进程, 以及期望的 ADJ.
+如果需要 Check 修改结果, 需要打开 AMS 的 DEBUG_OOM_ADJ 开关. 当该进程的 ADJ 按照 getCustomizedAdj 的返回结果重新设定时, 会打印如下 trace:
+getCustomized(XXXX) with adj = Y cur = Z
+其中 Y 表示 getCustomized 给出的 ADJ, Z 表示 AMS 计算出的 ADJ.
+```
+
+## [FAQ14973] Adb sideload OTA升级失败报错："E: unknown volume for path [/sideload/pakage.zip]”
+
+```
+操作步骤：
+1. Enter the recovery mode by pressing the buttons with Power + Volume
+2. Select the "Recovery"
+3. Pressing the button "Power" and soon after the button "Volume +"
+4. Select the "Apply update from ADB"
+5. On the PC running the command "adb sideload <filename>"
+6. Check the behavior
+
+实际结果：
+Is not possible to carry out the recovery and is shown msg "Sideload aborted"
+The log is shown:
+E: unknown volume for path [/sideload/pakage.zip]
+E: can`t mount /sideload/package.zip
+I: GPT is supported!
+[SOLUTION]
+在bootable/recovery/ roots.cpp如下函数添加code：
+1、ensure_path_mounted函数开始位置加上：
+if (!strncmp(path, "/sideload", strlen("/sideload"))) {//add
+   return 0；//add
+}//add
+Volume* v = volume_for_path(path);
+
+2、同样ensure_path_unmounted函数开始位置加上：
+if (!strncmp(path, "/sideload", strlen("/sideload"))) {//add
+   return 0；//add
+}//add
+Volume* v = volume_for_path(path);
+```
+
+## [FAQ14889] [Gallery]移动定制机（OP01）三方apk保存图片后，在gallery中不能正常显示（含图）
+
+```
+问题确认：
+Step 1. 首先确认database中图片插入数据库的宽高信息为0
+方法一：
+可通过mobile_log来确认（无width 和 height 信息，或赋值为0）：
+08-24 16:33:29.582257   942   953 V MediaProvider: insertFile<<<: values=bucket_id=1606349962 media_type=1 storage_id=65537 date_modified=1440405209 parent=13 format=14337 file_name=Moji_20150824_1633.jpg bucket_display_name=Moji file_type=1 title=Moji_20150824_1633.jpg mime_type=image/jpeg date_added=1440405209 _display_name=1440405209520 _size=351585 datetaken=1440405209000 _data=/storage/sdcard0/DCIM/Moji/Moji_20150824_1633.jpg, rowId=608
+ 
+方法二：
+可通过导出手机中的database文件external.db，直接使用database工具查看；
+database文件路径：/data/data/com.android.providers.media/databases/
+ 
+Step 2. 确认调用了TileImageViewAdaptor.java文件的updateWidthAndHeight()方法更新宽和高为0
+可通过mobile_log来确认：
+08-24 16:33:53.416043 1944 1944 I Gallery2/TileImageViewAdapter: <updateWidthAndHeight> mImageWidth 0, mImageHeight 0
+08-24 16:33:53.418353 1944 1944 I Gallery2/Op01ImageOptionsExt: <updateMediaType> mediaType [mediaType = NORMAL,width = 0,height = 0,orientation = 0,mimeType = image/jpeg,isDRM = 0,drmMethod = 0,groupID = 0,groupIndex = 0,groupCount = 0,bestShotMark = 0,filePath = /storage/sdcard0/DCIM/Moji/Moji_20150824_1633.jpg,uri = null,isVideo = false,isLivePhoto = false,isSlowMotion = false,bucketId = 1606349962,id = 608,fileSize = 351585,duration = 0,relateData = null, dateModifiedInSec = 1440405209, isRefocus = false]
+ 
+修改方案：
+方案一：
+从根源上来解决：
+push 第三方apk，修改其插入数据库时，对宽和高进行赋值；
+ 
+方案二：
+在gallery中针对这种database中保存图片宽和高为0的情况进行优化：
+修改TileImageViewAdaptor.java文件的如下方法
+public void updateWidthAndHeight(MediaItem item) {
+    if (item != null) {
+        // add by MTK begin
+        if ((item.getWidth()==0) || (item.getHeight()==0)) {
+            Log.d(TAG, " Item width and height are 0, return");
+            return;
+        }
+        // add by MTK end
+        mImageWidth = item.getWidth();
+        mImageHeight = item.getHeight();
+        Log.i(TAG, " mImageWidth " + mImageWidth + ", mImageHeight " + mImageHeight);
+    }
+}
+```
+
+## [FAQ14842] 如何支持自拍杆拍照功能
+
+```
+根据Log确定自拍杆按键对应的KeyCode是多少，进而根据这个KeyCode值来确认对应的按键是哪个。
+一般常用的有：音量+、音量-、Enter
+public static final int KEYCODE_VOLUME_UP       = 24;
+public static final int KEYCODE_VOLUME_DOWN     = 25;
+public static final int KEYCODE_ENTER           = 66;
+这里以音量-键为例
+在/packages/apps/Camera/src/com/android/camera/actor/PhotoActor.java文件中的onKeyDown方法和onKeyUp方法中添加对KEYCODE_VOLUME_DOWN 键的处理即可,
+
+即在case KeyEvent.KEYCODE_CAMERA:之前添加：
+
+case KeyEvent.KEYCODE_VOLUME_DOWN:
+```
+
+## [FAQ14937] [Storage]Download开机后恢复出厂设置userdata可用空间变小
+
+```
+在开启MTK_SHARED_SDCARD时，userdata分区会自适应emmc剩余空间的大小，您可能会注意到download bin档后开机，透过adb shell df或Setting -> Storage查询到的内部存储空间(/data)大小会比恢复出厂设置后稍大。
+但是第二次再做恢复出厂设置，/data的空间大小就不会再发生变化，一直保持第一次恢复出厂后的大小。除非再次重新download，又会发生这样的现象。
+
+
+[SOLUTION]
+编译时分区表设定的userdata分区size较小（大概1GB多），build时生成的userdata.img是以这个较小的size生成的。从build log中会找到类似以下这段:
+make_ext4fs -s -T -1 -S out/target/product/sisley2OTP/root/file_contexts -l 1237319680 -a data out/target/product/sisley2OTP/userdata.img out/target/product/sisley2OTP/data
+
+Creating filesystem with parameters:
+Size: 1237319680   //0x49c00000
+Block size: 4096
+Blocks per group: 32768
+Inodes per group: 7552
+Inode size: 256
+Journal blocks: 4720
+Label: 
+Blocks: 302080
+Block groups: 10
+Reserved block group size: 79
+Created filesystem with 33/75520 inodes and 10340/302080 blocks
+
+可以看到这个例子中生成ext4 image时总的size为0x49c00000 (1180MB)。
+而download后第一次开机后会执行ext4 resize操作，根据实际userdata分区的大小修改ext4 fs里面的相关参数，以达到文件系统自适应emmc实际大小的目的。 可以从kernel log中找到类似下面的log:
+
+[    7.677582].(5)[180:resize_ext4]resize: Size for partition(/dev/block/platform/mtk-msdc.0/by-name/userdata) is 12064256K.  //0x2E0580000，userdata分区实际的size
+[    7.678956].(5)[180:resize_ext4]resize: Size in superblock is 1208320K.  //0x49C000000, userdata在分区表中的size
+[    7.679793].(5)[180:resize_ext4]resize: Size will (maybe) resize to(after adjust) is 12064256K.
+[    7.681178].(5)[180:resize_ext4]resize: Running /system/bin/resize2fs on /dev/block/platform/mtk-msdc.0/by-name/userdata
+[    8.169390].(0)[180:resize_ext4]resize: Resize ext4 return 0
+
+在执行恢复出厂设置时，会擦除userdata分区，并重新利用make_ext4fs创建新的文件系统，这时候就是直接根据userdata分区的实际大小来创建ext4 fs。从factory reset recovery log中会找到类似以下这段:
+
+Formatting /data...
+format /data start=1420131485 
+I:GPT is supported!
+Creating filesystem with parameters:
+Size: 12353798144     //0x2E0580000
+Block size: 4096
+Blocks per group: 32768
+Inodes per group: 8112
+Inode size: 256
+Journal blocks: 32768
+Label: 
+Blocks: 3016064
+Block groups: 93
+Reserved block group size: 743
+Created filesystem with 11/754416 inodes and 87558/3016064 blocks
+format end=1420131494 duration=9
+
+对比build时创建的userdata.img和factory reset时在userdata分区创建文件系统，由于userdata分区的size在这两种情况下不同，那么创建ext4时一些参数就会被自动调整，这里看到最重要的就是 Journal blocks差异较大，build时是 4720，recovery时是32768，差了110MB左右。inode per group也会有些差异，这些都是导致df出来的分区大小差异的原因。因为ext4 resize操作不会调整这些参数值，只会调整super block里面的参数，以及总的block和group数目。
+
+一般手机只会在工厂产线上遇到这样的问题，手机在产线上一定会最后做factory reset，end user一般只会做OTA升级，不会再遇到这样的问题。
+```
+
+## [FAQ14881] 如何修改设置中语言显示的名称(如将"繁体中文（台湾）"修改为　　"中文（繁体）")
+
+```
+如何修改设置中语言显示的名称(如将　"繁体中文（台湾）"　修改为　"中文（繁体）")
+语言名称的显示是在LocalePicker.java中(alps/framework/base/core/java/com/android/internal/app)函数getAllAssetLocales()中做的．如要修改可参考如下方案．
+[SOLUTION]
+可将LocalePicker.java中成员变量　
+private static final boolean DEBUG = false；　将DEBUG的值置为true, 
+然后抓一份log,　进设置－＞语言，停止抓log, 从log中会包含函数getAllAssetLocales(Context context, boolean isInDevelopeMode)打出的log，这个函数是把各语言加到一个list中，各语言显示的名称也有打出来，　可以对着log打印的地方修改这个显示的名称．
+```
+
+## [FAQ14938] [Storage]关于文件系统空间预留的说明
+
+```
+也许你在测试时无意中发现虽然把/data或/cache填满了，无法再写入数据，但是透过stat查看分区文件系统状态，free blocks并不等于0. 
+
+[SOLUTION]
+kernel-3.10 ext4模块本身会预留2%左右的分区存储空间做reserved空间，专门为ext4自己保留。在super.c (kernel-3.10\fs\ext4)的ext4_calculate_resv_clusters()这个函数中有以下这段code:
+/*
+* By default we reserve 2% or 4096 clusters, whichever is smaller.
+* This should cover the situations where we can not afford to run
+* out of space like for example punch hole, or converting
+* uninitialized extents in delalloc path. In most cases such
+* allocation would require 1, or 2 blocks, higher numbers are
+* very rare.
+*/
+resv_clusters = ext4_blocks_count(EXT4_SB(sb)->s_es) >>
+EXT4_SB(sb)->s_cluster_bits;
+
+do_div(resv_clusters, 50);
+resv_clusters = min_t(ext4_fsblk_t, resv_clusters, 4096);
+这段code就是计算ext4预留空间大小的。EXT4_SB(sb)->s_cluster_bits的值一般为0，可以看到最终预留的空间是取分区空间的2%和4096的最小值，也就说最多会预留4096个block（4096bytes ），也就是16MB。
+
+(1) system分区
+执行busybox的stat -f /system会印出类似以下的信息:
+# ./stat -f /system
+File: "/system"
+ID: d3609fe804970d6b Namelen: 255     Type: ext2/ext3
+Block size: 4096
+Blocks: Total: 380892     Free: 139835     Available: 135739
+Inodes: Total: 98304      Free: 95634
+
+这里Free - Available = 4096 blocks，即16MB，因为system分区一般size较大(大于1GB)，预留2%多半会超过16MB，因此会预留最多4096个block，即16MB。
+
+(2)cache分区
+cache分区一般size比较小，100~400MB之间，目前L版本常见的是400MB，以预留2%来计算的话，应该会预留的是8MB，以下的例子就是对应这种情况。
+# ./stat -f /cache
+File: "/cache"
+ID: d3609fe804970d6b Namelen: 255     Type: ext2/ext3
+Block size: 4096
+Blocks: Total: 99186      Free: 99085      Available: 97037
+Inodes: Total: 25600      Free: 25585
+这里Free - Available = 2048 blocks，即8MB
+
+(3) data分区
+data分区一般size较大(大于1GB)，与system分区类似，按照理论分析应该也是要预留16MB才对，实际执行stat后的结果如下:
+./stat -f /data
+File: "/data"
+ID: d3609fe804970d6b Namelen: 255     Type: ext2/ext3
+Block size: 4096
+Blocks: Total: 3232930    Free: 2911026    Available: 2902834
+Inodes: Total: 827392     Free: 825699
+
+Free - Available = 8192 blocks，即32MB
+很奇怪，这里为什么变成了32MB呢？
+
+为了防止data分区被普通的APP填满，MTK对/data分区额外做了空间预留，具体就是在init.mt6XXX.rc里面的以下这段:
+on fs
+write /proc/bootprof "INIT:Mount_START"
+mount_all /fstab.mt6735
+exec /system/bin/tune2fs -O has_journal -u 10010 -r 4096 /dev/block/platform/mtk-msdc.0/by-name/userdata
+
+tune2fs会为uid <=10010的process再额外预留4096个blocks，即16MB。tune2fs这里会设置super block里面的s_r_blocks_count字段，这个字段在创建ext4 fs时默认值为0。
+
+(4) Internal SD
+在开启MTK_SHARED_SDCARD的情况下，Internal SD与/data会共享userdata的存储空间。但是/system/core/sdcard/sdcard.c中default会预留50MB，防止APP写internal sd时把/data填满。
+#define DATA_FREE_SIZE_TH_DEFAULT (50UL*1024UL*1024UL)
+如果有需求的话， 可以对这里预留的空间做客制化修改。
+
+同样对internal sd执行stat
+# ./stat -f /mnt/shell/emulated
+File: "/mnt/shell/emulated"
+ID: 0        Namelen: 255     Type: UNKNOWN
+Block size: 4096
+Blocks: Total: 3220130    Free: 2898219    Available: 2890027
+Inodes: Total: 827392     Free: 825696
+Free - Available = 8192 blocks，也是差32MB。
+
+这是因为internal sd的Free和Available都是基于/data的Free和Available直接减去50MB得到的。
+
+data Free - internal sd Free =  2911026 - 2898219 = 12807 blocks (50MB)
+对于Internal SD来说，当Available为0时，这时候实际上还是可以写入数据的，直到Free为0为止。
+
+因此建议APP call getFreeBlocks()来获取Internal SD的剩余空间，而不是getAvailableBlocks()。
+
+而对于data来说，由于Linux Kernel会额外做限制，因此建议APP是call getAvailableBlocks()来获取/data的剩余可用空间，而不是getFreeBlocks()。 
+```
+
+## [FAQ14893] FOTA/OTA之後启动第三方APP出現APP Crash
+
+```
+用FOTA下载OTA包，下载完毕更新；
+更新完毕后点击多个三方APP无法进入，提示报错（这些APK都是正常安装，非预置）。
+
+报错信息类似：
+Caused by: java.io.IOException: Failed to remove obsolete file from /data/dalvik-cache/arm/data@app@jp.naver.line.android-1@base.apk@classes.dex when searching for dex file /data/app/jp.naver.line.android-1/base.apk: Permission denied
+
+[SOLUTION]
+1. 如果apk之前有安装过，OTA升级后会检测到该apk的odex是旧的需要重新去提取，但是因为这个apk贵司长时间没有使用，L版本上默认PackageManagerService判断超过7天，则开机时不会做dexopt而报这种错误，此时一般重启之后这些apk会正常运行。
+
+上述code中 mDexOptLRUThresholdInMills的值是7天，即若此apk上次使用时间(then=pkg.mLastPackageUsageTimeInMills)+7天还小于当前时间(now)，则此apk被判别为never不会被使用的apk，所以就不做dexopt了。那么异常时会出现上面的log。
+
+2. 发生异常时如果点击了这几个apk且发现其无法使用（无法使用的原因可能是boot.oat有更新，此时apk的odex档是旧的，需要重新提取才可正常运行），即此时mLastPackageUsageTimeInMills会更新。
+所以重新开机后这个条件if (then + mDexOptLRUThresholdInMills < now)就不会满足，即这几个apk会做dexopt，此时能够正确提取odex，这时apk能够正常运行。
+
+3. 这是Google在L版本上的机制，不建议修改，如果需要规避，可以将i.remove();这行给注释掉，即超7天时仍可以正常提取odex.
+```
+
+## [FAQ13439] 添加低温警告
+
+```
+    修改
+    alps\mediatek\packages\apps\BatteryWarning\src\com\mediatek\batterywarning\BatteryWarningActivity.java
+    1.
+    private static final int SAFETY_OVER_TIMEOUT_TYPE = 4;
+    //添加低温类型5
+    private static final int BATTERY_LOW_TEMPERATURE_TYPE = 5;
+    
+    2.
+    static final int[] sWarningTitle = new int[] {
+            R.string.title_charger_over_voltage,
+            R.string.title_battery_over_temperature,
+            R.string.title_over_current_protection,
+            R.string.title_battery_over_voltage,
+            R.string.title_safety_timer_timeout,
+            /*添加低温字符串资源 */
+            R.string.title_battery_low_temperature};
+    3.
+    private static final int[] sWarningMsg = new int[] {
+            R.string.msg_charger_over_voltage,
+            R.string.msg_battery_over_temperature,
+            R.string.msg_over_current_protection,
+            R.string.msg_battery_over_voltage,
+            R.string.msg_safety_timer_timeout,
+            /*添加低温字符串资源 */
+            R.string.msg_battery_low_temperature };
+    4.
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (Intent.ACTION_POWER_DISCONNECTED.equals(action)) {
+                if (mType == CHARGER_OVER_VOLTAGE_TYPE
+                        || mType == SAFETY_OVER_TIMEOUT_TYPE || mType == BATTERY_LOW_TEMPERATURE_TYPE /*添加低温类型*/) {
+                    Xlog.d(TAG, "receive ACTION_POWER_DISCONNECTED broadcast, finish");
+                    finish();
+                }
+            }
+        }
+    };
+    5.
+    替换两个方法即可
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        mType = intent.getIntExtra("type", -1);
+        Xlog.d(TAG, "onCreate, mType is " + mType);
+        if (mType >= CHARGER_OVER_VOLTAGE_TYPE  && mType <= BATTERY_LOW_TEMPERATURE_TYPE/*改为低温类型*/) {
+            showWarningDialog(mType);
+            registerReceiver(mReceiver, new IntentFilter(
+                    Intent.ACTION_POWER_DISCONNECTED));
+        } else {
+            finish();
+        }
+    }
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mType >= CHARGER_OVER_VOLTAGE_TYPE  && mType <= BATTERY_LOW_TEMPERATURE_TYPE/*改为低温类型*/) {
+            unregisterReceiver(mReceiver);
+        }
+    }
+    6.字符串资源
+    values/strings.xml
+        <string name="title_battery_low_temperature">"Low Battery Temperature"</string>
+        <string name="msg_battery_low_temperature">"Your battery temperature is too low, please disconnect the charger!"</string>
+    values-zh_rCN/strings.xml
+        <string name="title_battery_low_temperature">"电池温度过低"</string>
+        <string name="msg_battery_low_temperature">"您的电池温度过低，请断开充电器!"</string>
+```
+
+## [FAQ14661] 设置中电池耗电量排名不准确、显示有误等问题
+
+```
+1.先按照Power profile for Android.pptx中的步骤对power_profile.xml文件中的各个参数进行测量
+2.build新版本后再次进行测试
+```
+
+## [FAQ14785] L平台上频繁GC导致UI卡顿
+
+```
+在L平台上频繁GC导致UI发生卡顿，通过systrace和log来判断是否是GC导致的，如果是，则可以使用下面的解决方案
+[SOLUTION]
+请按照如下的修改测试：
+/frameworks/base/core/jni/android_util_Binder.cpp
+158static void incRefsCreated(JNIEnv* env)
+159{
+160    int old = android_atomic_inc(&gNumRefsCreated);
+161    if (false) {  //
+162        android_atomic_and(0, &gNumRefsCreated);
+163        env->CallStaticVoidMethod(gBinderInternalOffsets.mClass,
+164                gBinderInternalOffsets.mForceGc);
+165    } else {
+166        ALOGV("Now have %d binder ops", old);
+167    }
+168}
+169
+```
+
+## [FAQ14778] 手机支持的Mobile Class
+
+```
+手机支持的Mobile Class有：
+1. Class_CC --> CS ONLY
+2. Class_CG --> PS ONLY
+3. Class_B, GSM Prefer --> CS & PS, CS Prefer
+4. Class_B, GPRS Prefer --> CS & PS, PS prefer
+ 
+对于Mobile Class，手机的默认设置应该是Class_B, GSM Prefer.
+ 
+Mobile Class也可以通过Nvram来修改设定：
+```
+
+## [FAQ14830] 【Build and Make】L版本常见编译问题汇总
+
+```
+目前MOL系统针对build and make的FAQ有很多但过于分散，本FAQ主要针对目前适应L版本（Version >= android 5.0）的已有FAQ进行汇总，同时也汇总了DCC上可以参考的相关文档。 
+  
+[SOLUTION]
+ 
+注意以下汇总，适应于L版本：
+(1)编译环境搭建
+ 
+android环境搭建请到DCC搜索文档：
+Android_Build_Environment_on_Ubuntu_12.04_64-bit_Installation_SOP.docx
+ 
+modem环境搭建请到DCC搜索文档：
+MTK_MOLY_MakeBuild_Design_Customer.docx
+ 
+(2)系列FAQs
+ 
+[FAQ14443]合入patch的注意事项
+http://online.mediatek.inc/Pages/FAQ.aspx?List=SW&FAQID=FAQ14443
+ 
+[FAQ11888]Turnkey AOSP的软件包的编译命令
+http://online.mediatek.inc/Pages/FAQ.aspx?List=SW&FAQID=FAQ11888
+ 
+[FAQ14143]AOSP如何快速build kernel、lk 和 preloader
+http://online.mediatek.inc/Pages/FAQ.aspx?List=SW&FAQID=FAQ14143
+ 
+[FAQ13925]AOSP如何单独build Preloader
+http://online.mediatek.inc/Pages/FAQ.aspx?List=SW&FAQID=FAQ13925
+ 
+[FAQ13735]AOSP 如何单独build LK
+http://online.mediatek.inc/Pages/FAQ.aspx?List=SW&FAQID=FAQ13735
+ 
+[FAQ13428]AOSP如何单独build kernel
+http://online.mediatek.inc/Pages/FAQ.aspx?List=SW&FAQID=FAQ13428
+ 
+[FAQ10625]提升Android编译速度
+http://online.mediatek.inc/Pages/FAQ.aspx?List=SW&FAQID=FAQ10625 
+ 
+[FAQ07275]如何在linux中添加新的kernel module
+http://online.mediatek.inc/Pages/FAQ.aspx?List=SW&FAQID=FAQ07275
+ 
+[FAQ14175]AOSP如何menuconfig
+http://online.mediatek.inc/Pages/FAQ.aspx?List=SW&FAQID=FAQ14175
+ 
+[FAQ13609]L版本如何编译android module
+http://online.mediatek.inc/Pages/FAQ.aspx?List=SW&FAQID=FAQ13609
+ 
+[FAQ13697]L 版本如何将第三方so库打包到apk
+http://online.mediatek.inc/Pages/FAQ.aspx?List=SW&FAQID=FAQ13697
+ 
+[FAQ13232]L 预置apk
+http://online.mediatek.inc/Pages/FAQ.aspx?List=SW&FAQID=FAQ13232
+ 
+[FAQ14513]L GMS预置
+http://online.mediatek.inc/Pages/FAQ.aspx?List=SW&FAQID=FAQ14513
+ 
+[FAQ14131]L版本预编译提取apk的odex文件，如何修改？
+http://online.mediatek.inc/Pages/FAQ.aspx?List=SW&FAQID=FAQ14131
+ 
+[FAQ13465]L版本How to clone project
+http://online.mediatek.inc/Pages/FAQ.aspx?List=SW&FAQID=FAQ13465
+ 
+[FAQ13658]L版本上传git服务器后编译出错
+http://online.mediatek.inc/Pages/FAQ.aspx?List=SW&FAQID=FAQ13658
+ 
+[FAQ11794]Preloader bin size过大编译报错怎么办
+http://online.mediatek.inc/Pages/FAQ.aspx?List=SW&FAQID=FAQ11794
+ 
+[FAQ14456]system.img>2G导致编译otapackage时报错如何处理
+http://online.mediatek.inc/Pages/FAQ.aspx?List=SW&FAQID=FAQ14456
+ 
+[FAQ13408]AOSP编译常见问题
+http://online.mediatek.inc/Pages/FAQ.aspx?List=SW&FAQID=FAQ13408
+```
+
+## [FAQ09389] [AT]在双卡版本中，如何在PC端发送AT命令给SIM2
+
+```
+非SGLTE版本：
+Example：
+当前手机中插入两张SIM卡，3G protocol在卡槽1，如果要通过PC端对SIM2发送AT命令，需要先下：
+AT+ESUO=5
+
+同样，如果
+当前手机中插入两张SIM卡，3G protocol在卡槽2，如果要通过PC端对SIM1发送AT命令，需要先下：
+AT+ESUO=5
+
+关于AT+ESUO的具体参数解释，请参考DCC上AT_DOCUMENT_Modem.docx文档中所描述。
+
+SGLTE版本：
+SGLTE比较特殊，SIM1占用了protocol1和protocol2，所以如果需要发送AT命令到protocol2的话，那么需要先下：
+AT+ESPO=2
+
+如果是SGLTE DSDS版本，想将AT命令发送给SIM2，那么需要先下：
+AT+ESPO=3
+
+关于AT+ESPO的具体参数解释，请参考DCC上AT_DOCUMENT_Modem.docx文档中所描述。
+
+L版本：
+使用AT+ESUO=4发送AT给SIM1
+
+使用AT+ESUO=5发送AT给SIM2
+
+在C2K项目上，如果要发送AT命令到C2K的modem，请先下：
+AT+ESUO=9
+```
+
+## [FAQ14829] [Gallery]相册列表界面，屏幕截图在相册缩略图中的字迹模糊
+
+```
+Fancy 界面显示的是图片缩略图，那既然是缩略图就存在不清晰的情况，而当图片上有字迹的时候，这种不清晰的情况就会表现出来。
+缩略图界面的功能是图片的预览，如果需要查看清晰的图片，可以点击进入大图。
+如果需要修改，可按照如下方式做改动：
+在decode时提高BitmapFactory.Options中的inSampleSize，使得decode出来的图片变清晰，然后在这个基础上进行resize。
+
+LocalImage.java的onDecodeOriginal()函数中，在
+int targetSize = MediaItem.getTargetSize(type);
+这句话之后添加
+if (type == MediaItem.TYPE_FANCYTHUMBNAIL)
+    targetSize = (int)(targetSize * 1.5f);
+```
+
+## [FAQ14693] 如何将device version由HAL3.2改为HAL1.0
+
+```
+Android one版本默认底层配的device version为HAL3.2，如果想改为HAL1.0，可以按以下方法修改。
+[SOLUTION]
+在文件config_static_metadata_common.h中把
+case 0:
+     //======================================================================
+    CONFIG_METADATA_BEGIN(MTK_HAL_VERSION)
+        CONFIG_ENTRY_VALUE(MTK_HAL_VERSION_3_2, MINT32)
+    CONFIG_METADATA_END()
+    //======================================================================
+    break;
+case 1:
+     //======================================================================
+    CONFIG_METADATA_BEGIN(MTK_HAL_VERSION)
+        CONFIG_ENTRY_VALUE(MTK_HAL_VERSION_3_2, MINT32)
+    CONFIG_METADATA_END()
+    //======================================================================
+    break;
+改为
+case 0:
+     //======================================================================
+    CONFIG_METADATA_BEGIN(MTK_HAL_VERSION)
+        CONFIG_ENTRY_VALUE(MTK_HAL_VERSION_1_0, MINT32)
+    CONFIG_METADATA_END()
+    //======================================================================
+    break;
+case 1:
+     //======================================================================
+    CONFIG_METADATA_BEGIN(MTK_HAL_VERSION)
+        CONFIG_ENTRY_VALUE(MTK_HAL_VERSION_1_0, MINT32)
+    CONFIG_METADATA_END()
+    //======================================================================
+    break;
+```
+
+## [FAQ14749] 在电源设置中出现红线
+
+```
+那个红线是因为debug开关为true导致的，把BatteryHistoryChart.java中的DEBUG开关设置为false就可以了。
+```
+
+## [FAQ14769] L版本OTA升级遇到error："system has been remounted R/W; reflash device to reenable OTA updates"
+
+```
+L版本；如果有在bootable/recovery/目录下code中添加ensure_path_mounted(“/system”);
+或者是在recovery mode下执行root integrity check之后，导致OTA升级失败，而且last_log中有如下error：
+ 
+script aborted: system has been remounted R/W; reflash device to reenable OTA updates
+system has been remounted R/W; reflash device to reenable OTA updates
+[SOLUTION]
+
+可以尝试在 /bootable/recovery/roots.cpp中作如下修改：(蓝色为添加部分)
+int ensure_path_mounted(const char* path) {
+} else if (strcmp(v->fs_type, "ext4") == 0 ||
+    strcmp(v->fs_type, "vfat") == 0) {
+    if (strcmp(v->mount_point, "/system") == 0)//add
+        result = mount(v->device, v->mount_point, v->fs_type, MS_NOATIME | MS_NODEV | MS_NODIRATIME | MS_RDONLY, "");//add
+    else //add
+        result = mount(v->device, v->mount_point, v->fs_type, MS_NOATIME | MS_NODEV | MS_NODIRATIME, "");
+如果问题还是不能解决，请提eservice给Mediatek，谢谢！
+```
+
+## [FAQ08895] 如何抓取traceview？
+
+```
+1、手机用usb连接到电脑，打开Eclispe的DDMS界面或Android Debug Monitor，进入Device 标签页，在识别到Device并连接成功之后，用鼠标点击你要进行method profiling的process，选择之后，这个process处于深蓝色高亮状态。
+2、在Device这个面板的最上方那一排button中，将鼠标悬停在button上方，有提示文字，找到"Start Method Profiling"的button，点击该button，进行profiling动作。
+3、接下来你就开始操作手机，复现问题。
+4、操作复现问题完了之后，还是点击刚才那个button，此时button的提示文字会变为"Stop Method Profiling"，点击之后就停止了profiling动作，也就停止了抓取traceview。
+5、抓完之后会自动打开刚才所抓取的traceview文件，如果是用Eclipse，请通过Eclipse的File-> Save as 功能，将该traceview文件另存下来提供给我们分析；如果是Android Device Monitor，则将鼠标悬停在已经打开的traceview文件上，该文件的保存路径会悬浮显示在文件名上方，按照此路径将抓到的traceview文件发给我们分析即可。
+```
+
+## [FAQ03568] [Audio Driver] 录音最开始一段时间的数据是录不到的
+
+```
+drop 120ms record data due to hardware pluse
+[SOLUTION]
+AudioType.h中
+#define CAPTURE_DROP_MS (120)
+此宏规定了会drop 120ms的数据
+```
+
+## [FAQ03685] [Audio Common] 如何打开HD record
+
+```
+HD record即高质量录音
+打开方法如下：修改ProjectConfig.mk中
+MTK_AUDIO_HD_REC_SUPPORT=yes
+MTK_DUAL_MIC_SUPPORT=yes  (双mic项目才能开此项)
+```
+
+## [FAQ03966] [Audio Common] 通话时如何播放声音给对方听
+
+```
+默认情况下：通话时播放声音只有本端能听到，对方听不到，如果希望对方也能听到请参考如下修改
+[SOLUTION]
+AudioALSAStreamManager::AudioALSAStreamManager()中可以看到
+mBGSDlGain(0xFF),
+mBGSUlGain(0),
+其中mBGSDlGain表示下行gain值，影响的是本端听到的声音大小
+mBGSUlGain表示上行gain值，影响的是对方听到的声音大小，默认值是0，所以对方听不到
+只要将mBGSUlGain改为非0值即可，最大值0xFF
+```
+
+## [FAQ03686] [Audio App] 录音机菜单项意义
+
+```
+录音机菜单项意义
+[SOLUTION]
+音质:
+High(3gpp): AAC, stereo
+Mid(3gpp): AAC, stereo //虽然和High的音频编码同为AAC但是bitrate和samplerate略差
+Low(amr): AMR, mono
+录音模式:
+Normal: 普通录音
+Meeting: 会议（近距）录音
+Lecture: 远距录音
+```
+
+## [FAQ14782] L版本开启MTK_SHARED_SDCARD 后OTA包放入内卡如何MOTA升级成功？
+
+```
+L版本开启MTK_SHARED_SDCARD=yes， 并且把OTA包放入内卡，即升级包路径为：/data/media/0/update.zip，在进行MOTA升级时，重启机器会遇到一直卡在黑屏、但不会进入recovery mode的现象，仔细检查mtklog发现有如下error：
+ 
+uncrypt : update package is /data/media/0/update.zip
+uncrypt : failed to convert /data/media/0/update.zip to absolute path: Permission denied
+[SOLUTION]
+解决方法：
+修改\alps\device\mediatek\common\sepolicy\uncrypt.te 如下：(其中蓝色为新添加)
+# ==============================================
+# MTK Policy Rule
+# ============
+allow uncrypt misc_device:chr_file *;
+allow uncrypt platformblk_device:dir *;
+allow uncrypt platformblk_device:blk_file *;
+allow uncrypt system_data_file:file { open read };
+allow uncrypt media_rw_data_file:dir { search getattr };
+allow uncrypt media_rw_data_file:file { open read getattr };
+```
+
+## [FAQ14753] 预置apk到vendor/operator/app下面，有时候会编译不过
+
+```
+这种情况一般是apk本身没有对齐导致的，可以先使用zipalign重新对齐apk后再预置，具体做法如下：
+out/host/linux-x86/bin/zipalign -f 4 unalign.apk aligned.apk
+其中，unalign.apk指当前source apk，aligned.apk指对齐后输出的apk。
+```
+
+## [FAQ14537] 下拉菜单中闪光灯打开时，mtk camera app也可以正常启动
+
+```
+当mtk camera app启动时会主动发送广播到下拉菜单，提示去关闭闪光灯，然后mtk camera app再去启动相机，这样就可以正常启动了。具体实现可参考如下文档：
+MTK Camera ap-broadcast-SystemUI_mt6735.pdf
+ 
+文档可以去下面DMS中下载：
+https://dcc.mediatek.com/Docs/Default.aspx
+```
+
+## [FAQ10591] 怎样编译MTK的SDK?
+
+```
+请参考FAQ03042的编译命令，然后会生成相应的zip包，那只需要将其产生的out目录下的zip包给到三方开发即可，其中public 的api都放在这个zip包中的docs\mediatek-sdk\reference目录下.
+```
+
+## [FAQ14744] L版本APPIOT常见问题总结(对比机可以复现)  APPIOT 是什么意思？？
+
+## [FAQ14751] L 版本Security OTA升级方法
+
+## [FAQ14531] [Audio Profile]“提示音和通知”中试听手机铃声时来电，来电铃声和预览铃声声音重叠
+
+## [FAQ14667] [Audio Profile]情景模式里如何增加通话音量进度条调节？
+
+## [FAQ07275] 如何在linux中添加新的kernel module
+
+## [FAQ13320] [Audio Profile]如何打开各个铃声选择框的default、silent、more选项
+
+## [FAQ14861] mms去掉彩信功能
+
+## [FAQ14768] 修改ART mode减少ROM大小 （如GMO project / FOTA升级）
+
+## [FAQ14868] modem log用什么工具分析?????catcher
+
+## [FAQ14724] Android 5.0上的Settings Search功能介绍
+
+## [FAQ13137] 为什么MTKLogger UI显示的路径与实际路径不一致？
+
+## [FAQ15040] 如何增加色度，饱和度，对比度，亮度的调节幅度
+
+## [FAQ11559] [USB名称修改系列] 第17项-如何修改"USB tethering" 在PC端的显示
+
+## [FAQ11062] 如何实现usb驱动自动安装？
+
+## [FAQ12749] 联系人如何区分*123与123这两个号码
+
+## [FAQ15070] Android5.0版本APN界面会显示运营商名字的问题
+
+## [FAQ15113] 低电压关机，关机充电到15%自动开机
+
+## [FAQ09065] [Others]MTK发布的Android software Tools 工具包中所有工具的说明
+
 ## [FAQ15257] [Audio App]如何在通知栏上显示 music 播放/暂停 的控件
 
 ## [FAQ15332] 快速开关wifi，导致wifi打不开
@@ -24929,6 +26678,10 @@ FlashTool 终端模式的使用方法
 
 ## PICS 是什么？？
 
+## 自拍杆的原理？？？自拍杆上的按键键值如何定义？？
+
+## smart PA 是什么东西？？？
+
 ## C2K 是什么意思？？？
 
 ```
@@ -25006,4 +26759,10 @@ EVDO是该制式下的一种网络技术，以实现3G的高速数据链接，�
 
 flashtool 报错 STATUS_DA_HASH_MISMATCH : flash不兼容的问题
 
-FAQ看到了211页
+FAQ看到了243页
+
+## Android 8.1移植：针对某个APK做到wifi和gprs分别做到允许和禁止两种策略
+
+```
+https://blog.csdn.net/zengrunxiu/article/details/81027275
+```
