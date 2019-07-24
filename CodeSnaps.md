@@ -28562,6 +28562,429 @@ import com.android.browser.provider.BrowserProvider;
 
 ```
 
+## [FAQ10927] [USB serial number客制化][系列6]：能否实现adb devices的序列号，usb serial number, cts device ID，SN一致？
+
+```
+adb devices, Serial number, 手机序列号, USB serialno, usb序列号, sn, cts device ID
+[SOLUTION]
+adb devices的序列号 : 为sys/class/android_usb/android0/iSerial结点值，在开机过程中on init阶段（init.usb.rc文件中）写入
+usb serial number : 即usb spec规定的usb的serial number, 代码中对应sys/class/android_usb/android0/iSerial结点值
+cts device ID : 就是adb devices的序列号
+SN : 为getSystemService(Context.TELEPHONY_SERVICE)).getSN()获取到的，需要在android起来之后获取
+综上，adb devices的序列号，usb serial number, cts device ID是一致的，但是不能做到与SN一致
+```
+
+## [FAQ10924] [USB serial number客制化][系列3]：如何修改手机序列号为Barcode？
+
+```
+adb devices, Serial number, 手机序列号, USB serialno, usb序列号, sn, Barcode
+[SOLUTION]
+请参考：[FAQ09340] 如何使SN Write tool写入的Barcode在“设置->关于手机->状态信息->序列号”中显示出来？
+需要注意的是，此Barcode是由SN Write tool写入的。
+```
+
+## [FAQ04349] 不能添加系统属性system property, 提示： permission denied uid:xxxxx name:xxxxx
+
+```
+system property  permission denied  无法写入 没有权限
+ 
+[Solution]
+首先说明一下system property 的使用API
+Java API
+android.os.SystemProperties
+public String get(String key);
+public String get(String key, String def);
+public int getInt(String key, int def);
+public long getLong(String key, long def);
+public void set(String key, String val); => the return value is void
+
+Native API
+libcutils/Properties.h & Properties.c
+int property_set(const char* key, const char* value);
+int property_get(const char* key, char* value, const char* def);
+int property_list(void(*propfn)(const char* key, const char* value, void * cookie), void * cookie);
+
+Android Toolbox
+adb shell getprop
+ return all properties, as list
+adb shell getprop <key>
+    return the property base on key
+adb shell setprop <key> <value>
+    set the property <key> <-> <value>
+
+Init.rc
+setprop <key> <value>
+on property:<key>=<value>
+ some actions.
+
+其次 system property 的重要性
+system property 是存在在init 进程中的关键系统属性，如系统安全，系统稳定性，系统的版本信息等，一般情况下，都不建议使用system property 来进行信息共享，一来容量有限，二来可能导致系统安全等其他问题。
+ 
+最后 如何添加:
+
+(1). android L(5.0) 以前的版本:
+
+Init 通过socket 对端的UID 和 system/core/init/property_service.c 中的permission table 匹配来确认是否可以添加。table 一般分成三列：
+{ prefix.,   UID,    GID },
+比如
+{ "sys.",   AID_SYSTEM,   0 }, 即说明如果是以sys. 开头，那么uid 是system (1000) 的 或者gid 是 root(0) 的都可以访问，修改。注意如果是"ro." 开头，则忽略掉"ro." 这三个字符。
+Permission Table 有两个，对于非 ctl.start/ctl.stop 开头的系统属性，即普通属性，通过property_perms 来控制。
+如果是 ctl.start/ctl.stop 即控制属性，那么通过 control_perms 来控制。
+对于"ro." 开头的系统属性，如果原本已经存在，则无法再修改，所谓"read only", 即最多写一次。
+
+一般APP 因为没有固定的UID(每次安装可能都不一样), 所以肯定无法添加。所以首先就要在AndroidMenifest.xml 添加对应的UID 说明，其次需要使用系统相对应的签名，然后push 到system/app 下面，成为系统APK。这样你启动这个APP 之后就可以ps 去查看它的UID 了，确认正确。
+然后就是去更新 system/core/init/property_service.c 添加对应的访问权限
+
+普通APP 因为没有固定的UID， 故是无法直接添加system property.
+
+(2). android L(5.0) 以及以后的版本: 
+Google 删除了permission table, 而是直接通过SELinux 来限制SELinux 的添加与修改.
+对于"ro." 开头的系统属性，如果原本已经存在，则无法修改，所谓"read only", 即最多写一次。
+对于一个 "xxx.yyy.zzz" 的系统属性("ro.xxx.yyy.zzz" 当作 "xxx.yyy.zzz" 看待),
+
+(2.0) 首先到external/sepolicy/property_contexts , device/mediatek/common/sepolicy/property_contexts 查看是否有绑定它或者它的前缀(如 xxx.yyy.zzz, xxx.yyy, xxx.yyy., xxx.,xxx 等) 的SELinux Context, 如果有, 则忽略掉(2.1), (2.2) 这两步.
+
+(2.1) 在device/mediatek/common/sepolicy/property.te 中 定义这个系统属性 "xxx.yyy.zzz" 的SELinux Context.
+ type xxx_yyy_zzz_prop, property_type;
+ 
+(2.2) 在device/mediatek/common/sepolicy/property_contexts 中 绑定这个系统属性所对应的SELinux Context.
+ xxx.yyy.zzz xxx_yyy_zzz_prop;
+
+(2.3) 在对应的Process(假设为demo)在device/mediatek/common/sepolicy/demo.te 中新增
+   unix_socket_connect(demo,property,init);
+   allow demo xxx_yyy_zzz_prop:property_service set;
+   
+同样Google 严禁普通的app (untrusted app)增加和修改system property.
+```
+
+## [FAQ12691] [Gallery]图库中设置高分辨率壁纸出错
+
+```
+Root Cause: Bitmap RegionDecode 时发生OutOfMemoryError;
+ 
+修改alps/packages/Gallery2/src/com.android.gallery3d.filtershow.crop/CropActivity.java中 (between” Edit Start “and “Edit End” )：
+.…..
+BitmapIOTask(…) {
+….
+doInBackground(Bitmap … params) {
+…
+    Bitmap crop = null;
+            if (decoder != null) {
+                // Do region decoding to get crop bitmap
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inMutable = true;
+/**********************************************Edit Start *****************************************************************************/
+                /// M: increase sample size to avoid OOM for extremely large image. @{
+                int sampleSize = 1;
+                long maxMemory = Runtime.getRuntime().maxMemory();
+                while ((roundedTrueCrop.width() >> (sampleSize - 1)) * (roundedTrueCrop.height() >> (sampleSize - 1)) * 4
+                        > maxMemory) {
+                    if (sampleSize > 5) break;
+                    sampleSize++;
+                    Log.i(LOGTAG, "BitmapIOTask.doInBackground, image too large, set sample size to " + sampleSize);
+                }
+                options.inSampleSize = sampleSize;
+                /// @}
+
+/***************************************************************Edit End *************************************************************/
+                crop = decoder.decodeRegion(roundedTrueCrop, options);
+                decoder.recycle();
+            }
+```
+
+## [FAQ04156] [Hotspot]如何修改便携式热点的默认SSID名称
+
+```
+TD项目修改alps\mediatek\source\frameworks\base\core\res\res\values\Strings.xml中
+
+的wifi_tether_configure_ssid_default_for_cmcc变量
+
+非TD项目修改alps\frameworks\base\core\res\res\values\strings.xml中的wifi_tether_configure_ssid_default变量
+
+JB版本：
+TD:\alps\mediatek\frameworks\base\res\res\values\Strings.xml中wifi_tether_configure_ssid_default_for_cmcc变量
+非TD：alps\frameworks\base\core\res\res\values\strings.xml中的wifi_tether_configure_ssid_default变量
+
+JB2&JB3&JB5版本：
+首选配置alps\mediatek\config\$(项目名)\custom.conf文件下的wlan.SSID名字
+
+若这里没有配置，则规则与JB版本相同
+```
+
+## [FAQ13066] [Audio Profile]后台播放音乐，进入情景模式预览铃声音量时，后台音乐不停止播放
+
+```
+android是允许声音同时播放的，这个是google default设计。如果想在预览铃声时关闭后台音乐播放，JB版本可以参考FAQ04474进行修改，KK版本上，请按如下方式修改：
+在RingerVolumePreference.java中，
+onBindDialogView 的时候
+((AudioManager) getSystemService(AUDIO_SERVICE)).requestAudioFocus(null, AudioManager.STREAM_RING, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+
+然后在onDialogClosed 的时候
+((AudioManager) getSystemService(AUDIO_SERVICE)).abandonAudioFocus(null);
+```
+
+## [FAQ13010] 如何在Camera拍照时往Jpeg的EXIF新增栏位
+
+```
+这边以CustomRendered这个栏位为例，
+首先在EXIF官方spec查看该栏位的定义
+http://www.kodak.com/global/plugins/acrobat/en/service/digCam/exifStandard2.pdf
+官方有如下定义
+CustomRendered
+This tag indicates the use of special processing on image data, such as rendering geared to output. When special
+processing is performed, the reader is expected to disable or minimize any further processing.
+Tag = 41985 (A401.H)
+Type = SHORT
+Count = 1
+Default = 0
+0 = Normal process
+1 = Custom process
+Other = reserved
+
+[SOLUTION]
+1. 首先需要定义
+Exif_type.h (mediatek\hardware\mtkcam\exif\common)
+1)    定义
+....
+#define EXIF_TAG_CUSTOMRENDERED    0xA401
+.....
+2) 加入数组
+static unsigned short exifTagID[] = {
+.....
+      EXIF_TAG_CUSTOMRENDERED,
+.....
+};
+
+2. 指出它的类型，CustomRendered为SHORT类型
+Exif_ifdinit.cpp (mediatek\hardware\mtkcam\exif\common)
+unsigned int
+ifdExifIFDValInit(
+    ifdNode_t *pnode,
+    struct exifIFDList *plist
+)
+{
+    case EXIF_TAG_CUSTOMRENDERED:
+        pifd->type = IFD_DATATYPE_SHORT;
+        pifd->count = 1;
+        write16((unsigned char*)&pifd->valoff, 0);
+        break;
+}
+
+3.需要在exif api中添加栏位的定义，以便capture流程中使用
+IBaseExif.h (mediatek\hardware\mtkcam\exif\common)
+
+typedef struct exifAPP1Info_s {
+....
+    unsigned short customRendered;
+.....
+} exifAPP1Info_t;
+
+4. 让exif api的定义和exif_type中的定义map起来
+Exif_make.cpp (mediatek\hardware\mtkcam\exif\common)
+static unsigned int
+exifTagUpdate(
+    exifImageInfo_t *pexifImgInfo,
+    exifAPP1Info_t *pexifAPP1Info
+)
+{
+.....
+    err = ifdListNodeModify(IFD_TYPE_EXIFIFD, EXIF_TAG_CUSTOMRENDERED, &pexifAPP1Info-> customRendered);
+    if (err != 0) {
+        return err;
+    }
+......
+}
+ 
+5. 写Exif的地方是在CamExif中，这里的pexifApp1Info 就是前面3中定义的exifAPP1Info_s， 您添加的该栏位可以在这里去找个地方进行赋值。
+CamExif.cpp (mediatek\hardware\mtkcam\exif\camera)
+queryExifApp1Info(exifAPP1Info_s*const pexifApp1Info) {
+         ………
+        // [customRender]
+        pexifApp1Info-> customRendered = 1;  
+         …..
+}
+```
+
+## [FAQ12385] [Jb][KK]版本判断能否实现横屏竖用
+
+```
+手机里面说的横屏，指的是他们width>height的屏，在屏的规格书里面，可以看到他显示的分辨率比如为：1024*600， 800*480。
+手机里面说的竖屏，指的是他们width<height的屏，在屏的规格书里面，可以看到他显示的分辨率比如为：600*1024， 480*800，常规做法应该是手机使用这样的竖屏。
+但是有些客户在选料的时候，会选用横屏LCM，实际手机用户还是作为竖屏在看，这就是横屏竖用。
+
+[SOLUTION]
+实现横屏竖用需要满足两个条件，一是满足平台的分辨率要求，即横屏的width不大于平台支持的最大分辨率的width；二是把资源旋转90°或者270°，使用户可以看到竖着的图形，通过配置MTK_LCM_PHYSICAL_ROTATION=90或者270实现旋转。
+
+如下举两个例子说明横屏竖用：
+1、92kk版本如何在1024*600 的横屏上实现竖用，首先判断92最大分辨率为1200*1920，可知1200 > 1024，所以满足分辨率要求，那么实现方案即为：lcm driver里面配置width=1024， height=600，ProjectConfig.mk里面配置width=1024， height=600，MTK_LCM_PHYSICAL_ROTATION=90或者270（这里的90/270是根据lcm来配置的，如果实际不知道该选哪个数字，可以都配置一下，哪个可以显示就使用那个）。
+
+2、72JB版本如何在800*480的横屏上面实现竖用，首先判断72最大分辨率为540*960，可知540<800，所以不满足分辨率要求，那么就说明这个800*480的横屏，无法在72平台上面实现横屏竖用。
+```
+
+## [FAQ12715] 设置壁纸时，发生 java.lang.IllegalArgumentException: y + height must be <= bitmap.height()
+
+```
+当使用第三方应用或Launcher设置壁纸，如果走到WallpaperCropActivity.java (alps\frameworks\base\packages\wallpapercropper\src\com\android\wallpapercropper)
+并且错误log如下：
+08-23 14:48:20.688 11177 11208 E AndroidRuntime: Caused by: java.lang.IllegalArgumentException: y + height must be <= bitmap.height()
+08-23 14:48:20.688 11177 11208 E AndroidRuntime:  at android.graphics.Bitmap.createBitmap(Bitmap.java:676)
+08-23 14:48:20.688 11177 11208 E AndroidRuntime:  at android.graphics.Bitmap.createBitmap(Bitmap.java:640)
+08-23 14:48:20.688 11177 11208 E AndroidRuntime:  at com.android.wallpapercropper.WallpaperCropActivity$BitmapCropTask.cropBitmap(WallpaperCropActivity.java:638)
+08-23 14:48:20.688 11177 11208 E AndroidRuntime:  at com.android.wallpapercropper.WallpaperCropActivity$BitmapCropTask.doInBackground(WallpaperCropActivity.java:728)
+08-23 14:48:20.688 11177 11208 E AndroidRuntime:  at com.android.wallpapercropper.WallpaperCropActivity$BitmapCropTask.doInBackground(WallpaperCropActivity.java:404)
+08-23 14:48:20.688 11177 11208 E AndroidRuntime:  at android.os.AsyncTask$2.call(AsyncTask.java:288)
+08-23 14:48:20.688 11177 11208 E AndroidRuntime:  at java.util.concurrent.FutureTask.run(FutureTask.java:237)
+ 
+则属于这种case
+ 
+[SOLUTION]
+请按照如下修改: WallpaperCropActivity.java(alps\frameworks\base\packages\wallpapercropper\src\com\android\wallpapercropper)
+     
+public boolean cropBitmap() {
+ boolean failure = false;
+ ...................................
+         if (fullSize != null) {
+            mCropBounds.left /= scaleDownSampleSize;
+            mCropBounds.top /= scaleDownSampleSize;
+            mCropBounds.bottom /= scaleDownSampleSize;
+            mCropBounds.right /= scaleDownSampleSize;
+            mCropBounds.roundOut(roundedTrueCrop);
+            
+            /*mtk modify start*/
+            if(roundedTrueCrop.left < 0) {
+               roundedTrueCrop.left = 0;
+               }
+            if(roundedTrueCrop.top < 0) {
+               roundedTrueCrop.top = 0;
+               }
+            if(roundedTrueCrop.left + roundedTrueCrop.width() > fullSize.getWidth()) {
+               roundedTrueCrop.right -= roundedTrueCrop.left + roundedTrueCrop.width() - fullSize.getWidth();
+                }
+            if(roundedTrueCrop.top + roundedTrueCrop.height() > fullSize.getHeight()) {
+                roundedTrueCrop.bottom -= roundedTrueCrop.top + roundedTrueCrop.height() - fullSize.getHeight();
+                }
+        /*mtk modify end*/
+        
+          crop = Bitmap.createBitmap(fullSize, roundedTrueCrop.left,
+                    roundedTrueCrop.top, roundedTrueCrop.width(),
+                    roundedTrueCrop.height());
+                }
+
+```
+
+## [FAQ12010] [common]音乐播放器中随机播放（shuffle）功能异常
+
+```
+1. 进入音乐播放器，播放一首歌曲；
+2. 打开随机播放；
+3. 播放另一首歌；
+4. 关闭随机播放；
+5. 当播放完毕，不会顺序跳到下一首，而是跳到随机播放的歌曲。----》不符合预期.
+
+[SOLUTION]
+此问题是由于关闭随机播放后，并没有重新设置下一首待播放歌曲的音源，仍然使用开启随机播放时保存的下一首歌曲。
+修改方法如下：
+在packages\apps\Music\src\com\android\music\MediaPlaybackService.java中的如下函数：
+public void setShuffleMode(int shufflemode)
+如下代码之前：mShuffleMode = shufflemode
+添加下面代码：
+/// M: To make sure the shuffle mode will take effect after change shuffle mode.
+/// The nextplayer shoud be reset,so we should set NextPlayer to null.
+if (mPlayer.isInitialized()) {
+    mPlayer.setNextDataSource(null);
+}
+```
+
+## [FAQ12555] 手机中setting下CPU使用菜单里的数据信息所代表的含义
+
+```
+手机Setting菜单下开发者选项中菜单CPU使用显示信息所代表的含义
+[SOLUTION]
+如图：在选择了settings-->developer options-->show cpu usage 之后，手机界面会有以下信息显示
+
+绿色代表普通优先级的进程，
+蓝色代表低优先级的进程，
+红色是系统进程，
+
+这三个数值代表不同间隔下（1，5，15分钟）估算的平均负载（load average）
+数字下面显示的就是正在运行的各种进程，包括系统和应用程序的执行序(process)。
+一般会选择看后面的两个数字，了解系统是否会有长时间处在高负载的状况，短暂、突发的高负载并不会造成问题，
+可忽略不管，数字越小越好，数字较大就表示机器过载或有某种问题
+```
+
+## [FAQ11641] 当文件夹路径从n层按back键退回到n-19层的时候，file manager自动退出
+
+```
+当文件夹路径从n层按back键退回到n-19层的时候，file manager自动退出，比如在63层按back 键退回到44层的时候，file manager自动退出。
+
+1.FileManager默认设计, FileManager种只记录最多20条操作路径的记录, 如果超出就会把最早加入的记录删除. 贵司可以参考alps/mediatek/packages/apps/FileManager/src/com/mediatek/filemanager/FileInfoManager.java中这部分的代码．
+    /** Max history size */
+    private static final int MAX_LIST_SIZE = 20;
+    private final List<NavigationRecord> mNavigationList = new LinkedList<NavigationRecord>();
+    /**
+     * This method gets the previous navigation directory path
+     * 
+     * @return the previous navigation path
+     */
+    protected NavigationRecord getPrevNavigation() {
+        while (!mNavigationList.isEmpty()) {
+            NavigationRecord navRecord = mNavigationList.get(mNavigationList.size() - 1);
+            removeFromNavigationList();
+            String path = navRecord.getRecordPath();
+            if (!TextUtils.isEmpty(path)) {
+                if (new File(path).exists() || MountPointManager.getInstance().isRootPath(path)) {
+                    return navRecord;
+                }
+            }
+        }
+        return null;
+    }
+    /**
+     * This method adds a navigationRecord to the navigation history
+     * 
+     * @param navigationRecord the Record
+     */
+    protected void addToNavigationList(NavigationRecord navigationRecord) {
+        if (mNavigationList.size() <= MAX_LIST_SIZE) {
+            mNavigationList.add(navigationRecord);
+        } else {
+            mNavigationList.remove(0);
+            mNavigationList.add(navigationRecord);
+        }
+    }
+    /**
+     * This method removes a directory path from the navigation history
+     */
+    protected void removeFromNavigationList() {
+        if (!mNavigationList.isEmpty()) {
+            mNavigationList.remove(mNavigationList.size() - 1);
+        }
+    }
+ 
+ 
+2.对于20条操作路径的history record, 贵司可以修改，只需要把FileInfo.Manager.java中的MAX_LIST_SIZE设为需要的最大路径记录数。这样修改带来的影响是，file manager APK可能会用到更多的内存，因为List<NavigationRecord> mNavigationList需要记录更多的路径数。
+alps/mediatek/packages/apps/FileManager/src/com/mediatek/filemanager/FileInfoManager.java中这部分的代码．
+    /** Max history size */
+    private static final int MAX_LIST_SIZE = xxx;
+```
+
+## [FAQ11051] 文件管理器按大小排序时，只会排序file，不会排序folder
+
+```
+这是目前的design，主要考虑的是performance问题。
+文件夹的大小是不能直接拿到的，必须遍历文件夹下面的子文件和子文件夹的文件大小加起来做为文件大小，如果一个文件夹下有很多文件和子文件夹，这样迭代拿大小会很费时间，所以文件夹没有按大小排序。
+```
+
+## [FAQ11556] 在file manager中重命名MP3的名称，进入Music中发现歌曲仍显示原来的名称
+
+```
+进入文件管理中，将一个MP3重命名，重命名完成后进入Music播放器，发现原先被重命名过的MP3显示的仍然是原先的名称，而非重命名后的名称。
+
+[SOLUTION]
+歌曲被Mediascanner扫描后，在Music播放器中，显示的是MP3中的ID3 tag，这个是内置在歌曲中的信息，所以即使在file manager中重命名，也不会改变在music中的名称.
+note:有些工具，如格式工厂，将歌曲转换为MP3时会破坏tag里面的数据，此时若在file manager中修改，Music就会随着修改而改变。
+```
+
 ## [FAQ12988] 大量图片时Gallery打开图片速度很慢
 
 ## [FAQ13408] AOSP编译常见问题
@@ -29035,9 +29458,15 @@ FlashTool 终端模式的使用方法
 
 ## PICS 是什么？？
 
+## SharedUserId 有哪几种？？
+
+## 如何查看进程的 uid, gid ？？？
+
 ## 自拍杆的原理？？？自拍杆上的按键键值如何定义？？
 
 ## smart PA 是什么东西？？？
+
+## Bluetooth蓝牙协议有哪些？？？分别有什么用？？？
 
 ## C2K 是什么意思？？？
 
