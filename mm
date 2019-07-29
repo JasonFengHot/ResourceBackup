@@ -39,7 +39,8 @@
 
 # TODO : 通过爬虫自动抓取 FAQ 上的内容
 
-# TODO : push 之后点亮屏幕
+    # TODO : push 之后点亮屏幕
+    #adb shell input keyevent 224 //KEYCODE_WAKEUP
 
     # TODO : 如何判断下面的这些基础命令是否存在？adb, mocp
 
@@ -548,6 +549,11 @@ make(){
         process=com.android.gallery3d;
         componentName=com.android.gallery3d/com.android.gallery3d.app.GalleryActivity
         moduleType=1;
+    elif [ $module == "MTKLogger" ] ; then
+        ./mk -ud $new_project mm vendor/mediatek/proprietary/packages/apps/MTKLogger/
+        process=com.mediatek.mtklogger;
+        componentName=com.mediatek.mtklogger/.MainActivity
+        moduleType=1;
     elif [ $module == "EngineerMode" ] ; then
         #notice "要清空或删除 vendor/mediatek/proprietary/packages/apps/EngineerMode/jni/server_em/Android.mk"
         rm vendor/mediatek/proprietary/packages/apps/EngineerMode/jni/server_em/Android.mk;
@@ -826,6 +832,8 @@ startTime=`date +"%s"`
 
 make $mModule;
 push $mModule;
+# push 之后亮屏
+adb shell input keyevent 224;
 
 endTime=`date +"%s"`
 

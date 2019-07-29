@@ -67,7 +67,7 @@ vscode
 ## 打印当前所使用的类名、方法名、行号
 
 ``` Java
-android.util.Log.e("zhangqi8888", Thread.currentThread().getStackTrace()[2].getMethodName()+"  "+Thread.currentThread().getStackTrace()[2].getMethodName()+"  "+Thread.currentThread().getStackTrace()[2].getLineNumber());
+android.util.Log.e("zq8888", Thread.currentThread().getStackTrace()[2].getMethodName()+"  "+Thread.currentThread().getStackTrace()[2].getMethodName()+"  "+Thread.currentThread().getStackTrace()[2].getLineNumber());
 ```
 
 ## android:duplicateParentState 属性详解
@@ -85,15 +85,13 @@ https://github.com/lizhangqu/CoreLink
 https://github.com/GcsSloop/AndroidNote?utm_source=gold_browser_extension
 ```
 
-## TODO : 反射代码模板
-
 ## [Snippet]OnClickListener
 
 ``` Java
 button.setOnClickListener(new android.view.View.OnClickListener() {
     @Override
     public void onClick(android.view.View v) {
-        android.util.Log.e("zhangqi8888", "onClick(1) view:" + view);
+        android.util.Log.e("zq8888", "onClick(1) view:" + view);
     }
 });
 ```
@@ -106,11 +104,11 @@ button.setOnKeyListener(new android.view.View.OnKeyListener() {
     public boolean onKey(android.view.View v, int keyCode, android.view.KeyEvent event) {
         if (keyCode == android.view.KeyEvent.ACTION_DOWN) {
             if (event.getAction() == android.view.KeyEvent.KEYCODE_DPAD_DOWN) {
-                android.util.Log.e("zhangqi8888", "onKey(1111) event:" + event);
+                android.util.Log.e("zq8888", "onKey(1111) event:" + event);
                 return true;
             }
         }
-        android.util.Log.e("zhangqi8888", "onKey(2222) event:" + event);
+        android.util.Log.e("zq8888", "onKey(2222) event:" + event);
         return false;
     }
 });
@@ -144,7 +142,7 @@ mDialog.setOnKeyListener(new android.content.DialogInterface.OnKeyListener() {
 view.setOnFocusChangeListener(new android.view.View.OnFocusChangeListener() {
     @Override
     public void onFocusChange(android.view.View v, boolean hasFocus) {
-        android.util.Log.e("zhangqi8888", "onFocusChange(1) v:" + v + " hasFocus:" + hasFocus);
+        android.util.Log.e("zq8888", "onFocusChange(1) v:" + v + " hasFocus:" + hasFocus);
         if (hasFocus) {
         } else {
         }
@@ -158,7 +156,7 @@ view.setOnFocusChangeListener(new android.view.View.OnFocusChangeListener() {
 view.setOnLongClickListener(new android.view.View.OnLongClickListener() {
     @Override
     public boolean onLongClick(android.view.View v) {
-        android.util.Log.e("zhangqi8888", "onLongClick() v:" + v);
+        android.util.Log.e("zq8888", "onLongClick() v:" + v);
         return false;
     }
 });
@@ -170,7 +168,7 @@ view.setOnLongClickListener(new android.view.View.OnLongClickListener() {
 getListView().addOnLayoutChangeListener(new android.view.View.OnLayoutChangeListener() {
     @Override
     public void onLayoutChange(android.view.View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-        android.util.Log.e("zhangqi8888", "onLayoutChangeListener(1)" + v);
+        android.util.Log.e("zq8888", "onLayoutChangeListener(1)" + v);
     }
 });
 ```
@@ -180,7 +178,7 @@ getListView().addOnLayoutChangeListener(new android.view.View.OnLayoutChangeList
 ``` Java
 mListView.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener(){
     public void onItemClick(android.widget.AdapterView<?> parent, android.view.View view, int position, long id){
-        android.util.Log.e("zhangqi8888", "onItemClick(1)" + view);
+        android.util.Log.e("zq8888", "onItemClick(1)" + view);
     }
 });
 ```
@@ -190,7 +188,7 @@ mListView.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListe
 ``` Java
 mSwitch.setOnCheckedChangeListener(new android.widget.CompoundButton.OnCheckedChangeListener(){
     public void onCheckedChanged(android.widget.CompoundButton compoundButton, boolean isChecked) {
-        android.util.Log.e("zhangqi8888", "onCheckedChanged(0)" + isChecked);
+        android.util.Log.e("zq8888", "onCheckedChanged(0)" + isChecked);
         if (isChecked) {
         } else {
         }
@@ -283,7 +281,7 @@ private PhoneStateListener mPhoneServiceListener = new PhoneStateListener() {
 ``` Java
 private android.os.Handler mHandler = new android.os.Handler() {
     public void handleMessage(android.os.Message msg) {
-        android.util.Log.e("zhangqi8888", "handleMessage(1)" + msg.what);
+        android.util.Log.e("zq8888", "handleMessage(1)" + msg.what);
         switch (msg.what) {
             case 1:
                 break;
@@ -311,9 +309,9 @@ new Thread(new Runnable() {
     public void run() {
         try {
             Thread.sleep(1000);
-            android.util.Log.e("zhangqi8888", "new Thread(1)");
+            android.util.Log.e("zq8888", "new Thread(1)");
         } catch(Exception e) {
-            android.util.Log.e("zhangqi8888", "new Thread(2) exception:" + e, e);
+            android.util.Log.e("zq8888", "new Thread(2) exception:" + e, e);
             e.printStackTrace();
         }
     }
@@ -328,7 +326,7 @@ try {
     mObject.toString();
 } catch (Exception e) {
     e.printStackTrace();
-    android.util.Log.e("zhangqi8888", "NPE:" + e, e);
+    android.util.Log.e("zq8888", "NPE:" + e, e);
 }
 ```
 
@@ -336,6 +334,90 @@ try {
 
 ``` xml
 android:fadeScrollbars="false"
+```
+
+## Android 判断当前是否在UI线程
+
+```
+boolean isMainThread = Looper.myLooper() == Looper.getMainLooper();
+```
+
+## head | sort
+
+```
+head命令 用来显示档案的开头至标准输出中。
+
+sort命令用于将文本文件内容加以排序。sort可针对文本文件的内容，以行为单位来排序。
+
+# 查看前5行内容 -n  num：显示每个文件的前num 行内容
+[root@localhost best]# head -n 5 besthappyday 
+0315 happy
+0812 happy
+0201 happy
+0403 happy
+9046 happy
+
+# 排序一下
+[root@localhost best]# head -n 5 besthappyday | sort 
+0201 happy
+0315 happy
+0403 happy
+0812 happy
+9046 happy
+```
+
+## zgrep | zcat
+
+```
+避免解压文件，可以使用zgrep命令查找文件内容信息、zcat查看压缩文件中的信息。
+```
+
+## awk 的用法？？？
+
+## cheat 的用法？？？？
+
+```
+https://aflyun.blog.csdn.net/article/details/88609704
+```
+
+## hook原理
+
+```
+https://juejin.im/post/5d25f09bf265da1bb565217f
+
+public class BaseActivity extends AppCompatActivity {
+    ...
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        // TODO: 关键点1：hook（劫持）系统创建view的过程
+        if (ifAllowChangeSkin) {
+            mSkinFactory = new SkinFactory();
+            mSkinFactory.setDelegate(getDelegate());
+            LayoutInflater layoutInflater = LayoutInflater.from(this);
+            layoutInflater.setFactory2(mSkinFactory);//劫持系统源码逻辑
+        }
+        super.onCreate(savedInstanceState);
+    }
+}
+```
+
+## BIO、NIO和AIO？
+
+```
+https://juejin.im/post/5d19820c6fb9a07ea42094e2
+
+BIO （Blocking I/O）：同步阻塞I/O模式。
+NIO （New I/O）：同步非阻塞模式。
+AIO （Asynchronous I/O）：异步非阻塞I/O模型。
+那么，同步阻塞、同步非阻塞、异步非阻塞都是怎么回事呢？关于这部分内容也可以查看《漫话：如何给女朋友解释什么是IO中的阻塞、非阻塞、同步、异步？》。
+
+同步阻塞模式：这种模式下，我们的工作模式是先来到厨房，开始烧水，并坐在水壶面前一直等着水烧开。
+同步非阻塞模式：这种模式下，我们的工作模式是先来到厨房，开始烧水，但是我们不一直坐在水壶前面等，而是回到客厅看电视，然后每隔几分钟到厨房看一下水有没有烧开。
+异步非阻塞I/O模型：这种模式下，我们的工作模式是先来到厨房，开始烧水，我们不一一直坐在水壶前面等，也不隔一段时间去看一下，而是在客厅看电视，水壶上面有个开关，水烧开之后他会通知我。
+
+阻塞VS非阻塞：人是否坐在水壶前面一直等。
+
+同步VS异步：水壶是不是在水烧开之后主动通知人。
 ```
 
 ## [APN]APN相关知识
@@ -455,11 +537,11 @@ setTextSize(android.util.TypedValue.COMPLEX_UNIT_DIP, 21.0f);
 
 ``` Java
 AudioProfileManager mProfileManager = (AudioProfileManager) mContext.getSystemService(Context.AUDIOPROFILE_SERVICE);
-if(indexToRingerMode(index) == AudioManager.RINGER_MODE_NORMAL){
+if (indexToRingerMode(index) == AudioManager.RINGER_MODE_NORMAL) {
     int mSetVolume = Settings.System.getInt(mContext.getContentResolver(), "audio_profile_general_volume", 9);
     mProfileManager.setStreamVolume("mtk_audioprofile_general", AudioProfileManager.STREAM_RING, mSetVolume);
     mAudioManager.setStreamVolume(AudioManager.STREAM_RING, mSetVolume, 9);
-}else if(indexToRingerMode(index) == AudioManager.RINGER_MODE_VIBRATE){
+} else if(indexToRingerMode(index) == AudioManager.RINGER_MODE_VIBRATE) {
     Settings.System.putInt(mContext.getContentResolver(), "audio_profile_general_volume", mProfileManager.getStreamVolume("mtk_audioprofile_general", AudioProfileManager.STREAM_RING));
     mProfileManager.setStreamVolume("mtk_audioprofile_general", AudioProfileManager.STREAM_RING, 0);
     mAudioManager.setStreamVolume(AudioManager.STREAM_RING, 0, 0);
@@ -611,7 +693,6 @@ notMgr.notify(id, n);
 registerReceiver(new android.content.BroadcastReceiver() {
     public void onReceive(android.content.Context context, android.content.Intent intent){
         String action = intent.getAction();
-        android.util.Log.e("zhangqi8888", "onReceive()" + action);
     }
 }, new android.content.IntentFilter("$1"));
 ```
@@ -693,7 +774,7 @@ boolean isFirst = getSharedPreferences("prefs", Context.MODE_APPEND).getBoolean(
 ## [Snippet]ro值的读取(在某些地方可能需要用到反射)
 
 ``` Java
-android.os.SystemProperties.get("ro.build.type", "null");
+String type = android.os.SystemProperties.get("ro.build.type", "null");
 ```
 
 ## TODO : persist值的保存读取？权限问题
@@ -705,7 +786,6 @@ getContentResolver().registerContentObserver(android.provider.Settings.System.ge
     @Override
     public void onChange(boolean selfChange, android.net.Uri uri) {
         super.onChange(selfChange, uri);
-        android.util.Log.e("zhangqi8888", "onChange()" + uri);
     }
 });
 ```
@@ -730,8 +810,6 @@ public void showToast(String msg){
     }
 }
 ```
-
-## 
 
 ## TODO : Toast自定义版
 
@@ -763,13 +841,13 @@ builder.setIconAttribute(android.R.attr.alertDialogIcon)
 builder.setPositiveButton("ok", new android.ontent.DialogInterface.OnClickListener() {
     @Override
     public void onClick(android.ontent.DialogInterface dialog, int which) {
-        android.util.Log.e("zhangqi8888", "AlertDialog->onClick(positive)->");
+        android.util.Log.e("zq8888", "AlertDialog->onClick(positive)->");
     }
 });
 builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
     @Override
     public void onClick(android.ontent.DialogInterface dialog, int which) {
-        android.util.Log.e("zhangqi8888", "AlertDialog->onClick(negative)->");
+        android.util.Log.e("zq8888", "AlertDialog->onClick(negative)->");
     }
 });
 builder.create().show();
@@ -856,9 +934,9 @@ public class Setting extends PreferenceActivity {
 ``` xml
 Setting.xml:
 <Preference
-    android:key="seting2"
-    android:title="@string/seting2"
-    android:summary="@string/seting2"/>
+    android:key="setting2"
+    android:title="@string/setting2"
+    android:summary="@string/setting2"/>
     android:key="seting1" 
     android:title="@string/seting1" 
     android:summaryOff="@string/seting1summaryOff" 
@@ -870,6 +948,7 @@ Setting.xml:
 ``` Java
 CallCommandClient.getInstance().playDtmfTone('9', true);
 CallCommandClient.getInstance().stopDtmfTone();
+
 ```
 
 ## [Snippet]按键转发
@@ -3188,6 +3267,25 @@ config.locale = Locale.SIMPLIFIED_CHINESE; //简体中文
 resources.updateConfiguration(config, dm);
 ```
 
+## setLanguage
+
+```
+private void setLanguage() {
+    ACache aCache = ACache.get(this);//使用ACache保存配置的语言
+    //如果系统当前默认的语言不等于当前ACache中保存的语言，就更改
+    if (Locale.getDefault() != Utils.getLanguageLocal(aCache.getAsString(Content.currentLanguage))){
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        Configuration configuration = getResources().getConfiguration();
+        Locale locale = Utils.getLanguageLocal(aCache.getAsString(Content.currentLanguage));//获取到ACache中保存的语言
+        configuration.setLocale(locale);//设置语言
+        getResources().updateConfiguration(configuration, displayMetrics);//更新系统配置文件
+    }
+}
+
+setLanguage();更改语言
+recreate();//刷新页面
+```
+
 ## 根据控件的id名称获取控件
 
 frameworks/base/core/java/android/app/Activity.java
@@ -3705,7 +3803,7 @@ MY_BUILD_PORTABLE 修改为 no 即可
 
 ``` bash
 查看包含在无线/电话相关的缓冲区消息
-adb logcat -b radio | grep "zhangqi7777"
+adb logcat -b radio | grep "zq7777"
 
 查看事件相关的消息
 adb logcat -b events
@@ -3728,9 +3826,7 @@ M:alps/vendor/mediatek/proprietary/frameworks/base/res/res/values*/donottranslat
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string-array name="new_search_engines" translatable="false">
         <item>--</item>
-        <!--Redmine176101 zhangqi modified for default "Google" search engine for browser 2019/05/08:begin-->
         <item>google--Google--google.com--search_engine_google--http://www.google.com/m?hl={language}&amp;ie={inputEncoding}&amp;source=android-browser&amp;q={searchTerms}--UTF-8--http://www.google.com/complete/search?hl={language}&amp;json=true&amp;q={searchTerms}</item>
-        <!--Redmine176101 zhangqi modified for default "Google" search engine for browser 2019/05/08:end-->
         <item>start--Start--mt.start.fyi--search_engine_other--http://mt.start.fyi/search?ie={inputEncoding}&amp;source=browser#gsc.q={searchTerms}--UTF-8--http://www.google.com/complete/search?hl={language}&amp;json= true&amp;q={searchTerms}</item>
         <item>yahoo--Yahoo!--yahoo.com--search_engine_yahoo--https://search.yahoo.com/search?ei={inputEncoding}&amp;.tsrc=mtkandroid&amp;p={searchTerms}--UTF-8--http://sugg.search.yahoo.com/gossip/?output=fxjson&amp;command={searchTerms}</item>
         <item>bing--Bing--bing.com--search_engine_bing--http://www.bing.com/search?q={searchTerms}--UTF-8--http://api.bing.com/osjson.aspx?query={searchTerms}&amp;language={language}</item>
@@ -4335,14 +4431,12 @@ mSlider.setKeyProgressIncrement(val);
 ``` Java
 public void reorderApps() {
     ......
-    //Redmine87958 zhangqi modified to hide GoogleSettings 2017/03/04:begin
     for(int i = mApps.size() - 1; i > 0 ; i--){
         AppInfo appInfo = mApps.get(i);
         if("com.google.android.gms".equalsIgnoreCase(appInfo.getPackageName())){
             mApps.remove(appInfo);
         }
     }
-    //Redmine87958 zhangqi modified to hide GoogleSettings 2017/03/04:end
 }
 ```
 
@@ -4940,8 +5034,13 @@ public boolean isRoot() {
 ```
 
 ## lint 命令行怎么使用？
+
+```
 lint [flags] <project directory>
 gradlew lint
+
+https://juejin.im/post/5d307615f265da1b6b1d0dd9
+```
 
 ## Selinux权限快速编译
 
@@ -6609,7 +6708,7 @@ ps:刷机进去后到开机不会进入recovery模式，也就是说不会调用
 ## L项目上如何让手机能充电
 
 ```
-把alps/kernel-3.10/drivers/misc/mediatek/mach/mt6735/include/mach/upmu_sw.h 文件中关闭宏 BATTERY_CDP_WORKAROUND  就可以充电了
+把 alps/kernel-3.10/drivers/misc/mediatek/mach/mt6735/include/mach/upmu_sw.h 文件中关闭宏 BATTERY_CDP_WORKAROUND  就可以充电了
 ```
 
 ## [FAQ12075]如何让 keguard run 在 com.android.keyguard 进程
@@ -7539,7 +7638,7 @@ iconv -f gb18030 -t utf8 file1 -o file2
 ## [默认值][bug](名称)WIFI直连名称显示错误
 
 ```
-kk：frameworks/base/wifi/java/android/net/wifi/p2p/WifiP2pService.java文件中的getPersistedDeviceName()方法
+kk：frameworks/base/wifi/java/android/net/wifi/p2p/WifiP2pService.java 文件中的 getPersistedDeviceName() 方法
 L：frameworks/opt/net/wifi/service/java/com/android/server/wifi/p2p/WifiP2pServiceImpl.java文件中的
 ```
 
@@ -7555,16 +7654,25 @@ Settings.Global.putInt(mResolver, Settings.Global.MOBILE_DATA + phoneSubId, 0);-
 Settings.Global.putInt(mResolver, Settings.Global.MOBILE_DATA + phoneSubId, 1);-->打开
 ```
 
-## [默认值]修改蓝牙显示名称
+## [默认值][Bluetooth]修改蓝牙显示名称
 
 ```
+KK:
 mediatek/config/up39_h455_coppel/custom.conf 文件中 bluetooth.HostName 中
+
+L之后:
+/home/zq/projects/Project_common/alps/device/mediatek/common/custom.conf 目前都在 ProjectConfig.mk 中用宏 bluetooth_hostname 控制
 ```
 
-## 如何让每个apk里面的menu通过三个点显示出来
+## 如何让每个apk里面的menu通过三个点的菜单按钮显示出来
 
 ```
 frameworks/base/core/res/res/values/config.xml 文件中的 <integer name="config_overrideHasPermanentMenuKey">0</integer> 值改为2
+
+frameworks/base/core/java/com/android/internal/view/ActionBarPolicy.java
+public boolean showsOverflowMenuButton() {
+    return !ViewConfiguration.get(mContext).hasPermanentMenuKey();  //通过 config_overrideHasPermanentMenuKey 来控制三个点的菜单按钮是否显示
+}
 ```
 
 ## [FAQ04312][默认值]如何修改默认字体大小 Settings-->Display-->Font size
@@ -7602,6 +7710,8 @@ return Settings.System.getFloat(mContext.getContentResolver(), name, 1.0f) != 1.
 </string-array>
 
 在设置所需的字体大小时请参考 entryvalues_font_size 的定义。
+
+通过 adb 命令设置字体的大小 adb shell settings put system font_scale 1.0
 ```
 
 ## [FAQ12292]浏览器下载文件无法打开
@@ -9485,13 +9595,13 @@ PRODUCT_PROPERTY_OVERRIDES += persist.sys.pms_sys_removable=1
 导致在提case时，不能在第一时间提供全面的log信息；
  
 一， AEE 的变化：
- 1. 架构的改变。
+1. 架构的改变。
 Before：
 AEE只存在与system/bin/下，daemon的名字叫debuggerd(debuggerd64)
 After:
 AEE在system/bin和vendor/bin下各有一套，daemon名字改为：aee_aed(aee_aed64)---system/bin下；aee_aedv(aee_aedv64)---vendor/bin/下
 
-2.不同异常类型DB存放路径
+2. 不同异常类型DB存放路径
 Before：
 /data/aee_exp;
 /sdcard/mtklog/aee_exp;
@@ -9512,8 +9622,7 @@ FAQ20159   Android user/userdebug load，如何抓到所有异常的aee db？
 5. aee 对三方app exception handle的过滤
 public void handle(String type, String info, String pid) {
     Log.w(TAG, "Exception Log handling...");
-    if (type.startsWith("data_app") && !info.contains("com.android.development")
-            && (SystemProperties.getInt("persist.mtk.aee.filter", 1) == 1)) {
+    if (type.startsWith("data_app") && !info.contains("com.android.development") && (SystemProperties.getInt("persist.mtk.aee.filter", 1) == 1)) {
         Log.w(TAG, "Skipped - do not care third party apk");
         return;
     }
@@ -13472,6 +13581,16 @@ Note1：默认的设计，都是将顺序播放的动画放在一个folder，定
 Note2:由于循环播放的folder中的每帧都是以纹理对象存储在纹理内存中再upload到GPU做渲染的，以便下次循环播放不需要重新解析.如果动画包中的图片太多或者图片的size很大时，则会导致占用较多的memory,因此为保证开机的performance,开机动画不建议太复杂.
 ```
 
+## [FAQ06044] 制作开机动画(bootanimation.zip)注意事项
+
+```
+bootanimation.zip是开机动画的图片压缩包，里面放的都是一帧一帧的图片。
+注意：里面除了desc.txt以外不能存在其他非图片格式的文件，否则会引起bootanimation程序崩溃，崩溃的log示例如下：
+可以看到在播放Thumbs.db时发生了bootanimation的NE
+[SOLUTION]
+不要在windows系统下打包bootanimation.zip，因为如果浏览图片后，windows将会生成隐藏文件Thumbs.db，请在linux下打包
+```
+
 ## [FAQ13768] 功耗问题eservice提交流程
 
 ```
@@ -15035,6 +15154,123 @@ alps\mediatek\frameworks\base\epo\etc\epo_conf.xml
   <epo_conf_para
    epo_enable="no"  ==> 改成"yes"
    auto_enable="no"  ==> 改成"yes”
+```
+
+## [FAQ02932] 把AGPS默认打开，请问如何修改
+
+```
+如果是第一次开机就默认开启A-GPS，您只需要修改
+alps\vendor\mediatek\etc\agps_profiles_conf.xml文件中的agps_enable 有被设置为如下即可：
+agps_enable="yes"
+
+另外，A-GPS的开启还需要其他的一些条件，包括
+1.有开启GPS
+2.当前有已经连接的数据连接。
+
+所以，如果是上个文件中的值有被设置为yes，而在开机时GPS没有开启，或者是数据连接没有开启，也不会自动开启A-GPS。需要end user手动进入到setting内开启。
+
+UI将Agps开启并不表示Agps的会话立即被触发，只是表示有机会被GPS调用而启动。
+```
+
+## [FAQ02930] 设置 - 位置 - AGPS设置 - 使用配置 默认是GOOGLE， 如何修改默认成别的值,如Nokia
+
+```
+修改agps_profiles_conf.xml中的
+default_profile="GOOGLE"
+修改为
+default_profile="NOKIA"
+即可。
+```
+
+## [FAQ02929] AGPS的协议版本
+
+```
+FDD2上面的A-GPS已經有通過FTA的所有測項,CP + SUPL v1.0.
+
+JB2之后版本支持SUPL2.0兼容1.0 
+不過由于实际网络没有支持SUPL 2.0的server
+为了避免发出的SUPL START带2.0版号会被Sever拒绝，出厂设置都是设成仅支持SUPL1.0
+
+所以 SUPL 2.0 仅限于Lab测试使用
+
+在JB5有修正设计，即使手机设置没有Enable  SUPL 2.0
+但是网络发起定位（NI）的SUPL-INIT中，Sever田的版号是2.0 我们就会以2.0的版号回复
+所以JB5开始SUPL 2.0的开关只会影响手机发起的（SI）部分只會影響手機發起(SI)部分
+
+/alps/mediatek/frameworks/base/agps/etc/agps_profiles_conf.xml
+supl_version: (for UP only)
+choose which SUPL version you want to use
+Available value: 1, 2
+
+目前设置
+supl_version="1"
+```
+
+## [FAQ03537] AGPS SUPL服务器客制化
+
+```
+1，获取当前有效AGPS配置接口
+AgpsProfileManager mProfileMgr = AgpsProfileManager.getProfileManager(context);
+MtkAgpsProfile profile = mProfileMgr.getCurrentProfile()；
+String name = profile.name;                      // 进行查询或者设置的依据
+String slpName = profile.slpName;          // 在AGPS设置中的UI显示
+String backupsName = profile.backupSlpNameVar;  // 只是个备份名字，暂无其他作用
+String addr = profile.addr;                          // SUPL IP地址
+int port = profile.port;                        // SUPL 端口
+int tls = profile.tls;                      // 是否要安全认证，0不需要，1需要
+int showType = profile.showType; 
+// 显示类型，0表示总是显示，1表示工厂模式下显示，2根据运营商码显示
+
+2，获取系统内其他AGPS配置接口
+MtkAgpsProfile profile = mProfileMgr.getProfile("name");
+// name 在实际使用中只能用已经成功在数据库中保存的profile code 进行代替(如GOOGLE，NOKIA或者自己配置成功的)。
+
+3，设置当前有效AGPS接口
+mProfileMgr.setCurrentProfile（"GOOGLE"）；
+// GOOGLE 可以用NOKIA或者自己修改后的profile code 代替。
+mProfileMgr.switchAgpsProfile()； // 这个函数调用后才可以使得刚才设置项立即生效。
+
+4，修改系统内的AGPS配置接口
+// updateItem(String profile_name, String item_name, String value)
+mProfileMgr.updateItem(mProfileMgr.getCurrentProfileCode(), //当前有效AGPS服务器
+    mProfileMgr.PROFILE_PORT, "7275");
+// 这种更改的方法profile_name可以是所有已经写入到系统的profile.name，
+// item_name只能是mProfileMgr.PROFILE_NAME/mProfileMgr.PROFILE_ADDRESS/
+// mProfileMgr.PROFILE_PORT/mProfileMgr.PROFILE_TLS中的一个
+
+5，新增一个有效Agps服务器接口
+ContentValues values = new ContentValues();
+values.put(AgpsProfileColumns.PROFILE_CODE, "NewServer");
+values.put(AgpsProfileColumns.PROFILE_IP_ADDRESS, "173.173.173.173");
+values.put(AgpsProfileColumns.PROFILE_SLP_NAME, "NewServerName");
+values.put(AgpsProfileColumns.PROFILE_BACKUP_SLP_NAME_VAR, "NewServerNameBackup");
+values.put(AgpsProfileColumns.PROFILE_PORT, "7275");
+values.put(AgpsProfileColumns.PROFILE_TTL, "1");
+values.put(AgpsProfileColumns.PROFILE_SHOW_TYPE, "0");
+profile_manager.insertOrUpdateProfile(profileCode, values);
+
+6，为了达到恢复出厂设置，可以采用以下接口实现：
+AgpsProfileManager mProfileMgr = AgpsProfileManager.getProfileManager(context);
+mProfileMgr.resetAllProfile();
+```
+
+## [FAQ02934] MTK EPO
+
+```
+这项技术是通过MTK相关的设备，通过预测技术，将未来一段时间内的卫星星历数据放到mtk服务器，然后手机端可以从该服务器下载，这样，在没有A-GPS去supl服务器下载卫星星历数据的情况下，也可以实现快速定位。
+
+如果手机端同时开启EPO和Agps，那么GPS首先考虑利用EPO进行辅助定位。
+```
+
+## [FAQ02933] A-GPS设置中“网络定位请求”一项，有什么功能？
+
+```
+A-GPS模式分两种
+
+SI 模式：　用户发起定位请求。
+NI 模式： 服务器发起定位请求。(开启网络定位请求项) 这个情况下，网络端会通过wap push的方式给手机，手机收到后，会发GPS设备进行定位，然后将获得的位置再送回给网络服务器。
+开启网络定位请求,就是可以让A-GPS工作在NI模式。
+目前NI定位只适用于实验室或者欧美一些国家的运营商网络。
 ```
 
 ## [FAQ17726] 如何打开和关闭GMO
@@ -22467,6 +22703,15 @@ Line 14642: 01-02 09:06:19.880  3563  3592 E FM/FMRadioService: Error: opendev f
 allow system_app fm_device:chr_file { read write ioctl open};
 ```
 
+## [FAQ04171] 打开fm设备节点被拒绝
+
+```
+打开fm设备节点被拒绝，从mobile log中的main log发现是由于权限问题。
+检查init.rc中加载fm驱动时，创建的fm设备节点权限为660，为何上层打开FM还是会失败。
+[SOLUTION]
+在alps/mediatek/source/packages/FMRadio里面的AndroidManifest.xml文件中加上<uses-permission android:name="android.permission.ACCESS_MTK_MMHW">
+```
+
 ## [FAQ09547] FM搜不到104M频点
 
 ```
@@ -24544,7 +24789,7 @@ package com.mediatek.gallery3d.plugin;
 修改为：
 package com.mediatek.gallery3d.video; 
 
-Step2：添加drawble：
+Step2：添加drawable：
 alps\packages\apps\Gallery2\res\drawable\下添加:  icn_media_forward,xml  ,  icn_media_stop.xml ,   icn_media_rewind.xml
 文件来源路径：
 alps/vendor/mediatek/proprietary/operator/OP02/packages/apps/Plugins/res/drawable
@@ -24648,7 +24893,7 @@ switch (keyCode) {
             isPressedPwrkey = true;
             interceptPowerKeyDown(event, interactive);
         } else {
-            If(!isPressedPwrkey && !isScreenOn(){
+            if(!isPressedPwrkey && !isScreenOn(){
                interceptPowerKeyDown(event, interactive);
                isPressedPwrkey = true;
             }
@@ -24659,20 +24904,17 @@ switch (keyCode) {
 
 2.driver层修改 
 在pmic_mt6323.c中创建一个全局变量keyispressed，在函数pwrkey_int_handler中作如下逻辑判断：如果按键未被按下的情况下，收到release，先上报press再上报release. 
-if (upmu_get_pwrkey_deb()==1)  { 
-…… 
-if（keyispressed==false）           //add 
-{ 
-kpd_pwrkey_pmic_handler(0x1);  //add 
-} 
-kpd_pwrkey_pmic_handler(0x0); 
-…… 
-keyispressed=false;  //add 
-} 
-Else 
-{ 
-…… 
-keyispressed=true ；//add 
+if (upmu_get_pwrkey_deb()==1) {
+    …… 
+    if (keyispressed==false) { //add
+        kpd_pwrkey_pmic_handler(0x1);  //add
+    }
+    kpd_pwrkey_pmic_handler(0x0);
+    ……
+    keyispressed=false;  //add
+} else {
+    ……
+    keyispressed=true;   //add
 }
 ```
 
@@ -26788,16 +27030,16 @@ MTK release给客户的code默认情况为：
 1.将custom_l4_utility.c的custom_check_white_list()里面所有的*is_gsm_white_list = KAL_TRUE;
 2.修改好后replace modem load并format modem NVRAM
 replace modem load方法：
- – 把modem的bin file重命名为modem.img并放在adb.exe路径下
- – adb remount
- – adb push modem.img /system/etc/firmware/modem.img
- – adb shell sync
- – adb shell reboot
+– 把modem的bin file重命名为modem.img并放在adb.exe路径下
+– adb remount
+– adb push modem.img /system/etc/firmware/modem.img
+– adb shell sync
+– adb shell reboot
 format modem NVRAM方法：
- – adb shell 
- – cd data/nvram 
- – rm –r md 
- – reboot
+– adb shell
+– cd data/nvram 
+– rm –r md 
+– reboot
 ```
 
 ## [FAQ10979] [SP Flash Tool]What is the difference between BROM VCOM and Pre-Loader VCOM?
@@ -30360,7 +30602,7 @@ public class MediatekPlatformUtil{
 }
 ```
 
-## [FAQ07367] 如何设置系统属性 system property 默认值
+## [FAQ07367] 如何设置系统属性 systemproperty 默认值
 
 ```
 system property 是存在在init 进程中的关键系统属性，如系统安全，系统稳定性，系统的版本信息等，system property 容量有限，不能随意添加与设置。
@@ -30382,6 +30624,42 @@ FAQ04349: 不能添加system property, 提示： permission denied uid:xxxxx  na
 FAQ03994: system property 写入/更新后，马上读取无效问题
 FAQ03778: 如何对system property 进行扩容 
 FAQ06739: system property 设置失败的可能性分析和初步诊断
+```
+
+## [FAQ03994] system property 写入/更新后，马上读取无效问题
+
+```
+首先说明一下system property 的使用API
+Java API
+android.os.SystemProperties
+public String get(String key);
+public String get(String key, String def);
+public int getInt(String key, int def);
+public long getLong(String key, long def);
+public void set(String key, String val); => the return value is void
+ 
+Native API
+libcutils/Properties.h & Properties.c
+int property_set(const char* key, const char* value);
+int property_get(const char* key, char* value, const char* def);
+int property_list(void(*propfn)(const char* key, const char* value, void * cookie), void * cookie);
+ 
+Android Toolbox
+adb shell getprop
+    return all properties, as list
+adb shell getprop <key>
+    return the property base on key
+adb shell setprop <key> <value>
+    set the property <key> <-> <value>
+ 
+Init.rc
+setprop <key> <value>
+on property:<key>=<value>
+     some actions.
+ 
+Android 2.3 版本，其他process 写入system properties 时，只是通过socket 将其发送到init 的system properties，然后直接返回；而至于init 什么时候读取socket 中的message, 然后update/write system properties, 这个还不得而知，所以可能产生不可推断的延时。
+Android 4.0 版本后，init 的properties_service update 完后才去关闭socket， 而其他process wait socket closed 后才返回，这个wait time 最长为250ms, 即如果init 延时的时间超过250ms, 将强制返回。原则上从Android 4.0 后，可以规避掉绝大部分写入后不能马上读取出来的情况。
+另外一个方面，read 是直接通过memory mmap 的方式，直接在对应的process 中直接读取，无需透过socket 请求init 读取。从而就可能出现时间差，即写入后无法即时读取的情况。相比2.3版本 4.0 版本之后出现的概率要大大的降低。
 ```
 
 ## [FAQ04776] 如何默认打开user版本 debug 选项, 默认打开adb 连接
@@ -30771,11 +31049,3494 @@ button-backlight
 lcd-backlight
 ```
 
+## [FAQ04317] 如何在Android App中屏蔽（拦截）Home按键及其他按键
+
+```
+编写一个Acitivity，如下所示：
+关键点1：屏蔽HOME按键，在onAttachedToWindow中设置FLAG_HOMEKEY_DISPATCHED
+关键点2：屏蔽除Power , Home外的按键，覆盖dispatchKeyEvent方法，并返回为true
+public class LockByKeyGuard extends Activity {
+       @Override
+       public void onCreate(Bundle savedInstanceState) {
+              super.onCreate(savedInstanceState);
+              setContentView(R.layout.main);
+       }
+       @Override
+       public void onAttachedToWindow() {
+       //关键：在onAttachedToWindow中设置FLAG_HOMEKEY_DISPATCHED
+              this.getWindow().addFlags(WindowManager.LayoutParams. FLAG_HOMEKEY_DISPATCHED);
+              super.onAttachedToWindow();
+       }
+       @Override
+       public boolean dispatchKeyEvent(KeyEvent event) {
+              // 返回true，不响应其他key
+              return true;
+       }
+```
+
+## [FAQ04321] 判断当前是否是飞行模式和侦听airplane mode change
+
+```
+在 AirplaneModeEnabler 中 提供了 isAirplaneModeOn 方法来判断当前是否是 Airplane mode：
+public static boolean isAirplaneModeOn(Context context) {
+    return Settings.System.getInt(context.getContentResolver(), Settings.System.AIRPLANE_MODE_ON, 0) != 0;
+}
+
+侦听是否airplane mode 发生改变，可以用注册intentFilter 来侦听。
+
+BroadcastReceiver  mReceiver = new AirplaneModeBroadcastReceiver();
+IntentFilter intentFilter = new IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+registerReceiver(mReceiver, intentFilter);
+
+private class AirplaneModeBroadcastReceiver extends BroadcastReceiver {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        String action = intent.getAction();
+        if (action.equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) {
+           // add your code here ………
+        }
+    }
+}
+```
+
+## [FAQ04381] [Vibrator] 如何通过adb shell命令调试Vibrator
+
+```
+请执行下述界面，确认震动硬件是否正常工作.
+下面的命令是用于调试，请试着用它找出你想要的时间和震动强度。 1000毫秒 = 1秒
+adb shell "echo 1000 > /sys/devices/virtual/timed_output/vibrator/enable"
+```
+
+## [FAQ03946] FM支持的scan interval有几种
+
+```
+FM支持的scan interval有几种
+
+scan interval 是什么意思？？
+```
+
+## [FAQ02506] [BMT]如何掌握Fuel Gauge 算法流程
+
+```
+(以下简述以MT6575+Android2.3为例)
+1、Fuel Gauge 算法需要相关软、硬件支持，
+    硬件方面：正常的电池温度检测电路，正常的Fuel Gauge 电流检测电路
+    软件方面：开启FG功能（默认情况下已打开），由检测客户提供的样机及标配电池而得出的若干个FG数组（送检请与CPM联系）
+
+2、Fuel Gauge 算法相关文件
+    mediatek\platform\mt65xx\kernel\drivers\power\mt65xx_fuel_gauge.c
+    mediatek\custom\[PROJECT]\kernel\battery\battery\Custom_fuel_gauge.h
+    Custom_fuel_gauge.h 中的数组由检测样机及标配电池后生成。
+
+3、Fuel Gauge 算法相关介绍资料
+    Mediatek MT65xx Fuel Gauge      ；该资料可向CPM申请。
+
+4、如何关闭 Fuel Gauge
+    请参考相关FAQ
+```
+
+## [FAQ02510] [BMT]工厂测试模式下的电池温度不对
+
+```
+1、与工厂测试模式相关的电池检测函数位于以下文件，
+    mediatek\source\factory\src\test\Ftm_battery.c
+2、参考其中的温度转换函数BattThermistorConverTemp()
+```
+
+## [FAQ02511] [BMT]如何修改快速开机模式下的背光键？
+
+```
+在启用快速开机功能的情况下，如何修改背光键为开机键？
+[PLATFORM]
+MT6575/15 + Android 2.3
+MT6573/13 + Android 2.3
+
+[Solution]
+(以下简述以MT6575+Android2.3为例)
+
+1、与快速开机功能相关的文件位于以下路径：
+    mediatek\source\external\ipod\*.*
+2、定义ipod 模式下的背光键及开机键
+    修改文件ipodmian.c 中的数组：pwrkeys[],blkkeys[]
+```
+
+## [FAQ03561] 编译vm-tests-tf出现Too many open files
+
+```
+出错的log中有一句：
+Caused by: java.io.FileNotFoundException: cts/tools/vm-tests-tf/src/dot/junit/opcodes/iget_char/Test_iget_char.java (Too many open files)
+
+[KEYWORD]
+java.io.FileNotFoundException
+Too many open files
+vm-tests-tf
+
+[SOLUTION]
+这是由于linux限制了一次会话中，程序最大同时打开文件数目(default:1024, MTK:65535)
+ 
+详细分析：
+在linux下跑一个多线程读取文件的程序，待读取文件有数十万个。程序读取过程中抛出如下异常*****(Too many open files)。
+
+原因是由于linux限制了一次会话中，程序最大同时打开文件数目。在redhat5中，该数值为1024。可以使用ulimit -n 验证。
+
+解决办法
+1、临时修改该数值，可使用
+ulimit -n XXXX
+ulimit -n XXXX
+
+2、永久修改
+2.1. 查看当前设置
+ulimit -n
+(默认是1024，MTK是65535)
+
+2.2. 查看系统可接受的最大打开文件数(一般默认已足够，不用修改)
+# cat /proc/sys/fs/file-max
+（默认可能是372998，已足够）如果小于你期望的值，可以改大：
+
+# echo 327998 > /proc/sys/fs/file-max
+或者写入 /etc/sysctl.conf中，以便重启也能生效：
+fs.file-max = 327998
+
+2.3. 修改/etc/security/limits.conf文件，设置用户最大打开文件数
+#<domain>      <type> <item>         <value>
+* - nofile 2048    (添加这一行)
+
+这样即设置系统每个用户的最大打开文件数为2048。
+
+注意 nofile 参数在 type 类型上有2个可能的选项：hard 和 soft ，这两个值都需要设置，“-”代表同时设置这2个值为后面的数字。
+
+hard limit 只是作为 soft limit 的上限，soft limit 才是你设置的系统当前限制。当你设置 hard limit 后，你以后设置的 soft limit 的值就只能小于 hard limit 。普通用户可以降低 hard limit 的值，但是不能提高它，只有 root 用户才能提高 hard limit。
+
+2.4. 退出shell登陆，重新登陆一次即生效(运行ulimit -n 检查)
+
+已经启动的进程，可能需要关闭后重新启动才生效
+```
+
+## [FAQ03046] 如何通过USB抓取main/events/radio/kernel log
+
+```
+可以使用adb命令来抓这些log
+
+1, radio log
+
+线：usb cable
+
+命令： adb logcat –b radio –v time >radio.txt
+
+-v time: 表示log中加入了时间信息
+
+1
+
+2, main log
+
+main log和我们从DDMS中看到的log是一致的
+
+线: usb cable
+
+命令: adb logcat –b main –v time >main.txt
+
+-v time: 表示log中加入了时间信息
+
+2
+
+3, event log
+
+event log属于system log
+
+线: usb cable
+
+命令: adb logcat –b events –v time >events.log
+
+-v time: 表示log中加入了时间信息
+
+3
+
+4, kernal log
+
+使用超级终端来抓kernal log，请参考以下步骤：
+
+ 
+
+1) 选择正确的COM口(COM3)
+2) 设定正确的波特率(921600)
+3) 在超级终端中得到log
+```
+
+## [FAQ03519] [Power]关于待机平均功耗高的测试以及自行判断注意事项
+
+```
+如果贵司测试的时候，发现平均功耗高，
+1》
+首先请去掉所有的APK测试，看平均功耗是否有问题，
+如果跟去掉APK之前一样，说明跟APK没有关系
+如果跟去掉APK之前相比，功耗有所降低，说明跟APK有一定的关系
+跟APK有关系，请自行分析APK。
+ 
+2》
+另外，请抓取相应的待机的mobilelog,
+从kernel_log中分析，
+如果log中可以查找到
+wake up by RTC
+请在相应的main_log中查找关键字
+Alarm triggering, 其后面对应的type 0, type 2所对应的APk就是唤醒系统的唤醒源，
+同样请去掉以后测试，
+但是com.android.phone例外，
+这个APK是ICS android4.0加上的一个google default的机制，
+是一个每隔6分钟起来check数据连接是否有问题的机制，
+检查是否只有TX没有RX的行为，
+一旦检查到系统数据连接有问题，就会做相应的recovery动作
+ 
+3》
+从kernel_log中分析，
+如果log中可以查找到
+wake up by CCIF_MD
+请查找后面一句log相应的CCIF_MD wakeup source: 
+如果是在您没有打开modemlog的基础上面出现此问题，
+请帮忙同时抓取待机时候的mobilelog以及modemlog并附上modem对应的database
+便于我司查找问题
+如果是 CCIF_MD wakeup source: Mdlogger_RX
+说明是因为打开modemlog引起的问题，正常
+ 
+4》
+从kernel_log中分析，
+如果log中可以查找到
+wake up by EINT
+一般情况下是由于press power key引起的，
+在后面的log中可以看到有wakeup的字样，就说明是power key
+其他的情况应当是异常的中断引起的问题
+您可以在中断例程中查找此中断的来源
+```
+
+## [FAQ03776] [Power]关于RTC唤醒系统问题
+
+```
+RTC唤醒系统的特征是
+     从kernel_log中可以查找到 "wake up by RTC"
+ 
+RTC唤醒系统的原因是
+     上层的APK
+ 
+查找的方法：
+     从main_log中查找关键字"Alarm triggering"
+     然后看相对应的log后面表明是type 0 还是type 2,
+     只有type 0或者type 2 的对应的APK才是能唤醒系统的APK
+     
+比如：
+     AlarmManager: Alarm triggering: Alarm{41c36640 type 2 com.android.providers.calendar}
+     从这一行您就可以看出，com.android.providers.canlendar就是能唤醒系统的APK
+ 
+例外：
+    目前com.android.phone这个APK也是type 2的APK，
+    在存在数据链接的情况下，每隔6分钟就会唤醒系统起来检查是否当前的数据链接有问题，并及时做receovery动作
+    所以在查找RTC唤醒源的时候，这个APK需要排除在外，
+    这个APK是google default的机制
+ 
+请您在提功耗相关的问题之前，
+切记，请自行将RTC唤醒这部分分析，并将有关的APK都去掉以后再行测试，
+这部分唤醒会增加系统的平均功耗，
+有关这些第三方APK唤醒的问题我司不予cover。
+```
+
+## [FAQ03446] [Power]How to use catcher tool to get RTC clock (32KHz) frequency
+
+```
+具体确定时钟频率的方法如下：
+    1. 利用SD卡来抓取系统睡眠时候的modemlog
+    2. 然后在catcher tool中选择controls->Open Dump File, 打开MDLog_L1_XXX.dmp文件（modemlog中抓取的其中一个文件）
+    3. 如果您看到advanced->sleep_mode本来就是勾选上的，那么您就可以不用做第4步，直接跳到第5步
+    4. 如果您看到advanced->sleep_mode是未勾选上的，请您将目前打开的文件另存为xxx.clg文件，然后打开此.clg文件
+    5. 选择sleep_mode以后，就可以看到弹出的框框中，左边一栏有三列
+        分别是frame, Freq.Meas Result, 32K Freq
+        其中32K Freq那一列就是32K时钟的真正的值，也就是RTC clock的真正的值
+        此值得准确值为32768， 您可以比较一下看看。
+```
+
+## [FAQ03548] 手机软件测试注意事项
+
+```
+测试前准备:
+       1:请备份编译后生成的alps/kernel/vmlinux  (解KE的关键)
+       2:请备份编译后生成的apps/out/target/product/$project_name$/symbols/整个目录. (解NE的关键)
+       3:清除T卡的所有记录
+
+测试过程中:
+       1:发现有异常,尽可能马上备份完整的LOG, 再进行下面测试,以免后来的测试把之前的LOG冲掉.
+       2:调整手机的时间跟实际的时间一致.
+       3:记录现场的情况: 是在什么情况下发生?  发生的时间?
+       4:如果是成批有问题,请详细统计概略
+
+如何抓取完整的LOG:
+1. 使用GAT工具（该工具是MTK标准的debug工具，一般和flashtools一起释放），复现问题后连上usb （adb要能工作，如果不能工作，可以重启手机连上），打开GAT，点击DDMS Control这个界面下面一排按钮的最右边按钮（是个虫子图标的按钮），然后GAT会自动抓取手机里所有的log，并打包好（目录一般是放在临时目录下，注意看命令行），将压缩包上传。
+
+2. 也可以用以下脚本（以下CODE保存为.bat文件）
+
+%Writed by Yanghui Li%
+
+adb devices
+
+@echo "抓出sdcard/mtklog"
+adb pull /sdcard/mtklog mtklog/
+
+@echo “抓出sdcard2/mtklog”
+adb pull /sdcard2/mtklog mtklog/sdcard2
+
+@echo "抓出trace"
+adb pull /data/anr mtklog/anr
+
+@echo "抓出data aee db"
+adb pull /data/aee_exp mtklog/data_aee_exp
+
+@echo "抓出data mobilelog"
+adb pull /data/mobilelog mtklog/data_mobilelog
+
+@echo "抓出NE core"
+adb pull /data/core mtklog/data_core
+
+@echo "抓出tombstones"
+adb pull /data/tombstones mtklog/tombstones
+
+@echo "完成"
+
+pause 
+```
+
+## [FAQ02625] 如何修改system 下面文件的权限
+
+```
+在init.rc 中修改system 下面文件的权限无效，请问如何修改？
+
+由于某些特别的操作或者设计，我们需要读取或者去修改system 下面某个具体的文件(不推崇)。
+System 文件夹在init.rc 中被描述为 ro (read only)， 即被mount 成ro, 所以即使您再去chmod or chown 某个文件的权限或者所有者，都无法达到目的。需要在system 被remount 成ro 前修改文件权限方可。
+您要增加的代码须放置在:
+on fs
+# mount mtd partitions
+    write /proc/bootprof "INIT:NAND:Mount_START"
+    # Mount /system rw first to give the filesystem a chance to save a checkpoint
+    mount yaffs2 mtd@system /system nandboot
+    mkdir /system/secro 0600 system system
+    # RIL need to do this before the folder /system changed to read only
+    chown radio system /system/etc/ril
+    chmod 0770 /system/etc/ril
+    chmod 0444 /system/etc/ril/oper.lis
+    #Add your code here...
+
+    mount yaffs2 mtd@system /system ro remount nandboot
+    mount yaffs2 mtd@userdata /data nosuid nodev nandboot
+    mount yaffs2 mtd@cache /cache nosuid nodev nandboot
+    write /proc/bootprof "INIT:NAND:Mount_END"
+
+同样对于emmc 的机器，也需要在system 分区被remount 成read only 之前进行调整。
+```
+
+## [FAQ02634] 如何为机器增加client id
+
+```
+因为client id 包含项比较多，首先和客户确认需要内置的具体的参数，确认具体参数后，即可在
+
+alps/mediatek/config/贵司工程/system.prop 的最后增加:
+
+比如:
+ro.com.google.clientidbase.ms = android-americamovil-br
+ro.com.google.clientidbase.am = android-americamovil-br
+ro.com.google.clientidbase.vs = android-americamovil-br
+
+这些参数一般都是以ro.com.google.clientidbase 开头，具体的值需要和运营商确认后才可以。
+```
+
+## [FAQ03128] Android系统中的6种模式
+
+```
+1:一般启动模式（normal mode):
+    功能是正常启动手机，方法为关机状态下按电源键启动。
+2:安全模式（safe mode）:
+    此模式和正常启动一样，但没有登记Google，所以不能访问Market或使用你的Google账号。操作方法为按住“menu”键，按电源键启动手机，直至手机启动完成松开“menu”键。
+3:恢复模式（recovery mode）
+    可打开命令解释程序（shell），刷新映像文件（flash image），执行备份等。当然这一切取决于你手机上的recovery image版本。使用方法很简单，就是home键和电源键一起按。
+4:引导模式（bootloader mode）
+    功能是从SD卡上安装新的系统映像（DREAIMG.NBH），只需再按一次电源键。值得一提的事为Android手机获取root权限，就是使用这个模式。操作方法为照相键和电源键一起按。
+5:fastboot模式
+    主要是在电脑上使用fastboot命令来刷新映像文件。使用方法为按住返回键，按电源键启动手机，直至屏幕出现FASTBOOT字样后松开返回键。
+6:诊断模式（diagnostic mode）
+    是为了测试手机各项功能的模式，刻意通过轨迹球中心键和电源键打开。
+```
+
+## [FAQ03308] 安全模式意义？ 如何启动安全模式？ 如何屏蔽安全模式？
+
+```
+1.Google 设计来确认在不启动第三方app/service 的情况下，确认机器的稳定性的一个开机方式，通常普通用户很少用到。在framework 内部会影响到AMS&WMS&PMS 的行为。
+2.安全模式是在开机system server 的windowmanagerserivce 启动时检测的，一般是power + memu 键 ，并且在开机的过程中还要长按，或者滑轮之类。
+3.如何屏蔽，这个最终的检测是在PhoneWindowManager.java 中执行。
+alps/frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java 中的detectSafeMode() 方法，请参考里面的
+mSafeMode= menuState > 0 ........................................ 
+把这一行直接设置为
+mSafeMode = false 即可。
+在这一行你也可以看到哪些按键对safemode 有影响。
+```
+
+## [FAQ04355] 如何手动trigger一个modem exception？
+
+```
+1)GB/ICS 版本： adb shell am broadcast -a com.mediatek.mdlogger.FORCE_MODEM_ASSERT，
+2)JB版本：adb shell am broadcast -a com.mediatek.mtklogger.ADB_CMD -e cmd_name force_modem_assert --ei cmd_target 2
+```
+
+## [FAQ04427] OTA升级不能进入到recovery mode
+
+```
+在OTA升级时，手机关机后没有进入到recovery mode，执行失败error提示log：
+Error : onSetRebootRecoveryFlag,
+engine error to set flag to reboot into recovery mode.
+[SOLUTION]
+原因：在初始化时没有将应用GoogleOtaBinder设置为user root。
+解决：在init.rc中添加以下两行：
+1.  service GoogleOtaAgent /system/bin/GoogleOtaBinder
+2.  user root
+```
+
+## [FAQ05995] 如何把自己的代码包或开源项目的code, 编译进android
+
+```
+1.需要加入的是native 程序，即编译成elf 可执行文件，
+或是共享库.so，或是lib库.a文件，建议将代码包放在alps\external 下面, 并编写相应的Android.mk 文件，
+
+2.需要加入的是APK 程序或是JAVA lib库.jar文件,建议请将代码包放在alps\packages\apps下面，并编写相应的Android.mk 文件，
+
+3.如何编写Android.mk
+请搜索dcc 上文档 How_to_Write_an_Android.mk.pptx && Android_Build_System_for_customer_4.1.pptx  from page 56
+
+4.build 系统在当前路径找到Android.mk 后，就不会在其子目录下搜索Android.mk文件，所以如果
+代码包里面还有文件夹，需要include里面的Android.mk 进来
+则要在代码包这级目录下的Android.mk 里面调用 include $(call all-makefiles-under,$(LOCAL_PATH)) 
+
+5．Android.mk写完之后，还要将Android.mk 中的LOCAL_MODUEL=xxx，或LOCAL_PACKAGE_NAME=xxx
+
+添加在在PRODUCT_PACKAGES后面：
+PRODUCT_PACKAGES += xxx
+
+这样系统在能编译到。
+
+5.1. 编译模拟器时，会将以下文件中的PRODUCT_PACKAGES定义的都编译进去
+build/target/product/banyan_addon.mk
+build/target/product/sdk.mk
+sdk/build/product_sdk.mk
+development/build/product_sdk.mk
+build/target/product/core.mk
+
+5.2. 编译真机版本是，会将以下文件中的PRODUCT_PACKAGES定义的都编译进去
+build/target/product/$project.mk
+build/target/product/common.mk
+build/target/product/telephony.mk
+build/target/product/core.mk
+
+所以如果想使模拟器和真机都编译进去的话，就必须添加到core.mk
+```
+
+## [FAQ05739] SD或者OTA升级secutiry device和non-security device的区别！
+
+```
+问题现象： 同样的升级包在升级non-security device可以升级成功，升级secutiry device确不能升级成功！
+
+原因说明：SD在升级non-security device和security device的区别是：在升级security device时，SUPPORT_SBOOT_UPDATE这个宏会打开！然后升级security device时会去检查升级包中的SEC_VER.txt这个文件，并且检查SEC_VER.txt这个文件里的CUSTOM_NAME,BOOTIMG,RECOVERY,ANDROID四项，并且要求BOOTIMG,RECOVERY,ANDROID这三项的值要比手机里面这三项的值要相等或者大于手机版本里的值！否则会升级失败！
+
+下面举一个例子来说明，假如bootimg第一版是version 1
+1. 空机先烧录进bootimg，则device里面的记录是version 1 2. 假如发现bootimg有security bug，重新编出一版 version
+2. 接着烧录，device里面就变成记录的是version 2
+3. 假如发现bootimg有security bug，重新编出一版 version 3；接着烧录，device里面就变成记录的是version 3
+4. (此时，如果要烧录回去verison 1或version 2，都是不允许的动作)
+5. 假如这个时候USER透过OTA去升級，而OTA package记录的BOOTIMG版本號是4，那就允许更新；如果是2或3，都不允许更新
+```
+
+## [FAQ05446] 怎样快速拷贝及打包整个binary load（供下载）?
+
+```
+在alps目录下：
+
+mkdir new_load
+cp -uvL out/target/product/YOUR_PROJ/* new_load/
+tar zcvf new_load.tar.gz new_load
+```
+
+## [FAQ03887] 为何Monkey测试后不能关机
+
+```
+1.连接adb
+2.运行monkey test
+3.等待monkey test finish
+4.长按power 键，选取“关机”，无法弹出是否确定关机的对话框
+从log上看，schpwroffreceiver.java在shutdowm()中，
+
+Log.d(TAG, "!!! Request to shutdown !!!");
+if (SystemProperties.getBoolean("ro.monkey", false)) {
+    Log.d(TAG, "Cannot request to shutdown when Monkey is running, returning.");
+    return;
+}
+可以看出运行monkey的状态，未被复位，导致无法关机。
+ 
+[Solution]
+这是敝司特意的设计, 主要针对: 运行Monkey的时候不会意外关闭电源, 以免Monkey Test提早结束。
+此部份仅影响Monkey Test, 不影响用户其他使用, 建议贵司保留此项设计, 以免造成Monkey Test时无谓的困扰。
+```
+
+## [FAQ08776] 关于Monkey Test自动关机的问题
+
+```
+因为Monkey Test过程是随机的发出事件流，有几种可能产生自动关机的情况：通过发送broadcast去调用到关机，模拟powerkey关机，调用setting里面的恢复出厂设置关机等等，这几种发生自动关机的情况都是正常的，但是实际上Monkey Test即使走到关机流程也应该直接return，以保证Monkey Test的其它操作都可以正常进行。
+
+因此如果发生自动关机，请首先check下面几个注意事项，确保Monkey Test的测试条件是正确的：
+1. Monkey Test的版本是否是Eng Build？
+2. 如果Monkey test没有用我司的脚本，请在Monkey Test之前务必先设置属性:
+adb shell setprop ro.monkey true
+然后再重新安排Monkey Test测试，如果还有发生自动关机，请务必提供相应的mobilelog。
+```
+
+## [FAQ02496] MT6573 Android 拔掉电池开机时间拉长问题
+
+```
+Android 采用yaffs2 文件系统， 基于yaffs 的checkpoint 原因，当开机时无法找到checkpoint, 就会scan 对应的patition, 这个时间决定于patition的大小，和文件的数量，从而拉长开机的时间。
+当有应用程序在写文件之前，kernel会将checkpoint删除掉，然后在将数据写到flash中，如果这时断电，下次开机的时候就会找不到checkpoint从而scan整个分区，这时yaffs的设计，避免断电导致 checkpoint与分区的具体使用情况不一致。
+如果开机不去checkpoint， 有可能会导致整个分区的文件丢失或者文件大小，或者分区的使用情况
+```
+
+## [FAQ03652] [FlashTool]flashtool的format whole flash和MDT format and download all的区别
+
+```
+对nand flash, 因为有bad block, 两者的行为会有所差异.
+对emmc则是无差别的.
+ 
+[Solution]
+flashtool的format whole flash, 默认是做logical format,
+start address为0x0, length为0x1f5c0000
+MDT的format and download all则是做physical format,
+start address：0x0, length为0x20000000
+ 
+flashtool和MDT的firmware upgrade均会做format, 并且都是physical format, start address:0x0, length为0x20000000
+```
+
+## [FAQ01922] [ATE] Database 在软件中的路径
+
+```
+如果是 6573平台:
+Modem 的 database path: Alps\mediatek\custom\common\modem\projectname\BPLGUInfoCustomApp_XXX
+AP 的 database path: Alps\mediatek\source\cgen\APDB_xxxx  (文件后缀不带 _ENUM 的)
+
+如果是 6516 平台，
+MD database路径:Alps\mtk\custom\src\csutom\common\modem\BPLGUInfoCustomApp
+AP 的 database 路径为：Alps\mtk\src\cgen\APDB_xxx
+```
+
+## [FAQ03465] [FlashTool]按键下载与不按键下载的区别
+
+```
+下载可分为按键下载和不按键下载,flashtool可自动识别这两种方式，MDT需要手动切换.
+什么情况下可以不按键下载？
+产线使用MDT如何进行切换?
+ 
+[Solution]
+1 如果空板第一次下载，不用按键. PC端设备管理器中枚举的端口为mtk usb port.
+2 如果下载过preloader, 75/77可以不按键下载，直接插usb线. PC枚举出的端口为preloader usb port
+3 MDT默认是bootrom -> da, 即空板不按键下载，或者按kcol0下载.
+如果产线升级不使用夹具, MDT的download type为firmware upgrade,  usb port的选项需要切换到preloader ->DA
+```
+
+## [FAQ04654] 如何修改UART输出数据的波特率
+
+```
+有以下3个地方分别控制不同的部分的波特率
+1.  设置  preloader  波特率，这里不会设置到uboot和kernel
+文件为mediatek/custom/proj/preloader/inc/cus_bldr.h
+#define CFG_LOG_BAUDRATE  (115200)
+
+2.   修改uboot 波特率
+mediatek/custom/proj/uboot/inc/configs/ubconfigs.h
+#define CFG_LOG_BAUDRATE  (115200)
+
+3.  修改kernel 波特率
+mediatek/config/mt6575/autoconfig/kconfig/platform
+CONFIG_CMDLINE="console=ttyMt3, 115200"
+```
+
+## [FAQ04689] Mediatek 释放版本信息
+
+```
+MTK 的版本信息一般包括MTK_BRANCH， MTK_BUILD_VERNO， MTK_WEEK_NO 这些参数存储在alps/mediatek/config/common/ProjectConfig.mk 中。在编译时会将这些信息转换成system property 存放在
+system/build.prop 文件中，download 到手机后您可以通过:
+adb getprop ro.mediatek.version.branch
+adb getprop ro.mediatek.version.release
+来查看
+```
+
+## [FAQ04813] update.zip包中各个文件的含义
+
+```
+将全量升级包update.zip包解压后里面的各个文件的含义如下： boot.img:(boot.img=kernel+ramdisk) system:(升级后会放在系统的system分区。主要用来更新系统的一些应用或则应用会用到的一些库) recovery/recovery-from-boot.p:(是boot.img和recovery.img的补丁) recovery/etc/install-recovery.sh:(install-recovery.sh是更新脚本) META-INF/CERT.RSA:(签名文件相关,保存公匙和加密算法) META-INF/CERT.SF:(签名文件相关,保存私匙,CERT代表签名者) META-INF/MAINFEST.MF:(这个manifest文件定义了与包的组成结构相关的数据) com/google/android/update-binary:(一个脚本解释器，能够识别updater-script中描述的操作) com/google/android/updater-script:(脚本文件，具体描述了更新过程) com/google/android/metadata:(描述设备信息及环境变量的元数据)
+```
+
+## [FAQ04879] MTK_LCA_SUPPORT=yes的版本不能开机
+
+```
+如果之前拿过手机download 过非LCA 版本的软体，因为LCA 版本和LCA 版本的image 分布不一样，特别是nvram 分布。
+//LCA=NO
+DSP_BL 0x40000
+{
+
+}
+
+__NODL_NVRAM 0x100000
+{
+
+}
+
+__NODL_SECCFG 0x600000
+{
+
+}
+
+//LCA = YES
+DSP_BL 0x40000
+{
+
+}
+
+__NODL_NVRAM 0x1c0000
+{
+
+}
+
+__NODL_SECCFG 0x4c0000
+{
+
+}
+
+flash tool firmware upgrade 不会擦掉NVRAM 数据，导致lk 的image 和原本的nvram 冲突，才导致preloader 验证lk magic code 时fail.
+
+因此需要全部format 一次后，才可以正常开机。
+```
+
+## [FAQ04979] 如何修改DVM虚拟机可用Heap大小的上限？
+
+```
+a.       对于ICS、ICS2和JB的平台，可以根据以下情况修改：
+
+1.    若是希望修改成为出厂时的默认配置，可以找到build/tools/buildinfo.sh文件，在里面找到如下内容：
+echo “dalvik.vm.heapsize=128M”
+在此句的后面添加：
+echo “dalvik.vm.heapgrowthlimit=64M”
+
+其中64M为Heap增长所能达到的最大值。这个值可以根据需要设定，但是不能超过heapsize的大小，即不能超过上面的128M。此修改会在编译后生效，当编译生成的系统，烧到手机上后，默认的Heap增长的的上限就成为64M。即一个进程所能占用的最大空间不会超过64M。
+
+2.    若不需要量产，只希望修改某一台手机，可以采用如下的办法：
+adb pull /system/build.prop C:\build.prop
+用文本编辑器打开build.prop找到dalvik.vm.heapsize=128m,在其后面添加dalvik.vm.heapgrowthlimit=64m(若已经有此句，则只需要修改为64m即可)。
+然后通过adb push build.prop /system
+最后重启手机生效。
+
+b.       对于GB平台只需要按照上述方法修改dalvik.vm.heapsize即可。
+```
+
+## [FAQ05337] 修改camera拍照的默认保存路径
+
+```
+在ICS & JB & JB2版本上, Camera拍照的默认保存路径的修改方法为, 打开storage.java
+
+将:
+
+public static void updateDefaultDirectory(Activity activity, boolean stillCapture) {
+    String defaultPath = StorageManager.getDefaultPath();
+    MOUNT_POINT = defaultPath;
+    Log.i(TAG, "Write default path =" + defaultPath);
+
+    if (Util.CU) {
+        DCIM = stillCapture ? (MOUNT_POINT + "/Photo") : (MOUNT_POINT + "/Video");
+        DIRECTORY = DCIM;
+    } else {
+        DCIM = MOUNT_POINT + "/DCIM";
+        DIRECTORY = DCIM + "/Camera";
+    }
+
+    BUCKET_ID = String.valueOf(DIRECTORY.toLowerCase().hashCode());
+
+中的DIRECTORY=DCIM+”/Camera” 改为DIRECTORY = 您想要的目录名;
+
+做完以上修改后,拍的照片就会默认保存在您定义的目录下.
+```
+
+## [FAQ05088] 如何通过命令行的方式抓取tcpdump
+
+```
+如果要抓TCP数据包，我们可以使用TCPdump工具，类似于windows/linux下使用的这个工具一样。先下载tcpdump工具。
+
+你需要root权限，
+adb remount
+adb push  tcpdump  /data/local/tcpdump
+adb shell  chmod  6755  /data/local/tcpdump
+
+抓包很简单
+adb shell tcpdump   -w  /sdcard/capture.pcap
+
+以下为其他参数：
+# "-p": disable promiscuous mode (doesn't work anyway)
+# "-s 0": capture the entire packet
+# "-w": write packets to a file (rather than printing to stdout)
+   ... do whatever you want to capture, then ^C to stop it ...
+
+导出
+adb pull /sdcard/capture.pcap
+```
+
+## [FAQ05127] 如何修改wifi重连次数
+
+```
+在SupplicantStateTracker.java文件中
+修改MAX_RETRIES_ON_AUTHENTICATION_FAILURE的值。
+```
+
+## [FAQ05162] [Factory mode] 怎么配置工厂模式测试项？
+
+```
+alps/mediatek/custom/$proj/factory/factory.ini 可以定制Factory mode测试项，如：
+MenuItem=M-Sensor;
+MenuItem=ALS/PS;
+Factory mode启动后，会先后寻找 /sdcard/factory.ini,/etc/factory.ini文件，所以可以复制factory.ini文件到SD卡，并修改其中的内容来配置测试项. 若找不到ini文件，则使用factory.c中的默认配置
+▪      Related code all in alps/mediatek/factory/src/factory.c:
+▪      Golbal test items array:
+static item_t ftm_cust_items[ITEM_MAX_IDS]; // factory.ini settings
+static item_t ftm_cust_auto_items[ITEM_MAX_IDS];// factory.ini settings
+static item_t ftm_test_items[] // Default settings
+static item_t ftm_auto_test_items[]  // Default settings
+ftm_test_items &&  ftm_auto_test_items controled by MACROS
+    (ie. FEATURE_FTM_KEYS/CUSTOM_KERNEL_ALSPS...)
+▪      In main:
+   read_config(/sdcard/factory.ini or /etc/factory.ini)
+         ftm_cust_items = Items in (factory.ini && ftm_test_items)
+         ftm_cust_auto_items = Items in (factory.ini &&  ftm_test_items &&  ftm_auto_test_items)
+```
+
+## [FAQ04380] [Vibrator] 如何定制vibrator的各种震动模式
+
+```
+一般振动时间的配置在如下文件：
+
+frameworks/base/core/res/res/values/config.xml
+<!-- 长按振动 -->
+<!-- Vibrator pattern for feedback about a long screen/key press -->
+<integer-array name="config_longPressVibePattern">
+    <item>0</item>
+    <item>1</item>
+    <item>20</item>
+    <item>21</item>
+</integer-array>
+
+<!-- 虚拟按键振动 -->
+<!-- Vibrator pattern for feedback about touching a virtual key -->
+<integer-array name="config_virtualKeyVibePattern">
+    <item>0</item>
+    <item>10</item>
+    <item>20</item>
+    <item>30</item>
+</integer-array>
+
+<!-- 软键盘按键振动 -->
+<!-- Vibrator pattern for a very short but reliable vibration for soft keyboard tap -->
+<integer-array name="config_keyboardTapVibePattern">
+    <item>40</item>
+</integer-array>
+
+<!-- 非安全模式启动振动 -->
+<!-- Vibrator pattern for feedback about booting with safe mode disabled -->
+<integer-array name="config_safeModeDisabledVibePattern">
+    <item>0</item>
+    <item>1</item>
+    <item>20</item>
+    <item>21</item>
+</integer-array>
+
+<!-- 安全模式启动振动 -->
+<!-- Vibrator pattern for feedback about booting with safe mode disabled -->
+<integer-array name="config_safeModeEnabledVibePattern">
+    <item>0</item>
+    <item>1</item>
+    <item>20</item>
+    <item>21</item>
+    <item>500</item>
+    <item>600</item>
+</integer-array>
+
+上面以数组形式的表示的，奇数位置表示暂停时间，偶数位置表示振动时间，单位为 ms
+```
+
+## [FAQ05443] [Recovery]从data区读取状态来确定升级用内外置卡导致升级不成功
+
+```
+升级包有可能会被选择下载到内置卡或外置卡上，而从recovery mode升级时有个自动下载的选项，如果选择存储卡的设置出错，会导致升级不成功。
+
+[客户方solution]
+从/data/区域的文件中获知flag，来判断此时升级用的是内置卡还是外置卡。
+
+[客户方risk]
+从/data/区域的文件中获知flag ，这种方式涉及到权限问题。对加密过的/data/区，recovery mode下无法访问。加密方式可以通过settings-> phone encrypt设置，也就是说可以由end user设置加密，如果在用户手中设置了加密，normal mode下有界面可以输入密码访问，但是recovery mode下无法做出类似界面，就会导致下一次升级不成功。
+
+[MTK提供的solution]
+若有客户需要在recovery mode下同时支持内外置卡，需要在打ALPS00392239的patch之后，并修改bootable/recovery/Android.mk新增-DSUPPORT_SDCARD2，重新new即可。
+ifeq ($(WITH_BACKUP_RESTORE),true)
+    LOCAL_CFLAGS += -DSUPPORT_DATA_BACKUP_RESTORE -DSUPPORT_SDCARD2
+endif
+
+recovery mode就会多出/sdcard2供使用(default为外卡)。
+PS：MP branch目前只有上ICS2.MP和JB.MP
+```
+
+## [FAQ06720] [Vibrator] 开机震动在哪调用的，怎样关闭?
+
+```
+frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
+
+public boolean performHapticFeedbackLw(WindowState win, int effectId, boolean always) {
+.... ...
+        case HapticFeedbackConstants.SAFE_MODE_DISABLED:
+            return ; //正常模式启动， 如果不想震动， 直接return;
+            pattern = mSafeModeDisabledVibePattern;
+            break;
+        case HapticFeedbackConstants.SAFE_MODE_ENABLED:
+            return ; //安全模式启动， 如果不想震动， 直接return;
+            pattern = mSafeModeEnabledVibePattern;
+            break;
+        default:
+            return false;
+    }
+}
+```
+
+## [FAQ06717] [General] 如何快速搜索、定位ALPS代码目录中的文件?
+
+```
+在alps目录中， 执行如下命令可以获得额外的 shell命令，
+source build/envsetup.sh
+比较常用的一个功能是： godir
+
+第一次执行此命令时会在alps创建名为filelist的索引文件， 需要花费一点时间，后面执行此命令会非常快。 请试下如下命令列出GPIO 相关的目录：
+godir gpio
+
+如下命令会在所有的C/C++文件中搜索gpio_set_output_value字符串
+cgrep gpio_set_output_value
+
+类似的jgrep是查找本地所有java文件，例如：
+godir PhoneWindow.java
+
+resgrep是查找本地所有资源文件res/*.xml
+
+croot命令 :改变到ALPS顶层目录
+```
+
+## [FAQ06721] [UART] 如何通过串口进入敲 shell 命令?
+
+```
+Uart Tx Rx 在DCT中分别配制成  UTXD URXD模式。
+
+Tx Rx 通过串口线和PC连接。确认Uart 能吐 log，此时PC串口软件（如超级终端）中敲回车，会出现输入提示符，可以敲 shell 命令了。
+
+如不能输入， 请检查如下命令的输出：
+1.  adb shell cat /proc/cmdline 可以看到Uart 输入输出的端口。
+2.  adb shell cat /init.rc 确认有如下内容：
+service console /system/bin/sh
+    class core
+    console
+    disabled
+    user root
+    group log
+
+on property:ro.debuggable=1
+    start console
+
+3. adb shell getprop ro.debuggable
+    确认其值为 1
+
+若上述都正确，请提供上述输出，并抓取板上 Tx Rx 的波形图，附在eService上供后续分析。
+```
+
+## [FAQ06711] [modem] 如何修改、更新modem?
+
+```
+所有类型的modem都放在./mediatek/custom/common/modem/ 目录下
+
+可以在ProjectConfig.mk下修改modem的类型:
+alps/mediatek/config/$YOUR_PROJECT/ProjectConfig.mk
+CUSTOM_MODEM=YOUR_MODEM
+
+执行如下编译命令，
+./mk update-modem
+这个命令会依次做如下步骤
+1. custgen
+2. check modem
+3. sign modem
+4. update modem
+
+完成后重新烧写 System image
+```
+
+## [FAQ04656] 如何修改Android自带浏览器的User Agent
+
+```
+Android自带浏览器的User Agent是Android这个代理，但是访问一些特殊网页，排版等布局不正常，可能其他浏览器正常，这是因为其他浏览器是用的其他代理，目前来说有Android、Destop、iphone、ipad、Froyo-N1、Honeycomb-Xoom等代理，这个可以从UI或Code去作修改。
+
+[SOLUTION]
+一、UI修改UA
+进入手机端浏览器界面，在地址栏输入about:debug(注意冒号是英文的冒号)后，触摸输入法键盘的回车键
+再触摸Menu按钮，调出选项菜单，进入设置界面，在设置菜单下有一个调试菜单，触摸“调试”，再点击UAstring，换一个UA登录。
+
+二、Code修改UA
+在Browser的代码BrowserSettings.java里有设置UserAgent的位置，可以修改。
+
+Note：
+当然UA如果是operator定制的，一般是不能改的 。
+```
+
+## [FAQ08500] android 键盘中如何加入一个Rupee货币的符号
+
+```
+1.在android键盘中添加一个按键
+以ICS为例，JB及之后的版本只要找到对应的xml文件，做相同改动即可：
+如果要在所有的语言的符号中都添加一个符号，则只需要在packages\inputmethods\LatinIME\java\res\xml下的kbd_rows_symbols_shift.xml中增加一个key的item，其设置如下即可latin:keylabel="\u20B9"
+
+如果只需要在在印度输入法的界面增加，则
+
+则只需要把上面的文件copy到packages\inputmethods\LatinIME\java\res\xml_hi下，并做与上面相同的改动。具体的key item要增加在第几行，可以更具你们的需求在对应的行中增加即可。
+
+2.在键盘调出的符号集中,将某个符号修改为卢比符号
+只要在输入法的xml中把你想要修改的字符改成卢比符号即可。例如在JB及之后的版本只要在\packages\inputmethods\LatinIME\java\res\xml\key_styles_currency_dollar.xml中的
+latin:keyLabel="$"
+改为
+latin:keyLabel="\u20b9"
+就可以把美元符号改为卢比符号，如果要改动其他的符号，只要把其他符号修改即可。
+```
+
+## [FAQ08166] [Legacy Wi-Fi] factory mode 中怎样使wifi自动连接指定AP
+
+```
+假设当前您的手机处于factory mode ，测试wifi功能时想要手机自动连接SSID名为tp-link的AP
+将alps\mediatek\custom\[project]\factory\factory.ini 中的
+
+WIFI.SSID=mtkguest
+改为WIFI.SSID=tp-link
+```
+
+## [FAQ04081] TTY功能简介
+
+```
+TTY这个功能是专为有听说障碍的残障人士使用的电传打字机(TTY) 功能，这项功能可以让听障人士使用现有的电话基础设施（包括行动电话）进行沟通。
+这个功能是Google在Android 2.3中引入的功能，MTK目前对于这一功能保持Google的设计，基本没有做修改。
+这个功能的测试需要有特殊的TTY外接设备以及当地运营商网络的支持，目前世界上北美地区的运营商网络（例如美国、墨西哥等）支持这个功能。若是手机项目市场没有在上述国家和地区，也可以考虑将这个功能关闭。开关的方式是在对用工程下面的ProjectConfig.mk文件中设置MTK_TTY_SUPPORT。
+
+注意：TTY与VT有冲突，不能同时打开，即MTK_TTY_SUPPORT与MTK_3G324M_SUPPORT不能同时为yes
+```
+
+## [FAQ08070] 支持彩信发送报告提示
+
+```
+请在PushReceiver.java 中，当接收到MESSAGE_TYPE_DELIVERY_IND 时，从Pdu中获取联系人号码，并新建一个thread 去show，具体修改参考如下（GB3的代码为例，其他平台也是类似的）：
+
+在PushReceiver.java 中导入：
+
+import com.google.android.mms.pdu.EncodedStringValue;
+
+import andriod.widget.Toast;
+
+import android.os.Handler;
+
+ 
+
+将doInBackground(Intent... intents) 方法修改如下：
+
+try {
+    switch (type) {
+        case MESSAGE_TYPE_DELIVERY_IND:
+            Xlog.d(MmsApp.TXN_TAG, "type=MESSAGE_TYPE_DELIVERY_IND");
+        case MESSAGE_TYPE_READ_ORIG_IND: {
+            Xlog.d(MmsApp.TXN_TAG, "type=MESSAGE_TYPE_READ_ORIG_IND");
+            threadId = findThreadId(mContext, pdu, type);
+            if (threadId == -1) {
+                // The associated SendReq isn't found, therefore skip
+                // processing this PDU.
+                break;
+            }
+
+            Uri uri = p.persist(pdu, Inbox.CONTENT_URI);
+            // Update thread ID for ReadOrigInd & DeliveryInd.
+            ContentValues values = new ContentValues(1);
+            values.put(Mms.THREAD_ID, threadId);
+            SqliteWrapper.update(mContext, cr, uri, values, null, null);
+
+        if(type==MESSAGE_TYPE_DELIVERY_IND){
+        Xlog.d (MmsApp.TXN_TAG, "MTK show delivery toast");
+            //MessagingNotification.blockingUpdateNewMessageIndicator(PushReceiver.this, false, true);
+        final long timeMillis = 3000;
+      //String address = pdu.getFrom().getString();
+       String getTo = (EncodedStringValue.concat(((DeliveryInd)pdu).getTo()));
+       Xlog.d (MmsApp.TXN_TAG, "MTK type=MESSAGE_TYPE_DELIVERY_IND sendTo=" + getTo);
+       final String message1 = mContext.getString(R.string.delivery_toast_body,getTo) ;
+        mToastHandler.post(new Runnable() {
+                 public void run() {
+                 Toast.makeText(mContext, message1, (int)timeMillis).show();
+                }
+            });
+       //Toast.makeText(this, message1, (int)timeMIllis).show;
+
+            }
+            break;
+        }
+```
+
+## [FAQ04462] 如何配置camera的feature table
+
+```
+配置camera 的feature table请按照如下进行：
+RAW sensor 配置feature table涉及的文件,以main sensor为例，若是sub sensor，对应file name为*_sub.h
+
+1）  alps\mediatek\custom\project name\hal\camera\camera\cfg_ftbl_custom_raw_main.h
+
+2）  alps\mediatek\custom\common\hal\camera\camera\cfg_ftbl_custom_raw_main.h
+
+YUV sensor 配置feature table涉及的文件,以main sensor为例，若是sub sensor，对应file name为*_sub.h
+
+1）  alps\mediatek\custom\project name\hal\camera\camera\cfg_ftbl_custom_yuv_main.h
+
+2）  alps\mediatek\custom\common\hal\camera\camera\cfg_ftbl_custom_yuv_main.h
+
+3）  alps\mediatek\custom\common\hal\imgsensor\xxx_yuv\cfg_ftbl_xxx_yuv.h
+
+注：xxx 是Sensor 的型号，比如OV5647
+
+文件优先级规则：
+
+对RAW/YUV sensor 涉及的配置文件，其生效优先级1） >  2） > 3）
+
+即如果project name下有相应的文件，则仅需配置该文件，如没有再去配置common下的相应文件
+
+配置方式：
+#if 0/#if 1 控制feature的关闭/打开
+
+BY_DEFAULT() 设定feature default值
+
+BY_DEFAULT() 后面的枚举是feature的support Item
+
+以Flash Light 为例，初始是配置如下
+
+#if 0
+
+    //  Flash Light
+
+    CONFIG_FEATURE(FID_AE_STROBE,
+
+        BY_DEFAULT(FLASHLIGHT_FORCE_OFF),
+
+        FLASHLIGHT_AUTO, FLASHLIGHT_FORCE_ON, FLASHLIGHT_FORCE_OFF
+
+    )
+
+#endif
+
+则表示项目上没有配置打开闪光灯功能，UI上也不会有闪光灯相关的菜单选项
+
+如果需要配置打开Flash Light的feature，且想把default值修改为AUTO，另增加对TORCH的支持
+
+则需要修改配置如下
+
+#if 1
+
+    //  Flash Light
+
+    CONFIG_FEATURE(FID_AE_STROBE,
+
+        BY_DEFAULT(FLASHLIGHT_AUTO),
+
+        FLASHLIGHT_AUTO, FLASHLIGHT_FORCE_ON, FLASHLIGHT_FORCE_OFF,
+
+                 FLASHLIGHT_TORCH
+
+    )
+
+#endif
+```
+
+## [FAQ07476] 如何添加一个固定的share uid
+
+```
+系统中已经定义了大量的系统UID ，如在system/core/include/private/android_filesystem_config.h 中的定义AID_SYSTEM, AID_ROOT 等
+(1). 在android_filesystem_config.h 中,  对应的ID 不能够重复 "XXXX" 即您自己要添加的UID 的名字
+#define  AID_XXXX          10KK  /* dhcp client */
+
+(2). 在android_id_info android_ids 中定义具体的uid 的名称
+{ "XXXXX",    AID_XXXX, },
+
+(3). 在alps/frameworks/base/service/java/……/PackageManagerService.java 中添加
+public PackageManagerService(Context context, Installer installer, boolean factoryTest, boolean onlyCore) {
+的初始化中添加一行：
+    mSettings.addSharedUserLPw("android.uid.system", Process.SYSTEM_UID, ApplicationInfo.FLAG_SYSTEM);
+    mSettings.addSharedUserLPw("android.uid.phone", RADIO_UID, ApplicationInfo.FLAG_SYSTEM);
+    mSettings.addSharedUserLPw("android.uid.log", LOG_UID, ApplicationInfo.FLAG_SYSTEM);
+    mSettings.addSharedUserLPw("android.uid.nfc", NFC_UID, ApplicationInfo.FLAG_SYSTEM);
+    mSettings.addSharedUserLPw("android.uid.bluetooth", BLUETOOTH_UID, ApplicationInfo.FLAG_SYSTEM);
+    //add by Yanghui Li for new uid
+     mSettings.addSharedUserLPw("android.uid.xxxx ", XXXX_UID, ApplicationInfo.FLAG_SYSTEM);
+
+同时在PackageManagerService.java 中定义
+     private static final int XXXX_UID = Process.XXXX_UID;
+
+(4). 在frameworks/base/core/java/android/os/Process.java 中定义这个XXXX_UID 的值和android_filesystem_config.h 定义的值完全相等。
+这样就可以在APP 中使用这个uid 了。具体如何使用，您可以参考如Settings app, 以及 Phone app 的AndroidManifest.xml 的写法. 
+```
+
+## [FAQ07802] 短信编译界面的软键盘上表情键修改为回车键
+
+```
+在\packages\apps\Mms\res\layout_xxx\compose_message_activity.xml中
+<EditText
+    android:textColor="@android:color/black"
+    android:id="@+id/embedded_text_editor"
+    android:layout_width="0dip"
+    android:layout_gravity="bottom"
+    android:layout_height="wrap_content"
+    android:layout_weight="1.0"
+    android:layout_marginLeft="8dip"
+    android:autoText="true"
+    android:textSize="16sp"
+    android:capitalize="sentences"
+    android:nextFocusRight="@+id/send_button"
+    android:hint="@string/type_to_compose_text_enter_to_send"
+    android:minHeight="@dimen/input_text_height"
+    android:maxLines="3"
+    android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"     //去掉 textShortMessage 即可
+    android:imeOptions="actionDone|flagNoEnterAction"
+/>
+这样就可以直接显示回车符了。
+```
+
+## [FAQ03739] 通过adb shell操作WIFI
+
+```
+1   ICS2及以前版本
+打开wifi：
+
+#adb shell
+#cd   /sys/class/rfkill/rfkill1/
+#cat  type                #输出值如果为wlan，则直接下一步，否则进入rfkill0，然后执行下一步
+#echo  1 > state
+
+关闭wifi：
+同理，如果wifi已经打开，关闭wifi使用命令：
+#echo  0 > state
+
+如果要执行具体的命令，比如扫描，连接等，那么就需要wpa_cli工具，但是该工具是建立在supplicant启动基础上的，而supplicant的执行又建立在wifi加载的基础上。
+
+打开supplicant：
+
+#adb shell
+#cd system/bin/
+#./wpa_supplicant -Dwext -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf
+
+(如果配置文件不在上述目录，请使用这个路径：/system/etc/wifi/wpa_supplicant.conf)
+(上述命令执行后会阻塞在命令行，如果要执行其他命令，请另开一个命令行界面)
+(判断wifi或者supplicant是否运行起来，可以通过ps命令查看是否有tx_thread和./wpa_supplicant进程)
+
+运行wpa_cli:
+
+#adb shell
+#wpa_cli
+(如果上面命令不成功，请执行：wpa_cli  –p  /data/misc/wpa_supplicant)
+
+接着就可以执行各种命令了，可以使用h参数查看wpa_cli有哪些命令可用，
+比如有scan，scan_results等
+
+2 JB版本
+
+1. 启动wifi driver
+echo 1 > /dev/wmtWifi
+
+2. 启动supplicant
+cd  /system/bin
+./wpa_supplicant  -iwlan0  -Dnl80211 -c/system/etc/wifi/wpa_supplicant.conf
+
+3. 启动wpa_cli
+cd  /system/bin
+wpa_cli -p /data/misc/wpa_supplicant
+启动以后可以通过help获得帮助信息。
+
+3 JB2版本
+1. 启动wifi driver
+echo 1 > /dev/wmtWifi
+
+2. 启动supplicant
+cd  /system/bin
+iwpriv wlan0 set_p2p_mode 0 0
+iwpriv wlan0 set_p2p_mode 1 0
+./wpa_supplicant -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf -N -ip2p0 -Dnl80211 -c/data/misc/wifi/p2p_supplicant.conf
+
+3. 启动wpa_cli
+cd  /system/bin
+wpa_cli -p /data/misc/wpa_supplicant
+启动以后可以通过help获得帮助信息。
+
+关于内容中的iwpriv工具，如何获取，可以参考：
+
+ID: FAQ03969
+如何自己编译wireless tool
+
+关于wpa_cli下的连接AP的操作，可以参考：
+
+ID: FAQ03738
+通过wpa_cli连接一个AP
+```
+
+## [FAQ07636] 如何让NFC在开机时默认关闭
+
+```
+将alps/packages/apps/Nfc/src/com/android/nfc/NfcService.java文件中的
+static final boolean NFC_ON_DEFAULT = true;
+改为
+static final boolean NFC_ON_DEFAULT = false;
+即可
+```
+
+## [FAQ07877] WFD(WiFi Display)和蓝牙为何不能同时打开
+
+```
+this is MTK design limitation。
+Due to BT and WiFi share the same RF antenna, 
+enabling BT(it will trigger BT search device) will effect WFD streaming
+Use alarm dialog to notify user WFD/BT excluded
+```
+
+## [FAQ06827] 如何内置iperf到手机中
+
+```
+1. 将iperf放到Codebase的任意一个目录下(该目录必须能够在搜索Android.mk时被搜索到)，比如system/iperf/iperf
+2. 在system/iperf目录下添加一个Android.mk文件，内容如下：
+LOCAL_PATH:= $(call my-dir)
+PRODUCT_COPY_FILES += $(LOCAL_PATH)/iperf:system/iperf/iperf
+
+重新编译Codebase即可。
+```
+
+## [FAQ03425] “ 设置>安全>设置管理器 “ 功能是做什么的？
+
+```
+1、 Android SDK提供了一个可管理和操作设备的API叫DevicePolicyManager，使用这个API你可以接管手机的管理权限，对手机做出系统操作，比如清除所有数据、更改屏幕解锁密码、设置密码规则、监视屏幕解锁尝试次数、锁定屏幕等操作。
+
+如何使用DevicePolicyManager：
+(1) 首先，要想调用DevicePolicyManager，必须先要注册admin权限，有了admin权限，才可能对系统进行上述功能的操作。
+(2) 其次，程序在启动激活的时候，会给用户相应提示，只有当用户点击“激活”后，自己定义的代码才能真正的运转。
+
+2、安装自定义的设备管理器后，在设置>安全>设备管理器中看到自定义的设备管理器，可以激活此设备管理器，让自定义的设备管理器执行定义的系统操作。
+开发设备管理器示例：
+示例图：
+
+代码：
+(1) app中定义一个类继承DeviceAdminReceiver ，用来监听权限的变化。
+(2) 在Manifest.xml中定义
+(3) xml/device_admin.xml代码
+```
+
+## [FAQ07241] 如何添加一个jni库模块到整理编译中?
+
+```
+如在alps\packages\apps\Settings目录下增加目录，增加jni和android.mk文件 ，执行./mk mm packages\apps\Settings目录，是可以看到有jni的.so库文件生成到out\target\product\ztenj89_cu_jb\system\lib目录下，但执行./mk new时，没有生成相对应的so库。
+
+[SOLUTION]
+1.alps\packages\apps\Settings 下的 Android.mk文件，将LOCAL_MODULE_TAGS设定为optional。
+2.修改build\target\product\$project.mk文件，将所添加的module name添加到PRODUCT_PACKAGES中。
+```
+
+## [FAQ04297] 如何确认一个应用程序的安装位置
+
+```
+Google 默认 PackageManager 管理安装包的机制如下 (按照优先级由高到低描述，如果高优先级的条件被满足, 则不继续参考较低优先级的选项)：
+
+1.安装应用到SD卡，需要指定install flag: adb install –s      ***.apk
+该设置拥有最高优先级，最终安装结果以这个为准，不管下面2个的配置.
+
+2.若没有特别指定1中的install flag,将会检查 AndroidManifest.xml中android:installLocation的定义。
+manifest的設定細分為：
+android:installLocation = "auto"，表示先查看手机内存是否足够，如果够就安装在手机内存上，不够就安装在 T 卡上；
+android:installLocation = "internalOnly"，表示安装在手机内存上；
+android:installLocation = "preferExternal" ，表示安装在 T 卡上；
+
+3.若AndroidManifest.xml中没有定义installLocation，则参考“设置”-“存储”-“首选安装位置”
+首选安装位置会有3个选项：由系统决定，手机内存，手机存储。
+
+注意：“首选安装位置”默认是关闭的，我们也不建议开启。因为有些应用google默认是要安装在手机内存中，若因为这个“首选安装位置”将应用安装到sd卡上，可能会导致cts测试失败。
+```
+
+## [FAQ06599] eng版本，同时长按上下音量键手机重启问题
+
+```
+1. eng版本，同时长按vol up + down(> 15 sec)，MTK当前设计会触发KDB（linux内核调试器），此时可通过UART从command line下指令debug，如果2分钟内没有任何输入，系统就会主动触发kernel panic，进而重启。kernel log会印出如下信息：
+         KDB force kernel panic
+2. user版本，不会存在这个问题，因此，对于最终用户没有影响。
+ 
+**注: KDB的使用可以参考《Debugger_User Guide_xxxx_yy》，其中xxxx表示平台（如MT6577），yy表示android版本（如4.1），相关客户文档可以在http://dcc.mediatek.com下载。
+```
+
+## [FAQ09283] import android.support.v4, 提示 does not exist
+
+```
+如果贵司在改写 android 某些apk 源码时
+有使用到 android.support.v4 包中的元素, 比如 view
+但在文件头去 import android.support.v4.view
+却会提示此包或 class 不存在
+ 
+[SOLUTION]
+需要修改这只 apk 的 mk 文件(android.mk)
+找到 LOCAL_STATIC_JAVA_LIBRARIES 的定义
+在其后面加入: android-support-v4
+ 
+下面是一个例子:
+修改前:
+LOCAL_STATIC_JAVA_LIBRARIES := android-common-carousel \
+                               com.mediatek.systemui.ext
+ 
+修改后:
+LOCAL_STATIC_JAVA_LIBRARIES := android-common-carousel \
+                               com.mediatek.systemui.ext \
+                               android-support-v4
+ 
+ 
+ 
+同理, 如果是用到了 android.support.v13 中的 class
+也需要在上述定义中追加 android-support-v13
+```
+
+## [FAQ09180] 语言和输入法下的pico TTS设置界面标题显示不正确
+
+```
+在TtsEngineSettingsFragment.java中的onCreat函数最后面增加如下语句：
+getActivity().setTitle(getEngineLabel());
+```
+
+## [FAQ08998] MTK DRM 常见问题介绍
+
+```
+主要介绍MTK支持的DRM Widevine Level; WV与DRM feature option的开关;play movies play videos popups couldn't fetch license (error 43)
+ 
+[SOLUTION]
+一、DRM 基本信息：
+
+1.       MTK DRM support Level：
+
+OMA DRM V1.0
+
+Widevine L3.
+
+2.       OMA DRM support MIME format：
+
+a.       DRM content MIME:
+
+    application/vnd.oma.drm.content ---- .dcf
+
+    application/vnd.oma.drm.message ---- .dm
+
+b.       权限文件的MIME:
+
+    application/vnd.oma.drm.rights+wbxml ---- .drc
+
+    application/vnd.oma.drm.rights+xml ----- .dr
+
+c.       MTK支持的非DRM protected的Image/Audio/Video格式，DRM就支持此media格式。DRM只是做了权限控制而已，DRM能支持的media格式就是Decoder能支持的格式。
+
+3.       OMA DRM support types：
+
+Default support ForwardLock, Combined Delivery, Seperate Delivery, ForwardLock_SeperateDelivery Total 4 types.
+
+二、WV与OMA的feature option
+
+Please follow the description section 2.3 below:
+
+ 
+
+1 Introduction
+
+Currently on JB SW packages, we've got 2 DRM features supported: OMA DRM v1.0 and Widevine DRM Level 3. By default these 2 DRM features are enabled.
+
+This document describes how to disable these 2 features separately, or both.
+
+ 
+
+2 Steps
+
+ 
+
+2.1 Disable Widevine DRM Level 3 but keep OMA DRM v1.0 enabled
+
+>> Define "MTK_WVDRM_SUPPORT=no" in your source file:
+
+[alps/mediatek/config/$project/ProjectConfig.mk]
+
+This overrides the default value.
+
+>> Fully remake your software codebase.
+
+ 
+
+2.2 Disable both Widevine DRM Level 3 and OMA DRM v1.0
+
+>> Define "MTK_WVDRM_SUPPORT=no" and "MTK_DRM_APP=no" in your source file:
+
+[alps/mediatek/config/$project/ProjectConfig.mk]
+
+This overrides the default value.
+
+>> Fully remake your software codebase.
+
+ 
+
+2.3 Disable OMA DRM v1.0 but keep Widevine DRM Level 3 enabled
+
+>> Define "MTK_DRM_APP=no" in your source file:
+
+[alps/mediatek/config/$project/ProjectConfig.mk]
+
+This overrides the default value.
+
+>> Find the source file:
+
+[alps/packages/providers/DrmProvider/src/com/android/providers/drm/BootCompletedReceiver.java]
+
+In the overridden method "public void onReceive(...)", you shall find an "if (FeatureOption.MTK_DRM_APP) {...}" judgment part. Remove the "if" judgment so that those code can be executed at boot-up time.
+
+>> You also need to make sure some utility libraries are installed on device.
+
+Find the source file:
+
+[alps/build/target/product/common.mk]
+
+You shall then find the following part:
+
+----------------------------------------------------------------------------
+
+  ifeq ($(strip $(MTK_DRM_APP)),yes)
+
+    PRODUCT_PACKAGES += \
+
+      libdrmmtkplugin \
+
+      drm_chmod \
+
+      libdcfdecoderjni
+
+  endif
+
+----------------------------------------------------------------------------
+
+Modify it as below to make sure "libdrmmtkplugin" & "libdrmmtkutil.so" is installed on device when "MTK_DRM_APP" is disabled.
+
+----------------------------------------------------------------------------
+
+PRODUCT_PACKAGES += libdrmmtkplugin
+
+  ifeq ($(strip $(MTK_DRM_APP)),yes)
+
+    PRODUCT_PACKAGES += \
+
+      drm_chmod \
+
+      libdcfdecoderjni
+
+  endif
+
+----------------------------------------------------------------------------
+
+>> Fully remake your software codebase.
+
+ 
+
+三、打开FL_ONLY的方法
+
+You'll need to add "PRODUCT_PROPERTY_OVERRIDES" definition in order to set system property which enables "Forward-lock-only".
+
+For example, you may modify the file: alps/build/target/product/common.mk
+
+And add the following, which add the system property [drm.forwardlock.only], and set its value:
+
+ 
+
+ifeq ($(strip $(MTK_DRM_APP)),yes)
+
+  PRODUCT_PROPERTY_OVERRIDES += \
+
+    drm.forwardlock.only=true
+
+endif
+
+ 
+
+Then it will disable the support for CD/SD of OMA DRM v1.0 feature.
+
+ 
+
+四、OMA drm 测试网址
+
+http://202.108.92.230
+
+
+ 
+
+五、DRM专利问题
+
+OMA不涉及到什么权限专利的问题, widevine见下面一点。
+
+ 
+
+六、Widevine白名单问题
+
+Widevine如果是要播google play store上的视频，需要加入google白名单，与google签协议。
+
+log中有couldn't fetch license (error 43)的字样，表示是此问题。
+
+以下引用Google早前答复的内容：
+
+ 
+
+“...the devices must be offcially approved in order to be whitelisted and, therefore, be able to access the production WV contents. ...(one of the OEM) is our partner and they are not supposed to have Google Play in the first place. Please let them know they cannot use Google Play without license.”
+```
+
+## [FAQ09336] 获取data区剩余空间的API
+
+```
+import android.os.StatFs;
+
+import android.os.Environment;
+
+final StatFs internalStats = new StatFs(Environment.getDataDirectory().getPath());
+
+final long availInternalSize = (long) internalStats.getAvailableBlocks() * (long) internalStats.getBlockSize();
+
+上面availInternalSize就是data区的剩余空间。
+```
+
+## [FAQ09330] How to catch early kernel log in mobilelog
+
+```
+Because of the printk buffer size restrict, some early printk log is flushed away, so we usually can't see early printk log in mobilelog(kernel_log.boot).
+ 
+We can modify the code to increase the buffer size to catch those early log:
+ 
+alps/kernel/kernel/printk.c
+#define __LOG_BUF_LEN (1 << CONFIG_LOG_BUF_SHIFT)
+====>  Let buffer size x 32
+#define __LOG_BUF_LEN (1 << CONFIG_LOG_BUF_SHIFT << 5)
+ 
+Caution:  Only apply this code change in debug time!
+```
+
+## [FAQ08536] android 如何获取与设置process 的uid
+
+```
+linux 中uid 包括
+uid: real UID of the task
+suid: saved UID of the task
+euid: effective UID of the task
+fsuid: UID for VFS ops
+
+Kernel 层: cred.h 中有相关的API 常用的有task_uid(task) ;  current_uid();
+Native 层：unistd.h 中getuid/setuid/getresuid/setresuid 等system call
+Java 层： android.os.Process 类中提供了相关的方法：自身的uid myuid();  根据pid 查询: getUidForPid(); 设置uid: setUid();
+
+命令操作: adb shell ps 第一列就是对应的uid, 完整的资讯可以通过 adb shell cat proc/[PID]status 获取，如:
+1|root@android:/system/bin # cat /proc/6699/status
+cat /proc/6699/status
+Name:   ek.atci.service
+State:  S (sleeping)
+Tgid:   6699
+Pid:    6699
+PPid:   5301
+TracerPid:      0
+Uid:    1000    1000    1000    1000
+Gid:    1000    1000    1000    1000
+FDSize: 256
+Groups: 1015 1028 3001 3002 3003 3005 3006
+```
+
+## [FAQ08161] Android SDK 中找不到android.os.SystemProperties 类
+
+```
+System Properties 作为系统的的关键属性，涉及到系统的一些机密信息，Google 不希望普通的APP 读取这些机密信息。
+于是Google 将android.os.SystemProperties 标注成hidden API, 那么就不会包含在android SDK 的android.jar 当中，从而无法直接引用。
+ 
+修正方法:
+在SDK 目录： SDK_DIR/platforms/android-xx/data 下面有一个layoutlib.jar， 可以引用这个java lib, 里面有包含android.os.SystemProperties
+这个class, 注意的是，需要确认在eclipse 里面的Java Build Path -> Order and Export 里面 不 选中这个lib, 否则最后export apk 时，会直接将这个lib 
+打包到APK 当中，一方面可能和手机本身的API 不兼容，另外一方面增大了APK 包。 
+
+[相关FAQ]
+FAQ04349: 不能添加system property, 提示： permission denied uid:xxxxx  name:xxxxx
+FAQ03994: system property 写入/更新后，马上读取无效问题
+FAQ03778: 如何对system property 进行扩容 
+FAQ06739: system property 设置失败的可能性分析和初步诊断
+```
+
+## [FAQ09104] 进入应用界面后发现会闪屏，此时要如何定位是否是relaunch activity引起的闪屏呢？
+
+```
+1 对于这类问题，抓取log时记得要打开AMS的log开关：
+adb shell dumpsys activity log a on
+2 请在main log里搜索Relaunching关键字，看下这个Activity是否有被Relaunching，如果是，那么闪屏就是这个原因了。
+3 确定是Relaunching造成的问题后，要如何进一步定位问题呢？
+AMS会relaunching activity的原因是：
+config发生变化，而activity没有监听对应的config，AMS就会relaunch这个activity，现象上来讲就是屏幕会闪。
+我们可以从log里查看下是哪些config发生了变化，然后请app端监听这个config，重写onConfiguartionChanged这个函数来处理config的变化。那么AMS就不会去relaunch这个activity了。
+Apk监听config的方法为：
+在apk的androidManifest.xml里设定
+<android:configChanges=“layout_direction|locale|….”>
+对于检查是哪些config发生变化，可以看main log。
+举例：
+V ActivityManager: Checking to restart yuku.perekammp3.ac.DaftarActivity: changed=0x2004, handles=0x4a4, newConfig={1.0 460mcc2mnc zh_CN ldltr sw320dp w320dp h508dp 240dpi nrml long port finger -keyb/v/h dpad/v skin=/system/framework/framework-res.apk s.11}
+请注意红色字体：changed=0x2004
+这个changed的值可以在ActivityInfo.java中查询，具体是CONFIG_开头的值。表示的含义就是当前这些config发生了变化。
+比如0x2004就是CONFIG_LOCALE|CONFIG_LAYOUT_DIRECTION
+注：
+1        apk可以监听的config，请查询google的说明文档或者configuration class里的定义
+Google的说明文档：
+http://developer.android.com/guide/topics/manifest/activity-element.html
+2 闪屏有很多原因，这里描述的只是一种。即AMS Relaunch Activity造成的闪屏。
+```
+
+## [FAQ09105] 开发人员选项中设置不容许后台进程,进入音乐等退出后此进程依然在后台运行
+
+```
+1 这是google的设计，对比机现象一致
+2 原因是不保留后台进程，只针对adj大于9的process
+若process带有service，adj会小于等于9，所以您进入音乐后退出，音乐在后台依然会运行。
+```
+
+## [FAQ09373] 互动屏保时点击屏幕，会直接解锁进入主菜单
+
+```
+因为互动屏保显示时，在DreamService.java的attach方法中，会添加FLAG_DISMISS_KEYGUARD。这个flag会引起PhoneWindowManager.java的finishPostLayoutPolicyLw方法去呼叫KeyguardViewMediator的keyguardDone方法解锁。
+ 
+如果不想在互动屏保显示时解锁，请去掉这个flag即可。但是建议维持google default design。
+```
+
+## [FAQ08993] DialerSearch不能搜索含”.”号的联系
+
+```
+1.       新建联系人， 点击姓名后的下拉选项，将”abc.efg ”设置为名字
+2.       输入号码，保存
+3.       进入dialer拨号 334 (efg), 不能搜索出abc.efg这一联系人
+[SOLUTION]
+在"ContactsDatabaseHelper.java"的方法"setNameForDialerSearch() "开始部分添加如下code：
+-----------------------------------------------------------------------------------
+if (displayNamePrimary != null) {
+    displayNamePrimary = displayNamePrimary.replace('.', ' ');
+}
+if (displayNameAlternative != null) {
+    displayNameAlternative = displayNameAlternative.replace('.', ' ');
+}
+------------------------------------------------------------------------------------------------
+```
+
+## [FAQ09002] 阿拉伯语下，为何添加账户时输入密码区域的提示语左对齐
+
+```
+1.预置条件：
+系统语言设置为阿拉伯语
+2.操作步骤：
+电子邮件-账户设置
+【实际结果】
+用户名输入在右边，密码输入在左边
+[SOLUTION]
+这是google默认的设计，android4.2.1及以后的版本密码编辑框都是按照从左向右显示的。
+如果确实需要实现居右可以按照如下修改：
+TextView.java(alps\frameworks\base\core\java\android\widget)
+TextDirectionHeuristic getTextDirectionHeuristic() {
+    if (hasPasswordTransformationMethod()) {
+        // passwords fields should be LTR
+        return TextDirectionHeuristics.LTR;//改为 return TextDirectionHeuristics. LOCALE
+    }
+```
+
+## [FAQ03091] 如何限制计算器输入框输入多个无效“0”
+
+```
+在Logic.java中修改方法acceptInsert，增加红色标注的语句：
+
+boolean acceptInsert(String delta) {
+    String text = getText();
+    //mtk added for calculator
+    if (text.equals("0") && delta.equals("0")) {
+        //return false;
+        //mtk added for calculator
+        return !mIsError && (!mResult.equals(text) || isOperator(delta) || mDisplay.getSelectionStart() != text.length());
+    }
+}
+```
+
+## [FAQ07239] SD卡配置方案介绍
+
+```
+由于MTK Default Release的SD卡方案以内置SD卡为主（支持EMMC双卡）,但内置SD容量较小而容易塞满，且不能有效利用外置SD卡空间。
+[SOLUTION]
+针对此问题，MTK开发几种SD卡的配置方案，具体信息可参考如下：
+视频：
+MTK On Line上搜索“SD卡配置方案介绍”，此视频分别介绍了：MTK offical方案，sdswap外部sd卡优先方案，完全无内置sd方案，shared sdcard方案，FAT on nand方案。
+其中JB/JB2/JB3/JB5的修改方法同ICS,但除fat on nand方案之外，其他方案在JB/JB2/JB3/JB5上都不需申请patch。
+文档：
+1.      DCC上下载“SD卡配置方案介绍.pptx”,该文档属于上述视频对应的文档；
+2.      DCC上下载“Multi-Storage_Application_Note”这篇文档，该文档介绍EMMC双卡下的方案（外置sd卡优先方案、无内置sd卡方案）；
+3.      DCC上下载“Shared sdcard Appliction Note_V1.0”这篇文档,该文档介绍内置sd卡与data分区共享空间的方案
+4.      DCC上下载“FAT on NAND Application Note”这篇文档，该文档介绍在nand flash上虚拟出一块区域当作内置sd卡使用的方案
+```
+
+## [FAQ04501] 如何去掉横竖屏切换时的转屏动画？
+
+```
+性能不好的手机上，当在横竖屏画面之间进行切换时会觉得屏幕有些卡。如果在“设置”-> “开发人员选项”中关掉窗口过渡动画，就不会有卡的问题，但这样一来，所有窗口画面的动画切换效果都没有了。如果只想在横竖屏切换时关掉切换动画，应该如何实现呢？
+[SOLUTION]
+可以修改WindowManagerService.java中的boolean值：static final boolean CUSTOM_SCREEN_ROTATION = true;  把默认的true修改成false，然后重新mm frameworks/base/services/java，并把新生成的services.jar档案push到手机，reboot手机。
+```
+
+## [FAQ04500] 如何客制化某两个activity切换时的窗口动画?
+
+```
+Activity.java中提供了一个可供ap端override窗口切换动画效果的方法：
+public void overridePendingTransition(int enterAnim, int exitAnim)
+以Launcher中使用这个API的代码为例：
+// Launcher.java
+public void onClickVoiceButton(View v) {
+    v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+    try {
+        final SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        ComponentName activityName = searchManager.getGlobalSearchActivity();
+        Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (activityName != null) {
+            intent.setPackage(activityName.getPackageName());
+        }
+        startActivity(null, intent, "onClickVoiceButton");
+        // R.anim.fade_in_fast和R.anim.fade_out_fast分别表示要启动的activity 窗口的enterAnim资源ID和exitAnim资源ID
+        overridePendingTransition(R.anim.fade_in_fast, R.anim.fade_out_fast);
+    } catch (ActivityNotFoundException e) {
+        Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivitySafely(null, intent, "onClickVoiceButton");
+    }
+}
+```
+
+## [FAQ03556] [Settings]蓝牙设置界面高级选项功能解析
+
+```
+1、文件传输服务：是指蓝牙 File Transfer Profile (FTP)，允许支持蓝牙FTP客户端的蓝牙设备进行连接，实现对服务端文件的访问和操作。
+2、远程SIM卡模式：是指蓝牙SIM Access Profile（SAP），允许带有内置 GSM 收发器的车载电话之类的设备连接到蓝牙电话中的 SIM 卡，因此车载电话本身并不需要单独的 SIM 卡。
+3、蓝牙网络热点：是指蓝牙PAN profile的NAP——Network Access Point，为其他蓝牙设备提供访问Internet功能，类似于网络设备的网桥或者代理服务器，PC机通过蓝牙连接手机蓝牙后，使PC机通过手机上网的功能。PC机要先安装蓝牙软件Bluesoleil，断开本地PC机的局域网（即公司的内部局域网），确认手机可以通过GPRS上网，即可通过该软件连接NAP实现上网功能。
+4、蓝牙局域网：是指蓝牙PAN profile的GN——Group Ad-hoc Network，允许支持蓝牙组网功能的其他蓝牙设备组成蓝牙局域网。
+5、远程信息访问：是指蓝牙Message Access Profile (MAP), 允许支持蓝牙远程信息访问的蓝牙车载设备访问手机上的短信、彩信和邮件。
+```
+
+## [FAQ04499] 如何去掉activity启动时的启动窗口(starting window)? 如何修改启动窗口的背景色?
+
+```
+用户看到的“闪一下黑色”的画面，其实是应用程序的“启动窗口”(starting window)。启动窗口有以下特点：
+1， 仅在要启动的activity在新的task或者新的process时，才可能显示启动窗口
+2， 启动窗口先于activity窗口显示，当activity窗口的内容准备好之后，启动窗口就会被移除掉，show出真正的activity window
+3， 启动窗口和普通的activity window类似，只是没有画任何内容，默认是一个黑色背景的窗口
+正是由于启动窗口默认是黑色背景的，所以在当前的手机主题为浅色调的时候，就比较容易因为颜色的深浅对比而产生一种视觉上的闪动感。
+
+针对以上情况的解决方法：
+- 修改方案一：去掉启动窗口（不显示启动窗口）
+- 修改方案二：修改启动窗口的背景颜色（修改成和主题颜色比较接近的颜色）
+
+修改方案一：去掉启动窗口。做法如下：
+修改ActivityStack.java文件，如下：
+static final boolean SHOW_APP_STARTING_PREVIEW = true;  // 把这里的true修改成false
+重新执行./makeMtk project_name mm frameworks/base/services/java，并把services.jar 重新push到手机并reboot
+
+修改方案二：修改启动窗口的背景颜色。做法如下：
+修改PhoneWindowManager.java中的方法addStartingWindow，如下：
+public View addStartingWindow(IBinder appToken, String packageName, int theme, CompatibilityInfo compatInfo, CharSequence nonLocalizedLabel, int labelRes,
+            int icon, int windowFlags) {
+    . . . . . .
+    View view = win.getDecorView();
+    //mtk added begin
+    View.setBackgroundColor(...);     //把默认的黑色背景修改成和当前手机主题颜色相近的颜色
+    //mtk added end
+    . . . . . .
+    wm.addView(view, params);
+    . . . . . .
+}
+```
+
+## [FAQ08845] 怎样延长锁屏界面显示时间？
+
+```
+屏灭状态，按power键，显示锁屏界面，然后又进入灭屏状态，现在显示锁屏界面，到又进入灭屏状态大概5s，怎样延长该时间到15s。
+[SOLUTION]
+修改KeyguardViewMediator.java中的KEYGUARD_LOCK_AFTER_DELAY_DEFAULT的值。
+```
+
+## [FAQ08935] Email账户自动建立参数预置
+
+```
+如果需要预置一些邮件服务账户的参数信息到Email Client端，如
+邮箱域名为mail.ru, list.ru, inbox.ru, bk.ru, corp.mail.ru自适应如下参数：
+Incoming Server: imap.mail.ru
+Incoming Server Port: 993
+Ssl on the incoming server: enabled
+Username: full email user
+Outgoing Server: smtp.mail.ru
+Outgoing server port: 465
+Ssl on the outgoing server: enabled
+Protocol: IMAP4
+ 
+[SOLUTION]
+自定义预置邮箱配置：
+首先您可能要做的改动是去配置Email/res/xml/providers.xml 中的 incoming 和 outgoing 的URI。
+该URI是由如下几部分组成的：
+    协议类型 + 安全类型 +：// 服务器地址。
+Server port 是不需要专门去配置的，因为他是由 协议类型和是否使用SSL来确定的。
+如果您需要使用SSL，那么您在配置的时候就不用去添加trustallcerts部分，应该配置成类似这样的： imap+ssl+://imap.163.com 
+Protocol的配置就是上面说的 协议类型 部分，后面的服务器地址部分应该和协议类型对应
+```
+
+## [FAQ08939] Email 客户端支持的最大附件大小与邮件大小
+
+```
+1. Maximum size of attached files for download (KB)
+    GPRS: 5M
+    WIFI: Not limits
+2. Maximum size of messages (KB)
+    Not limits
+```
+
+## [FAQ08938] Email 客户端中 Push 与 SmartPush的区别
+
+```
+1. Push就是Exchange protocol的一个概念, 简单说就是有新的信来服务器就会及时通知我们client去收信.
+2. Smart push是我们Email client特别添加的一个功能, 刚开始2-3天跟push一样, 但它后台会自动收集用户的使用习惯, 收集到一定量后就会按照一个算法来推算出一系列的sync interval值(一天24小时,每2小时一个值, 一共12个值), 然后按照这些值每2小时自动调整一次收信的的sync interval (可能自动调节为push, 1hour或never), 以达到省电的目的 (普通push电耗高一些).
+ 
+SmartPush特点：
+1. 計算是一天才計算一次,  sync interval的值會是三種中的一種, 調整sync interval的時間點會在以2小時為單位的整點.
+舉個例子:  今天下午3:20進行了一次計算, 會得出12個時間段的12個值, 然後到了4:00就會按照4:00的值進行調整, 6:00又會進行一次調整(假如4:00和6:00的值一樣則不用做調整).
+2. SmartPush存在用戶的使用習慣不規律, 造成計算結果不能很貼合實際使用情況的風險. 所以在建賬戶時會有一個smartpush的提示對話框給用戶.
+3. 我們採集三種action: 1. 有一封新mail到來  2.用戶進入了一次Email app , 3 用戶使用一次Email app的duration.
+4. 算法裏面有按照一定權重配比來根據action的數據進行計算, 最终会生成一个代表用户在某个时间段使用Email的期望值，值越高代表用户可能越想在这个时间点使用Email，即更希望邮件即时被收到.
+```
+
+## [FAQ08937] Email中支持的邮件协议
+
+```
+1. POP3
+2. IMAP4
+3. Exchange 2003, 2007, 2007SP1, 2010.
+ 
+PS.
+是否支持Notes?
+Lotus Notes是私有协议，如果Notes Server允许使用POP3或者IMAP方式登录，则支持，否则就不支持。
+```
+
+## [FAQ08945] 请问一下Email 、Exchange 与google原生的Email相比，做了哪些改动呢？
+
+```
+请问一下我们MTK的Email 和Exchange 与google原生的Email相比，做了哪些改动呢？
+[MTK:]
+MTK对Email及Exchange的修改主要是bug fix和极少数的new feature.
+Email中new feature增加了VIP, local search, partial download, Out of Office等。
+Exchange中主要增加了Smart Push和partial download， 另外有对原生的Exchange中存在的一些电耗问题做修改。
+```
+
+## [FAQ08943] 邮件客户端为什么在重启后仅保留25封邮件，更早的邮件会丢失
+
+```
+1.为什么没有重启手机前已经在收件箱中查看到有50封邮件，重启后就只有前25封邮件了？
+[MTK:]
+在Email中有个机制是对可见邮件数目的控制，即通过一个可见邮件限制来控制默认的邮件数量，默认是25，当第一次建立账户时，就会同步这么多信，且每次load more时也会多下载25封。
+如果已经同步了50封信，此时对手机进行重启，或者Email进程因为任何原因退出，那么下次启动Email时则会重新应用25封这个可见邮件限制，那么会重新与Server同步一次看看是否有新邮件，并仅保留25封最新的信，因此会出现你提到的问题。
+另外你所述有时会偶然碰到不重启也恢复到25，就是因为Email进程退出了（比如用户手动杀进程，Low memory killer， background process kill等）。
+ 
+2.如果在50封邮件可见的时候，将数据连接断掉，然后重启手机，此时进入收件箱会是原来的50封邮件，不知道这是为什么？
+[MTK:]
+如上面提到的，当下次启动Email时，会重新与Server同于一次看看是否有新邮件，并保留25封最新的，但如果网络中断，则会同步失败，那么就会走不到删除流程，会等到同步成功后再删除。
+这样设计的目的是Email的内容全部存储在data partition, 为了防止所占的ROM空间无限增大，所以做了这样一个限制的策略。
+相关文件在：
+Fille:  Email/src/com/android/email/Email.java
+public static final int VISIBLE_LIMIT_DEFAULT = 25;
+You could change this number to define how many messages default to display.
+每次Email启动时，会在Email.java中重新应用上面这个数目限制，通过下面的方法。
+ Controller.getInstance(this).resetVisibleLimits();
+如果想改变25这个数目，可以修改上面的宏，但仍然会被reset，如果想不被删除已下载的邮件，则请注释掉下面那句调用。
+```
+
+## [FAQ07810] 【GPS】GPS Co-clock 是否需要进行校准？
+
+```
+GPS Co-clock 是需要在产线进行校准的，是在RF站位完成RF校准之后校准，按照标准流程，是需要7~10s的校准时间，不需要额外的仪器和站位。 详细请参考如下文档 MT6572平台： MediaTek DCC > External Document > SW > 3G Phone Data > Smart Phone > Standard Package > MT6572 SW Doc Package > Connectivity > GPS > MT6572_6582_GPS_coclk_factory_tool_SOP_V1 0.pdf MT6582 平台：MediaTek DCC > External Document > SW > 3G Phone Data > Smart Phone > Standard Package > MT6582 SW doc package > Connectivity > GPS > MT6572_6582_GPS_coclk_factory_tool_SOP_V1 0.pdf
+```
+
+## [FAQ09512] 如何修改拨号盘中号码显示分隔符，由现在的空格符修改为"-"符号
+
+```
+经过分析，发现拨号盘中输入的号码的空格分隔符是由如下方法(红字表示的地方)设置了format所引起的。
+  Dialpadfragment.onCreateView(...){
+......
+  PhoneNumberFormatter.setPhoneNumberFormatteringTextWatcher(getactivity(),mDigits,mHandler);
+......
+}
+      从上述方法(红字表示的地方)进一步跟踪代码，可找到代码的修改点(红字表示的地方)是如下文件中的如下方法：
+1.frameworks\base\telephony\java\android\telephony\PhoneNumberFormattingTextWatcher.java
+private String reformat(CharSequence s, int cursor) {
+        // The index of char to the leftward of the cursor.
+        int curIndex = cursor - 1;
+        String formatted = null;
+        mFormatter.clear();
+        char lastNonSeparator = 0;
+        boolean hasCursor = false;
+        int len = s.length();
+          for (int i = 0; i < len; i++) {
+            char c = s.charAt(i);
+            if (PhoneNumberUtils.isNonSeparator(c)) {
+                if (lastNonSeparator != 0) {
+                    formatted = getFormattedNumber(lastNonSeparator, hasCursor);
+                    hasCursor = false;
+                }
+                lastNonSeparator = c;
+            }
+            if (i == curIndex) {
+                hasCursor = true;
+            }
+        }
+        if (lastNonSeparator != 0) {
+            formatted = getFormattedNumber(lastNonSeparator, hasCursor);
+        }
+  
+  if(formatted != null) {
+      formatted = formatted.replace(" ", "-");//add by MTK 20130117
+    }
+   String tmpFormatted = formatted;
+   String tmpS = ((CharSequence)s).toString();
+   tmpS = tmpS.replace("-","");//add by MTK 20130117
+   if (tmpFormatted != null) {
+       tmpFormatted = tmpFormatted.replace(" ", "").replace("-", "");
+       if (tmpS.trim().length() > tmpFormatted.length()) {
+        //Log.d("reformat", "s.length() > tmpFormatted.length()");
+        formatted = ((CharSequence)s).toString();
+       }
+   }
+     
+        return formatted;
+    }
+```
+
+## [FAQ03066] Settings中About Phone的Model number等信息的修改
+
+```
+修改alps\build\tools\buildinfo.sh
+-修改echo "ro.build.display.id=$BUILD_DISPLAY_ID", 把 $BUILD_DISPLAY_ID 修改成其他的名称可改变 Build Nubmer. 注意此时要去除$.
+-修改echo "ro.product.model=$PRODUCT_MODEL",   把  $PRODUCT_MODEL 修改成其他的名称可改变 Model Nubmer. 注意此时要去除$
+-修改echo  "ro.build.version.release=2.1" , 中的2.1, 可改变显示的Firmware version
+
+-但是做上述修改时需要注意，某些属性是跟fingerprint相关的，如果修改了跟fingerprint相关的属性，那么ro.build.fingerprint也要做出相应修改
+原始状态下ro.product.fingerprint属性设置如下：echo “ro.build.fingerprint=$BUILD_FINGERPRINT”
+其中$BUILD_FINGERPRINT=$( PRODUCT_BRAND)/$(PRODUCT_NAME)/$( TARGET_DEVICE):$( PLATFORM_VERSION)/$(BUILD_ID)/$(BUILD_NUMBER):$( TARGET_BUILD_TYPE)/$( BUILD_VERSION_TAGS)
+=>[ro.build.brand]/[ro.product.name]/[ro.product.device]:[ro.build.version.release]/[ro.build.id]/[ro.build.version.incremental]:[ro.build.type]/[ro.build.tags]
+所以，如果修改了ro.build.brand、ro.product.name、ro.product.device、ro.build.version.release、ro.build.id、ro.build.version.incremental、ro.build.type、 ro.build.tags这些属性
+那么，ro.product.fingerprint的属性设置需要做出修改
+假如贵司修改了”echo ro.product.name=test_name”，那么ro.product.fingerprint的属性设置需要修改为：
+echo "ro.build.fingerprint=${PRODUCT_BRAND}/test_name/${TARGET_DEVICE}:${PLATFORM_VERSION}/${BUILD_ID}/ ${BUILD_NUMBER}:${TARGET_BUILD_TYPE}/${BUILD_VERSION_TAGS}"
+
+Baseband Version 直接写在 modem.img 中，开机后modem 自动推送到AP 端。
+
+Kernel Version 为linux 编译过程中产生, 按照标准的linux格式生成(compile.h), 最后版本信息写在文件/proc/version 下，所有的版本信息即在该文件的第 一行，然后使用了一个正则表达式过滤了版本信息中一些字符，参考DeviceInfoSettings 下的getFormattedKernelVersion 方法。
+```
+
+## [FAQ09558] 如何快速获取完整的调试信息
+
+```
+当手机发生异常，不确定需要取哪些log来调试时，推荐使用GAT Bugreport功能，它会一键打包完整的调试信息。
+
+以GAT 3.0为例，步骤如下：
+1. 进入设置 -> 确认USB Debugging是开启的  （GAT依赖adb，因此要确认adb可用）
+2. 将问题机连USB至PC
+3. 打开GAT （确认已连接上，视图Devices中会显示手机name）
+4. 点击工具栏 -> Bugreport （蜘蛛形状的按钮）
+5. 此时会弹出框，在后台运行脚本，最后生成一个压缩包(mtk_bugreport_xxxxxx_xxxxxx.zip)。
+ 
+如下图所示：
+```
+
+## [FAQ09535] 当系统存在多个浏览器时，如何预置某个浏览器为系统默认的浏览器？
+
+```
+以设定UC浏览器为默认浏览器为例：
+
+设计思路：第一次开机默认选择UC浏览器来打开网页,而且用户也是可以清除该默认选择的浏览器的，如果用户清除默认的浏览器设置,那么我们也保留用户的选择,直到reset机器。
+
+具体方法：
+
+1.在PackageManagerService.java中的构造函数结尾添加：setDefaultBrowser();
+
+2.setDefaultBrowser()的具体实现：
+
+private final void setDefaultBrowser(){
+
+                   Log.d("debug_default","setDefaultBrowser is called.");
+
+                   if(!isFirstBoot()) {
+
+                            Log.d("debug_default","not first boot, return");
+
+                            return;
+
+                            }
+
+                  
+
+                   String str1 = "android.intent.category.DEFAULT";
+
+                   String str2 = "android.intent.category.BROWSABLE";
+
+                   String str3 = "android.intent.action.VIEW";
+
+                   //intent filter
+
+                   IntentFilter filter = new IntentFilter(str3);
+
+                   filter.addCategory(str1);
+
+                   filter.addCategory(str2);
+
+                   filter.addDataScheme("http");
+
+        
+
+                   //intent
+
+                   Intent intent = new Intent(str3);
+
+                   intent.addCategory(str2);
+
+                   intent.addCategory(str1);
+
+                   Uri uri = Uri.parse("http://");
+
+                   intent.setDataAndType(uri, null);
+
+                  
+
+                   //set UC，if your want set other browser as default, modify below code, add package name and activiy name
+
+                   ComponentName component = new ComponentName("com.UCMobile","com.UCMobile.main.UCMobile");
+
+                  
+
+                   //find all browsers
+
+                   List<ResolveInfo> resolveInfoList = queryIntentActivities(intent,intent.getType(),PackageManager.GET_INTENT_FILTERS);
+
+                   int size = resolveInfoList.size();
+
+                   ComponentName[] arrayOfComponentName = new ComponentName[size];
+
+                   //make sure the default browser in phone
+
+                   boolean no_UC = true;
+
+                   for (int i = 0; i < size; i++)
+
+                   {
+
+                            ActivityInfo activityInfo = resolveInfoList.get(i).activityInfo;
+
+                            String packageName = activityInfo.packageName;
+
+                            String className = activityInfo.name;
+
+                            //if your want set other browser as default, modify below package name
+
+                            if (packageName.equals("com.UCMobile")) no_UC = false;
+
+                           
+
+                            ComponentName componentName = new ComponentName(packageName, className);
+
+                            arrayOfComponentName[i] = componentName;
+
+                   }
+
+                   if (no_UC){
+
+                            Log.d("debug_default","no uc package");
+
+                            return;
+
+                            }else{
+
+                            Log.d("debug_default","uc package is in, set it as Preferred.");
+
+                            }
+
+        
+
+                   //set default
+
+                   addPreferredActivity2(filter,IntentFilter.MATCH_CATEGORY_SCHEME, arrayOfComponentName,component);
+
+                   Log.d("debug_default","add UC to PreferredActivity");
+
+        
+
+                   }
+
+3.增加addPreferredActivity2接口（还是在PackageManagerService.java中）：
+
+public void addPreferredActivity2(IntentFilter filter, int match,
+
+            ComponentName[] set, ComponentName activity) {
+
+        Log.d("debug_default","addPreferredActivity2 is called.");
+
+        // writer
+
+        synchronized (mPackages) {           
+
+            Slog.i(TAG, "Adding preferred activity " + activity + ":");
+
+            filter.dump(new LogPrinter(Log.INFO, TAG), "  ");
+
+            mSettings.mPreferredActivities.addFilter(
+
+                    new PreferredActivity(filter, match, set, activity));
+
+            scheduleWriteSettingsLocked();            
+
+        }
+
+    }
+
+        
+
+上面是设置UC 为默认浏览器的方法，如果要设置其他浏览器为系统默认，需要修改两个地方：
+
+1.ComponentName component = new ComponentName("packageName ","activityName");
+
+2.if (packageName.equals("packageName")) no_UC = false;
+
+其它都不变。
+
+packageName代表要设置为默认浏览器的那个browser对应的包名，activityName代表要设置为默认浏览器的那个浏览器对应的类名。
+
+ 
+
+红色标注的API，在android新版本上由于支持multi-user的缘故，所以接口定义发生改变，有两处需要修改（上面红色标记的语句）：
+
+1, 把List<ResolveInfo> resolveInfoList = queryIntentActivities(intent,intent.getType(),PackageManager.GET_INTENT_FILTERS);
+
+修改成:
+
+List<ResolveInfo> resolveInfoList = queryIntentActivities(intent,intent.getType(),PackageManager.GET_INTENT_FILTERS, 0);
+
+ 
+
+2,把mSettings.mPreferredActivities.addFilter(
+
+                    new PreferredActivity(filter, match, set, activity));
+
+            scheduleWriteSettingsLocked();   
+
+修改成
+
+mSettings.editPreferredActivitiesLPw(0).addFilter(
+
+                    new PreferredActivity(filter, match, set, activity));
+
+            mSettings.writePackageRestrictionsLPr(0);
+```
+
+## [FAQ09666] 时钟和日历里的Home time zone显示不一致
+
+```
+时钟里的Home time zone跟日历里的Home time zone本身就是不一致的
+日历的的时区是：家所在时区
+时钟里的时区是：当前所在的时区
+家所在时区：这个功能主要是为了方便，在出差或者旅行时，用户不在国内在境外的时候，在日历中设置家所在时区，可以随时了解到国内的当前时间和日期
+```
+
+## [FAQ09651] 设置-开发者选项-严格模式(Strict mode)开关从On设为Off后，还会闪红色边框是否正常？
+
+```
+手机的设置-开发者选项-严格模式(Strict mode)菜单，当其开关从On设为Off后，再去操作手机的其他界面，有时候还是会闪烁红色边框；
+那这个现象是否正常？
+ 
+[SOLUTION]
+开发者选项是在ViewRoot被创建起来时才会去读取当前的开关状态（ViewRoot是App启动过程中当Activity/Window被创建之后才创建的）；
+例如应用A启动时，发现这个选项是开着的，那它在某些情况下就会闪烁红色边框，此时去设置中把这个选项关闭，但如果应用A还是在后台运行并没有被kill掉时，当它在回到前台运行时，还是会闪烁红边框，只有当应用A真正退出并且process死掉之后，当下次再重新创建ViewRoot时，读取的才是最新的值。
+所以这并不是一个bug；
+ 
+当然，如果开关已经设置为Off了，并且手机已经reboot过了，开机之后经过检查开关依然为Off的情况下，如果再去操作手机其他界面时还是会闪红色边框，那就不正常了；如果遇到这种情况，请提交eService，并提供复现问题的操作视频和闪红边框的截图，以及对应的mobile log。
+```
+
+## [FAQ09665] MTP和PC数据同步时所支持的文件格式
+
+```
+具体支持的媒体文件格式如下结构体所示：
+private int[] getSupportedPlaybackFormats() {
+    return new int[] {
+        // allow transfering arbitrary files
+        MtpConstants.FORMAT_UNDEFINED,
+        MtpConstants.FORMAT_ASSOCIATION,
+        MtpConstants.FORMAT_TEXT,
+        MtpConstants.FORMAT_HTML,
+        MtpConstants.FORMAT_WAV,
+        MtpConstants.FORMAT_MP3,
+        MtpConstants.FORMAT_MPEG,
+        MtpConstants.FORMAT_EXIF_JPEG,
+        MtpConstants.FORMAT_TIFF_EP,
+        MtpConstants.FORMAT_BMP,
+        MtpConstants.FORMAT_GIF,
+        MtpConstants.FORMAT_JFIF,
+        MtpConstants.FORMAT_PNG,
+        MtpConstants.FORMAT_TIFF,
+        MtpConstants.FORMAT_WMA,
+        MtpConstants.FORMAT_OGG,
+        MtpConstants.FORMAT_AAC,
+        MtpConstants.FORMAT_MP4_CONTAINER,
+        MtpConstants.FORMAT_MP2,
+        MtpConstants.FORMAT_3GP_CONTAINER,
+        MtpConstants.FORMAT_ABSTRACT_AV_PLAYLIST,
+        MtpConstants.FORMAT_WPL_PLAYLIST,
+        MtpConstants.FORMAT_M3U_PLAYLIST,
+        MtpConstants.FORMAT_PLS_PLAYLIST,
+        MtpConstants.FORMAT_XML_DOCUMENT,
+        MtpConstants.FORMAT_FLAC,
+    };
+}
+注：当PC为XP系统时，要求WMP的版本要为10或者11
+```
+
+## android 判断是否是第三方应用
+
+```
+系统内置应用对应的flag为 ApplicationInfo.FLAG_SYSTEM
+
+boolean isSystemApp(Application aInfo) {
+    if ((aInfo.flags & aInfo.FLAG_SYSTEM) == 0) {
+        return false;
+    } else {
+        return true;
+    }
+}
+```
+
+## [FAQ09578] 如何确定GIF播放时间
+
+```
+gif播放的原理是这样：
+1. 依次从gif file里面读取出每一帧，以及每一帧的duration
+2. 先播放第一帧，间隔该帧duration之后再播放下一帧
+
+alps/mediatek/frameworks/base/media/gif/java/com/mediatek/gifdecoder.java
+里面有定义MINIMAL_DURATION
+
+MINIMAL_DURATION = 40
+这个改动其实也是针对特别的case，为了是播放平滑，所以修改为40的，可以修改这个值，或者自行调整这个值。
+```
+
+## [FAQ09417] [Audio Common]如何调整录像和拍照的声音大小
+
+```
+CameraService.cpp
+playSound(...) {
+    ...
+    player->seekTo(0);
+    //增加下行
+    player->setVolume(leftVolume,rightVolume);
+    ...
+}
+其中leftVolume & rightVolume  大小限定在0~1 之间。
+```
+
+## [FAQ08421] [Audio App]在播放器界面,使用侧键如何调整Media音量
+
+```
+在当前界面对应的XXXActivity.onCreate方法中，加上如下
+setVolumeControlStream(AudioManager.STREAM_MUSIC);
+```
+
+## [FAQ09179] [Audio App]后台播放FM或者Music，前台进入VideoPlayer再退出，后台不能恢复
+
+```
+方案一:
+请按照如下修改2个地方：
+1.   在fmradioservice.java中onReceive方法
+private class FMServiceBroadcastReceiver extends BroadcastReceiver {
+。。。。。。。。。
+    // other app want FM stop, stop FM
+    if (ACTION_TOFMSERVICE_POWERDOWN.equals(action) || ACTION_FROMATVSERVICE_POWERUP.equals(action)
+            || (SOUND_POWER_DOWN_MSG.equals(action) && CMDPAUSE.equals(command))) {
+        // need remove all messages, make power down will be execute
+        mFmServiceHandler.removeCallbacksAndMessages(null);
+        stopFMFocusLoss(AudioManager.AUDIOFOCUS_LOSS_TRANSIENT);//修改该句
+。。。。。。。。。
+
+2.在mediaplaybackservice.java中onReceive方法
+。。。。。。。。。
+else if (CMDPAUSE.equals(cmd) || PAUSE_ACTION.equals(action)) {
+pause();
+mPausedByTransientLossOfFocus = true;//修改此行
+}
+。。。。。。。。。
+
+方案二:
+在MTKVideoView.java的openVideo()方法中移除如下代码：
+。。。。。。。。。
+// Tell the music playback service to pause
+// TODO: these constants need to be published somewhere in the framework.
+final Intent i = new Intent("com.android.music.musicservicecommand");
+i.putExtra("command", "pause");
+mContext.sendBroadcast(i);
+```
+
+## [FAQ09897] 如何修改可以缩短Activity进入和退出画面时的动画播放时间
+
+```
+在 frameworks/base/services/java/com/android/server/wm/WindowManagerService.java 中找到如下方法，并做修改
+private Animation createScaleUpAnimationLocked(int transit, boolean enter) {
+    Animation a;
+    // Pick the desired duration.  If this is an inter-activity transition,
+    // it  is the standard duration for that.  Otherwise we use the longer
+    // task transition duration.
+    int duration;
+    switch (transit) {
+        case WindowManagerPolicy.TRANSIT_ACTIVITY_OPEN:
+        case WindowManagerPolicy.TRANSIT_ACTIVITY_CLOSE:
+            duration = mContext.getResources().getInteger(
+                    com.android.internal.R.integer.config_shortAnimTime);
+            break;
+        default:
+            duration = 300;
+            /// M: For Low Bandwidth Application Transition Animation @{
+            if (FeatureOption.MTK_LOW_BAND_TRAN_ANIM) {
+                duration = 200;
+            }
+            /// @}
+            break;
+    }
+    //在此处重新设置duration的值，
+   //上面的代码是去读取默认的配置，默认值是300，你可以依次逐渐减少该值，如250，200，150，100
+   //你自己感觉这些值的效果，看哪个满意，你就用哪个；
+    // TODO(multidisplay): For now assume all app animation is on main display.
+    final DisplayInfo displayInfo = getDefaultDisplayInfoLocked();
+    if (enter) {
+```
+
+## [FAQ09867] 【pro_info】如何使用pro_info分区来存储标记？
+
+```
+在很多情况下，需要使用一个flag来标记各种场景，比如开机logo切换，开机动画切换等等。以72为例，介绍用pro_info来存储这个标记，这样既可以在LK/Uboot中访问这个标记，同时在上层可以通过nvram的接口来读写这个标记。
+ 
+[SOLUTION]
+使用pro_info分区来存储标记，需哟做哪些工作？
+1，客制化一个nvram item
+请参考《customization inNvRAM.ppt》
+2,客制化pro_info
+请参考《Customization in NvRAM Product Info feature.pptx》
+3,Uboot/LK读取标记
+（1）在load_image.c中写一个读取标记的接口
+–In the path of alps\bootable\bootlaoder\lk\platform\mediatek\mt65XX\LK 
+（2）demo code
+
+（3）dev->read（）
+Start_addr：起始block的地址，一个block对应的是512个Byte.如果在g_new_nvram_lid[]中有多个LID，那么就要根据ABLE_FOR_SPECIAL_LID     的start_address来计算偏移，如start_address =128*1024， 那么start_addr=part->startblk*BLK_SIZE+128*1024 . 
+
+4,apk中读写标记
+请参考FAQ ：FAQ04542
+
+如果还有其他疑问，请提交E-service，tks。
+```
+
+## [FAQ09949] 预览界面显示一个灰块
+
+```
+1.      进入相机界面拍摄一张照片或者一个视频
+2.      向左滑动一次进入浏览图片界面
+3.      在浏览图片界面点击back键后快速点击menu键---进入取景界面查看界面显示
+4.      此时会在取景界面下方留下一个灰色长条，直到再次点击back键，灰色长条才会消失
+[SOLUTION]
+请作如下修改验证：
+文件 photopage.java 函数
+private void updateMenuOperations()
+    int supportedOperations = mCurrentPhoto.getSupportedOperations();
+    ////M: zhongchao
+    if(0 == supportedOperations) {
+        menu.close();
+        return;
+    }
+```
+
+## [FAQ09554] How to open/read/write UART in APP?
+
+```
+Refer to file: ./mediatek/factory/src/util/uart_op.c.
+
+Operating UART is the same as that on the PC platform. You can google for related information,
+e.g. http://www.ibm.com/developerworks/cn/linux/l-serials/
+```
+
+## [FAQ09810] 文件句柄开启过多导致系统异常排查方法
+
+```
+大多数系统异常重启问题首先就要要查看system_server是否存在异常行为，并在相关时间点确认kernel log中是否异常。如果在相关时间点出现如下sample log,需要做如下描述的进行确认FD的行为。
+<3>[  733.216078] (0)[802:Binder Thread #]binder: 109:802 no unused fd available, -24
+<6>[  733.216099] (0)[802:Binder Thread #]binder: 109:802 transaction failed 29201, size
+104-4
+
+从no unused fd available这个log可以得知当前的fd已经使用达到上限，超过了1024个文件句柄上限。所以这个时候需要追查是什么一直在开启文件句柄而没有关闭。需要输入以下命令：
+adb shell ps -p -t system_server找到system_server的PID是269.然后使用开始复现现象，从第一次模拟开
+始就输入如下命令：adb shell ls -l /proc/269/fd>d:\fd.log记录下状态,然后每隔一段时间后都用上面命令进
+行记录。
+
+以本例为例：从dump出来的fd log中可以明显看到：
+
+data/app/com.jiubang.goscreenlock.theme.watch-1.apk 所使用的fd数量由最开始的40个一直
+增加到出问题的743个，fd爆掉了导致系统异常重启。
+所以需要检查该ap的行为，在关闭或退出该ap的时候即使关闭所占用的文件句柄以免造成系统异常。
+```
+
+## [FAQ09185] log里面有last_kmsg是系统有异常了么？
+
+```
+在讲last_kmsg之前，我们讲一下什么是ram console。
+ 
+首先，在kernel里面通过printk吐log的时候会是下面的一个过程：
+1. printk会将信息格式化到kernel log buffer里面去。
+2. 然后将这些格式化信息送到console去，在我们的系统里面有两个console，一个是uart console，一个是ram console。uart console里面的内容呢就是我们看到的uart log了。
+
+那ram console是如何工作的呢？
+1. RAM Console是位于Internal SRAM上面的一个小的buffer。
+2. 结合上图与下图我们可以知道，系统运行的时候kernel log将不会被记录在RAM Console里面。
+3. 一旦发生了重启，log将会停止记录到RAM console，直到RAM Console再次初始化好。
+4. 在RAM Console初始化的时候会将buffer里面原有的数据做备份，拷贝到另外一个buffer，这个buffer的数据我们可以通过/proc/last_kmsg来访问。
+ 
+那结论是什么呢？
+1. RAM Console是一种log机制，它可以记录重启前最后时刻的一段log，来说明系统最后做了哪些事情。
+2. 只要是重启，不管是异常重启还是通过adb reboot，或者通过菜单重启，都会有last_kmsg，这是一种log机制，与exception机制没有直接联系。
+ 
+但是这里面也有一些限制：
+1. 由于重启之后DRAM数据会丢失，所以只能将RAM Console放到Internal SRAM。
+2. 但是由于Internal SRAM空间有限，只能划分出7KB~9KB的空间给RAM Console使用，所以能够记录的log是很短的。
+```
+
+## [FAQ08897] 如何去掉首次进入camera时的引导动画
+
+```
+相机的引导动画是在函数showAppGuide()中实做的, 如果要去掉，请注释掉此函数中的以下代码：
+if (sAppGuideExt != null) {
+    sAppGuideExt.showCameraGuide(activity, type);
+}
+
+JB2与JB5除了做以上修改，
+还需要在alps\packages\apps\camera\src\com\android\camera\camera.java中做如下修改：
+在doOnResume()中将
+if (isNonePickIntent() || isImageCaptureIntent()) {
+    if (isAppGuideFinished()) {
+        mVoiceManager.startUpdateVoiceState();
+    }
+}
+改为：
+if (isNonePickIntent() || isImageCaptureIntent()) {
+    mVoiceManager.startUpdateVoiceState();
+}
+```
+
+## [FAQ07404] 相机连拍快门声音和拍照数量不一致
+
+```
+长按快门连拍，快门声音比拍出的照片数量多。因为目前长按快门连拍时，声音的循环播放是AP端来控制的，跟拍照的次数没有关系，所以会不同步。
+[SOLUTION]
+JB版本按以下方法调整：
+连拍时快门声音的播放是在modeactor.java中的函数onShutterButtonLongPressed()中通过调用以下代码来实现的:
+mStreamID = mBurstSound.play(mSoundID, 1.0f, 1.0f, 1, -1, 1.0f);
+最后一个参数表示播放的速率,可以在0.5-2之间进行调整,如果想让声音播放的慢一些,可以把这个值调小一些。
+
+JB2/JB3版本按以下方法调整：
+连拍时快门声音的播放是在photoactor.java中的函数shuttercallback的onShutter()中通过调用以下代码来实现的:
+mStreamID = mBurstSound.play(mSoundID, 1.0f, 1.0f, 1, -1, 1.0f);
+最后一个参数表示播放的速率,可以在0.5-2之间进行调整,如果想让声音播放的慢一些,可以把这个值调小一些。
+如果调成0.5还是感觉比连拍播的快，那只能去更换拍照音的音源了，即/system/media/audio/ui/camera_shutter.ogg文件。
+```
+
+## [FAQ09188] 如何在代码中Kick Watchdog呢？
+
+```
+首先在kernel需要kick watchdog的前面加入如下代码：
+enum wk_wdt_type {
+    WK_WDT_LOC_TYPE,
+    WK_WDT_EXT_TYPE,
+    WK_WDT_LOC_TYPE_NOLOCK,
+    WK_WDT_EXT_TYPE_NOLOCK,
+};
+extern void mtk_wdt_restart(enum wk_wdt_type type);
+ 
+static void mtk_kick_wdt(void) {
+    mtk_wdt_restart(WK_WDT_LOC_TYPE_NOLOCK);
+    mtk_wdt_restart(WK_WDT_EXT_TYPE_NOLOCK);
+}
+ 
+然后在需要kick watchdog的地方调用mtk_kick_wdt()函数即可。如下：
+void some_function() {
+    //some stuffs
+    ........
+    //kick wachdog
+    mtk_kick_wdt()
+    //other stuff
+}
+```
+
+## [FAQ09974] 在某些平台下，包含循环的代码使系统变慢的原因是什么？怎么解决？
+
+```
+由于我司某些平台下DVM内部机制的原因，遇到循环体中不包括函数调用，且会长时间处于循环体的循环算法时就会导致该线程抢占较多CPU从而导致系统变慢。
+例如：
+while(flag) {
+    ;
+}
+
+此处的用意是等待另外一个线程改变flag的值，只有flag被设置为false时，代码才会向下执行，但是如果另外一线程迟迟不能改变flag的值就会引起系统变慢的情况。因此应当避免此种情况发生。
+因此，解决此问题的方法想办法在循环体中存在函数调用的代码。例如在循环体中调用oject.wait在另外一个地方调用notify等。但是不可以调用一个函数体为空的函数。
+```
+
+## [FAQ10266] [Audio Common] 如何内置歌曲和视频文件等资源到手机文件系统。
+
+```
+针对该需求，我们有客制化的SOP文档。请登录DCC搜索以下文件即可：“Make_And_DL_FAT_Image.ppt”。
+```
+
+## [FAQ05244] 连拍结束后，少保存一张图片或者最后一张图片在图库预览为灰色（无缩略图）
+
+```
+在Package/apps/Camera/src/com/android/camera/ModeActor.java的
+
+ActorContinuousShot类中： 
+
+1．将cancelContinuousShot()方法替换为：
+private void cancelContinuousShot() {
+    mCameraDevice.cancelContinuousShot();
+    mBurstSound.stop(mStreamID);
+    //modified start
+    /*
+    mWaitSavingDoneThread = new Thread() {
+        private ImageSaver mImageSaver = mCamera.mImageSaver;
+        private ImageNamer mImageNamer = mCamera.mImageNamer;
+        @Override
+        public void run() {
+            mImageSaver.waitDoneInSubThread();
+            mHandler.sendEmptyMessage(MSG_BURST_SAVING_DONE);
+            mImageNamer.cleanOldUriAndRequestSync();
+        }
+    };
+    mWaitSavingDoneThread.start();
+    */
+    //modified end
+}
+
+2. 将onConinuousShotDone(int capNum) 方法替换为：
+
+public void onConinuousShotDone(int capNum) {
+    Log.i(TAG, "onContinuousShotDone, pictures saved = " + capNum);
+    //modified start
+    mWaitSavingDoneThread = new Thread() {
+        private ImageSaver mImageSaver = mCamera.mImageSaver;
+        private ImageNamer mImageNamer = mCamera.mImageNamer;
+        @Override
+        public void run() {
+            mImageSaver.waitDoneInSubThread();
+            mHandler.sendEmptyMessage(MSG_BURST_SAVING_DONE);
+            mImageNamer.cleanOldUriAndRequestSync();
+        }
+    };
+    mWaitSavingDoneThread.start();
+    //modified end
+    if (mWaitSavingDoneThread != null && mWaitSavingDoneThread.isAlive()) {
+        updateSavingHint(true, true);
+    }
+}
+```
+
+## [FAQ04529] 连拍结束后加入动画效果
+
+```
+将ModeActor.java的ModeActorHandler做如下修改，添加“//add this line”处的那一行代码：
+private class ModeActorHandler extends Handler {
+    ……
+    public void handleMessage(Message msg) {
+        ……
+        case MSG_BURST_SAVING_DONE:
+            updateSavingHint(false);
+            onBurstSaveDone();
+            animateByIntentOrZSD(); //add this line
+            break;
+        }
+    }
+};
+```
+
+## [FAQ10297] 预制开机执行Iptables命令
+
+```
+修改方法如下：
+1，新建一个文件脚本文件oem-iptables-init.sh，在这个文件里添加想要预制的命令。
+2，adb push oem-iptables-init.sh push system/bin/
+3，将oem-iptables-init.sh赋予可执行权限，chmod 777 oem-iptables-init.sh
+
+PS: 此方法用于带root 权限的手机，执行adb 命令之前先执行adb remount
+```
+
+## [FAQ04528] 如何在静音模式下也开启拍照音
+
+```
+JB,ICS2,ICS需要做如下修改：
+将mediatek/Config/<Project Name>/system.prop文件中的：
+ro.camera.sound.forced=0
+替换为：
+ro.camera.sound.forced=1
+
+JB2需要做如下修改：
+将frameworks/base/core/res/res/values/config.xml中的：
+<bool name="config_camera_sound_forced">false</bool>
+修改为：
+<bool name="config_camera_sound_forced">true</bool>
+```
+
+## [FAQ10366] 如何抓取View Hierarchy for UI Automator?
+
+```
+在遇到界面显示异常等问题的时候，需要排查界面异常是由哪个处理过程所引起的，画面显示的过程，大致上可以分为：
+1、上层app定义view 大小、位置，和画面对应的layout；
+2、View system处理view的这些属性，计算view tree的大小、位置、处理view的绘制逻辑；
+3、native framework处理绘图指令，未开启硬件加速绘制时，是使用Skia图形库来执行绘图指令；如果开启了硬件加速，则是GPU来执行绘图指令
+
+当前这个FAQ就是要提供方法来抓取View hierarchy，排查第1、2这两个步骤是否出现问题
+
+[SOLUTION]
+抓取方法是：
+1、将手机用usb连接至电脑，确保手机软件版本是eng load，或者userdebug load，才可以抓View hierarchy，如果是user load，且没有打开对应的debug权限，则不可以抓；
+2、打开Android sdk提供的Android Debug Monitor工具或Eclipse，进入DDMS这个视图界面；
+3、打开Devices显示界面，在Devices的进程列表上方的那一排button中，找到最右边的button，将鼠标悬浮在button上方，显示的文字是"Dump View Hierarchy for UI Automator"；
+4、在复现了画面显示异常的界面，保持画面不动，点击第3步中的那个button开始dump，完了之后系统会自动打开所dump到的文件，文件名是dump_xxx.uix，xxx通常是一串数字；
+5、将鼠标移到文件名上，会悬浮显示出此文件的存放 folder 名称及路径，folder 命名格式为: uiautomatorviewer_xxxxx，xxxxx也是一串数字，将此folder打包提供给我们分析即可；
+如果是自己分析该文件，那么直接在已经打开了的文件中，查看异常位置处的view的状态和属性是否正确即可，将鼠标移动到view的位置时，view会被红色虚线框highligh出来，右边的属性列表中会显示出该view的各项属性。
+```
+
+## 【USB名称修改系列】
+
+```
+FAQ09991	【USB名称修改系列】第1项-为什么参考FAQ修改名称后却无效	SW > ALPS > Driver - USB	2014-01-13
+FAQ09986	【USB名称修改系列】第11项-如何修改preloader阶段的vcom口在windows右下角的提示框的字符串显示	SW > ALPS > Driver - USB	2014-01-13
+FAQ09987	【USB名称修改系列】第12项-如何修改MTP在windows弹出的自动播放提示框标题	SW > ALPS > Driver - USB	2014-01-13
+FAQ09985	【USB名称修改系列】第10项-如何修改设备管理器中设备名后的数字	SW > ALPS > Driver - USB	2014-01-13
+FAQ09982	【USB名称修改系列】第9项-如何修改UMS在设备管理器中DiskDrive下的名称	SW > ALPS > Driver - USB	2014-01-13
+FAQ09980	【USB名称修改系列】第8项-如何修改mtp设备在设备管理器中的”Portable Devices”下的名称	SW > ALPS > Driver - USB	2014-01-13
+FAQ06755	[USB]如何同时打开UMS和BICR(CD-ROM)	SW > ALPS > Driver - USB	2014-01-13
+FAQ07081	【USB名称修改系列】第5项-如何修改MTP在PC设备管理器中制造商的名称	SW > ALPS > Driver - USB	2014-01-13
+FAQ09979	【USB名称修改系列】第7项-如何修改PTP设备在PC上弹出的对话框的标题	SW > ALPS > Driver - USB	2014-01-13
+FAQ05691	【USB名称修改系列】第6项-如何修改手机在PC桌面右下角弹出的“MT65xx Android Phone”提示框	SW > ALPS > Driver - USB	2014-01-13
+FAQ05418	【USB名称修改系列】第14项-如何修改pc端設備管理器中"Android Phone"目錄下的設備名	SW > ALPS > Driver - USB	2014-01-13
+FAQ03928	[USB]MTP的介绍？驱动如何安装？	SW > ALPS > Driver - USB	2014-01-13
+FAQ04856	【USB名称修改系列】第4项-如何修改BICR在PC"我的电脑"中显示的label名称	SW > ALPS > Driver - USB	2014-01-13
+```
+
+## [FAQ10738] Build otapackage后system.img没有打包进去
+
+```
+在进行OTA全包生成时，生成的包才5M（编译过程是先new ，后再执行otapackage），经过对比，OTA包中缺少文件system.img和SEC_VER.txt文件.
+
+[SOLUTION]
+
+Ota包里面缺失system img，原因是客户修改了prop里面的“ro.product.device” value值.
+尝试以下两种方式，ota_from_target_files中不需要设定 cust_dir1 这个值了：
+1. 修改ota_from_target_files 中的system_path：
+system_path = os.path.join("out/target/product/g32wh_xfy","system.img")
+
+2. 將 system.img copy 一份到不需要 device 相关的路径，比如out/target 下，那么在此处设置system_path值如下：
+system_path = os.path.join("out/target", "system.img")
+```
+
+## [FAQ03747] 差分包升级时签章问题
+
+```
+原因：A版使用的key和B版使用的key不一致，导致签章error。
+解决：先确定在ProjectConfig.mk文件中的宏：MTK_SIGNATURE_CUSTOMIZATION设置，
+如果设置为yes， 客户需要自己去gen releasekey，生成key的文档参考DMS如下路径的资料：
+/Product Line/WCX/3G Phone Data/Smart Phone/Software_Customer/Standard Package/MT6575 SW Doc Package/Build/V2.3 /Application Signing Process Enhancement.ppt ，
+产生releasekey之后（releasekey在：alps/build/target/product/security/project下），
+Build第一个版本，build A new， build A otapackage, 将A版download到手机上，再build第二版，build B new， build Botapackage。最后用命令
+./build/tools/releasetools/ota_from_target_files –k alps/build/target/product/security/project/release –n –i oldotapackage.zip newotapackage.zip update.zip.
+如果宏MTK_SIGNATURE_CUSTOMIZATION设置为no，则不需要产生key，使用默认的alps/build/target/product/security下的testkey。这时在build 完A、B两个版本后直接用命令：
+./build/tools/releasetools/ota_from_target_files –n –i oldotapackage.zip newotapackage.zip update.zip.来制作差分包
+```
+
+## [FAQ08907] How to make OTA.zip for SDcard Upgrade
+
+```
+1. Enable SystemUpdate:  EngineerMode--->Others--->System update options--->Sd card Update
+2. Build : makeMtk [project] new
+     makeMtk [project] otapackages
+     Full package:[project]-ota-eng.[username].zip ,rename as updat.zip;
+ or delta package, please use command : build/tools/releasetools/ota_from_target_files -n -i old.zip new.zip update.zip
+3. META-INF(/com/google/andriod/updater-script) (from full package)
+scatter.txt:partition layout information(from full package)
+type.txt: type of update package(from full package)
+config.xml:(configure follow info by yourself ,please preference build.prop)
+4. 将以上文件 files (update.zip, META-INF, scatter.txt, type.txt, configure.xml) 打包为 **.zip
+5. copy **.zip to SD card , entry setting--->system update
+ 
+config.xml info:
+– Build number: The build number of the new version
+– Language: The default language of the new version
+– Oem: The oem of the new version
+– Operator: The operator of the new version
+– Product: The product of the new version
+– Publish time: When the new version is published
+– Version name: The version of the new version
+– Android number: The version of Android (e.g. Android 4.2)
+– Flavor:
+– Notes: What’s new in the package, shown to users
+```
+
+## [FAQ08071] Build OTA升级包的时候出现异常,无法编译
+
+```
+在Build otapackage时，出现以下build error：
+Build error:
+ERROR: signapk.jar failed: return code 1
+make[2]: *** [out/target/product/s9201/s9201-ota-55.zip] Error 1
+make[2]: *** Deleting file `out/target/product/s9201/s9201-ota-55.zip’
+
+ [SOLUTION]
+解决：从log分析，是low memory 导致build otapackage 失败的：
+需确定build otapackage时保证足够的memory，比较多的情况下在制作升级包时，都是采
+用虚拟机的方式，而不是特定义的一台server，所以就会有low memory 的情况。如果可以，
+增加此虚拟机的memory 也行
+参考以下两种方案：
+1. 将 partition_table_MT6589.xls中的android那个区域的大小改小一些, 删除一些内置在system区域的apk；（cause：对于build otapackage 失败，是在打包ota时，对ota进行签章时报了low memory的error。对于签章sign所需的memory的大小，取决于apk的大小，所以对partition_table_MT6589.xls 中的android 分区设定，如果android 分区设定大，则在对ota中的apk进行签章时要求的memory也要大。）
+
+2. 修改SignFile.java 中的cmd = [“java”, “-Xmx2048m”, “-jar”, 这条 ，将“-Xmx2048m”，修改 为“-Xmx4096m” 或者更大，也可。（cause：对于这个SignFile 中的这个cmd，是指当前签章run 的虚拟机上，指定虚拟机可用的最大heap size为2048，这个值需要参考当前的build的pc server的可用内存的大小。
+```
+
+## [FAQ03873] 如何实现通过工程指令切换开关机动画铃声的功能？
+
+```
+通过工程指令切换开关机动画铃声的功能；
+输入正确的指令(例如：*#123890#)后，返回home界面，即完成两套开关机动画铃声的切换动作。
+[SOLUTION]
+一、修改文件 /mediatek/config/${Project}/init.rc
+在文件的末尾添加：
+# Change the bootanimation and bootaudio
+on property:persist.radio.change.bootanim=1
+    user root
+    group root
+    write /proc/bootprof "INIT:NAND:Mount_START"
+    # Mount /system rw first to give the filesystem a chance to save a checkpoint
+    mount yaffs2 mtd@system /system nandboot
+    chmod 0777 /system/media
+    copy /system/bootanim/bootanimation.zip /system/media/bootanimation.zip
+    copy /system/bootanim/bootaudio.mp3 /system/media/bootaudio.mp3
+    copy /system/bootanim/shutanimation.zip /system/media/shutanimation.zip
+    copy /system/bootanim/shutaudio.mp3 /system/media/shutaudio.mp3
+    setprop persist.radio.change.bootanim 0
+    mount yaffs2 mtd@system /system ro remount nandboot
+    write /proc/bootprof "INIT:NAND:Mount_END"
+
+二、修改文件
+packages/apps/Contacts/src/com/android/contacts/SpecialCharSequenceMgr.java
+添加 Code:
+//设置处理更换开关机动画和铃声的命令
+private static final String CHANGE_BOOTANIM = "*#123890#"; 
+修改 Code:
+static boolean handleChars(Context context, String input, boolean useSystemWindow, EditText textField) {
+    Log.d(TAG, "handleChars() dialString:" + input);
+    //get rid of the separators so that the string gets parsed correctly
+    String dialString = PhoneNumberUtils.stripSeparators(input);
+    if (handleIMEIDisplay(context, dialString, useSystemWindow)
+        || handlePinEntry(context, dialString)
+        || handleAdnEntry(context, dialString, textField)
+        || handleSecretCode(context, dialString)
+        || handleChangeBootanim(context, dialString)) {
+            //此处添加处理更换开关机动画和铃声的 Code
+        return true;
+    }
+    return false;
+}
+
+添加函数：
+static boolean handleChangeBootanim(Context context, String input) {
+   if (input.equals(CHANGE_BOOTANIM)) {
+        Intent it = new Intent();
+        it.setAction("persist.radio.change.bootanim");
+        context.sendBroadcast(it);
+        Intent intent = new Intent("android.intent.action.MAIN");
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+        return true; 
+    }
+    return false;
+}
+
+三、创建一个 APK，这个 APK 的 android:sharedUserId="android.uid.phone"，并签上系统签名；
+这个 APK 里面只有一个 BroadCastReceiver，onReceive 函数里面的内容是：
+if(intent.getAction().equals("persist.radio.change.bootanim")){
+    android.os.SystemProperties.set("persist.radio.change.bootanim", "1");
+}
+AndroidManifest.xml 里面内容如下：
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.change.bootanim"
+    android:versionCode="1"
+    android:versionName="1.0"
+    android:sharedUserId="android.uid.phone">
+    <uses-sdk android:minSdkVersion="10" />
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name" >
+        <receiver
+            android:label="@string/app_name"
+            android:name=".ChangeBootanimReceiver" >
+            <intent-filter >
+                <action android:name="persist.radio.change.bootanim"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>
+
+四、请贵司在如下目录下直接创建 bootanim
+/vendor/mediatek/${Project}/artifacts/out/target/product/${Project}/system/
+然后将 bootanimation.zip、bootaudio.mp3、shutanimation.zip 和 shutaudio.mp3  拷贝到该目录下，然后重新编译工程即可。
+```
+
+## [FAQ11318] 要增加實體home key，硬件/軟件該如何修改
+
+```
+有兩種解法
+1. 硬件: 拉到keypad module的COL*/ROW*
+軟件: 設定codegen.dws裡面的KEYPAD Setting，將相對的COL*/ROW*設定成"HOME"，GPIO or GPIO_EXT Setting使用到的GPIO pin要設定成COL*/ROW*
+2. 硬件: 拉到PMIC的HOMEKEY
+軟件: 設定codegen.dws裡面的KEYPAD Setting，將沒有在用的COL*/ROW*設定成"HOME"，且修改下列的define
+alps/mediatek/custom/$Project_Name/kernel/kpd/kpd/mtk_kpd.h
+#define KPD_PMIC_RSTKEY_MAP KEY_HOME
+```
+
+## [FAQ11136] [Audio Common]录像的时候会把拍照音录入进去，如何解决？
+
+```
+请把audiomtkstreaminmanager.h
+AUDI_RECORD_DROP_MS  (120)  改为500
+然后再把audiomtkstreaminmanager.cpp 中的
+record_drop_ms_max  (200)  改为500。
+```
+
+## [FAQ11401] 手机中不能播放关机动画和铃声?
+
+```
+1.确认手机中有关机资源.可先Check下out目录是否有关机动画包(比如system/media目录下的shutanimation.zip)
+2.修改alps\frameworks\base\services\java\com\android\server\power\shutdownThread.java的beginShutdownSequence作如下的修改：
+   private static void beginShutdownSequence(Context context) {
+     ……
+     if (cust != null) {
+        if (cust.equals("CUST")) {
+            mShutOffAnimation = true;
+        }
+    }
+   // MTK add for play shutdown animation
+   mShutOffAnimation = true;  //增加这行代码，
+   ……
+}
+
+3.重新编译frameworks/base/services/java,然后将更新后的services.jar push进手机的system/framework中再测试.
+```
+
+## [FAQ03201] 如何在c/c++代码里引用自定义ProjectConfig.mk宏开关
+
+```
+AUTO_ADD_GLOBAL_DEFINE_BY_NAME/AUTO_ADD_GLOBAL_DEFINE_BY_VALUE/AUTO_ADD_GLOBAL_DEFINE_BY_NAME_VALUE是编译系统开出的3个可以将ProjectConfig.mk中的宏(注意添加的宏必须大写)添加到C/C++源文件的接口。
+
+ 
+
+[KEYWORD]
+
+AUTO_ADD_GLOBAL_DEFINE_BY_NAME
+
+AUTO_ADD_GLOBAL_DEFINE_BY_VALUE
+
+AUTO_ADD_GLOBAL_DEFINE_BY_NAME_VALUE
+
+ProjectConfig.mk
+
+ 
+
+[SOLUTION]
+详细如下:
+
+AUTO_ADD_GLOBAL_DEFINE_BY_NAME:
+
+如果你希望定义一个宏开关（作为一个功能模块的开关），然后在源文件(*.c/h等使用到这个宏开关)，比如你定义了一个XXX_SUPPORT这个宏的值只有yes和no。那么你可以在
+
+ProjectConfig.mk中定义：
+
+XXX_SUPPORT = yes
+
+但是这样定义在源文件是找不到XXX_SUPPORT的，因此需要加入AUTO_ADD_GLOBAL_DEFINE_BY_NAME，加入之后就可以在源文件使用了，比如aa.c中：
+
+#ifdef XXX_SUPPORT
+
+......
+
+#endif
+
+注意：如果添加的宏的值为no/none/false（无论大小写），那么该宏不会被添加进去。
+
+ 
+
+
+AUTO_ADD_GLOBAL_DEFINE_BY_VALUE:
+
+同上，但是差别在于你希望将宏的值传给源文件，比如定义了：
+
+XXX_TP = CTP#RTP or CTP
+
+你希望在代码中去判断当前使用了RTP还是CTP，那么可以将XXX_TP加入AUTO_ADD_GLOBAL_DEFINE_BY_VALUE
+
+这样在源文件中就可以引用了，比如aa.c中：
+
+#ifdef CTP
+
+......
+
+#elif RTP
+
+......
+
+#endif
+
+ 
+
+AUTO_ADD_GLOBAL_DEFINE_BY_NAME_VALUE:
+
+它与AUTO_ADD_GLOBAL_DEFINE_BY_NAME差别在于AUTO_ADD_GLOBAL_DEFINE_BY_NAME只有定义和没有定义之分，而AUTO_ADD_GLOBAL_DEFINE_BY_NAME_VALUE还可以知道它的值是多少(注意这个值是字符串)，比如：
+
+XXX_NUM = 1#1 or 2
+
+那么加入AUTO_ADD_GLOBAL_DEFINE_BY_NAME_VALUE之后：
+
+在源文件中就可以这样用(比如aa.c):
+
+if (!strcmp(XXX_NUM, "1"))
+
+{
+
+}
+
+else
+
+{
+
+}
+
+---------------
+
+java部分的引用请参考：
+
+[FAQ03202] 如何在java代码里引用自定义projectConfig.mk宏开关
+```
+
+## [FAQ11375] 系统时间为12小时制，进入记事本保存一条记录，记录时间以24小时制显示
+
+```
+系统时间为12小时制，进入记事本保存一条记录，记录时间以24小时制显示
+[SOLUTION]
+该信息显示为24小时制是design 的行为，如果贵司想要修改可以参考以下信息。
+1.format格式的资源  如，values/string.xml
+    <string name="done_time_format">Done at %Y-%m-%d %H:%M</string>
+2. timeFormat的地方在Utils.java, 可以自行修改timeFormat。
+   public static String getDateText(Context context, long dateMillis, int type) {
+   ...
+     else if (type == DATE_TYPE_COMPLETE) { // get complete date
+            if (dateMillis <= 0) {
+                return null;
+            }
+            timeFormat = context.getResources().getString(R.string.done_time_format);
+        }
+   ...
+}
+```
+
+## [FAQ11468] 如何在KK版本上支持蓝牙发送APK文件
+
+```
+将application/vnd.android.package-archive类型加到packages/apps/Bluetooth/AndroidManifest.xml文件中。
+如： 
+1. <activity android:name=".opp.BluetoothOppLauncherActivity"
+            android:process="@string/process"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:label="@string/bt_share_picker_label"
+            android:enabled="@bool/profile_supported_opp">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+...
++++          <data android:mimeType="application/vnd.android.package-archive" />
+ 
+2. <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+...
++++          <data android:mimeType="application/vnd.android.package-archive" />
+```
+
+## [FAQ10220] 如何修改factory mode下FM的默认测试频点及阀值
+
+```
+Factory mode下测试FM会默认测试四个频点88.5、105.8、98.0、108.0的RSSI值，如果小于阀值-95db则测试fail，高于阀值-95db则测试pass。
+本文将说明如何修改默认测试频点及阀值。
+[SOLUTION]
+请修改alps/mediatek/custom/[project]/factory/factory.ini 以及 factory.chn.ini文件中的
+FMRadio.CH1=885;
+FMRadio.CH2=1058;
+FMRadio.CH3=980;
+FMRadio.CH4=1080;
+```
+
+## [FAQ04601] [Power/Thermal]如何读取CPU温度？
+
+```
+SW control path:
+ 
+mediatek\platform\mt6577\kernel\core\mtk_ts_cpu.c
+
+sysfs:
+adb shell
+cat  /sys/class/thermal/thermal_zone0/temp
+ 
+各个thermal zone 对应的interface如下：
+cat  /sys/class/thermal/thermal_zone0/temp
+cat  /sys/class/thermal/thermal_zone1/temp 
+cat  /sys/class/thermal/thermal_zone2/temp
+......
+您需要先透過type接口获知当前thermal_zone name, 以便于正确读取：
+/sys/class/thermal/thermal_zone*/type
+
+Notes:
+1. PMIC 6329 HW 無法讀取thermal sensor溫度，回報給SW, 目前solution always 為100C(mt6320 支持)
+2. ABB temp 與CPU temp 實驗測量結果溫度基本一致(相差不到0.1C), 因此Driver 基本类似。 
+3. ADC3 是給3GPA RF IC 使用的, 读取的是external 摆放在IC 旁边的thermal sensor temperature
+```
+
+## [FAQ09755] 接收到配置短信，点安装，为什么有时候会显示要求输入Pin码，该如何解决？
+
+```
+修改文件 OmacpMessageSettingsDetail.java
+如下判断地方修改为
+if (!sPinUnlock) {
+    sPinUnlock = true;
+    // write the database
+    markMessageAsPinUnlock();
+    //showDialog(DIALOG_UNLOCK_PIN);
+    // return;
+}
+```
+
+## [FAQ10351] 开机时怎样区分是long press reboot还是normal reboot?
+
+```
+以72为例，在
+mediatek\platform\mt6572\preloader\src\drivers\platform.c
+platform_boot_status()这边可以添加如下判断
+U32 just_rst;
+pmic_read_interface(0x04A, &just_rst, 0x01, 4);
+if(just_rst)
+{
+       // long press reboot
+}
+else
+{
+       //normal reboot
+}
+```
+
+## [FAQ11678] KK版本任意按鍵喚醒系統功能的配置
+
+```
+目前版本上按键唤醒系统的功能默认是打电话状态下才有（除了powerkey），若要實現任意一個按鍵在系統深度睡眠後還可以喚醒，需要做一些修改，以home key為例，詳細如下：
+ 
+[Solution]
+1.确认唤醒源均已包含了WAKE_SRC_KP
+mediatek\platform\mt6589\kernel\core\ mt_spm_sleep.c
+#define WAKE_SRC_FOR_SUSPEND \
+(WAKE_SRC_KP | WAKE_SRC_EINT | WAKE_SRC_CCIF_MD2 | WAKE_SRC_CCIF_MD1 | \
+WAKE_SRC_USB0_CD | WAKE_SRC_USB1_CD | WAKE_SRC_PWRAP | \
+WAKE_SRC_SYSPWREQ | WAKE_SRC_MD_WDT)
+#define WAKE_SRC_FOR_DPIDLE \
+(WAKE_SRC_KP | WAKE_SRC_GPT | WAKE_SRC_EINT | WAKE_SRC_CCIF_MD2 | \
+WAKE_SRC_CCIF_MD1 | WAKE_SRC_USB0_CD | WAKE_SRC_USB1_CD | \
+WAKE_SRC_USB1_PDN | WAKE_SRC_USB0_PDN | WAKE_SRC_AFE | \
+WAKE_SRC_PWRAP | WAKE_SRC_SYSPWREQ | WAKE_SRC_MD_WDT)
+ 
+2. \mediatek\config\hedy89_we_jb2\mtk-kpd.kl
+增加 key 102 HOME WAKE
+ 
+3、\alps\mediatek\kernel\drivers\keypad\kpd.c：
+註釋掉//#define MTK_KP_WAKESOURCE
+ 
+4、Android Framework有屏蔽部分特殊按鍵，
+在alps/frameworks/base/policy/src/com/android/internal/policy/impl下的PhoneWindowManager.java文件中isWakeKeyWhenScreenOff()看是否有對應的keycode（如例子homekey），若有，請刪除.
+ 
+这样修改后待机电流會稍微增大,请知悉.
+```
+
+## [FAQ11738] 如何测试camera中的GPS位置信息
+
+```
+测试camera中的GPS位置信息有分以下两种情形:
+1.    手机有安装完整的与手机软件对应的GMS包, 即:JB2版本需要装JB2对应的GMS包;KK版本需要装与KK对应的GMS包.
+2.    手机没有安装GMS包.
+针对以上两种情况, 都需要把setting\location项打开.
+[SOLUTION]
+一.  手机有安装完整的对应GMS包,测试步骤为:
+1.    进入setting\location, 把location打开.
+2.    连接上一个可用的wifi ap或插入SIM卡后打开data account项
+3.    通过地图软件看是否可以定位当前位置.
+4.    地图软件能定位成功后进入camera, 打开GPS location info
+5.    拍照,进入图库,查看当前拍照照片的详细信息,会显示位置信息项, 如:xx市xx路.
+
+二.  手机未安装GMS包, 测试步骤为:
+1.    移步到室外开阔的地方.
+2.    进入setting\location, 把location打开.
+3.    输入字串进入engineer mode\location\YGPS界面, 待搜出3颗以上的卫星且显示绿色后表示位置定位成功(见如下图片).
+4.    进入camera, 打开GPS location info.
+5.    拍照,进入图库,查看当前拍照照片的详细信息, 会显示出位置信息项, 如:经纬度.
+```
+
+## [FAQ10559] 如何更新LMK Low Memory Killer 的阈值
+
+```
+Low Memory Killer 的阈值分成两个数组，一个是adj 数组，描述process 所对应的oom_adj，另外一个是minfree 数组，描述process 所对应的memory 的阈值。
+上层可以直接通过读写: 
+ /sys/module/lowmemorykiller/parameters/adj 
+ /sys/module/lowmemorykiller/parameters/minfree
+来进行调整.minfree 以KB 为单位
+
+在JB 以后版本，AMS 起到后，将根据屏幕分辨率以及内存大小调整默认的LMK 的阈值，对应的具体的代码在：
+frameworks/base/services/java/com/android/server/am/ProcessList.java#updateOomLevel 
+可以修正这个updateOomLevel 来调整LMK 的这两个参数
+
+注意, 从JB9.MP 后，LMK 自动将oom_adj 转换成 oom_score_adj ，即写入时依旧是按照oom_adj 写入，而读取出来时，则是oom_score_adj. 
+if oom_adj = 15 then oom_score_adj = 1000;
+else oom_score_adj = oom_adj * 1000/17;
+简单的oom_adj 与oom_score_adj 的转换表格：
+oom_adj  oom_score_adj
+-16             -941
+-12             -705
+0                  0
+1                 58
+2                117
+4                235
+6                352
+9                529
+15              1000
+```
+
+## [FAQ10755] 如何解决开机过程kernel logo到开机动画黑屏问题
+
+```
+在开机过程，如果将bootanimation.zip的图片换成非黑色背景，发现从kernel logo到bootanimation之间会黑屏一下或者黑屏时间过长，这类问题的原因有可能是和Display相关，也有可能和Bootup流程相关。因此根据测试手法结果的不同，采用对应的解决办法，测试前，手如下对比实验：
+
+1.将出现黑屏手机内部的system/media/bootanimation.zip pull到没有黑屏问题的手机，check是否还有黑屏，排除动画的问题
+2.将正常手机的 system/media/bootanimation.zip pull到目前有黑屏问题的手机，check是否依然黑屏，排除动画的问题
+
+在对比实验确定和bootanimation.zip无关，与手机本身行为有关的情况下，进行如下实验
+一、去掉开机铃声，如果黑屏依然存在：
+1. 如果目前Project所用的LCM Panel是Command Mode，只需要申请Patch：ALPS00932048，适用 ICS、JB2、JB3、JB5。
+2. 如果目前Project所用的LCM Panel是Video Mode，先申请Patch：ALPS00932048，适用 ICS、JB2、JB3、JB5；
+然后如果是72 Platform ，SW Version：JB3，请再申请Patch: ALPS00845248；如果是82 Platform ，SW Version：JB5，请再申请Patch: ALPS00902086；
+如果问题依然无法解决，请提交eService进一步分析解决。（请先排除bootanimation.zip的影响）
+
+二、去掉开机铃声后，没有黑屏
+如果去掉开机铃声，从Kernel Logo到动画是没有黑屏，请先参照相关FAQ：[FAQ09563] 开机过程kernel logo到开机动画黑屏时间过长，如果问题依然无法解决，请提交eService进一步分析解决。
+```
+
+## [FAQ10716] system property 重启或者恢复出厂设置后无效(丢失)
+
+```
+System Property 存读写上来说，存在两种特别的property.
+第一种即是以ro. 开头的ro.xxxx.yyyy ，此类即称为只读的系统属性，即它只可设置一次。如果系统中已经存在，即无法再设置。
+第二种即是以persist. 开头的persist.xxxx.yyyy , 此类称为持久化的系统属性，即设置一次后，将自动把结果保存在/data/property 当中，下次开机时会自动加载。
+
+对于一般的system property 只是保存在init 的shared memory 当中, 不会更新disk 中的数据，一旦掉电即丢失; 对于以persist. 开头的持久化的系统属性，因为结果是保存在/data 分区，通常在恢复出厂设置时因为/data 分区被清掉，就也会丢失。针对此类，如果贵司一定要保存而不被清除，需要启用我司的Special Factory Mode, 将相关的文件保存下来。具体可以参考: Android SD upgrade application note.docx
+ 
+[相关FAQ]
+FAQ07367: 如何设置system property 默认值
+FAQ04349: 不能添加system property, 提示： permission denied uid:xxxxx  name:xxxxx
+FAQ03994: system property 写入/更新后，马上读取无效问题
+FAQ03778: 如何对system property 进行扩容
+FAQ06739: system property 设置失败的可能性分析和初步诊断
+FAQ03994: system property 写入/更新后，马上读取无效问题
+```
+
+## df 等命令的源码位置
+
+```
+system/core/toolbox/df.c
+```
+
+## [FAQ10818] 如何给所有画面增加一层水印(WaterMark)效果?
+
+```
+1) 新建一个名为setup.conf的文件,写入以下内容:B79A939390%20
+然后把这个conf文件push到手机的system/etc目录下
+ 
+2) 以加水印字串“hello world,this is my mark”为例, 再修改:WaterMark.java(frameworks/base/services/java/com/android/server/wm)文件,
+注释掉WaterMark构造函数中的这一句:
+
+mText = builder.toString();
+加上这一句:
+mText = "xxx"  ,  xxx表示你想要加为水印的字符串
+
+3) 重新编译生成services.jar文件并push到手机的system/framework下, reboot手机.
+```
+
+## [FAQ04088] 如何配置NTP对时server？
+
+```
+使用NTP方式对时时，由于需要与对时server进行交互，若对时server不work，就无法获取正确的时间，此时应替换为其他有效的server。
+Server配置的地方为：
+frameworks/base/core/res/values/Config.xml
+<string translatable="false"name="config_ntpServer">cn.pool.ntp.org</string>
+将“cn.pool.ntp.org”替换为其他server，如”asia.pool.ntp.org” 或“north-america.pool.ntp.org”等即可
+```
+
+## [FAQ11015] 通过组合键进入recovery模式选择sdcard菜单升级，升级完如何自动重启？
+
+```
+MTK默认设计：
+将OTA升级包放入SD卡根目录下，按键进入recovery模式选择sdcard菜单升级，升级完成后无法自动重启，需要手动选择菜单完成重启；
+客户若有需求实现自动重启，请问应该如何更改！
+
+[SOLUTION]
+修改recovery.cpp文件prompt_and_wait函数如下两处位置添加：return；//add
+
+1、ui->Print("\nInstall from sdcard complete.\n");
+finish_recovery(NULL);
+return; //add
+
+2、ui->Print("\nInstall from sdcard2 complete.\n");
+finish_recovery(NULL);
+return; //add
+
+3、按照如下方式快速编译recovery.img并重新download即可验证：
+
+./makeMtk mm bootable/recovery/
+./makeMtk -opt=ONE_SHOT_MAKEFILE=build/target/board/Android.mk r recoveryimage
+```
+
+## [FAQ11086] 阿拉伯语下连拍的照片在图库中查看时只能显示第一张
+
+```
+请作如下修改：
+文件  Util.java:
+把
+public ImageFileNamer(String format) {
+    mFormat = new SimpleDateFormat(format);
+}
+To:
+public ImageFileNamer(String format) {
+    mFormat = new SimpleDateFormat(format,Locale.ENGLISH);
+}
+And modify Storage.java
+Change to:
+public static String getBucketId(String directory) {
+    return String.valueOf(directory.toLowerCase().hashCode());
+}
+To:
+public static String getBucketId(String directory) {
+    return String.valueOf(directory.toLowerCase(Locale.ENGLISH).hashCode());
+}
+或直接在PMS上申请此patch: ALPS01445198
+```
+
+## [FAQ05276] 用错误的APN仍然能够上网的问题
+
+```
+如果测试机用错误的apn能够上网，请先用对比机进行对比测试。因为有的是因为网络端能够接受这样错误的APN，所以能够上网。如果测试机和对比机行为一致，那么说明测试机是正常的，是网络端的问题，如果行为不一致请再提交eservice并提供相应的mobile log和modem log。
+```
+
+## [FAQ02986] 如何查看TCP/IP缓冲大小
+
+```
+查看alps\mediatek\config\xxx(工程名)\Init.rc文件中，找到如下定义
+
+# Define TCP buffer sizes for various networks
+
+#   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
+setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208
+setprop net.tcp.buffersize.wifi    4095,87380,110208,4096,16384,110208
+setprop net.tcp.buffersize.umts    4094,87380,110208,4096,16384,110208
+setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
+setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
+```
+
+## [FAQ11227] 去掉进入camera的引起动画，导致语音拍照功能无法使用
+
+```
+此问题是由于去掉进入camera的引导动画导致的，可以按以下方法修改：
+
+在alps\packages\apps\camera\src\com\android\camera\camera.java
+doOnResume()中
+将
+if (isNonePickIntent() || isImageCaptureIntent()) {
+    if (isAppGuideFinished()) {
+        mVoiceManager.startUpdateVoiceState();
+    }
+}
+改为：
+if (isNonePickIntent() || isImageCaptureIntent()) {
+    mVoiceManager.startUpdateVoiceState();
+}
+```
+
+## [FAQ09564] 如何抓取开机Log
+
+```
+一般分析开机失败或者开机过程异常问题，都牵涉到如何抓取开机log的问题，为了顺利抓取开机Log便于分析问题，参照如下抓取有效log：
+1.如果开机过程还没有出现开机动画，就已经异常，直接抓取UART串口log；
+2.如果开机动画已经显示，后面出现异常，可以首先check SD卡是否已经mount成功，如果SD卡mount成功，直接提供Mobilelog；否则，可以通过adb logcat抓取log或者通过我司release的GAT Tool抓取log，其中logcat抓取log的command：adb logcat -v time -b main -b events -b system>logcat.txt。
+```
+
+## [FAQ04967] [Android Debug] 如何抓取Java Backtrace
+
+```
+1. 连接adb,使用ps命令查看需要抓的Java Application的PID。
+2. adb下，执行kill -3 PID，系统会将backtrace生成在 data/anr/traces.txt，然后将这支文件pul出来即可。
+为了方便，您可以将下面这部分保存成windows下面的bat脚本，双击执行后获取Java Backtrace。
+-------------------------------------------------------------------------
+adb remount
+adb shell chmod 0777 data/anr
+adb shell ps
+
+@echo off
+set processid=
+set /p processid=Please Input process id:
+
+@echo on
+adb shell kill -3 %processid%
+
+@echo off
+ping -n 2 127.0.0.1>nul
+
+@echo on
+adb pull data/anr/traces.txt trace-%processid%.txt
+
+pause
+------------------------------------------------------------------------- 
+```
+
+## [FAQ11106] SECURE OTA 升级包里面缺少SEC_VER.txt导致升级失败
+
+## [FAQ11601] 如何抓取系统memory使用状况
+
+## [FAQ03969] 如何自己编译wireless tool
+
+## [FAQ11475] 升级报错"Error: System property does not match"怎么办？
+
+```
+现象：
+如果升级过程在recovery.log或者last_log发现如下出错error：
+Error: System property does not match
+检查点：
+首先：检查下升级包中的build.prop和手机里面的是否一致？ 获取手机里的build.prop方法：adb pull /system/build.prop  build.prop 升级包里的build.prop文件位于/system目录下。
+其次；重点比对下ro.product.device和ro.build.product的value值，确保一致的前提下，看看是否value值包含多余的空格符及退格符、ro.product.device为空等。
+如果还是解决不了问题，请提eservice给MTK，同时并把log及两份build.prop附上来。
+```
+
 ## [FAQ11660] 关于KK上的chromium的几点说明
 
 ```
+KK上的browser, 对于chromium的几个问题：
+1>  所有的 WebView 都使用 Chromium 解析渲染，是否是这样的？
+是的。
+
+2>  如何查看浏览器的渲染引擎？
+WebSettings.getUserAgentString()或者访问 www.show-ip.net/browserinfo
+可以取得WebView的default User Agent, 例如：
+Mozilla/5.0 (Linux; Android 4.4.2; DeviceName Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36
+代表是使用Chrome 30版的浏览器引擎，对应WebKit版本是537.36
+
+3>  渲染引擎的职责是什么？
+浏览器引擎主要的工作:
+载入 -> 解析 -> 排版 -> 渲染 -> 显示， 还有执行网页的JavaScript等等。
+```
+
+## [FAQ06811] 如何查看蓝牙固件版本
 
 ```
+一、通过log查看
+可以通过kernel log看一下，搜索关键字“firmware”。
+例如有如下一句：
+(1)[117:mtk_wmtd][WMT-IC][I]mt6628_patch_dwn:the 1 time valid patch found: (/system/etc/firmware//mt6628_patch_e2_0_hdr.bin
+可以看到bt是e2版本。
+
+【注意】此log需要在在开机情况下任何wcn相关应用（包括BT、WIFI，FM，GPS）都没有打开的情况下，开启蓝牙才可以看到。
+
+建议使用以下步骤：
+1.清空全部log，设置开机自动抓取log选项，确保所有wcn相关应用已经关闭后关机。
+2.重新开机，确认此时已经开始抓取log。
+3.开启蓝牙。
+4.关闭log，检查kernel log，搜索关键字“firmware”，检查蓝牙固件版本。
+
+二、通过adb查看，命令如下所示：
+=>cd adb
+=>adb shell
+=>cd /etc/firmware
+=>ls
+
+在etc/firmware下可能会看到好几个bin文件，请以带有“_0”、“_1”后缀的版本为基准。
+
+举例如下:
+
+etc/firmware路径下看到以下3个bin文件，
+mt6628_patch_e1_hdr.bin
+mt6628_patch_e2_0_hdr.bin
+mt6628_patch_e2_1_hdr.bin
+则bt最终版本就是e2。
+```
+
+## [FAQ09948] Performance问题的排查方法（如开机慢、系统卡顿等）
+
+```
+请参考《Performance_Tuning_Customer_Document》进行排查，相关客户文档可以在http://dcc.mediatek.com下载。
+```
+
+## [FAQ10004] 在关机界面添加重启菜单功能
+
+## [FAQ09429] 在开机向导中的语言选择界面切换语言，当前的语言选择界面没有更新到设定的语言，该如何解决?
+
+## [FAQ09441] mtk内置的apk及其用途总结
+
+## [FAQ08595] Enable GPS location info功能后，在camera界面显示GPS icon
+
+## [FAQ09759] [Audio APP]音乐播放器中显示歌曲的信息
+
+## [FAQ08330] 在相机中拍照至空间满，删除部分图片后仍无法拍照
+
+## [FAQ07553] [Storage]72平台Fat on nand功能实现
+
+## [FAQ06920] [VideoEditor]VideoEditor（电影工作室）支持导入/导出哪些格式
+
+## [FAQ03654] [FlashTool]How to customize download tool
+
+## [FAQ04545] 【NvRAM】Native层读写nvram
+
+## [FAQ03656] How to process Modem Exception?
+
+## [FAQ02494] 在关机界面添加重启功能
 
 ## [FAQ11427] Camera Setting中添加拍照声音选项
 
@@ -31215,6 +34976,18 @@ FlashTool 终端模式的使用方法
 
 ## [FAQ04306] 如何通过 Eclipse 远端调试framework和APK？
 ## [FAQ11202] 如何在Eclipse中调试Framework和APK
+## [FAQ03049] 如何在Eclipse里debug 系统内置的Application
+## [FAQ03050] 如何解决Eclispe编译的android原生程序报找不到类的错误
+
+```
+将联系人应用提取出来，并且将所依赖的jar包导入 eclipse ，编译成功后，安装联系人应用的apk文件到模拟器，发现应用运行不起来，通过查看trace，发现是找不到phone，mediatek下面相关的类。
+[SOLUTION]
+这个主要是由静态编译和动态编译的原因造成。由于使用动态编译时，模拟器中没有可供调用的库，故报找不到类的错误。具体修改方法见下图:
+
+见上图中，针对第三方库phone.jar和sns.jar需要使用Add External Jars的方式添加进来，这样 eclipse会以静态方式编译所依赖的库。就可以解决找不到类的问题。
+
+备注：6573 Android V2.3上，LauncherPlus无法在MTK模拟器上debug和运行，需要使用真机来调试和运行看效果。
+```
 
 ## [FAQ19267] wifi: 连接网络时提示“已连接无法访问互联网”几秒钟后消失
 
@@ -31254,7 +35027,837 @@ FlashTool 终端模式的使用方法
 
 ## [FAQ20670] Android GO版本上 非首次进入应用过程中有从模糊到清晰的过程
 
-## [FAQ18332] 如何修改android log buffer 大小
+## [FAQ18332] 如何修改 android log buffer 大小
+
+=========================================== FAQ end ================================================
+
+=========================================== WCP begin ================================================
+
+## Android O版本 App 如何获取自定义节点的访问权限-SELinux
+
+```
+背景介绍：接到一个任务，要做一个高温报警的开关。我的想法是在EngineerMode下面做这个功能。驱动调出来一个proc节点，写0开关打开有高温报警；写1开关关闭高温报警关闭，于是这个问题就变成了上层如何读写proc节点的问题。
+
+查阅了很多资料，也查阅了以前N上的代码，做出如下总结：
+
+1.在alps/device/mediatek/sepolicy/basic/non_plat/file.te中增加一个自定义的名称，格式如下：
+
+自定义名称                 文件类型
+type temperature_proc, fs_type,sysfs_type;
+
+2.在alps/device/mediatek/sepolicy/basic/non_plat/genfs_contexts中将proc文件与自定义的名称链接起来。格式如下：
+
+proc文件路径               自定义名称
+genfscon   proc /sagereal_switch/sagereal_ntc_poweroff_switch u:object_r:temperature_proc:s0
+
+3.你要知道你修改的apk的uid是什么类型的，目前我知道两种：一种是systemapp，AndroidManifest.xml中声明的是：android:sharedUserId="android.uid.system"；另一种是radio app，AndroidManifest.xml中声明的是：android:sharedUserId="android.uid.phone"。这样的声明能使得apk获得相对应的权限。EngineerMode声明的是android:sharedUserId="android.uid.phone"。
+
+需要在alps/device/mediatek/sepolicy/basic/non_plat/radio.te（systemapp是在同路径下的system_app.te）新增所需要申请的权限，格式如下：
+app类     自定义的文件名称 类型                  需要申请的权限
+
+allow   radio    temperature_proc:file    { read write open ioctl getattr };
+
+4.很容易遗漏的一步：
+
+在平台相关的init.平台.rc文件中声明：
+
+chmod 0666 /proc/sagereal_switch/sagereal_ntc_poweroff_switch
+
+让该proc文件获得权限。
+
+以上四步之后，权限就申请完毕了。
+
+相关知识：te文件
+```
+
+=========================================== WCP end ================================================
+
+================================== Others begin ======================================
+
+## [init.rc]init.rc详解
+
+```
+https://blog.csdn.net/morixinguan/article/details/50775266
+
+本说明文件位于system/core/init/readme.txt
+
+本文参考深入解析安卓系统一书，进行翻译，版权部分归书的作者  刘超，资深Android专家，系统架构师。
+
+博客地址：http://blog.csdn.net/u013234805/article/details/45438219
+
+
+
+Android Init Language
+
+---------------------
+
+The Android Init Language consists of four broadclasses of statements,
+
+which are Actions, Commands, Services, and Options.
+
+安卓的初始化脚本语言包括了4种基本的类型声明：行为，命令, 服务和选项。
+
+ 
+
+All of these are line-oriented, consisting of tokensseparated by
+
+whitespace.  Thec-style backslash escapes may be used to insert
+
+whitespace into a token.  Double quotes may also be used to prevent
+
+whitespace from breaking text into multipletokens.  The backslash,
+
+when it is the last character on a line, may be usedfor line-folding.
+
+所有的这些都以行为单位，各种符号则由空格分开。当然，C语言风格种的\反斜杠符号用在符号的期间插入相应的空格。双引号可以用于防止字符串被空格分割成多个记号。行的最后的反斜杠用于折行。
+
+Lines which start with a # (leading whitespaceallowed) are comments.
+
+注释的方法是以#号开头，当然也可以以空格开头。
+
+ 
+
+Actions and Services implicitly declare a newsection.  All commands
+
+or options belong to the section most recentlydeclared.  Commands
+
+or options before the first section are ignored.
+
+行为和服务声明一个新的分组。所有命令或者是选项都依赖于最近所声明的分组里。其中位于分组之前的命令或者是选项将会被忽略。
+
+ 
+
+Actions and Services have unique names.  If a second Action or Service
+
+is declared with the same name as an existing one, itis ignored as
+
+an error.  (???should we override instead)
+
+行为和服务有着独特的名字。如果第二行为或者服务宣告名字已经存在。那么这会导致行为或者服务被忽略或者产生相应的错误。（也许会被覆盖）
+
+ 
+
+Actions  行为
+
+-------
+
+Actions are named sequences of commands.  Actions have a trigger which
+
+is used to determine when the action shouldoccur.  When an event
+
+occurs which matches an action's trigger, that actionis added to
+
+the tail of a to-be-executed queue (unless it isalready on the
+
+queue).
+
+行为Actions其实就是一个序列的命令的集合。每个行为都有一个触发器trigger，触发器的作用决定了行为的什么时候将要执行。当一个符合Action触发条件的事件发生了，这个行为会加入到执行这个队列的结尾。
+
+Each action in the queue is dequeued in sequence andeach command in
+
+that action is executed in sequence.  Init handles other activities
+
+(device creation/destruction, property setting,process restarting)
+
+"between" the execution of the commands inactivities.
+
+每一个行为都依次从队列里面被不断的取出来，然后这个行为的的每一个命令都将被一一执行。在这些命令执行的时候，init还同时处理着其它的活动，包括了设备节点的创建和销毁，设置属性，重新启动进程。
+
+ 
+
+Actions take the form of:
+
+Actions行为的格式如下：
+on <trigger>
+  <command>
+  <command>
+  <command>
+
+Services 服务
+--------
+Services are programs which init launches and(optionally) restarts
+when they exit. Services take the form of:
+服务其实是一个后台的程序，这个程序在init进程中被启动，如果退出了可以由系统重新启动（可选择）。
+服务的格式如下：
+service <name> <pathname> [<argument> ]*
+  <option>
+  <option>
+   ...
+
+Options 选项
+-------
+Options are modifiers to services.  They affect how and when init runs the service.
+选项是服务的一个修订项，他们决定了一个服务什么时候执行以及是如何去执行。
+
+critical
+   This is adevice-critical service. If it exits more than four times in
+   four minutes,the device will reboot into recovery mode.
+   Critical表示这是一个关键的服务。如果服务4分钟内重新启动超过4次的情况下，系统将会重新启动进入recovery模式。
+
+disabled
+   This servicewill not automatically start with its class.
+   It must beexplicitly started by name.
+   Disable表示服务不会通过trigger触发器启动，它必须是以命令“start service_name”的形式来进行启动。
+
+setenv <name> <value>
+   Set theenvironment variable <name> to <value> in the launched process.
+    在服务启动的时候将环境变量name设置成value
+
+socket <name> <type> <perm> [<user> [ <group> [ <context> ] ] ]
+   Create a unixdomain socket named /dev/socket/<name> and pass
+   its fd to thelaunched process.  <type> must be"dgram", "stream" or "seqpacket".
+   User andgroup default to 0.  用户和组默认为0
+   Context isthe SELinux security context for the socket.
+   It defaultsto the service security context, as specified by seclabel or computedbased on the service executable file security context.
+    创建名为/dev /socket/<name> UNIX域套接字，并传递
+    ???其文件描述符fd的推出进程。 <类型>必须是“DGRAM”，“流”或“SEQPACKET”。
+    ???用户和组默认为0。
+    ???Context是套接字SELinux的安全上下文。
+    ???它默认到服务的安全上下文，如SECLABEL指定或
+    ???基于服务的可执行文件的安全上下文来计算。
+
+user <username>
+   Change tousername before exec'ing this service.
+   Currentlydefaults to root.  (??? probably shoulddefault to nobody)
+   Currently, ifyour process requires linux capabilities then you cannot use
+   this command.You must instead request the capabilities in-process while
+   still root,and then drop to your desired uid.
+
+在启动这个服务前设置服务的用户名，默认是root。如果你的进程没有相应的权限，你将不能使用这个命令。如果这个进程由root权限，可以在程序中设置到你想要的组uid。
+
+group <groupname> [ <groupname> ]*
+   Change togroupname before exec'ing this service. Additional
+   groupnamesbeyond the (required) first one are used to set the
+   supplementalgroups of the process (via setgroups()).
+   Currentlydefaults to root.  (??? probably shoulddefault to nobody)
+
+在启动这个服务前设置服务的组名。除了第一个组名，剩下的组名通常用于设置进程的附加组（通过setgroups()）。默认是root。
+
+seclabel <securitycontext>
+  Change tosecuritycontext before exec'ing this service.
+  Primarily foruse by services run from the rootfs, e.g. ueventd, adbd.
+  Services onthe system partition can instead use policy-defined transitions
+  based on theirfile security context.
+  If notspecified and no transition is defined in policy, defaults to the init context.
+
+SECLABEL<SecurityContext的>更改为执行该服务之前SecurityContext中。主要为按服务使用从根文件系统，例如运行ueventd，adbd。在系统分区服务可以改用基于其文件的安全上下文策略定义的转换。如果不指定，不转变政策规定，默认为初始化上下文。
+
+oneshot
+
+   Do not restartthe service when it exits.服务在退出后不会再重新启动。
+
+class <name>
+   Specify aclass name for the service.  All servicesin a
+   named classmay be started or stopped together.  Aservice
+   is in theclass "default" if one is not specified via the
+   class option.
+给服务指定一个名字，所有的同名字的服务可以同时启动和停止。如果不通过class选项指定一个名字，则默认的名字是default
+
+onrestart
+    Execute aCommand (see below) when service restarts.
+    当服务重启的时候，执行一条命令。
+
+Triggers
+--------
+   Triggers arestrings which can be used to match certain kinds
+   of events andused to cause an action to occur.
+    触发器是一个用于匹配某种事件类型的字符串，它将使对于的行为执行。
+
+boot
+   This is thefirst trigger that will occur when init starts
+   (after/init.conf is loaded)
+    Boot是init执行后第一个触发的行为。在/init.conf被装载以后。
+
+<name>=<value>
+   Triggers ofthis form occur when the property <name> is set to thespecific value <value>.
+
+这种形式的触发会在属性name设置为指定的值value时触发或者删除
+
+device-added-<path>
+device-removed-<path>
+   Triggers ofthese forms occur when a device node is added or removed.
+这种形式的触发器会在一个设备文件增加或者删除的时候触发。
+
+service-exited-<name>
+   Triggers ofthis form occur when the specified service exits.
+这种形式的触发器会在一个指定的服务退出的时候触发。
+ 
+Commands 命令
+--------
+exec <path> [ <argument> ]*
+   Fork andexecute a program (<path>).  Thiswill block until
+   the programcompletes execution.  It is best to avoidexec
+   as unlike thebuiltin commands, it runs the risk of getting
+   init"stuck". (??? maybe there should be a timeout?)
+   Fork和启动第一个程序。在程序完成启动前，init将会阻塞。应该尽量避免使用exec，它可能会引起init卡死。
+
+export <name> <value>
+   Set theenvironment variable <name> equal to <value> in the
+   globalenvironment (which will be inherited by all processes
+   started afterthis command is executed)
+
+设置全局变量<name>为<value>，所有在这个命令执行后运行的进程都将继承该环境变量。
+
+ifup <interface>
+   Bring thenetwork interface <interface> online.
+
+启动网络接口interface
+
+import <filename>
+   Parse an initconfig file, extending the current configuration.
+
+引入一个init的配置文件，拓展当前配置。
+
+hostname <name>
+   Set the hostname.
+
+设置主机名。
+
+chdir <directory>
+   Changeworking directory.
+
+改变进程当前的工作目录。
+
+chmod <octal-mode> <path>
+   Change fileaccess permissions.
+
+设置文件或者目录的访问权限。
+
+chown <owner> <group> <path>
+   Change fileowner and group.
+
+设置文件或目录的所有者和组。
+
+chroot <directory>
+  Change processroot directory.
+
+设置进程的根目录。
+
+class_start <serviceclass>
+   Start allservices of the specified class if they are not alreadyrunning.
+
+启动所有指定服务名称下的未运行服务。
+
+class_stop <serviceclass>
+   Stop allservices of the specified class if they are currently running.
+
+停止所有指定服务名称下的已经运行的服务。
+
+domainname <name>
+   Set thedomain name.
+设置域名。
+
+enable <servicename>
+   Turns adisabled service into an enabled one as if the service did not
+   specifydisabled.
+   If theservice is supposed to be running, it will be started now.
+   Typicallyused when the bootloader sets a variable that indicates a specific
+   serviceshould be started when needed. E.g.
+     onproperty:ro.boot.myfancyhardware=1
+        enablemy_fancy_service_for_my_fancy_hardware
+
+启用<服务>如果服务没有指定禁用，则打开这个被禁用的服务。
+
+如果服务是应该运行时，将立即开始。当引导加载程序设置一个变量，表示需要时一个特定的服务应启动通常使用。 例如：
+  service shouldbe started when needed. E.g.
+     onproperty:ro.boot.myfancyhardware=1
+
+insmod <path>
+   Install themodule at <path>
+
+安装一个驱动模块
+
+mkdir <path> [mode] [owner] [group]
+   Create adirectory at <path>, optionally with the given mode, owner, and
+   group. If notprovided, the directory is created with permissions 755 and
+   owned by theroot user and root group.
+
+新建一个目录，可以指定访问权限、拥有者和组。如果没有被最后定，默认的访问权限是755，属于root用户和root组。
+
+mount <type> <device> <dir> [<mountoption> ]*
+   Attempt tomount the named device at the directory <dir>
+  <device> may be of the form mtd@name to specify a mtd block
+   device byname.
+  <mountoption>s include "ro", "rw","remount", "noatime", ...
+在指定的目录下挂载一个设备。可以是以mtd@name的格式指定的一个mtd块设备。
+<mountoption>包括了 "ro","rw", "remount", "noatime", ...
+ 
+restorecon <path> [ <path> ]*
+   Restore thefile named by <path> to the security context specified
+   in thefile_contexts configuration.
+   Not requiredfor directories created by the init.rc as these are
+   automaticallylabeled correctly by init.
+
+重新存储指定的文件到一个由file_contexts配置的安全上下文。不用指定目录，它们会被init进程自动创建。
+
+ 
+
+restorecon_recursive <path> [ <path> ]*
+
+   Recursivelyrestore the directory tree named by <path> to the
+
+   securitycontexts specified in the file_contexts configuration.
+
+   Do NOT usethis with paths leading to shell-writable or app-writable
+
+   directories,e.g. /data/local/tmp, /data/data or any prefix thereof.
+
+递归的restorecon<路径> [<路径>] *递归恢复通过<路径>命名的目录树中存储在file_contexts配置中指定的安全上下文。不要用路径，这会导致shell可写或应用可写目录，
+
+例如使用/data/local/tmp, /data/data数据或任何其前缀。
+
+ 
+
+setcon <securitycontext>
+
+   Set thecurrent process security context to the specified string.
+
+   This istypically only used from early-init to set the init context
+
+   before anyother process is started.
+
+设置当前进程的安全上下文为指定的串。主要用在early-init中去设置init的安全上下文。
+
+setenforce 0|1
+
+   Set theSELinux system-wide enforcing status.
+
+   0 ispermissive (i.e. log but do not deny), 1 is enforcing.
+
+设置SELinux系统级的enforcing状态。0代表permissive（如记录但是不拒绝服务），1代表enforcing
+
+ 
+
+setkey
+
+   TBD 目前没有使用
+
+ 
+
+setprop <name> <value>
+
+   Set systemproperty <name> to <value>.
+
+设置系统属性<name>为<value>值。
+
+ 
+
+setrlimit <resource> <cur> <max>
+
+   Set therlimit for a resource.
+
+设置系统属性<resource>的rlimit值。
+
+ 
+
+setsebool <name> <value>
+
+   Set SELinuxboolean <name> to <value>.
+
+   <value>may be 1|true|on or 0|false|off
+
+设置SELinux的boolean型属性"name"的值为"value"、"value"可以是1|true|on或者0|false|off
+
+ 
+
+start <service>
+
+   Start aservice running if it is not already running.
+
+如果服务没有被执行就启动指定的服务
+
+ 
+
+stop <service>
+
+   Stop aservice from running if it is currently running.
+
+如果服务在运行，那么就停止指定的服务。
+
+ 
+
+symlink <target> <path>
+
+   Create asymbolic link at <path> with the value <target>
+
+创建一个符号链接。
+
+ 
+
+sysclktz <mins_west_of_gmt>
+
+   Set thesystem clock base (0 if system clock ticks in GMT)
+
+设置系统时钟基准,0代表格林尼治平均时GMT为准。
+
+ 
+
+trigger <event>
+
+   Trigger anevent.  Used to queue an action fromanother
+
+   Action.
+
+触发一个事件。用于将一个行为和另一个行为连接在一起执行。
+
+ 
+
+wait <path> [ <timeout> ]
+
+  Poll for theexistence of the given file and return when found,
+
+  or the timeouthas been reached. If timeout is not specified it
+
+  currentlydefaults to five seconds.
+
+等待指定路径的文件创建出来，创建完成就停止等待，或者等待超时时间到。如果未指定超时时间，默认是5秒。
+
+write <path> <string>
+
+   Open the fileat <path> and write a string to it with write(2)
+
+   withoutappending.
+
+打开指定的文件，并写入一个或者多个字符串。
+
+ 
+
+Properties 属性
+
+----------
+
+Init updates some system properties to provide someinsight into
+
+what it's doing:
+
+初始化更新一些系统属性来提供一些见解
+
+它在做什么：
+
+ 
+
+init.action
+
+   Equal to thename of the action currently being executed or "" if none
+
+等于当前正在执行或行动“的名义”，如果没有
+
+ 
+
+init.command
+
+   Equal to thecommand being executed or "" if none.
+
+等于命令被执行或“”如果没有。
+
+init.svc.<name>
+
+   State of anamed service ("stopped", "running","restarting")
+
+一个名为服务的状态（“停止”，“运行”，“重新启动”）
+
+ 
+
+Example init.conf 例如init.conf
+
+-----------------
+
+ 
+
+# not complete -- just providing some examples ofusage
+
+#
+
+＃不完整 - 只是提供一些用法示例
+
+＃
+
+on boot
+
+   export PATH/sbin:/system/sbin:/system/bin
+
+   export LD_LIBRARY_PATH /system/lib
+
+ 
+
+   mkdir /dev
+
+   mkdir /proc
+
+   mkdir /sys
+
+ 
+
+   mount tmpfstmpfs /dev
+
+   mkdir/dev/pts
+
+   mkdir/dev/socket
+
+   mount devptsdevpts /dev/pts
+
+   mount procproc /proc
+
+   mount sysfssysfs /sys
+
+ 
+
+   write /proc/cpu/alignment4
+
+ 
+
+   ifup lo
+
+ 
+
+   hostnamelocalhost
+
+   domainnamelocalhost
+
+ 
+
+   mount yaffs2mtd@system /system
+
+   mount yaffs2mtd@userdata /data
+
+ 
+
+   import/system/etc/init.conf
+
+ 
+
+   class_startdefault
+
+ 
+
+service adbd /sbin/adbd
+
+   user adb
+
+   group adb
+
+ 
+
+service usbd /system/bin/usbd -r
+
+   user usbd
+
+   group usbd
+
+   socket usbd666
+
+ 
+
+service zygote /system/bin/app_process -Xzygote/system/bin --zygote
+
+   socket zygote666
+
+ 
+
+service runtime /system/bin/runtime
+
+   user system
+
+   group system
+
+ 
+
+on device-added-/dev/compass
+
+   start akmd
+
+ 
+
+on device-removed-/dev/compass
+
+   stop akmd
+
+ 
+
+service akmd /sbin/akmd
+
+   disabled
+
+   user akmd
+
+   group akmd
+
+ 
+
+Debugging notes 调试笔记
+
+---------------
+
+By default, programs executed by init will drop stdoutand stderr into
+
+/dev/null. To help with debugging, you can executeyour program via the
+
+Andoird program logwrapper. This will redirectstdout/stderr into the
+
+Android logging system (accessed via logcat).
+
+ 
+
+默认情况下，由init执行的程序将标准输出和标准错误信息输出定向到/dev/ null的。为帮助调试，您可以通过执行Android程序logwrapper。这将标准输出/标准错误重定向到Android的日志系统（通过logcat的访问）。
+
+ 
+
+For example
+
+service akmd /system/bin/logwrapper /sbin/akmd
+
+例如
+
+service akmd /system/bin/logwrapper /sbin/akmd
+```
+
+## 如何从MTK平台机器的NVRAM中获取WIFI mac地址
+
+```
+https://blog.csdn.net/morixinguan/article/details/76850600
+```
+
+## Android makefile编写基础
+
+```
+首先来看一个简单的Android makefile,这个是我上篇文章写的，重新摘出来:
+
+LOCAL_PATH:=$(call my-dir)
+include $(CLEAR_VARS)
+LOCAL_MODULE_TAGS := eng
+LOCAL_LDLIBS := -L$(SYSROOT)/usr/lib -llog 
+LOCAL_SRC_FILES:= \
+		ppp.c
+	
+LOCAL_MODULE:= PPPreboot
+include $(BUILD_EXECUTABLE)
+#include $(BUILD_SHARED_LIBRARY)
+下面对上面的语法进行解析:
+LOCAL_PATH:=$(call my-dir) 					 定义了当前模块的相对路径
+include $(CLEAR_VARS)      					 清空了当前的环境变量
+LOCAL_MODULE_TAGS := eng   					 指定模块在eng模式下才进行编译 
+LOCAL_LDLIBS := -L$(SYSROOT)/usr/lib -llog   编译需要的库
+LOCAL_SRC_FILES:ppp.c      				     编译所需要的目标源文件，一般都是当前目录下，或者依赖于其它目录下
+LOCAL_MODULE:= PPPreboot   					 编译生成该目标的名称，也就是最终的可执行文件
+include $(BUILD_EXECUTABLE)				     编译所生成的目标的文件格式 
+其中:
+my-dir在build/core/definitions.mk定义
+CLEAR_VARS在build/core/config.mk定义 
+
+以下就是我之前写的源码，简单的功能。
+
+#include <stdio.h>  
+#include <stdlib.h>  
+#include <android/log.h>  
+#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, "keymatch", __VA_ARGS__)  
+int main(void) {
+    int i ; 
+    freopen("/dev/ttyMT0", "a", stdout);setbuf(stdout, NULL);
+    freopen("/dev/ttyMT0", "a", stderr);setbuf(stderr, NULL);
+    LOGD("YYX---->reboot system!!!!!!--->201612.1\n");
+    system("reboot");
+    return 0 ;
+} 
+makefile还有源码写完以后我们就可以进行编译了。
+首先，需要source build/envsetup.sh  初始化参数和环境变量
+接着lunch  对应的平台的版本
+
+接着就拥有了mm、mmm等编译工具
+然后对刚刚写的程序进行手动编译: mmm external/test/
+```
+
+## 在android系统上写C语言程序--开机启动该程序不进入安卓系统
+
+```
+今天要写的这篇博文意义重大，也是网上很少有的，这是在我工作中学会的一项技术，当然，它也是由简单的问题组合而来的。如何在安卓中写C语言程序，调试安卓驱动，测试程序的的一项重要技能，下面我就不说废话了，直接说实用的，怎么用这个东西。
+
+
+     关于这个问题，相信很多学Android的都会去关注这个问题,大家普遍会有个这样的疑问：安卓是怎么跑起来的？
+
+    最简单的说法，安卓系统是这样加载的：
+
+    Bootloader------Kernel(对应平台版本的Linux内核)------filesystem文件系统(这个就是Android了)
+
+    所以说，安卓其实不是操作系统，而是一个基于linux内核的文件系统。
+
+   那么，我们标题所说的，要在开机的时候就运行我们的程序而不选择进入安卓系统，那么如何来实现呢?首先，得了解一个问题，filesystem是怎么启动的。
+
+   从网上搜索的资料还有一些讲Andorid系统的书籍来看，文件系统的加载是从init.rc开始一步步的，创建文件系统所需的目录，还有给这些目录加权限，拷贝相关的程序，等待操作，最重要的，一个文件系统的运行需要加载这些服务才可以实现。至于怎么加载的，原理我就不多说了，说来话长，推荐大家可以去搜索init.rc，init.c这样的字眼就可以明白了。
+
+   我们现在讲的是如何来实现开机就执行bin文件，而不进入安卓系统。
+
+1、  为了区别我的服务跟别的服务的不同，我的服务独立于一个on来进行触发。
+
+on YYX
+class_start core
+service pppService /system/bin/PPPreboot 
+   class core 
+   user root
+   group root
+   oneshot
+    我写的这个服务名字叫做pppService,服务对应需要执行的bin文件是PPPreboot，实现的就是平板一开机打印语句然后就重启，一直反复，这样就不会进入安卓文件系统了，也就看不到我们平常使用的安卓UI界面，而是黑压压的一篇，但是你在串口上可以看到调试信息输出，当然，如果你了解驱动应用编程，你可以在此时在屏幕上画点东西，做你自己的界面,其实就是写C或者C++的程序了，就是写linux的应用程序。
+
+2、源码如下(位置:external/test/ppp.c)
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <android/log.h>
+#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, "keymatch", __VA_ARGS__)
+int main(void)
+{
+	int i ;
+    freopen("/dev/ttyMT0", "a", stdout);setbuf(stdout, NULL);
+	freopen("/dev/ttyMT0", "a", stderr);setbuf(stderr, NULL);
+	LOGD("YYX---->reboot system!!!!!!--->201612.1\n");
+	system("reboot");
+	return 0 ;
+}
+对应的Android.mk
+
+LOCAL_PATH:=$(call my-dir)
+include $(CLEAR_VARS)
+LOCAL_MODULE_TAGS := eng
+LOCAL_LDLIBS := -llog
+LOCAL_SRC_FILES:= \
+    	ppp.c
+	
+LOCAL_MODULE:= PPPreboot
+include $(BUILD_EXECUTABLE)
+#include $(BUILD_SHARED_LIBRARY)
+1.对编写好的这个C程序进行编译，用命令mm或者mmm进行编译，编译生成的PPPreboot就位于我们开机启动的安卓文件系统的system/bin/这个目录下
+
+2.在init.rc中调用trigger命令触发这个on YYX,只要再适当的位置加上:trigger  YYX  就可以了
+
+3.编译:make –j8
+
+将对应的文件下载到安卓平板，开机你就会发现平板可以打印信息也可以不断的重启了。
+
+如果此时不加上:
+
+freopen("/dev/ttyMT0","a", stdout);setbuf(stdout, NULL);
+
+freopen("/dev/ttyMT0","a", stderr);setbuf(stderr, NULL);
+
+你不会在安卓的串口上看到任何的输出信息，因为串口在init.cpp的时候就已经做了这步设置，详情请查看system/core/init/init.cpp代码:
+
+open_devnull_stdio();
+
+这一句的作用就是将安卓中的标准输入输出重定向到/dev/null，众所周知，这被称为是linux的一个空洞文件，这个文件可以接收一切的信息，它就像一个垃圾桶一样。但是有个特点，它是只进不出的。
+
+所以，我们在自己写的C程序或者C++程序中需要先重定向到标准输入输出，freopen的作用就是这样的，还应该要注意，你的板子的串口输出设备节点是什么，我的是/dev/ttyMT0，有可能你的就跟我不一样了。
+
+关于上面说的这个应用，应用范围，一些PCBA的产测工具可以在这个时候进行实现，或者手动OTA更新等等，应用非常广泛，需要大家在工作中孰能生巧。
+```
+
+=========================================== TODO begin ================================================
+
+## Android 逆向？？？
+
+```
+https://blog.csdn.net/qq_36869808/article/details/78999010
+```
+
+## 按键配置？？？
 
 ## 学习使用 QAAT 工具？？？
 
@@ -31273,6 +35876,26 @@ FlashTool 终端模式的使用方法
 ## smart PA 是什么东西？？？
 
 ## Bluetooth蓝牙协议有哪些？？？分别有什么用？？？
+
+```
+[FAQ03558] [Settings]6573 & 6575平台支持哪些蓝牙Profile
+OPP    ：Object Push Profile
+SIMAP ：SIM Access Profile
+PRXM  ：Proximity Monitor
+PRXR   ：Proximity Reporter
+HIDH   ：Human Interface Device Host
+FTP    ：File Transfer Profile
+PBAP  ：Phone Book Access Profile
+BPP    ：Basic Printing Profile
+BIP    ：Basic Imaging Profile
+DUN   ：Dial-up Networking
+PAN   ：Personal Area Network
+HFP   ：Hands-free Profile
+A2DP  ：Advanced Audio Distribution Profile
+AVRCP ：Audio/Video Remote Control Profile
+MAPS  ：Message Access Profile (Server)
+SPP   ：Serial Port Profile
+```
 
 ## ADB root 和 手机 root 的区别？？现在手机可以root吗？？？
 
@@ -31351,19 +35974,41 @@ EVDO是该制式下的一种网络技术，以实现3G的高速数据链接，�
 
 ## SharedPreference模板
 
-## Bitmap模板
+## Bitmap解析模板？？？
 
-## Http模板
+## Http请求模板
 
 ## Notification模板
 
 ## File操作模板
 
+## SystemProperties的反射模板类？？？
+
+## 反射模板？？？
+
+## icu如何编译？？？
+
+## Kotlin，Flutter 写的代码，怎么反编译？？
+
 ## 阿拉伯语相关问题修改？
 
-## SystemProperties的模板类
+## android_id的获取？？？这个东西有什么用？？？
 
-## 反射模板
+```
+adb shell settings get secure android_id
+```
+
+## 获取 IMEI 码 ？？
+
+```
+adb shell service call iphonesubinfo 1
+```
+
+## 获取 IP 地址 ？？？
+
+```
+adb shell ifconfig | grep Mask
+```
 
 ## [FAQ14252] MT6735/35M/35P/53/53T软件包使用说明(L1.MP3&L1.MP3.TC7SP&M0.MP1适用)
 
@@ -31375,8 +36020,77 @@ flashtool 报错 STATUS_DA_HASH_MISMATCH : flash不兼容的问题
 https://blog.csdn.net/zengrunxiu/article/details/81027275
 ```
 
-
-FAQ看到了243页，
 如何把 FAQ 的标题和链接都保存下来？？？
+
+=========================================== TODO end ================================================
+
+## 必看！java后端，亮剑诛仙（最全知识点）
+
+```
+https://juejin.im/post/5d2d2ba96fb9a07f050a9ad6
+```
+
+## 设计模式
+
+```
+https://juejin.im/post/5d27495fe51d4556dc2936c3
+```
+
+## Android优化总结
+
+```
+https://juejin.im/post/5d072dbc51882540b7104709
+```
+
+## 混淆
+
+```
+https://juejin.im/post/5d1717996fb9a07eeb13bc95
+```
+
+## Android复习资料——Android知识点汇总（一）
+
+```
+https://juejin.im/post/5d19cec5f265da1baa1e8c0a
+```
+
+## Android手机信息获取很难？
+
+```
+App信息获取
+App安装列表获取
+音量数据获取
+版本数据获取
+电池数据获取
+Cpu实时数据获取
+蓝牙数据获取
+系统Build数据获取
+摄像头数据获取
+Cpu数据获取
+调试数据获取
+host数据获取
+模拟器数据获取
+hook数据获取
+本地数据获取
+内存数据获取
+多开数据获取
+网络数据获取
+root数据获取
+屏幕数据获取
+SDCard数据获取
+设置数据获取
+信号数据获取
+手机卡数据获取
+堆栈数据获取
+唯一ID数据获取
+UA数据获取
+Xposed数据获取
+```
+
+## Java高级开发必会的45个性能优化的细节（珍藏版）
+
+```
+https://juejin.im/post/5d1d9d2e6fb9a07ecf72429e
+```
 
 
