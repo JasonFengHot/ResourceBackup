@@ -35998,6 +35998,30 @@ EVDO是该制式下的一种网络技术，以实现3G的高速数据链接，�
 adb shell settings get secure android_id
 ```
 
+## 通过自定义暗码启动
+
+```
+<receiver
+    android:name=".SecretCodeReceiver">
+    <intent-filter>
+        <action android:name="android.provider.Telephony.SECRET_CODE" />
+        <data android:scheme="android_secret_code" android:host="1010"  />
+    </intent-filter>
+</receiver>
+
+public class SecretCodeReceiver extends BroadcastReceiver {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (intent != null && SECRET_CODE_ACTION.equals(intent.getAction())){
+            Intent i = new Intent(Intent.ACTION_MAIN);
+            i.setClass(context, MainActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(i);
+        }
+    }
+}
+```
+
 ## 获取 IMEI 码 ？？
 
 ```
@@ -36014,7 +36038,7 @@ adb shell ifconfig | grep Mask
 
 flashtool 报错 STATUS_DA_HASH_MISMATCH : flash不兼容的问题
 
-## Android 8.1移植：针对某个APK做到wifi和gprs分别做到允许和禁止两种策略
+## [FAQ10820]Android 8.1移植：针对某个APK做到wifi和gprs分别做到允许和禁止两种策略
 
 ```
 https://blog.csdn.net/zengrunxiu/article/details/81027275
@@ -36092,5 +36116,159 @@ Xposed数据获取
 ```
 https://juejin.im/post/5d1d9d2e6fb9a07ecf72429e
 ```
+
+## BootLoader 锁是什么意思？？
+
+## shadow 是什么东西？？？
+
+```
+Shadow是通过字节码编辑技术向插件插入中间层，完成插件技术的核心工作的
+```
+
+## 事件分发机制
+
+```
+public boolean dispatchTouchEvent(MotionEvent ev){
+    boolean consume = false;
+    if(onInterceptTouchEvent(ev)){
+        consume = onTouchEvent(ev);
+    }else{
+        consume = child.dispatchTouchEvent(ev);
+    }
+    return consume;
+}
+```
+
+## 安装包瘦身
+
+```
+icon 图标使用 svg
+icon状态区分使用 Tint 着色器
+App内大图压缩,使用webp格式图片,我们可以通过 智图 或者isparta将其它格式的图片转换成webP格式，isparta可实现批量转换。
+图片压缩：ImageOptim + ImageAlpha + TinyPNG
+
+移除无用资源
+资源打包设置:由于第三方库的引入,如appcompat-v7的引入库中包含了大量的国际化资源,可根据自身业务进行相应保留和删除。
+
+defaultConfig { 
+    applicationId "com.zthx.xianglian" 
+    minSdkVersion 19 
+    targetSdkVersion 28 
+    versionCode 1 
+    versionName "1.0.0" 
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner" 
+    //只保留指定和默认的资源 
+    resConfigs('zh-rCN','ko') 
+}
+动态库打包配置
+开启代码混淆压缩
+使用 protobuf 作为序列化数据, flatbuffers
+LeakCanary是由Square公司开源的一款轻量的第三方检测内存泄露的工具
+BlockCanary
+
+AndroidStudio使用lint清除无用的资源文件
+
+https://www.cnblogs.com/mengdd/p/reduce-size-of-android-app.html
+```
+
+## 日志记录
+
+```
+timber + logger + LogUtils
+```
+
+## JSON 解析
+
+```
+gson + jackson + fastjson + logansquare
+```
+
+## 数据库
+
+```
+ActiveAndroid + ormlite + greenDAO + realm
+```
+
+## 网络
+
+```
+android-async-http + okhttp + volley + retrofit
+```
+
+## 图片缓存
+
+```
+BitmapFun + Picasso + Glide + Fresco + Android-Universal-Image+Loader
+```
+
+## 插件化
+
+```
+dynamic-load-apk + DynamicApk + DroidPlugin + Small
+```
+
+## Crash 日志收集
+
+```
+UncaughtExceptionHandler
+保存SharedPreference信息
+保存Settings数据库信息
+
+public String collectSecureSettings() {
+    final StringBuilder result = new StringBuilder();
+    final Field[] keys = Settings.Secure.class.getFields();
+    for (final Field key : keys) {
+        if (!key.isAnnotationPresent(Deprecated.class) && key.getType() == String.class && isAuthorized(key)) {
+            final Object value = Settings.Secure.getString(mContext.getContentResolver(), (String) key.get(null));
+            if (value != null) {
+                result.append(key.getName()).append("=").append(value).append("\n");
+            }
+        }
+    }
+    return result.toString();
+}
+
+通过 Runtime 执行 logcat 命令保存 logcat 信息
+通过 Runtime 执行 dumpsys 命令保存 meminfo 信息
+保存应用版本号
+保存系统类型及版本号
+保存手机设备型号
+保存IMEI
+保存渠道号
+保存crash发生的时间
+保存应用的包名
+```
+
+## 热修复hotfix
+
+```
+dexposed + AndFix 阿里的技术，基于 xposed + hook
+
+Nuwa + HotFix + DroidFix 腾讯的技术，基于 ClassLoader
+```
+
+## AOP ???????
+
+## FaceBook buck 构建系统
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
