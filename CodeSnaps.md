@@ -36117,7 +36117,7 @@ Xposed数据获取
 https://juejin.im/post/5d1d9d2e6fb9a07ecf72429e
 ```
 
-## BootLoader 锁是什么意思？？
+## BootLoader 锁是什么意思？？如何解锁bootloader？？？fastboot？？？
 
 ## shadow 是什么东西？？？
 
@@ -36165,6 +36165,7 @@ defaultConfig {
 使用 protobuf 作为序列化数据, flatbuffers
 LeakCanary是由Square公司开源的一款轻量的第三方检测内存泄露的工具
 BlockCanary
+Facebook redex压缩，优化
 
 AndroidStudio使用lint清除无用的资源文件
 
@@ -36239,6 +36240,72 @@ public String collectSecureSettings() {
 保存应用的包名
 ```
 
+## 资源文件混淆
+
+```
+美团：修改aapt在处理资源文件相关的源码达到资源文件名的替换
+
+微信：通过直接修改resources.arsc文件达到资源文件名的混淆    AndResGuard
+```
+
+## 隐藏敏感信息
+
+```
+隐藏在strings.xml中
+隐藏在Java源码中
+隐藏在BuildConfig中
+使用DexGuard
+对敏感信息进行伪装或加密
+敏感信息隐藏在原声函数库中
+对apk进行加固处理
+```
+
+## 如何防止截屏？？？
+
+## 反编译
+
+```
+Smali + Baksmali
+Androguard
+jeb
+Radare2
+IDA Pro
+Hex-Rays
+
+dexopt
+```
+
+## 本地拒绝服务
+
+```
+将不需要给其他app调用的组件在AndroidManifest.xml中设置exported="false"
+使用Intent获取extra数据时增加try{}catch
+注意getAction() 为空的处理
+使用intent获取数组，列表灯数据时要作长度验证
+强制类型转换时要增加 try{}catch{}
+```
+
+## 使用 AES 加密
+
+```
+public static byte[] encrypt(String content, String password) {
+    try {
+        KeyGenerator kgen = KeyGenerator.getInstance("AES");
+        kgen.init(128, new SecureRandom(password.getBytes()));
+        SecretKey secretKey = kgen.generateKey();
+        byte[] enCodeFormat = secretKey.getEncoded();
+        SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");
+        Cipher cipher = Cipher.getInstance("AES");
+        byte[] byteContent = content.getBytes("utf-8");
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        byte[] result = cipher.doFinal(byteContent);
+        return result;
+    } catch (Exception e) {
+    }
+    return null;
+}
+```
+
 ## 热修复hotfix
 
 ```
@@ -36251,18 +36318,209 @@ Nuwa + HotFix + DroidFix 腾讯的技术，基于 ClassLoader
 
 ## FaceBook buck 构建系统
 
+## Handler 静态内部类
 
+```
+public class HandlerActivity extends Activity {
+    private static class InnerHandler extends Handler {
+        private final WeakReference<HandlerActivity> mActivity;
+        public InnerHandler(HandlerActivity activity) {
+            mActivity = new WeakReference<HandlerActivity>(activity);
+        }
+        public void handleMessage(Message msg) {
+            HandlerActivity activity = mActivity.get();
+             (activity != null) {
+                //
+             }
+        }
+    }
+    private final InnerHandler mHandler = new InnerHandler(this);
+    private static final Runnable sRunnable = new Runnable() {
+        public void run() {
+        }
+    };
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mHandler.postDelayed(sRunnable, 1000 * 60 * 5);
+    }
+}
+```
 
+## Context 的单例实现
 
+```
+public class SingleInstance {
+    private Context mContext;
+    private static SingleInstance sInstance;
+    private SingleInstance(Context context) {
+        mContext = context;
+    }
+    private static SingleInstance getInstance(Context context) {
+        if (sInstance == null) {
+            sInstance = new SingleInstance(context.getApplicationContext());
+        }
+        return sInstance;
+    }
+}
+```
 
+## Android调试工具 Facebook Stetho
 
+```
+dumpapp
+```
 
+## Redmine 在 AndroidStudio 中的集成？？？在自动化工具中集成？？？
 
+## 单元测试
 
+```
+Robolectric
 
+模拟测试框架 mockito
 
+MonkeyRunner
 
+UIAutomator
 
+robotium
+
+espresso
+
+appium
+```
+
+## 静态代码分析
+
+```
+CheckStyle
+
+FindBugs
+
+PMD
+
+Lint
+```
+
+## 宏内核 微内核
+
+```
+Android 是基于 Linux 的宏内核
+Fusion 和 鸿蒙 是基于 微内核
+```
+
+## Jenkins + Gradle 搭建 Android 持续集成编译环境
+
+## Burp Suite 网络监测套件
+
+```
+http://portswigger.net/burp/download.html
+```
+
+## content 命令的使用
+
+```
+adb shell content query --uri content://settings/system --where "_id=1"
+```
+
+## 预置app需要 zipalign 吗？？
+
+## 手动编译 Java 文件生成 .class 再编译成 .dex 文件并push到 data/local/tmp 运行
+
+```
+Main.java
+public class Main{
+    public static void main(String[] args) {
+        System.out.println("hello world");
+    }
+}
+
+// 用 javac 编译生成 .class 字节码文件
+javac Main.java
+
+// 用 dx 把 .class 字节码文件编译成 .dex 文件 (dx 文件路径 ~/Android/Sdk/build-tools/27.0.3/dx)
+dx --dex --output=Main.dex Main.class
+
+adb push Main.dex /data/local/tmp/
+
+// 用 dalvikvm 运行 Main.dex
+adb shell dalvikvm -cp /data/local/tmp/Main.dex Main
+```
+
+## 查看应用的 userid
+
+```
+adb shell cat /data/system/packages.xml
+<package name="com.android.mms" codePath="/system/priv-app/MtkMms" nativeLibraryPath="/system/priv-app/MtkMms/lib" publicFlags="940097125" privateFlags="8" pkgFlagsEx="0" ft="16bda77f4d8" it="16bda77f4d8" ut="16bda77f4d8" version="27" sharedUserId="10020" isOrphaned="true">
+
+adb shell ps | grep "u0"
+u0_a20       19013   315 1090980  44876 SyS_epoll_wait aa022c00 S com.android.mms
+
+a20 就是对应的 10020
+```
+
+## 安装使用 drozer
+
+```
+
+drozer console connect
+
+list
+
+// 获取 apk 安装信息
+run app.package.list -a com.android.launcher3
+
+// 查看 apk 存在的安全隐患
+run app.package.attacksurface com.android.launcher3
+
+run app.activity.info -a com.android.launcher3
+
+run app.activity.start --component com.android.launcher3 com.android.launcher3.Launcher
+```
+
+## 安装使用 QARK(Quick Android review kit) 静态代码分析工具
+
+```
+https://github.com/linkedin/qark .
+```
+
+## adb backup 备份命令
+
+```
+adb backup -f backup.ab com.whatsapplock
+
+备份出来的是 .ab 格式的压缩包，需要用 adbextractor 工具打开
+
+http://sourceforge.net/projects/adbextractor/
+
+java -jar abe.jar -debug unpack backup.ab backup.tar
+
+pax -r < backup.tar
+```
+
+## adb restore 还原命令 ？？？？
+
+## adb shell pm list 已废弃，改用 adb shell cmd package list
+
+## adb jdwp 命令(Java debug wire protocal)
+
+## 学习 Frida 
+
+## tcpdump 在哪里下载？？？
+
+```
+adb push tcpdump /data/local/tmp
+
+chmod 755 tcpdump
+
+./tcpdump -v -s 0 -w traffic.pcap
+
+• -v is to provide verbose output
+• -s is to snarf the number of bytes specified
+• -w is to write the packets into a file
+
+adb pull /data/local/tmp/traffic.pcap
+```
 
 
 
