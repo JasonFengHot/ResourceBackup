@@ -36520,7 +36520,2626 @@ chmod 755 tcpdump
 • -w is to write the packets into a file
 
 adb pull /data/local/tmp/traffic.pcap
+
+用 Wireshark 打开 .pcap 文件
+
+可以上传 apk 到 http://sanddroid.xjtu.edu.cn/ 进行分析
 ```
+
+## Ettercap 怎么用？？可以监听网络请求？？？
+
+## msfconsole
+
+## 破解手势解锁密码？？
+
+```
+cp /data/system/gesture.key /mnt/sdcard
+adb pull /mnt/sdcard/gesture.key
+grep -i `xxd -p gesture.key` AndroidGestureSHA1.txt  //AndroidGestureSHA1.txt 这个文件怎么写的？？？
+```
+
+## 破解PIN码和PASSWORD码？？
+
+```
+cp /data/system/password.key /mnt/sdcard/
+cp /data/system/locksettings.db /mnt/sdcard/
+
+用 hex editor(Hex workshop) 打开 password.key 文件，得到一串 hashcode
+
+用 sqlite3 查看 locksettings.db 数据库，得到 salt
+
+12|lockscreen.password_salt|0|6305598215633793568
+
+到 http://www.cclgroupltd.com/product/android-pin-password-lock-tool/ 下载 BruteForceAndroidPin.py 工具
+
+Python BruteForceAndroidPin.py [hash] [salt] [max_length_of_PIN]
+```
+
+## 命令行解锁
+
+```
+adb shell am start -n com.android.settings/com.android.settings.ChooseLockGeneric --ez confirm_credentials false --ei lockscreen.password_type 0 --activity-clear-task
+```
+
+## development/samples 中有很多例子可以参考学习
+
+## external/svox/ 语音相关库
+http://cnmsdn.com/html/201010/1287296527ID8341.html
+
+## external/neven 人脸识别库
+
+## opencv
+
+```
+简单的说这是基于图像动态捕捉处理、人脸识别、机器人视觉处理、图像信息认知录
+入等多为一体计算机视觉库
+
+下载ndk
+http://bbs.weiphone.com/read-htm-tid-521406.html
+2) 安装 ndk
+$ tar xvjf OpenCV-2.1.0.tar.bz2
+$ cd android-ndk-1.6_r1
+$ export NDKROOT=`pwd`
+$ ./build/host-setup.sh
+3) 下载opencv
+http://github.com/billmccord/OpenCV-Android/downloads
+4) 编译 opencv
+$ tar xvzf bill*
+$ cd app
+$ ln -s bill* opencv
+$ make APP=opencv
+5) 安装 opencv
+$ adb push out/apps/opencv/libopencv.so /system/lib/
+```
+
+## 文字识别
+
+```
+1. 功能:
+光学字符识别(OCR,Optical Character Recognition)是指对文本资料进行扫描,然后对
+图像文件进行分析处理,获取文字及版面信息的过程
+2. 典型应用:
+名片扫描
+3. android 源码实现:
+external/tesseract/*
+4. 编译:
+$ cd external/tesseract/
+$ mm
+生成 libocr.so,push 系统/system/lib/中,它也可以放在软件的安装包里
+5. 例程下载:
+1) 在此下载
+http://code.google.com/p/mezzofanti/
+2) 直接下载 apk 是能用的, 在源码中编译程序运行就退出,是由于可能 libocr.so 未安
+装, 把它 push 到系统中即可
+$ adb push libocr.so /data/data/com.itwizard.mezzofanti/lib/
+3) 主要借鉴 OCR.java 它是对 libocr.so 库的调用(JNI 方式)
+```
+
+## GPS
+
+```
+卫星定位
+1. gps 说明
+1) 原理
+每一卫星播发一个伪随机测距码信号,该信号大约每 1 毫秒播发一次。接收仪同
+时复制出一个同样结构的信号并与接收到的卫星信号进行比较,由信号的延迟时
+间(dT)推算出卫星至 接收仪的距离
+2) 述语
+TTFF:首次定位时间
+PRN:伪随机码,用于辨别是哪颗卫星
+SNR:信噪比
+2. android 对 gps 的内部支持
+1) 位置服务
+android 对卫星定位的支持名字叫位置服务,可以通过设置来打开或关闭它
+2) android 实现
+frameworks/base/location/java/android/location/LocationManager.java 接口
+frameworks/base/services/java/com/android/server/LocationManagerService.java 服务
+frameworks/base/core/jni/android_location_GpsLocationProvider.cpp 等待 gps 事件,
+发给 service
+libhardware_legacy/include/hardware_legacy/gps.h 定义了底级 gps 的实现,不同硬
+件以不同方式实现它,它可能是对设备的访问,也可能与 modem 通过 rpc 通讯得
+到 gps 数据
+3) 应用程序调用接口
+frameworks/base/location/java/android/location/*.java
+LocationManager.java 是最重要的接口,通过它访问 gps 定位资源
+LocationListener.java 是定位的回调函数,通过实现它来接收定位数据
+Gps*.java 提供了获取当前 gps 信息的接口,包括捕获的卫星数,信噪比等
+4) 调试
+想要调试 gps,可以把/system/etc/gps.conf 中的 debug 等级调为 5,此时你可以在
+logcat 中看到全部的 gps 信息
+在室内基本没有信号,窗边效果也不好,建议在室外,至少是站在阳台上测试
+3. 例程
+1) 功能
+显示当前经纬度及搜到的卫星个数
+2) 可从此处下载可独立运行的代码
+http://download.csdn.net/source/2598910
+
+4. 辅助工具
+定位程序要么带地图很大,要么太简单不能得到足够数据。推荐gpslogger,使用它可
+以看到当前的经纬度,速度,信号强度,当前搜到了几颗星(搜到小于三颗星时,定
+位不到经纬度),帮助进一步定位问题。
+http://gpslogger.codeplex.com/可以下载到它的源码
+5. 参考
+1) gps术语
+http://www.mobile01.com/newsdetail.php?id=257
+```
+
+## 多媒体
+
+```
+1. android 多媒体介绍
+android 的多媒体功能基于 PacketVideo 的 OpenCORE。这些库支持播放和录制许多流
+行的音频和视频格式,以及静态图像文件,包括 MPEG4、 H.264、 MP3、 AAC、
+AMR、JPG、 PNG,底级实现在源码的 external/opencore 中
+2. android 框架对多媒体的支持
+应用程序调用接口
+frameworks/base/media/java/android/media/MediaPlayer.java
+3. 例程
+1) 功能
+播放编辑框中指定的多媒体文件
+2) 可从此处下载可独立运行的代码
+http://download.csdn.net/source/2602127
+3) 核心代码及说明
+
+4. 参考:
+1) Android 源码自带的多媒体播放例程
+development/samples/ApiDemos/src/ocm/example/android/apis/media/MediaPlayerDe
+mo*
+2) 流媒体例程
+http://kuikui.javaeye.com/blog/325916
+```
+
+## 博客客户端的实现
+
+```
+1. 原理介绍
+1) XML-RPC 介绍
+XML-RPC 的全称是 XML Remote Procedure Call,即 XML 远程方法调用。原理是
+XML-RCP 工具把传入的参数组合成 XML,然后用通过 http 协议发给服务器,服务
+器回复 XML 格式数据,再由工具解析给调用者。
+2) Meta Weblog API
+一些 Blog 提供 Meta Weblog API,用以支持通过 XML-RPC 的方法在软件中编辑
+及浏览 Blog。常用的 API 如下:
+发布新文章(metaWeblog.newPost)、获取分类(metaWeblog.getCategories)和最新文
+章(metaWeblog.getRecentPosts)、新建文章分类(wp.newCategory)、上传图片音频或
+视频(metaWeblog. newMediaObject)等。
+2. Android的XML-RPC支持
+Android 本 身 并 不 支 持 XML-RPC 协 议 , 需 要 下 载 相 关 应 的 工 具 , 本 例 中 使 用 的
+XML-RPC从以下地址下载,完整例程中包含此部分
+http://code.google.com/p/android-xmlrpc/downloads/list
+3. 例程
+package org.xmlrpc;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.http.conn.HttpHostConnectException;
+import org.xmlrpc.android.XMLRPCClient;
+import org.xmlrpc.android.XMLRPCException;
+import org.xmlrpc.android.XMLRPCFault;
+import org.xmlrpc.android.XMLRPCSerializable;
+import android.app.Activity;
+import android.content.Context;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.EditText;
+import android.widget.Toast;
+import android.widget.Button;
+import android.content.DialogInterface.OnCancelListener;
+import android.view.View.OnClickListener;
+import android.view.View;
+public class TestBlog extends Activity {
+private XMLRPCClient client;
+private URI uri;
+@Override
+public void onCreate(Bundle savedInstanceState) {
+992010 年谢彦的 Android 笔记
+super.onCreate(savedInstanceState);
+setContentView(R.layout.test_blog);
+Button btn = (Button) findViewById(R.id.send);
+btn.setOnClickListener(new OnClickListener() {
+public void onClick(View v) {
+post();
+}
+});
+}
+void post() {
+String blogid = ((EditText) findViewById(R.id.blogid_edit)).getText()
+.toString(); // 博客 ID, 有的博客支持一个用户多个 ID
+String username = ((EditText) findViewById(R.id.username_edit))
+.getText().toString();
+// 用户名
+String password = ((EditText) findViewById(R.id.password_edit))
+.getText().toString();
+// 密码
+String title = ((EditText) findViewById(R.id.title_edit)).getText()
+.toString(); // 标题
+String content = ((EditText) findViewById(R.id.content_edit)).getText()
+.toString(); // 正文
+uri = URI.create("http://blog.csdn.net/" + blogid
++ "/services/metablogapi.aspx");
+client = new XMLRPCClient(uri);
+Map<String, Object> structx = new HashMap<String, Object>();
+structx.put("title", title);
+structx.put("description", content);
+Object[] params = new Object[] { blogid, username, password, structx,
+true };
+try {
+client.callEx("metaWeblog.newPost", params);
+Toast.makeText(this, "OK", 10000).show();
+} catch (XMLRPCException e) {
+Toast.makeText(this, "ERROR" + e, 10000).show();
+}
+}
+}
+4. 多媒体上传的介绍
+上传多图片视频音频方法如下
+Map<String, Object> structx = new HashMap<String, Object>();
+1002010 年谢彦的 Android 笔记
+structx.put("name", “xxx.jpg”); // 文件名
+structx.put("type”, “image/jpeg”); // 格式
+structx.put("bits", filebytes); // 文件内容 , 需要 base64 编码 , 可使用 android.util.Base64 来编
+码
+structx.put("overwrite", true); // 是否覆盖
+Object[] params = new Object[] { blogid, username, password, structx};
+client.callEx("metaWeblog.newPost", params);
+通过此方式可以实现相片视频的即片即转功能
+5. 参考:
+1) wordpress使用Meta weblog的接口如下
+http://cn.wordpress.org/xmlrpc.php
+2) 【PHP】XML-RPCで投稿!
+http://blog.studio23c.com/?p=108
+3) 完整例程下载
+http://download.csdn.net/source/2793892
+```
+
+## 调试技巧
+
+```
+3.5 调试技术
+3.5.1
+JDWP调试
+1. JDWP 用于在 java 程序层面的调试
+2. 在某一终端运行虚拟机
+$ adb forward tcp:8000 tcp:8000
+$ adb shell
+$ dalvikvm -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y -cp /sdcard/foo.jar
+Foo
+此时挂起等待调试
+3. 在另一终端开启调试
+$ jdb -attach localhost:8000
+[jdb 提示符 ] run
+此时程序继续运行
+4. jdb 常用命令
+[jdb 提示符] threads 看当前所有线程
+[jdb 提示符] trace methods 0x12aac5a00 跟踪线程号为 0x12aac5a00 的线程(线程号从
+threads 得到)
+[jdb 提示符] next/step 下一步
+[jdb 提示符] 40 next 执行 40 次 next
+1022010 年谢彦的 Android 笔记
+3.5.2
+运行dalvik测试程序
+1. 运行 dalvik 测试程序及 debug
+2. 说明
+一般在 android 平台上的程序都运行在应用框架之中,它也可以直接运行,以下介绍
+最简单的运行和调试方法。
+3. 运行 dalvik 自带的 test 程序
+1) 配置 ANDROID 系统环境
+$ cd $ANDROID_SRC
+$ . build/envsetup.sh
+2) 编辑桌面环境脚本 test_env.sh(否则 run-test 程序运行时报错)
+内容如下:
+#!/bin/sh
+base=`pwd`
+root=$base/out/debug/host/linux-x86/product/sim/system
+export ANDROID_ROOT=$root
+bootpath=$root/framework
+export
+BOOTCLASSPATH=$bootpath/core.jar:$bootpath/ext.jar:$bootpath/framework.jar:$bootpath/androi
+d.policy.jar:$bootpath/services.jar
+export ANDROID_DATA=/tmp/dalvik_$USER
+mkdir -p $ANDROID_DATA/dalvik-cache
+并执行该脚本
+$ . test_env.sh
+3) 运行测试程序 003
+$ cd dalvik/test
+$ ./run-test 003
+```
+
+## 编写测试小程序(jar, dex, bin)
+
+```
+1. 各个层面的 android 测试程序
+2. 说明
+在问题定位时,通常使用一些非常简单的程序来测试,以简化逻辑。下面介绍 android
+各个层面的测试的编写:普通的 java 程序,加入 android 类的 java 程序,带 android
+界面的 java 程序和运行在 android 平台上的 c/c++程序
+3. 配置环境
+$ cd $ANDROID_SRC
+$ . build/envsetup.sh
+$ cd development
+4. 普通 java 程序
+1) 建立 Foo.java,内容如下
+class Foo {
+public static void main(String[] args)
+{System.out.println(“Hello, world”);}
+}
+2) 编译
+$ javac Foo.java
+$ dx --dex --output=foo.jar Foo.class
+# 把一个或多个 class 编成一个 jar
+3) 运行
+$ adb push foo.jar /sdcard # 复制到设备的 sd 卡中
+$ adb shell dalvikvm -cp /sdcard/foo.jar Foo
+# 指明路径和类名
+5. 使用 android 特定功能的 java 程序(需引入 android 库)
+1) 建立 Foo.java,内容如下
+import android.os.Debug;
+class Foo {
+public static void main(String[] args)
+{
+System.out.println(“Hello, world”)
+android.os.Debug.dumpHprofData(“/sdcard/test.hprof”);
+;}
+}
+2) 建立 Android.mk,内容如下
+LOCAL_PATH:= $(call my-dir)
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES:=$(call all-subdir-java-files)
+LOCAL_MODULE:=foo
+include $(BUILD_JAVA_LIBRARY)
+3) 编译
+$ mm
+4) 运行
+$ adb push $ANDROID_SRC/out/target/product/xxxxxxx/system/framework foo.jar /sdcard # 复制到
+设备的 sd 卡中
+$ adb shell dalvikvm -cp /sdcard/foo.jar Foo
+# 指明路径和类名
+1042010 年谢彦的 Android 笔记
+6. 带界面的 android 程序
+1) 使用 eclipse 建立
+a) 在 eclipse 中点击菜单 File->New->Project......,选择 Android Project
+b) 填写 project 的各项内容如下
+Project name: test_xy 目录名, 它位于你设定的 workspace 之下
+Package name: com.android.testxy 打包名称
+Activity name: TestXy 类名(生成文件 TestXy.java)
+Application: name:test_app_name 可执行程序名
+然后点 Finish 按钮
+c) 填写代码
+这时可以看到代码界面了,从左边的树中打开代码
+test_xyÆ src Æ com.android.testxyÆ TestXy.javaÆTestXyÆonCreate
+修改其中代码(不改也行)
+2) 修改编译运行
+a) eclipse 中运行
+i) 在 eclipse 中点击菜单 Run->Run Configurations......
+ii) 双击左边的 Android Application,产生了一个 New Configuration,点开它填
+写内容如下:
+Name: yan_config // 随便起一个
+Project: test_xy // 刚才起的 project, 即目录名
+iii) 点击 Apply,然后点 Run,多等一会儿就出来了
+b) 从命令行运行
+i) 复制工程到 Android 源码目录中
+$ cp $WORKSPACE/test_xy $ANDROID_SRC/development/ -R
+ii) 加入 Android.mk
+$ cd $ANDROID_SRC/development/test_xy/
+编写 Android.mk 内容如下
+LOCAL_PATH:=$(call my-dir)
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := $(call all-subdir-java-files)
+LOCAL_PACKAGE_NAME:=XyTest
+LOCAL_CERTIFICATE:=platform
+include $(BUILD_PACKAGE)
+编译
+iii)
+$ mm
+iv) 运行
+$ adb install $ANDROID_SRC/out/target/product/xxxxxx/system/app/XyTest.apk
+$ adb shell am start -n com.android.testxy/com.android.testxy.TestXy
+# am start -n 类名/类名.Activity 名
+7. 简单的 c++程序
+1) 建立 main.c,内容如下
+#include <stdio.h>
+int main()
+{
+1052010 年谢彦的 Android 笔记
+printf("Hello World!\n");
+return 0;
+}
+2) 建立 Android.mk,内容如下
+LOCAL_PATH:= $(call my-dir)
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES:= \
+main.c
+LOCAL_MODULE := helloworld
+include $(BUILD_EXECUTABLE)
+3) 编译
+$ cd $(ANDROID_SRC) && make helloworld
+或
+$ mm
+4) 运行
+$ adb push out/target/product/generic/system/bin/helloworld /sdcard
+$ adb shell /sdcard/helloword
+```
+
+## 查看当前堆栈
+
+```
+new Exception(“print trace”).printStackTrace();
+```
+
+## 调试小技巧
+
+```
+MethodTracing
+1) 功能:用于热点分析和性能优化,分析每个函数占用的 CPU 时间,调用次数,函
+数调用关系等
+2) 方法:
+a) 在程序代码中加入追踪开关
+import android.os.Debug;
+......
+android.os.Debug.startMethodTracing(“/data/tmp/test”); // 先建 /data/tmp 目录
+...... // 被追踪的程序段
+android.os.Debug.stopMethodTracing();
+b) 编译,运行后,设备端生成/data/tmp/test.trace 文件
+c) 把 trace 文件复制到 PC 端
+$ adb pull /data/tmp/test.trace ./
+d) 使用 android 自带工具分析 trace 文件
+$ $ANDROID_SRC/out/host/linux-x86/bin/traceview test.trace
+此时可看到各个函数被调用的次数 CPU 占用率等信息
+e) 使用 android 自带工具分析生成调用关系类图
+$ apt-get install graphviz
+# 安装图片相关软件
+$ANDROID_SRC/out/host/linux-x86/bin/dmtracedump -g test.png test.trace
+此时目录下生成类图 test.png
+3) 注意
+trace 文件生成与 libdvm 模块 DEBUG 版本相冲突,所以此方法只适用于对非
+DEBUG 版本模拟器的调试,否则在分析 trace 文件时会报错
+3. HProf (Heap Profile)
+1) 功能:
+用于 java 层面的内存分析,显示详细的内存占用信息,指出可疑的内存泄漏对象
+2) 方法:
+a) 在代码中加入 dump 动作
+import android.os.Debug;
+import java.io.IOException;
+......
+try {
+android.os.Debug.dumpHprofData(“/data/tmp/input.hprof”); // 先建 /data/tmp 目录
+} catch (IOException ioe) {
+}
+b) 把 hprof 文件复制到 PC 端
+$ adb pull /data/tmp/input.hprof ./
+c) 使用命令 hprof-conv 把 hprof 转成 MAT 识别的标准的 hprof
+$ $ANDROID_SRC/out/host/linux-x86/bin/hprof-conv input.hprof output.hprof
+1072010 年谢彦的 Android 笔记
+d) 使用MAT工具看hprof信息
+下载MAT工具:http://www.eclipse.org/mat/downloads.php
+用工具打开output.hprof
+3) 注意:此工具只能显示 java 层面的,而不能显示C层的内存占用信息
+4. SamplingProfile (android 2.0 上版本使用)
+1) 功能
+每隔N毫秒对当前正在运行的函数取样,并输出到 log 中
+2) 在代码中加入取样设定
+import dalvik.system.SamplingProfiler
+......
+SamplingProfile sp = SamplingProfiler.getInstance();
+sp.start(n);
+// n 为设定每秒采样次数
+sp.logSnapshot(sp.snapshot());
+......
+sp.shutDown();
+它会启一个线程监测,在 logcat 中打印信息
+5. 用发系统信号的方式取当前堆栈情况和内存信息
+1) 原理
+dalvik 虚拟机对 SIGQUIT 和 SIGUSR1 信号进行处理(dalvik/vm/SignalCatcher.c),
+分别完成取当前堆栈和取当前内存情况的功能
+2) 用法
+a) $ chmod 777 /data/anr -R # 把 anr 目录权限设为可写
+$ rm /data/anr/traces.txt
+# 删除之前的 trace 信息
+$ ps # 找到进程号
+$ kill -3 进程号 # 发送 SIGQUIT 信号给该进程,此时生成 trace 信息
+$ cat /data/anr/traces.txt
+功能实现:遍历 thread list(dalvik/vm/Thread.c:dvmDumpAllThreadEx()),并打印
+当前函数调用关系(dalvik/vm/interp/Stack.c:dumpFrames())
+b) $ chmod 777 /data/misc -R
+$ ps # 找到进程号
+$ kill -10 进程号 # 发送 SIGQUIT 信事信号给该进程,此时生成 hprof 信息
+$ ls /data/misc/*.hprof
+此时生成 hprf 文件,如何使用此文件,见第二部分(HProf)
+注意:hprof 文件都很大,注意用完马上删除,以免占满存储器
+6. logcat 及原理
+1) android.util.Log 利用 println 的标准 java 输出词句,并加前缀 I/V/D....
+2) dalvik 利用管道加线程的方式,先利用 dup2 把 stdout 和 stderr 重定向到管理中
+(vm/StdioConverter.c:dvmstdioConverterStartup),然后再启动一个线程从管道另一
+端读出内容(dalvik/vm/StdioConverter.c:stdioconverterThreadStart()),使用 LOG 公共
+工具(system/core/liblog/logd_write.c: __android_log_print())输出到/dev/log/*中去
+3) logcat 通过加不同参数看/dev/log/下的不同输入信息
+# logcat -b main
+# logcat -b radio
+# logcat -b events
+显示主缓冲区中的信息
+显示无线缓冲区中的信息
+显示事件缓冲区中的信息
+1082010 年谢彦的 Android 笔记
+7. jdwp(java debug wire protocol)及原理
+1) 虚拟机(设备端)在启动时加载了 Agent JDWP 从而具备了调试功能。在调试器
+端(PC 端)通过 JDWP 协议与设备连接,通过发送命令来获取的状态和控制 Java
+程序的执行。JDWP 是通过命令(command)和回复(reply)进行通信的。
+2) JDK 中调试工具 jdb 就是一个调试器,DDMS 也提供调试器与设备相连。
+3) dalvik 为 JDWP 提供了两种连接方式:tcp 方式和 adb 方式,tcp 方式可以手工指
+定端口,adb 方式自动设定为 8700 端口,通常使用 DDMS 调试就是通过 adb 方式
+8. monkey
+1) monkey 是一个 android 自带的命令行工具。它向系统发送伪随机的用户事件流,
+实现对正在开发的应用程序进行压力测试。
+2) 方法
+在设备端打开 setting 界面
+$ adb shell
+# monkey -p com.android.settings -v 500
+此时可以看到界面不断被切换
+9. 其它小工具
+具体见 android.os.Debug 中提供的工具
+1) 取毫微秒级的时间,用于计算时间
+threadCpuTimeNanos()
+2) 统计两点间的内存分配情况
+startAllocCounting()
+stopAllocCounting()
+getGlobalAllocCount()
+get.....
+3) 打印当前已 load 的 class
+getLoadedClassCount()
+printLoadedClasses() 它需要打开 NDEBUG 功能才能打开 system/core/ 中 Log 功能
+10.
+打印 debug 信息
+$ adb bugreport
+```
+
+## c++程序的调试
+
+```
+1. 使用 gdbserver 调试
+使用 JDWP 只能调试 java 层面的程序,如果想调试 C 层面的代码,需要使用 gdbserver
+方式,gdbserver 的服务端和客户端都包含在 android 的源码中。
+server 端是 out/target/product/xxxxxx/system/bin/gdbserver。
+client 端是 prebuild/linux-x86/toolchain/xxxxxx/bin/arm-eabi-gdb)
+,不需另外安装。
+(请看完本文再开始调试,尤其是“注意”部分)
+本文依据张博的调试文档, 加以扩充说明,感谢原创者。
+2. 调试前的准备:编译 DEBUG 版本的程序和库
+1) 新建(或修改)ANDROID 源码根目录的 buildspec.mk,加入以下内容
+DEBUG_MODULE_lidvm:=true # 虚拟机模块设为 debug
+TARGET_CUSTOM_DEBUG_CFLAGS:=-O0 -mlong-calls
+(请修改具体模块名,我调试的是虚拟机的 libdvm.so 库)
+2) 重编 dalvik 模块
+$ make clean-libdvm
+$ make dalvik snod
+3) 重烧 system.img 或替换手机中的相应模块
+3. gdb server 端配置
+1) 端口映射
+$ adb forward tcp:5039 tcp:5039
+把设备的 5039 端口映射到 PC 的 5039
+设定之后用 netstat -na 命令可看到 PC 的 5039 端口已处于 listen 状态
+注意每次断开手机再连接时,都要重新执行该命令
+2) 调试进程号为 2014 进程
+$ adb shell
+# ps 找进程号
+# gdbserver :5039 --attach 2014 # 指明 tcp 端口号和进程号
+注意:用此方法只适用于对已运行的程序 debug(不能使用直接在 gdbserver 后跟
+程序名的方式运行)
+此时 2014 进程被挂起,等待调试
+4. gdb client 端配置
+1) 用命令行工具调试
+$
+$ANDROID_DIR/prebuilt/linux-x86/toolchain/xxxxxx/bin/arm-eabi-gdb
+$ANDROID_DIR/out/target/product/xxxxxx/system/bin/app_process
+注意可执行程序名必须是 app_process,不是你所调试的程序名
+(gdb) set solib-absolute-prefix $ANDROID_SRC)/out/target/product/xxxxxx/symbols/system/lib/
+(gdb) set solib-search-path $ANDROID_SRC)/out/target/product/xxxxxx/symbols/system/lib/
+以上路径为 GDB 默认库的搜索路径,即交叉编译器库路径,若不设定,则找不到
+符号表,(带符号表的库在 symbols/system/lib/*,手机里 strip 后无符号表的库在
+system/lib/*,它们必须配套使用)
+(gdb) target remote :5039 指明 TCP 端口号
+此时连接 gdb server,可设断点调试,按 c 继续执行程序
+2) 用 eclipse 调试
+a) 安装 cdt,使 eclipse 支持 c/c++程序的开发
+i) 下载
+1102010 年谢彦的 Android 笔记
+从http://www.eclipse.org/cdt/downloads.php下载cdt-master-4.0.0.zip
+ii) 解压
+$ mkdir cdt; cd cdt; unzip ../cdt-master-4.0.0.zip
+iii)
+将解压缩后的 features、plugins 两个文件夹的内容复制到 Eclipse 安装目
+录中
+$ cp plugins/* ../../eclipse/plugins/
+$ cp features/* ../../eclipse/features/
+iv) 重新开启 Eclipse 即可
+$ eclipse -clean
+在新建 project 中即可看到 c/c++相关选项,说明已安装成功
+b) 加入要调试的代码
+i) 新建 C++ project (菜单 File->New->Project...)
+不使用 default location,把 Location 指定成代码所在目录
+ii) 取消自动编译选项(菜单 Project->Build Automatically)
+c) 配置 gdb 环境
+配置 Debug Configurations(菜单 Run->Debug Configurations...)
+i) 新建一个 C/C++ Local Application 的 debug configuration
+ii) Main 选项卡中
+指定 Project 为新建的 C++工程,
+C/C++ Applications 为:
+$ANDROID_DIR/out/target/product/xxxxxx/system/bin/app_process
+iii)
+Debugger 选项卡中
+指定 Debugger 为 gdbserver Debugger,
+Main 子选项卡的 Gdb debuger 设为:
+$ANDROID_DIR/prebuilt/linux-x86/toolchain/xxxxxx/bin/arm-eabi-gdb
+GDB command file 设为一个文件名,文件内容如下:
+file $ANDROID_DIR/out/target/product/xxxxxx/system/bin/app_process
+set solib-absolute-prefix $ANDROID_SRC)/out/target/product/xxxxxx/symbols/system/lib/
+set solib-search-path $ANDROID_SRC)/out/target/product/xxxxxx/symbols/system/lib/
+Connection 子选项卡:
+Type 设为 TCP,Port number 设为 5039
+iv) 点击 Debug 按钮进入调试,之前挂起的程序此时继续运行
+d) 设置断点及调试
+i) 找开某一C程序(菜单->Open file)
+ii) 在程序中双击可设置断点,设置后断点出现在右上的 Breakpoints 中
+iii) Debug 选项卡提供了工具调试(suspend, resume 等)
+5. 加打印语句
+如果需要在 C 程序中加打印语句,有两种方法
+1) 直接在代码中使用 printf,此方法只能应用于从命令行启动程序的情况,运行时可
+以 adb shell 中看到打印信息
+2) 使用程序中提供的重定项后的打印语句,并在 logcat 中看到它
+例如在 libdvm.so 中使用 dvmFprintf(stderr, “xieyan log\n”);
+6. 可能出现的问题及解决方法
+1) 在找不到原因时,可以写一个在android可以运行的简单c语言程序用gdbserver调
+1112010 年谢彦的 Android 笔记
+试,以简化问题,android中c程序做法见:
+http://www.top-e.org/jiaoshi/html/?157.html
+2) 我的是在 arm-eabi-2.4.1 的编译器编出来的,你的可能不是,编译时用 make
+showcommands 确定你的系统使用的编译工具链,否则如果你 debug 时用的和编
+译时用的版本不一致,会导致读符号表时出错(注意看提示)
+3) 有时编译会引起源码目录的变化,请在左侧 Project explorer 中刷新相关项目
+```
+
+## 查看当前堆栈调用关系
+
+```
+$ rm /data/anr/traces.txt
+清除之前 log 信息,因为 log 信息是追加到此文件中的
+$ ps 找应用对应进程号
+$ kill -3 进程号 该进程当前的堆栈调用写入 traces.txt
+$ cat /data/anr/traces.txt 查看堆栈信息
+```
+
+## 查看当前的 dump 信息
+
+```
+adb shell dumpstate > xxx.msg
+```
+
+## log相关
+
+```
+10. 获取当前系统的内核配置, 可用如下方法取得内核配置文件
+$ adb pull /proc/config.gz /tmp
+$ vi tmp/config.gz
+12.
+在 Android.mk 中打印提示信息
+$(info "xxxxxxxx")
+13.
+lib 库中打印 log 信息
+在文件头部加
+#define LOG_TAG “testme”
+#undef LOG // 有的版本需要这句,有的版本不需要
+#include <utils/Log.h>
+在程序中用
+LOGE(“log is xxxxx”);
+在编 lib 库的 Android.mk 中加
+LOCAL_SHARED_LIBRARIES:=libutils
+14.
+lib 库中 jni 用 c++
+在每个函数前头加,以免提示找不到函数名
+#ifdef __cplusplus
+extern “C”
+#endif
+15.
+看 log 的时间
+$ adb logcat –v time > /tmp/log.txt
+```
+
+## 9patch 相关
+
+```
+9patch 是一种特殊的文件格式,它以”.9.png”为扩展名,它的上下左右各有一象素留
+边,用以标识图片以何种方式拉伸,一般做图时留边中以黑色标识其拉伸区域,此为
+显式的 9patch 信息,用以方便做图者编辑(android 提供工具 draw9patch 来编辑 9patch
+图),程序打包时 aapt 工具把该图留边去掉,并将信息其写入 png 文件内部,使之变
+为隐显 9patch 信息
+```
+
+## 制作换肤包
+
+```
+1. 如何做换肤包
+1) 最简单的方法是替换源码中的资源,然后重新编译
+a) 举例:修改系统公共资源——系统字体大小
+修 改 framework/base/core/res/res/values*/style.xml 其 中 的 TexAppearance 的
+Large,Medium,Small 的 textSize,它们分别对应大中小字的字号
+修改后,在 res 目录中重新编译(使用 mm 命令),然后将生成的 framework-res.apk
+拷到手机的/system/framework 目录中
+b) 注意:源码中的资源必须和设备中资源相对应,因在生成 framework-res.apk 的
+过程中生成了资源 ID 号,而各应用通过资源 ID 号读取系统资源,所以如果 ID
+号不一致,整个系统的资源就乱了
+2) 有时候我们只想换包中的某个图片,不想重编整个包,或者从网上下载的应用程
+序,得不到源码不能重编,但也想对其换肤。
+由于 apk 是 zip 格式的压缩包,最简单的方法是解包,替换图片,然后再打包
+$ mkdir tmp; cd tmp
+$ unzip ../xxx.apk
+$ cp xxx.png res/drawable/ 替换图片
+$ zip -r ../xxx_new.apk *
+然后安装到系统中,或替换原有包,即可。
+3) 有时会遇到图片不能以原有方式被拉伸的问题,这是由于某些 9patch 格式图片丢
+失了其格式信息,下面通过了解 apk 打包工具可以解决此问题
+(直接修改 apk 包和使用 metaporgh 皮肤的原理是一样的)
+```
+
+## apk 如何打包
+
+```
+apk 如何打包
+了解打包的目的在于了解对 9patch 图及其它资源的处理过程
+1) 编译某应用(以计算器为例)
+$ cd packages/apps/Calculator
+$ mm showcommands
+使用参数 showcommands 可以看到编译用到的具体命令,其中最核心的是 aapt
+2) 使用aapt命令打包 (aapt源码见framework/base/tools/aapt)
+为了解原理,我们建立一个最简单的只含有图片的包,用此方式,可以把图片从
+显式的 9patch图变成隐式的 9patch图,建立目录及文件如下
+$ mkdir test; cd test
+$ vi AndroidManifest.xml 编辑内容如下
+<?xml version=”1.0” encoding=”utf8?>
+<manifest xmlns:android=“ http://schemas.android.com/apk/res/android “
+package=“com.android.test“
+</manifest>
+$ mkdir res/drawable -p
+1202010 年谢彦的 Android 笔记
+$ cp xxxx.png res/darwable/
+$ aapt package -S res -M AndroidManifest.xml -F test.apk -f
+3) 浏览 apk 包中内容
+$ mkdir tmp; cd tmp
+$ unzip ../test.apk
+$ ls
+此时看到 xml 文件补转换成不可读的了,产生了 resources.arsc,其中包含资源列
+表(ResTable),它说明了每个资源的 resourceid (不同字段标明包名类型和编号) , pac,
+type, name, flag,res 中某些资源也会被打入 resources.arsc 中(如 string)
+4) res/drawable/中的图片仍存在,如果它是 9patch 图,则图片会把显式的 9patch 位置
+打成隐式的 9patch 信息
+5) 想看某个 apk 包的内容, 可以编其源码目录中的 printapk.cpp, 用于打印某包的资
+源信息, 它的编法是改 Android.mk 为编 printapk 的, 注意库中要加 libzipfile
+4. aapt 工具
+aapt 工具用于生成查看和编辑 apk 包
+1) 打包
+a) 打包
+$ aapt package -S res -M AndroidManifest.xml -F xxt.apk -f
+2) 查看
+a) 查看 apk 中包含哪些资源文件
+$ aapt list xxx.apk
+b) 查看某个 xml 的内容
+$ aapt dump xmltree xxx.apk res/layout/main.xml
+(xml 不能是 values*中的,因为它已被打进 resources.arsc)
+c) 查看 resources.arsc 中的资源内容
+$ aapt dump --values resources xxx.apk
+3) 编辑
+用此方法编辑与 zip 解压修改再压缩的方式不同,它会编译 xml 文件和处理 9patch
+图
+a) 从包中删除某文件
+$ aapt remove xxx.apk res/layout/alert_dialog.xml
+b) 将某文件加入包中
+$ aapt add xxx.apk res/layout/alert_dialog.xml
+5. 总结
+换肤时,如果想替换 9patch 图,需要使用 aapt 或其它工具对图进行处理,否则如果
+只是简单地用 zip 工具解开 apk 包,替换一个普通图片,再打包成 apk 的话,是达不
+到你想要的拉伸效果的,这是由于普通图不包含 9ptach 信息
+以上方法可以转换 9patch 图,即做好显式的 9patch 图,然后有以上方法产生隐式的
+9patch 图,再将它放入包中替换原有资源
+```
+
+## 开机流程
+
+```
+1. 系统引导 bootloader
+1) 源码:bootable/bootloader/*
+2) 说明:加电后,CPU 将先执行 bootloader 程序,此处有三种选择
+a) 开机按 Camera+Power 启动到 fastboot,即命令或 SD 卡烧写模式,不加载内核
+及文件系统,此处可以进行工厂模式的烧写
+b) 开机按 Home+Power 启动到 recovery 模式,加载 recovery.img,recovery.img 包
+含内核,基本的文件系统,用于工程模式的烧写
+c) 开机按 Power,正常启动系统,加载 boot.img,boot.img 包含内核,基本文件
+系统,用于正常启动手机(以下只分析正常启动的情况)
+2. 内核 kernel
+1) 源码:kernel/*
+2) 说明:kernel 由 bootloader 加载
+3. 文件系统及应用 init
+1) 源码:system/core/init/*
+2) 配置文件:system/rootdir/init.rc,
+3) 说明:init 是一个由内核启动的用户级进程,它按照 init.rc 中的设置执行:启动服
+务(这里的服务指 linux 底层服务,如 adbd 提供 adb 支持,vold 提供 SD 卡挂载
+等),执行命令和按其中的配置语句执行相应功能
+4. 重要的后台程序 zygote
+1) 源码:frameworks/base/cmds/app_main.cpp 等
+2) 说 明 :zygote 是 一个在 init.rc 中被 指 定启 动的 服 务, 该服 务 对应 的命 令 是
+/system/bin/app_process
+a) 建立 Java Runtime,建立虚拟机
+b) 建立 Socket 接收 ActivityManangerService 的请求,用于 Fork 应用程序
+c) 启动 System Server
+5. 系统服务 system server
+1) 源码:
+frameworks/base/services/java/com/android/server/SystemServer.java
+2) 说明:被 zygote 启动,通过 System Manager 管理 android 的服务(这里的服务指
+frameworks/base/services 下的服务,如卫星定位服务,剪切板服务等)
+6. 桌面 launcher
+1) 源码:ActivityManagerService.java 为入口,packages/apps/launcher*实现
+2) 说明:系统启动成功后 SystemServer 使用 xxx.systemReady()通知各个服务,系统
+已经就绪,桌面程序 Home 就是在 ActivityManagerService.systemReady()通知的过
+程中建立的,最终调用 startHomeActivityLocked()启 launcher
+7. 解锁
+1) 源码:
+frameworks/policies/base/phone/com/android/internal/policy/impl/*lock*
+2) 说 明 : 系 统 启 动 成 功 后 SystemServer 调 用 wm.systemReady() 通 知
+WindowManagerService , 进 而 调 用 PhoneWindowManager , 最 终 通 过
+1232010 年谢彦的 Android 笔记
+LockPatternKeyguardView 显示解锁界面,跟踪代码可以看到解锁界面并不是一个
+Activity,这是只是向特定层上绘图,其代码了存放在特殊的位置
+8. 开机自启动的第三方应用程序
+1) 源码:
+frameworks/base/services/java/com/android/server/am/ActivityManagerService.java
+2) 说 明 : 系 统 启 动 成 功 后
+SystemServer
+调 用
+ActivityManagerNative.getDefault().systemReady()通知 ActivityManager 启动成功,
+ActivityManager 会通过置变量 mBooting,通知它的另一线程,该线程会发送广播
+android.intent.action.BOOT_COMPLETED 以告知已注册的第三方程序在开机时自
+动启动。
+9. 总结
+综上所述,系统层次关于启动最核心的部分是 zygote(即 app_process)和 system server,
+zygote 它负责最基本的虚拟机的建立,以支持各个应用程序的启动,而 system server
+用于管理 android 后台服务,启动步骤及顺序。
+10. 参考
+http://blog.csdn.net/basonjiang_sz/category/648399.aspx
+```
+
+## 开机动画
+
+```
+开机动画
+1. 说明
+android 开机画面由三部分组成,第一部分在 bootloader 启动时显示,第二部分在启
+动 kernel 时显示,第三部分在系统启动时(bootanimation)显示(动画)
+2. bootloader 开机图片
+1) 一般使用 rle 格式图片,不同的 android 系统不同此图片可能放在不同位置,以下
+实例均以 G1 为例,G1 放在 splash 分区中
+2) 制作 rle 格式开机图片
+a) 将图片转成 320x480,256 色,保存成不带 Alpha 通道的 png 格式
+b) 使用 convert 工具将 splash.png 转换成8位色的 splash.raw
+convert splash.png -depth 8 rgb:splash.raw
+确认 splash.raw 大小为 460800 字节
+c) 使用 android 工具 rgb2565 改变图像格式
+out/host/linux-x86/bin/rgb2565 < splash.raw > splash.raw565
+确认 splash.raw565 大小为 307200 字节
+3) 烧写(以 G1 为例)
+按 Power+Camera 启动到烧写模式
+fastboot flash splash1 splash.raw565
+3. kernel 开机图片
+1) 相关代码
+kernel/drivers/video/msm/msm_fb.c(G1 使用高通芯片组 MSM7201 芯片组)
+它会读出根目录下的 xx.rle,并显示为开机画面,rle 做法同上
+4. bootanimation 开机动画
+1) android 2.0 之前
+a) 说明
+使用 bootanimation 程序显示开机画面,如需修改开机画面,需要修改源码
+b) 代码
+frameworks/base/cmds/bootanimation/*
+frameworks/base/core/res/assets/images/android-logo*
+2) android 2.0 及之后
+a) 说明
+使用 bootanimation 程序显示开机画面,如需修改开机画面,不用修改代码,只
+需按格式要求做 bootanimation.zip 包,放在系统的/system/media 目录中,或
+/data/local 目录中即可,两个目录下都存在时,优先使用/data/local 下的
+b) 代码
+frameworks/base/cmds/bootanimation/*
+frameworks/base/core/res/assets/images*
+c) 制作动画包
+i) 描述文件 desc.txt
+480 427 30
+p 1 0 part0
+p 0 10 part1
+总体说明:480 为宽度,427 为高度,30 为帧数,即每秒播放动画 30 帧
+部分说明:第一项 p 为标志符,第二项为循环次数 1 为只播放 1 次,0为无
+1252010 年谢彦的 Android 笔记
+限循环,第三项为两次循环之间间隔的帧数,第四项为对应的目录名
+ii) 图片
+图片放在 desc.txt 中目录名指定的目录中,目录中按字符顺序播放
+iii) 打包
+♦ windows
+使用 winrar 找包,选择 ZIP 格式,压缩标准要选“储存”
+♦ linux
+zip -0 -r ../bootanimation.zip ./*
+linux 命令使用-0 指定压缩等级为最低等级 stored,即只归档不压缩,否
+则可能由于包格式问题引起动画显示为黑屏
+♦ 注意
+打包不要带上层目录
+5. 参考
+1) bootanimation相关
+http://blog.21ic.com/user1/2537/archives/2009/65606.html
+2) rle文件制作
+http://hi.baidu.com/kernel_linux/blog/item/9eff140f9d089c206159f3cb.html
+3) bootloader启动
+http://blog.csdn.net/yili_xie/archive/2010/05/14/5592276.aspx
+```
+
+## android应用的启动过程
+
+```
+1. 说明
+应用的启动过程通常是通过 startActivity 函数,无论是在应用中调其它应用还是在桌
+面(桌面是 Launcher 应用)上点击,最终都将通过这个函数启动进程或者界面,下
+面以分析代码的方式,介绍它具体的工作过程
+2. 过程
+1) Launcher/src/com/android/launcher.java
+在应用或桌面上启动应用,例如桌面应用的启动由于中调用了 startActivity()函数
+2) frameworks/base/core/java/android/app/Activity.java:startActivity()
+Activity.java 继承了 Context.java,并实现了它的 startActivity(),它向下调用了
+execStartActivity()
+3) frameworks/base/core/java/android/app/Instrumentation.java:execStartActivity()
+execStartActivity 利用 IntentFilter 得到具体 Activity,并调用了更下层的 startActivity
+4) frameworks/base/core/java/android/app/ActivityManagerNative.java
+ActivityManagerProxy.startActivity()
+IBinder.transact(....);
+它通过 Binder 的方式与 ActivityManagerService.java 通讯,并发送启动请求
+5) frameworks/base/core/java/android/os/Binder.java:execTransact()
+Binder 消息转递的实现,用于用户应用与后台服务的通讯
+6) frameworks/base/services/java/com/android/server/am/ActivityManagerService.java
+onTransact();
+startProcessLocked();
+开启新线程
+7) frameworks/base/core/java/android/os/Process.java 的函数 start 为入口
+通过 socket 发给 zygote 进程
+8) frameworks/base/core/java/com/android/internal/os/Zygote*.java
+告知虚拟机新建进程,此时会将要建立的进程名,用户名,组名一并传给虚拟机,
+以建立进程
+9) dalvik/libcore/dalvik/src/main/java/dalvik/system/Zygote.java
+虚拟机处理
+10)
+dalvik/vm/native/dalvik_system_Zygote.c (forkAndSpecializeCommon)
+虚拟机处理
+```
+
+## 服务的原理与使用
+
+```
+1. 说明
+android 的后台运行在很多 service,它们在系统启动时被 SystemServer 开启,支持系
+统的正常工作,比如 MountService 监听是否有 SD 卡安装及移除,ClipboardService
+提供剪切板功能,PackageManagerService 提供软件包的安装移除及查看等等,应用
+程序可以通过系统提供的 Manager 接口来访问这些 Service 提供的数据,以下将说明
+他们的工具流程
+2. 举例说明基本流程
+以 android 系统支持 sensor(传感器)实例来说明框架层的 service 和 manager 是如何
+配合工作的
+1) 什么是 sensor
+sensor 是传感器, 比如控制横竖屏切换利用的就是重力传感器(gsensor), 还有
+accelerator sensor 可取得 x, y, z 三个轴上的加速度(应用如平衡球, 小猴吃香蕉等)
+2) 应用程序调用(以下为关键代码)
+sensorManager=(SensorManager)getSystemService(context.SENSOR_SERVICE);
+lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+sensorManager.registerListener(sensorListener,
+lightSensor,
+SensorManager.SENSOR_DELAY_NORMAL);
+3) Manager 层
+a) 提供给应用程序调用的接口,同实与 Service 交互,实现功能
+frameworks/base/core/java/android/hardware/SensorManager.java
+4) Service 层
+a) 开机时就运行的管理 Sensor 的后台服务
+frameworks/base/services/java/com/android/server/SensorService.java
+b) snesor 后台服务需要的 JNI,通过它与系统级交互
+frameworks/base/services/jni/com_android_server_SensorService.cpp
+5) 系统层
+a) 传感器的头文件,硬件提供商按此文件的定义实现其功能
+hardware/libhardware/include/hardware/sensors.h
+b) 传感器的系统层实现,与内核交互,此处通常是硬件提供商提供的
+hareware/libsensors
+6) 内核及硬件层
+内核访问硬件,同时以设备文件等方式提供给上层控制接口和传感器数据
+3. 系统层实现
+1) frameworks/base/core/java/android/*Manager.java 对应用的接口
+2) frameworks/base/core/jni/
+对应用的接口的 JNI
+3) frameworks/base/services/java/com/android/server/ 后台服务
+4) frameworks/base/services/jni/
+JNI 与系统层接
+5) hardware/libhardware/include/
+系统层头文件
+6) hardware/libxxx
+系统库支持
+7) 内核支持
+4. 应用程序如何使用
+1282010 年谢彦的 Android 笔记
+1) 查看系统提供哪些服务
+find frameworks/base/core/java/android/ -name *Manager.java
+此处可以看到调用系统提供服务的入口
+2) 一般 register listener,事件发生时都收到回调
+5. 如何新建一个 service(以 froyo 为例)
+1) 接口:接口供应用调用
+frameworks/base/core/java/android/app/ContextImpl.java 加服务名与 Manager 对应
+frameworks/base/core/java/android/content/Context.java 加服务名定义
+2) Manager:提供服务对应的调用接口
+frameworks/base/core/java/android/app/StartXXXXManager.java 实现调用接口
+frameworks/base/core/java/android/app/IXXXXManager.aidl 定义调用接口
+frameworks/base/Android.mk
+加入 aidl 的编译
+3) service:提供后台服务支持
+frameworks/base/services/java/com/android/server/XXXXService.java 服务实现
+frameworks/base/services/java/com/android/server/SystemServer.java
+启动服务
+```
+
+## 键盘事件处理
+
+```
+1. 基本流程
+1) 内核处理按键,通过设备文件的方式提供给 framework 层
+2) framework 层的 KeyInputQueue.java 启动线程从设备文件中读出键码,然后把读出
+的键码按 kl 文件转成相应键值(JNI 调用 EventHub.cpp),最后写入事件队列
+3) framework 层的 WindowManagerService.java 启动线程从事件队列中读出键值,然
+后根据当前 focus 分发给相应窗口
+4) UI 通过 KeyCharacterMap.java 处理 kcm 规则将用户基本按键与功能键(Shift, Alt
+等)组合,得出最终按键
+2. 两个配置文件
+通常更换一种新的硬件,可能其键盘布局及键码与标准版本不同,不用更改代码,只
+要修改以下配置文件即可(如果增加新的未定义功能的按键,则需要修改代码)
+1) xxx.kl
+a) 位置
+development/emulator/keymaps/*.kl
+(1.6 版本模拟器使用)
+sdk/emulator/keymaps/*.kl (2.2 版本模拟器使用)
+vendor/xxx/xxx/*.kl (特定硬件专用 kl)
+b) 功能
+硬件全键盘的键码与键值的对应规则文件(如 0x21 对应 A)
+2) xxx.kcm
+a) 位置
+development/emulator/keymaps/*.kcm (1.6 版本模拟器使用)
+sdk/emulator/keymaps/*.kcm (2.2 版本模拟器使用)
+vendor/xxx/xxx/*.kcm (特定硬件专用 kcm)
+b) 功能
+硬件全键盘的键值对应表(如按下 Alt, Shift 时按键对应的键值)
+3. 相关代码
+1) frameworks/base/core/java/android/view/KeyEvent.java (按键事件定义)
+2) frameworks/base/services/java/com/android/server/KeyInputQueue.java (事件读取线
+程)
+3) frameworks/base/services/java/com/android/server/WindowManagerService.java (事件
+分发线程)
+4) frameworks/base/core/java/android/view/KeyCharacterMap.java
+(功能键转换
+kcm)
+5) frameworks/base/libs/ui/EventHub.cpp (键码与键值转换)
+4. 参考
+1) http://www.armfans.net/archiver/tid-2671.html
+2) http://www.armfans.net/viewthread.php?tid=2671
+```
+
+## 包管理
+
+```
+1. 说明
+包管理(Package manager)非常重要,它关系着软件包的安装,卸载,查看和使用,
+它是运行在后台的一个服务,名叫 PackageManagerService,包括对软件包的解包,
+验证,安装等
+2. 系统软件包管理信息存储在哪
+/data/system/packages.xml
+通过它可以看到系统安装的所有软件包,以及软件包的信息
+3. 包管理相关源码在哪
+frameworks/base/services/java/com/android/server/PackageManagerService.java
+4. 系统自带的软件能升级吗(即安装在系统分区 system 中的包,如电话,短信)
+可以升级,如果升级/system/app 目录中的包,PackageManagerServer.java 对此情况进
+行处理,被升级的包出现 package.xml 的 updated-package 字段中,新的包信息会写在
+package 字段中,卸载新包后,原包会恢复到 package 字段中。启动时新的包会优先
+地被启动
+5. 为什么安装软件时会报错
+1) 版本不匹配
+比如在 2.2 的 SDK 上编译的软件,不能在 1.6 上安装
+AndroidManifest.xml 中可以对版本所安装系统的版本进行指定
+2) 签名信息不匹配
+软件升级时会做签名信息对比,如果前后两个包签名不一致,则不能安装
+3) 包完整性不满足
+签名是对包中每个文件进行的,它的压缩格式是 zip,如果手工解包后替换了某文
+件再打包,被替换的文件与签名验证不一致,则不能安装
+4) 格式不对
+有些从网上下载的包可能打了多层压缩,比如又将 apk 打包成了 rar 格式,建议解
+压缩看一下格式再安装
+6. 包的权限
+1) 软件在 AndroidMenifest.xml 中都会指明其需要的权限,安装包时图形界面也通常
+显示出它所需要的权限,供用户判断是否安装
+2) 特殊情况
+有些软件没有说明需要访问 SD 卡和打电话的权限,但安装后却出现此权限。
+当 使 用 旧 的 SDK 所 做 的 包 向 新 的 SDK 安 装 时 , 可 能 出 现 这 种 情 况 , 见
+framework/base/core/java/android/content/pm/PackageParser.java
+中
+的
+NEW_PERMISSION,此处判断编译使用的 SDK 版本是否在 android1.6 之前
+(DONUT),如果在之前就加入这两个权限。
+```
+
+## 签名
+
+```
+用命令行方式签名
+使用标准的 java 工具 keytool 和 jarsigner 来生成证书和给程序签名
+a) 生成签名
+$ keytool -genkey -keystore keyfile -keyalg RSA -validity 10000 -alias yan
+注:validity 为天数,keyfile 为生成 key 存放的文件,yan 为私钥,RSA 为指定
+的加密算法(可用 RSA 或 DSA)
+b) 为 apk 文件签名
+$ jarsigner -verbose -keystore keyfile -signedjar signed.apk base.apk yan
+注:keyfile 为生成 key 存放的文件,signed.apk 为签名后的 apk,base.apk 为
+未签名的 apk,yan 为私钥
+1352010 年谢彦的 Android 笔记
+c) 看某个 apk 是否经过了签名
+$ jarsigner -verify my_application.apk
+d) 查看 apk 有效期等签名信息
+$ jarsigner -verify -verbose -certs my_application.apk
+e) 优化(签名后需要做对齐优化处理)
+$ zipalign -v 4 your_project_name-unaligned.apk your_project_name.apk
+3) 在源码中编译的签名
+a) 使用源码中的默认签名
+在源码中编译一般都使用默认签名的,在某源码目录中用运行
+$ mm showcommands 能看到签名命令
+Android 提供了签名的程序 signapk.jar,用法如下:
+$ signapk publickey.x509[.pem] privatekey.pk8 input.jar output.jar
+*.x509.pem 为 x509 格式公钥,pk8 为私钥
+build/target/product/security 目录中有四组默认签名可选: testkey, platform, shared,
+media ( 具 体 见 README.txt ), 应 用 程 序 中 Android.mk 中 有 一 个
+LOCAL_CERTIFICATE 字段,由它指定用哪个 key 签名,未指定的默认用
+testkey.
+b) 在源码中自签名
+Android 提供了一个脚本 mkkey.sh(build/target/product/security/mkkey.sh),用
+于生成密钥,
+生成后在应用程序中通过 Android.mk 中的 LOCAL_CERTIFICATE
+字段指名用哪个签名
+c) mkkey.sh 介绍
+i) 生成公钥
+openssl genrsa -3 -out testkey.pem 2048
+其中-3 是算法的参数,2048 是密钥长度,testkey.pem 是输出的文件
+ii) 转成x509 格式(含作者有效期等)
+openssl req -new -x509 -key testkey.pem -out testkey.x509.pem -days 10000 -subj
+‘/C=US/ST=California/L=Mountain
+View/O=Android/OU=Android/CN=Android/emailAddress=android@android.com’
+iii)
+生成私钥
+openssl pkcs8 -in testkey.pem -topk8 -outform DER -out testkey.pk8 -nocrypt
+把的格式转换成 PKCS #8,这里指定了-nocryp,表示不加密,所以签名时
+不用输入密码
+4. 签名的相关文件
+1) apk 包中签名相关的文件在 META_INF 目录下
+CERT.SF:生成每个文件相对的密钥
+MANIFEST.MF:数字签名信息
+xxx.SF:这是 JAR 文件的签名文件,占位符 xxx 标识了签名者
+xxx.DSA:对输出文件的签名和公钥
+2) 相关源码
+development/tools/jarutils/src/com.anroid.jarutils/SignedJarBuilder.java
+frameworks/base/services/java/com/android/server/PackageManagerService.java
+frameworks/base/core/java/android/content/pm/PackageManager.java
+frameworks/base/cmds/pm/src/com/android/commands/pm/Pm.java
+1362010 年谢彦的 Android 笔记
+dalvik/libcore/security/src/main/java/java/security/Sign*
+build/target/product/security/platform.*
+build/tools/signapk/*
+5. 签名的相关问题
+一般在安装时提示出错:
+INSTALL_PARSE_FAILED_INCONSISTENT_CERTIFICATES
+1) 两个应用,名字相同,签名不同
+2) 升级时前一版本签名,后一版本没签名
+3) 升级时前一版本为 DEBUG 签名,后一个为自定义签名
+4) 升级时前一版本为 Android 源码中的签名,后一个为 DEBUG 签名或自定义签名
+5) 安装未签名的程序
+6) 安装升级已过有效期的程序
+6. 相关工具
+1) 查看某个 x509 证书的的有效日期
+在 SignApk.java 中打印出 publicKey.getNotAfter()即可
+7. 参考
+http://developer.android.com/guide/publishing/app-signing.html
+http://www.pgcw.com.cn/Newsdetail.asp?id=257565010
+http://www.eoeandroid.com/thread-23010-1-1.html
+http://pepa.javaeye.com/blog/250991
+```
+
+## 权限
+
+```
+应用的权限
+1. 权限
+每个程序在安装时都有建立一个系统 ID,如 app_15,用以保护数据不被其它应用获
+取。Android 根据不同的用户和组,分配不同权限,比如访问 SD 卡,访问网络等等。
+底层映射为 Linux 权限。
+2. 应用申请权限
+1) 应用开发者通过 AndroidManifest.xml 中<uses-permission>指定对应权限,再映射
+到底层的用户和组,默认情况下不设定特殊的权限。AndroidManifest 加入权限后
+系统安装程序时会在图形界面中提示权限
+2) 如果是缺少某个权限(程序中使用的某种权限而在 AndroidManifest.xml 中并未声
+名),程序运行时会在 logcat 中打印出错误信息 requires <permission>
+3) 与某个进程使用相同的用户 ID
+应用程序可与系统中已存在的用户使用同一权限,需要在 AndroidManifest.xml 中
+设置 sharedUserId,如 android:sharedUserId="android.uid.shared",作用是获得系统
+权限,但是这样的程序属性只能在 build 整个系统时放进去(就是系统软件)才起
+作用,共享 ID 的程序必须是同一签名的
+3. Android 权限的实现
+1) 第一层:由应用设置,修改 AndroidManifest.xml,形如:
+<uses-permission android:name=”android.permission.INTERNET”/>
+2) 第二层:框架层,权限对应组,frameworks/base/data/etc/platform.xml,形如:
+<permission name=”android.permission.INTERNET”>
+<group gid=inet” />
+</permission>
+3) 第三层:系统层,系统的权限,system/core/include/private/android_filesystem_config.h,形如:
+#define AID_INET 3003
+建立 SOCKET 的权限
+......
+{ “inet”, AID_INET, },
+4. 系统权限
+1) 特殊权限的用户
+a) system
+uid 1000
+b) radio uid 1001
+2) 查看可用系统的权限
+$ adb shell
+# pm list permissions
+5. framework 层对权限的判断
+1) 相关源码实现
+frameworks/base/services/java/com/android/server/PackageManagerService.java
+frameworks/base/services/java/com/android/server/am/ActivityManagerService.java
+2) 在系统层,如何查看某个应用的权限
+a) 在应用进程开启时,ActivityManagerService.java 会在 logcat 中输出该应用的权
+限,形如:
+1382010 年谢彦的 Android 笔记
+I/ActivityManager(1730):
+Start
+proc
+com.anbdroid.phone
+for
+restart
+com.android.phone:pid=2605 uid=1000 gids={3002,3001,3003}
+即它有 3001,3002,3003 三个权限:访问蓝牙和建立 socket
+b) 注意:此打印输出在应用第一次启动时。如果进程已存在,需要先把对应进程
+杀掉,以保证该进程重新启动,才能显示
+c) 具体实现,见:
+framewors/base/services/java/com/android/server/am/ActivityManagerService.java
+的函数 startProcessLocked(),其中取其组信息的具本语句是
+mContext.getPackageManager().getPackageGids(app.info.packageName);
+6. 参考
+http://wenku.baidu.com/view/7754a4360b4c2e3f5727634e.html
+```
+
+## 适配硬件平台
+
+```
+1. 相关硬件
+电池,RTC,键值(普通键值,DOCKING 键值),LED 灯,背光,传感器(亮度,
+距离,速度,指南针等)
+,振动,蓝牙,相机,音视频引擎,网络,显示,电话
+2. 硬件相关的主要目录
+kernel,vendor,device,hardware,bootable
+3. 以 HTC G1 为例分析其主要的平台配置目录 device/htc/dream/* (froyo 源码)
+1) 注意:froyo 以前版本在 vendor/htc 中,需要单独下载,现在都已经在 git 里包含
+了 g1,g2 的支持。
+2) 说明 (参见 g1,g2)
+a) AndroidProducts.mk
+说明产品都需要编什么东西,定义产品使用哪个 mk 文件
+b) vendorsetup.sh
+加上某硬件的支持,以便编译前用 lunch 选择
+c) full_dream.mk
+定义产品所要编译的项目,指定需要编译哪些应用,产品名称,设备,型号(重
+要)
+d) BoardConfig.mk
+含 mtd 设备的分区,硬件相关的模块,及编译工具
+e) AndroidBoard.mk
+编译 kernel, bootload, nandwrite, 键值定义文件, 开机画面的说明,重要的是
+kernel 的默认配置文件 KERNEL_DEFCONFIG
+f) device_*.mk
+相关具体硬件(美国版的 G1)
+g) overlay
+格式类似源码根目录,存在定制产生用到的资源
+h) *.kl, *.kcm
+键值定义
+i) *.sh
+辅助工具的脚本,如从 update.zip 中提取库
+4. 编译某平台相关代码
+1) G1/G2
+a) 下载并编译 kernel
+b) 从手机或 update.zip 中提取 so 库
+c) 编译,烧写
+2) 其它机型
+a) 下载并编译 kernel
+b) 按 froyo 新规则添加硬件相关目录结构(vender=>device),修改 mk 文件
+c) 从手机或 update.zip 中提取 so 库
+d) 编译,烧写
+5. 技巧
+1) 可以逐步替换 boot.img,system.img 以定位问题
+1452010 年谢彦的 Android 笔记
+2) 逐个对比新旧 system 目录,以确认问题
+3) 先让 adb shell 可用,以便调试
+a) 重要的包
+i) boot.img:含 kernel 和基本的文件系统
+理论上说,只有 boot.img 而没有 system.img 也是可以启动并连接 adb 调试
+的,因为 adbd 在 boot.img 所含的基本文件系统中,但是需要重新定义 init.rc
+ii) system.img:含主要系统,命令,库,图形界面
+iii) userdata.img:放用户数据
+b) 启动顺序为 bootloader->kernel->system->launcher
+```
+
+## FOTA
+
+```
+空中升级Fota
+1. 简介
+fota(Firmware Over The Air),移动终端空中下载软件升级技术。原理是根据算法把新
+旧版本之间的差别做成一个软件包,手机从服务器上下载到手机里,由手机完成软件
+版本的升级
+2. 用户操作
+1) 设置->关于手机->检查更新,检查是否有更新版本。
+2) 可以使用默认设置自动更新:设置->关于手机->自动系统检查
+3. 升级过程
+MT710 的 FOTA 由中国移动服务器发起,服务器发送 FOTA 信息到手机,手机收
+到信息并确认后,手机将自动上网下载升级包,下载后,手机将重启完成软件的更新。
+用户需要按照手机的提示,确认下载和安装即可,不需要其他操作,也不需要对手机
+进行特殊设置。下载中断时手机会自动续接,直到下载完毕。在手机 FOTA 过程中,
+需要保持手机在网络良好的连接状态,电池电量充足。
+4. Fota 的相关源码
+1) 升级界面
+package/app/Fota/*
+2) 系统层
+system/core/fota/*
+3) 底层库支持
+external/fotalib/*
+4) fota 分区
+因为像 boot.img 需要在系统之前修改,所以有 fota 启动方式
+bootable/bootloader/legacy/fota*
+```
+
+## Flash分区
+
+```
+1. 查看当前系统的分区情况
+$ adb shell
+$ cat /proc/mtd
+2. 分区对应的 img(源码编译后生成在 out/target/product/xxx/目录下)
+1) modem(多个,支持电话和 GPS)
+amss.mbn
+2) bootloader(启动用)
+appsboot.mbn
+3) 空中升级
+fota*(升级用, 可能多个)
+4) 内核和文件系统
+boot.img(内核和基本文件系统)
+5) 系统分区
+system.img(系统分区)
+6) 用户数据分区
+userdata.img(数据分区)
+3. 参考
+1) bootloader 启动顺序
+http://blog.csdn.net/yili_xie/archive/2010/05/14/5592276.aspx
+```
+
+## android p 上使用 hiden 的方法
+
+```
+方法1：
+private void testJavaPojie() {
+    try {
+        Class reflectionHelperClz = Class.forName("com.example.support_p.ReflectionHelper");
+        Class classClz = Class.class;
+        Field classLoaderField = classClz.getDeclaredField("classLoader");
+        classLoaderField.setAccessible(true);
+        classLoaderFIeld.set(reflectionHelperClz, null);
+        // ==> Class.classLoader = com.example.support_p.ReflectionHelper ????
+        // com.example.support_p.ReflectionHelper 这个类在哪里？？？
+    } catch(Exception e) {
+        e.printStackTrace();
+    }
+}
+
+方法2：
+第二种方法，「借助系统的类去反射」也就是说，如果系统有一个方法`systemMethod`，这个`systemMethod` 去调用反射相反的方法，那么`systemMethod`毋庸置疑会反射成功。但是，我们从哪去找到这么一个方法给我们用？事实上，我们不仅能找到这样的方法，而且这个方法能帮助我们调用任意的函数，那就是**反射本身！**
+Method metaGetDeclaredMethod = Class.class.getDeclaredMethod("getDeclardMethod"); // 公开API，无问题
+Method hiddenMethod = metaGetDeclaredMethod.invoke(hiddenClass, "hiddenMethod", "hiddenMethod参数列表"); // 系统类通过反射使用隐藏 API，检查直接通过。
+hiddenMethod.invoke // 正确找到 Method 直接反射调用
+```
+
+## YUV
+
+```
+https://mp.weixin.qq.com/s?__biz=MzUyOTA2MjA2NQ==&mid=2247483877&idx=1&sn=06b7296d19c3edf96a49b1b0a288b6b1&chksm=fa67803bcd10092d4631be81900e91ff15083e4ef28d121274d2ec3cc692018ceca13995d632&scene=0&xtrack=1&key=7865e1e5a7ba115ec737c955c34dd90271207e03cf02d71abfb3f179ac4458ae35883bc97eccc0a80c0f621e6f3495b61fc0d8d9f3352b646b88959e0090d0df2006e7e1663b51113f6fad1c93f1e004&ascene=1&uin=MTQzOTAxMDg4MA%3D%3D&devicetype=Windows+10&version=62060844&lang=zh_CN&pass_ticket=PxMajixtG4%2F1z9KAWqxn%2B7aMeu95XL6KXXPjRFfctJu2Mn3D0Hff6FIAZiyzR5dZ
+
+YUV
+YUV 编码采用了明亮度和色度表示每个像素的颜色。
+
+其中 Y 表示明亮度（Luminance、Luma），也就是灰阶值。
+
+U、V 表示色度（Chrominance 或 Chroma），描述的是色调和饱和度。
+
+YCbCr 其实是 YUV 经过缩放和偏移的翻版。其中 Y 与 YUV 中的 Y 含义一致,Cb,Cr 同样都指色彩，只是在表示方法上不同而已。YCbCr 其中 Y 是指亮度分量，Cb 指蓝色色度分量，而 Cr 指红色色度分量。
+
+YUV 优点
+对于 YUV 所表示的图像，Y 和 UV 分量是分离的。如果只有 Y 分量而没有 UV 分离，那么图像表示的就是黑白图像。彩色电视机采用的就是 YUV 图像，解决与和黑白电视机的兼容问题，使黑白电视机也能接受彩色电视信号。
+
+人眼对色度的敏感程度低于对亮度的敏感程度。主要原因是视网膜杆细胞多于视网膜锥细胞，其中视网膜杆细胞的作用就是识别亮度，视网膜锥细胞的作用就是识别色度。所以，眼睛对于亮度的分辨要比对颜色的分辨精细一些。
+
+利用这个原理，可以把色度信息减少一点，人眼也无法查觉这一点。
+
+所以，并不是每个像素点都需要包含了 Y、U、V 三个分量，根据不同的采样格式，可以每个 Y 分量都对应自己的 UV 分量，也可以几个 Y 分量共用 UV 分量。相比 RGB，能够节约不少存储空间。
+
+YUV 采样格式
+YUV 图像的主流采样方式有如下三种：
+
+YUV 4:4:4 采样
+
+YUV 4:2:2 采样
+
+YUV 4:2:0 采样
+
+YUV 4:4:4
+YUV 4:4:4 表示 Y、U、V 三分量采样率相同，即每个像素的三分量信息完整，都是 8bit，每个像素占用 3 个字节。
+
+如下图所示：
+
+
+
+
+
+四个像素为： [Y0 U0 V0] [Y1 U1 V1] [Y2 U2 V2] [Y3 U3 V3]
+采样的码流为：Y0 U0 V0 Y1 U1 V1 Y2 U2 V2 Y3 U3 V3
+映射出的像素点为：[Y0 U0 V0] [Y1 U1 V1] [Y2 U2 V2] [Y3 U3 V3]
+可以看到这种采样方式与 RGB 图像大小是一样的。
+
+YUV 4:2:2
+YUV 4:2:2 表示 UV 分量的采样率是 Y 分量的一半。
+
+如下图所示：
+
+
+
+
+
+四个像素为： [Y0 U0 V0] [Y1 U1 V1] [Y2 U2 V2] [Y3 U3 V3]
+采样的码流为：Y0 U0 Y1 V1 Y2 U2 Y3 U3
+映射出的像素点为：[Y0 U0 V1]、[Y1 U0 V1]、[Y2 U2 V3]、[Y3 U2 V3]
+其中，每采样一个像素点，都会采样其 Y 分量，而 U、V 分量都会间隔采集一个，映射为像素点时，第一个像素点和第二个像素点共用了 U0、V1 分量，以此类推。从而节省了图像空间。
+
+比如一张 1920 * 1280 大小的图片，采用 YUV 4:2:2 采样时的大小为：
+
+(1920 * 1280 * 8 + 1920 * 1280 * 0.5 * 8 * 2 ) / 8 / 1024 / 1024 = 4.68M
+
+可以看出，比 RGB 节省了三分之一的存储空间。
+
+YUV 4:2:0
+YUV 4:2:0 并不意味着不采样 V 分量。它指的是对每条扫描线来说，只有一种色度分量以 2:1 的采样率存储，相邻的扫描行存储不同的色度分量。也就是说，如果第一行是 4:2:0，下一行就是 4:0:2，在下一行就是 4:2:0，以此类推。
+
+如下图所示：
+
+
+
+
+
+图像像素为：
+[Y0 U0 V0]、[Y1 U1 V1]、 [Y2 U2 V2]、 [Y3 U3 V3]
+[Y5 U5 V5]、[Y6 U6 V6]、 [Y7 U7 V7] 、[Y8 U8 V8]
+
+采样的码流为：
+Y0 U0 Y1 Y2 U2 Y3 
+Y5 V5 Y6 Y7 V7 Y8
+
+映射出的像素点为：
+[Y0 U0 V5]、[Y1 U0 V5]、[Y2 U2 V7]、[Y3 U2 V7]
+[Y5 U0 V5]、[Y6 U0 V5]、[Y7 U2 V7]、[Y8 U2 V7]
+其中，每采样一个像素点，都会采样 Y 分量，而 U、V 分量都会隔行按照 2:1 进行采样。
+
+一张 1920 * 1280 大小的图片，采用 YUV 4:2:0 采样时的大小为：
+
+(1920 * 1280 * 8 + 1920 * 1280 * 0.25 * 8  * 2 ) / 8 / 1024 / 1024 = 3.51M
+
+相比 RGB，节省了一半的存储空间。
+
+YUV 存储格式
+YUV 数据有两种存储格式：平面格式（planar format）和打包格式（packed format）。
+
+planar format：先连续存储所有像素点的 Y，紧接着存储所有像素点的 U，随后是所有像素点的 V。
+
+packed format：每个像素点的 Y、U、V 是连续交错存储的。
+
+因为不同的采样方式和存储格式，就会产生多种 YUV 存储方式，这里只介绍基于 YUV422 和  YUV420 的存储方式。
+
+YUYV
+YUYV 格式属于 YUV422，采用打包格式进行存储，Y 和 UV 分量按照 2:1 比例采样，每个像素都采集 Y 分量，每隔一个像素采集它的 UV 分量。
+
+Y0 U0 Y1 V0 Y2 U2 Y3 V2
+
+Y0 和 Y1 共用 U0 V0 分量，Y2 和 Y3 共用 U2 V2 分量。
+
+UYVY
+UYVY 也是 YUV422 采样的存储格式中的一种，只不过与 YUYV 排列顺序相反。
+
+U0 Y0 V0 Y1 U2 Y2 V2 Y3
+
+YUV 422P
+YUV422P 属于 YUV422 的一种，它是一种 planer 模式，即 Y、U、V 分别存储。
+
+YUV420P 和 YUV420SP
+YUV420P 是基于 planar 平面模式进行存储，先存储所有的 Y 分量，然后存储所有的 U 分量或者 V 分量。
+
+
+
+同样，YUV420SP 也是基于 planar 平面模式存储，与 YUV420P 的区别在于它的 U、V 分量是按照 UV 或者 VU 交替顺序进行存储。
+
+
+
+YU12 和 YU21
+YU12 和 YV12 格式都属于 YUV 420P 类型，即先存储 Y 分量，再存储 U、V 分量，区别在于：YU12 是先 Y 再 U 后 V，而 YV12 是先 Y 再 V 后 U 。
+
+NV21 和 NV21
+NV12 和 NV21 格式都属于 YUV420SP 类型。它也是先存储了 Y 分量，但接下来并不是再存储所有的 U 或者 V 分量，而是把 UV 分量交替连续存储。
+
+NV12 是 IOS 中有的模式，它的存储顺序是先存 Y 分量，再 UV 进行交替存储。
+
+NV21 是 安卓 中有的模式，它的存储顺序是先存 Y 分量，在 VU 交替存储。
+
+YUV 与 RGB 转换
+YUV 与 RGB 之间的转换，就是将 图像所有像素点的 R、G、B 分量和 Y、U、 分量相互转换。
+```
+
+## Android Jetpack
+
+## 安卓Webview网页秒开策略探索
+
+```
+https://juejin.im/post/5d2605f8f265da1bc23fa07c
+
+痛点是什么？
+网页加载缓慢，白屏，使用卡顿。
+为何有这种问题？
+1.调用loadUrl()方法的时候，才会开始网页加载流程
+2.js臃肿问题
+3.加载图片太多
+4.webview本身问题
+webiew是怎么加载网页的呢？
+webview初始化->DOM下载→DOM解析→CSS请求+下载→CSS解析→渲染→绘制→合成
+优化方向是？
+1.webview本身优化
+
+提前内核初始化
+代码：
+
+public class App extends Application {
+
+    private WebView mWebView ;
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mWebView = new WebView(new MutableContextWrapper(this));
+    }
+}
+
+```
+
+## 串口通信
+
+```
+https://juejin.im/post/5d3009375188251b4b32af17
+```
+
+## 利用GitHub实现简单的个人App版本更新
+
+```
+https://juejin.im/post/5d1df865e51d4550a629b2e5
+```
+
+## Smali Viewer 用户指南(查看 Smali 文件用)
+
+```
+http://blog.avlyun.com/show/%E3%80%8Asv%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97%E3%80%8B/
+```
+
+## QMUI(简约的ui框架)
+
+```
+https://qmuiteam.com/android
+```
+
+## html 转 pdf 的库
+
+```
+https://wkhtmltopdf.org/
+
+https://github.com/wkhtmltopdf/wkhtmltopdf
+```
+
+## 机器学习
+
+```
+https://github.com/Avik-Jain/100-Days-of-ML-Code-Chinese-Version
+```
+
+## android高级学习指南
+
+```
+Android 高级学习指南
+思维导图
+Android 基础
+
+相关原理
+常见 IPC 方式
+Binder 机制
+AIDL 的使用
+Handler 机制
+ThreadLocal 原理
+AsyncTask 原理
+ListView 工作原理
+阅读源码
+熟悉常见优化
+RecyclerView 工作原理
+阅读源码
+自定义 LayoutManager
+Animation 工作原理
+Activity 难点
+setResult() 和 finish() 的顺序关系？
+onSaveInstanceState() 和 onRestoreInstanceState()
+onNewIntent() 和 onConfigurationChanged()
+Service 难点
+startService 与 bindService 的区别？
+Service 中 onStartCommand 返回值的作用？
+bindService后，ServiceConnection 里面的回调方法运行在哪个线程？它们的调用时机分别是什么？
+Service 的 onCreate 运行在哪个线程？
+ContentProvider 难点
+ContentProvider 的生命周期
+ContentProvider 的 onCreate 和 CRUD 运行在哪个线程？它们是线程安全的吗？
+ContentProvider 的内部存储只能是 SQLite 吗？
+RemoteViews
+熟悉 RemoteViews 的使用，并了解其运行原理
+Material Design（材料设计）
+熟练使用材料设计的控件及布局
+自定义 View
+View 的绘制流程
+onMeasure
+onLayout
+onDraw
+invalidate() 与 postInvalidate()
+事件分发机制
+onDispatchTouchEvent
+onInterceptTouchEvent
+onTouchEvent
+事件冲突处理
+贝塞尔曲线、粒子效果
+性能优化
+布局优化：ViewStub、include、merge 的使用，它们的区别？
+过度渲染的处理
+ANR 的处理
+监控：埋点、Crash 上报
+内存优化
+OOM 的处理
+
+内存泄露的处理
+
+内存检测
+
+内存分析
+
+Bitmap 的优化：超大图的加载原理
+
+网络优化
+API 优化
+流量优化
+弱网优化
+电量优化
+WakeLock 机制
+JobScheduler 机制
+第三方开源库
+OKHttp 原理
+Retrofit 原理
+RxJava 原理
+Glide 原理：加载原理、三级缓存、LRU 算法
+Dagger2 原理
+ButterKnife 原理
+EventBus 原理
+RxJava 原理
+混合开发
+WebView
+React Native
+Flutter
+NDK 开发
+熟悉调用 JNI 方法的方式，熟悉如何回调 Java 方法。
+
+安全
+熟悉各种发编译，二次打包工具，了解 smali。
+
+动态化
+阅读 VirtualAPK、Tinker 的源码，熟悉常见的热修复和插件化原理。
+
+Gradle
+Groovy 语法
+Gradle 插件开发基础
+设计模式与架构
+熟悉 6 大基本原则
+
+MVC、MVP、MVVM
+
+组件化
+
+Jetpack
+
+其他问题
+Activity、Window，View 之间的关系？
+子线程访问 UI 却不报错的原因？
+主线程的消息循环是一个死循环，为何不会卡死？
+Binder、IBinder、IInterface 的关系？
+Java 知识
+String 常量池
+类型转换原理
+ArrayList 实现原理
+HashMap 实现原理
+常见锁（乐观锁、悲观锁），死锁解决方法
+synchronized 关键字
+volatile 关键字
+常见 IO（AIO，BIO，NIO）
+常见并发框架
+了解类加载机制
+了解垃圾回收机制
+总结
+以上就是 Android 高级工程师 需要掌握的知识点，高级工程师需要掌握的知识点还是比较多的。如果说初级工程师是打捞基础的过程，那么高级工程师就是一个沉淀技术进阶的过程。
+
+高级工程师一般是指 3 - 5 年工作经验，如果学习能力比较强 3 工作经验足够进阶到高级工程师的。应聘高级工程师薪资一般在 15k - 25k 左右，这里的薪资范围一般会根据是否有亮点上下浮动。
+
+高级工程师对 Android 的理解，不应该还停留在对 API 的使用。初级工程师可以说是对 API 熟悉的过程，高级工程师更应该注重的是 API 内部的原理，知其然而知其所以然。
+
+这个阶段阅读源码是最好的进阶方式，当然阅读源码很容易陷入细节无法自拔。这里推荐看一下高质量的博客和一些进阶书籍，根据博客和书的思路有针对性的看源码是比较推荐的方式。
+
+Android 方面推荐看下：
+
+任玉刚的《Android 开发艺术探索》
+刘望舒的《Android 进阶揭秘》
+《Android 系统源代码情景分析》
+《深入理解 Android》系列
+《深入理解 Android 热修复技术原理》
+由于 Android 与 Java 有很大的渊源，所以 Java 知识对高级工程师来说也是很重要的。这个阶段需要对 Java 有更深入的理解，还要对 Java 虚拟机有一定的研究。
+
+Java 方面推荐看下：
+
+《Java 并发编程的艺术》
+《Java 并发编程实战》
+《Java 多线程编程核心技术》
+《深入理解 Java 虚拟机》
+如果想让自己更加有亮点，推荐注重下面几个方面：
+
+创建一个 GitHub 账号，多输出一些高质量的开源项目
+拥有一个持续输出的技术博客
+阅读源码
+```
+
+## Android 资深（专家）学习指南
+
+```
+Android 资深(专家) 思维导图
+
+系统启动过程
+这一部分是 Android 系统从按下电源键开始，然后到展示开机界面，再到展示桌面之前的一个过程。了解下面相关进程的工作流程，会对 Android 系统有一个整体的概念，是一个从 0 到 1 的过程，对深入研究 Android 系统内部机制有很大帮助。
+
+init 进程
+
+了解 init 进程创建与启动的流程。
+
+Zygote 进程
+
+了解 Zygote 进程创建的流程，以及 fork 的过程。
+
+system_server 进程
+
+了解 system_server 进程启动流程，工作流程。
+
+ServiceManager
+
+了解 ServiceManager 的启动流程，以及 ServiceManager 在系统中的作用。
+
+内核技术
+这一部分是计算机操作系统相关的原理，也是计算机相关专业的一门必修课程，推荐学习下相关知识。
+
+CPU 调度
+进程管理
+文件系统
+内存管理
+通信方式
+Binder
+
+Binder 是 Android 系统中特有的一种 IPC 通信方式，建议阅读 Binder 相关的源码，与深入越好，理解 Binder 工作的原理，了解服务的注册、获取、死亡通知的流程。
+
+Handler
+
+Handler 是 Android 系统中线程间通信的方式，已经在 Android 高级工程师部分说过了。这里一定要阅读下源码了解内部的运行机制。
+
+Socket
+
+Socket 是系统中常见的一种 IPC 通信方式，Socket 的应用范围很广，在进程间通信、网络通信都会用到，建议深入了解下。
+
+Pipe
+
+Pipe（管道）是 Linux 系统中常见的一种 IPC 通信方式，建议深入了解下工作原理。
+
+signal
+
+signal（信号量）是系统中常见的一种 IPC 通信方式，建议深入了解下工作原理。
+
+核心服务
+Activity、Service、Broadcast、ContentProvider
+
+了解四大组件启动流程，理解生命周期回调过程，了解工作原理。
+
+ActivityManagerService（AMS）
+
+理解 ActivityManagerService 工作流程，以及与 Activity 工作的流程。
+
+WindowManagerService（WMS）
+
+理解 WindowManagerService 工作流程，以及与 ActivityManagerService 和 Activity 工作的过程。
+
+View、Window、Surface
+
+理解 Activity、Window、View 之间的关系，了解 View 渲染机制。
+
+Surface、SurfaceFlinger
+
+理解 View 与 Surface 之间的关系，了解 SurfaceFlinger 工作流程，理解 View 渲染的过程。
+
+PackageManagerService（PKMS）
+
+理解 PackageManagerService 工作流程，了解 Apk 安装与卸载过程。
+
+PowerManagerService（PMS）
+
+理解 PackageManagerService 工作流程，了解屏幕唤醒、灭屏的过程，并理解 WeakLock 机制。
+
+InputManagerService（IMS）
+
+理解 InputManagerService 工作流程，理解事件的创建流程、事件分发机制，ANR 触发原理。
+
+AudioFlinger
+
+理解 AudioFlinger 工作流程。
+
+AssertManager
+
+理解 Apk 安装包中资源管理的过程。
+
+异常处理
+可以从源码的角度分析异常产生的原因，定位异常，以及处理。
+
+Watchdog
+ANR
+Java Crash
+Native Crash
+卡顿
+Java 虚拟机
+内存模型
+
+了解 JVM 内存模型，包括堆、栈、方法区、运行时常量池等。
+
+类加载机制
+
+了解类加载时机，类加载的过程，理解类加载器双亲委派模型。
+
+垃圾回收机制
+
+了解垃圾回收的原因，理解对象生命周期，了解垃圾回收算法。
+
+动态化
+Android Gradle Plugin
+
+通过阅读 Android Gradle Plugin 源码，理解 Gradle 构建项目的过程，了解插件开发过程。
+
+VirtualAPK、Tinker
+
+通过阅读 VirtualAPK 源码，理解热修复、插件化的原理。
+
+Hook 技术
+设计模式与架构
+熟悉六大 OOD 设计原则
+熟悉常见的设计模式，可以熟练的运用在项目中
+理解 MVC、MVP、MVVM 的思想以及区别
+项目架构设计与重构
+项目组件化设计与开发
+软技能
+拓展技术广度，其他领域的技术学习
+团队管理和指导新人
+总结
+以上就是 Android 资深（专家）工程师 的基本知识点，如果在高级工程师部分基础很牢，进阶到资深（专家）是很容易的。这个级别的知识点不仅仅需要对 API 熟练应用，更重要的是对内部的运行机制的深入理解。
+
+我们可以发现很多的知识点都是对 Android 系统源码的阅读来获取的，阅读源码是一个很痛苦的过程，也是必须经历的一个过程。
+
+在阅读源码的时候建议多注重对整体流程的把握，而不是深入细节不能自拔。毕竟我们主要工作还是开发 App，阅读源码是为了更好的理解内部运行机制。
+
+专家除了具有扎实的技术深度以外，还有一定的技术广度，以及不错的架构设计能力。除了技术，软技能也是很重要的部分。比如如何管理团队，带带新人，写写 PPT，吹 NB 啥的。
+
+已经达到了资深（专家）的开发者，以后的学习路线跟自己的职业规划有很大关系。这个级别技术也不再那么重要，毕竟都是专家了，大家都很 NB，怎么还能让人手把手教呢？！
+
+以下方面大家可以参考下：
+
+维护一个公众号，增加业内影响力
+考虑出一本书，增加业内知名度
+开源一个 NB 的项目，为开源贡献一份力量
+转型做产品或者管理
+换一个领域继续深入研究
+一般达到资深（专家）的开发者需要 3 - 5 年左右，本科毕业的学生年龄一般在 22 周岁左右，那么达到资深（专家）最快也得 25 周岁了。这里我们会遇到一个职业上的危机 —— 30 岁危机。
+
+随着年龄的越来越大是继续做技术？还是转型做管理呢？Android 也没啥可研究的了，还是换其他领域呢？这是一个值得思考的问题，我还没有这个经历（岁数还没到）不敢妄下定论，哈哈。
+
+这里分享下网上的一份关于各大厂 Android 级别的薪资参考图（如有侵权，请联系我删除）。
+
+大厂薪资参考，如有侵权立删！
+
+我看到网上很多消息都说今年互联网寒冬什么什么的，其实每年都会说寒冬。互联网总共也就发展了十几年，从 2000 年初的诺基亚到现在的智能手机时代，也就十几年的时间。谁有会预料的下一个十年之后会是什么样的呢？
+
+由于前几年大量培训出来的开发者（这里只是说下客观事实，没有贬低的意思），整个市场涌入大量的初级、中级开发者，所以对于新人来说的确不好找工作了，因为竞争的人多了。
+
+自己没能力就说没能力，怎么你到哪儿，哪都大环境不好，你是破坏大环境的人啊？—— 赵本山
+
+作为开发者我们最好的准备就是知识的储备，如果我们努力学习达到了高级甚至更高，目前需求量还是很大的。目前我了解到的 Android 领域专家级别的工程师也没有多少，大家可以留意统计一下。
+
+关于 Android 进阶的学习指南就已经完结了，欢迎大家继续关注，其他方面的技术分享，及个人感悟。
+```
+
+## Android博主
+
+```
+http://www.lightskystreet.com/
+
+https://blog.csdn.net/lmj623565791/
+
+https://blog.csdn.net/xyz_lmn
+
+https://blog.csdn.net/lzyzsd/
+
+https://www.trinea.cn/
+
+http://hukai.me/
+
+https://www.cnblogs.com/halzhang
+
+https://www.cnblogs.com/hanyonglu
+
+https://fookwood.com/
+
+https://blog.csdn.net/lilu_leo
+
+https://www.cnblogs.com/qianxudetianxia
+
+https://blog.csdn.net/xiaominghimi
+
+https://blog.csdn.net/hellogv
+
+https://blog.csdn.net/yiyaaixuexi
+
+https://blog.csdn.net/wangjinyu501
+
+https://blog.csdn.net/asce1885
+
+https://blog.csdn.net/qinjuning
+
+https://blog.csdn.net/tangcheng_ok
+
+https://blog.csdn.net/singwhatiwanna
+
+https://over140.cnblogs.com/
+
+https://www.cnblogs.com/daizhj
+
+https://www.cnblogs.com/sunzn
+
+https://jeanboy.blog.csdn.net/
+```
+
+## Android V1,V2,V3签名
+
+```
+https://jeanboy.blog.csdn.net/article/details/97884257
+
+https://jeanboy.blog.csdn.net/article/details/84849651
+```
+
+## Android 年薪百万的进阶攻略 —— 资深（专家）工程师学习路线
+
+```
+系统启动过程
+这一部分是 Android 系统从按下电源键开始，然后到展示开机界面，再到展示桌面之前的一个过程。了解下面相关进程的工作流程，会对 Android 系统有一个整体的概念，是一个从 0 到 1 的过程，对深入研究 Android 系统内部机制有很大帮助。
+
+init 进程
+
+了解 init 进程创建与启动的流程。
+
+Zygote 进程
+
+了解 Zygote 进程创建的流程，以及 fork 的过程。
+
+system_server 进程
+
+了解 system_server 进程启动流程，工作流程。
+
+ServiceManager
+
+了解 ServiceManager 的启动流程，以及 ServiceManager 在系统中的作用。
+
+内核技术
+这一部分是计算机操作系统相关的原理，也是计算机相关专业的一门必修课程，推荐学习下相关知识。
+
+CPU 调度
+进程管理
+文件系统
+内存管理
+通信方式
+Binder
+
+Binder 是 Android 系统中特有的一种 IPC 通信方式，建议阅读 Binder 相关的源码，与深入越好，理解 Binder 工作的原理，了解服务的注册、获取、死亡通知的流程。
+
+Handler
+
+Handler 是 Android 系统中线程间通信的方式，已经在 Android 高级工程师部分说过了。这里一定要阅读下源码了解内部的运行机制。
+
+Socket
+
+Socket 是系统中常见的一种 IPC 通信方式，Socket 的应用范围很广，在进程间通信、网络通信都会用到，建议深入了解下。
+
+Pipe
+
+Pipe（管道）是 Linux 系统中常见的一种 IPC 通信方式，建议深入了解下工作原理。
+
+signal
+
+signal（信号量）是系统中常见的一种 IPC 通信方式，建议深入了解下工作原理。
+
+核心服务
+Activity、Service、Broadcast、ContentProvider
+
+了解四大组件启动流程，理解生命周期回调过程，了解工作原理。
+
+ActivityManagerService（AMS）
+
+理解 ActivityManagerService 工作流程，以及与 Activity 工作的流程。
+
+WindowManagerService（WMS）
+
+理解 WindowManagerService 工作流程，以及与 ActivityManagerService 和 Activity 工作的过程。
+
+View、Window、Surface
+
+理解 Activity、Window、View 之间的关系，了解 View 渲染机制。
+
+Surface、SurfaceFlinger
+
+理解 View 与 Surface 之间的关系，了解 SurfaceFlinger 工作流程，理解 View 渲染的过程。
+
+PackageManagerService（PKMS）
+
+理解 PackageManagerService 工作流程，了解 Apk 安装与卸载过程。
+
+PowerManagerService（PMS）
+
+理解 PackageManagerService 工作流程，了解屏幕唤醒、灭屏的过程，并理解 WeakLock 机制。
+
+InputManagerService（IMS）
+
+理解 InputManagerService 工作流程，理解事件的创建流程、事件分发机制，ANR 触发原理。
+
+AudioFlinger
+
+理解 AudioFlinger 工作流程。
+
+AssertManager
+
+理解 Apk 安装包中资源管理的过程。
+
+异常处理
+可以从源码的角度分析异常产生的原因，定位异常，以及处理。
+
+Watchdog
+ANR
+Java Crash
+Native Crash
+卡顿
+Java 虚拟机
+内存模型
+
+了解 JVM 内存模型，包括堆、栈、方法区、运行时常量池等。
+
+类加载机制
+
+了解类加载时机，类加载的过程，理解类加载器双亲委派模型。
+
+垃圾回收机制
+
+了解垃圾回收的原因，理解对象生命周期，了解垃圾回收算法。
+
+动态化
+Android Gradle Plugin
+
+通过阅读 Android Gradle Plugin 源码，理解 Gradle 构建项目的过程，了解插件开发过程。
+
+VirtualAPK、Tinker
+
+通过阅读 VirtualAPK 源码，理解热修复、插件化的原理。
+
+Hook 技术
+设计模式与架构
+熟悉六大 OOD 设计原则
+熟悉常见的设计模式，可以熟练的运用在项目中
+理解 MVC、MVP、MVVM 的思想以及区别
+项目架构设计与重构
+项目组件化设计与开发
+软技能
+拓展技术广度，其他领域的技术学习
+团队管理和指导新人
+总结
+以上就是 Android 资深（专家）工程师 的基本知识点，如果在高级工程师部分基础很牢，进阶到资深（专家）是很容易的。这个级别的知识点不仅仅需要对 API 熟练应用，更重要的是对内部的运行机制的深入理解。
+
+我们可以发现很多的知识点都是对 Android 系统源码的阅读来获取的，阅读源码是一个很痛苦的过程，也是必须经历的一个过程。
+
+在阅读源码的时候建议多注重对整体流程的把握，而不是深入细节不能自拔。毕竟我们主要工作还是开发 App，阅读源码是为了更好的理解内部运行机制。
+
+专家除了具有扎实的技术深度以外，还有一定的技术广度，以及不错的架构设计能力。除了技术，软技能也是很重要的部分。比如如何管理团队，带带新人，写写 PPT，吹 NB 啥的。
+
+已经达到了资深（专家）的开发者，以后的学习路线跟自己的职业规划有很大关系。这个级别技术也不再那么重要，毕竟都是专家了，大家都很 NB，怎么还能让人手把手教呢？！
+
+以下方面大家可以参考下：
+
+维护一个公众号，增加业内影响力
+考虑出一本书，增加业内知名度
+开源一个 NB 的项目，为开源贡献一份力量
+转型做产品或者管理
+换一个领域继续深入研究
+```
+
+## Android 高级进阶攻略，轻松拿 Offer —— 高级工程师学习路线
+
+```
+常见 IPC 方式
+Binder 机制
+AIDL 的使用
+Handler 机制
+ThreadLocal 原理
+AsyncTask 原理
+ListView 工作原理
+阅读源码
+熟悉常见优化
+RecyclerView 工作原理
+阅读源码
+自定义 LayoutManager
+Animation 工作原理
+Activity 难点
+setResult() 和 finish() 的顺序关系？
+onSaveInstanceState() 和 onRestoreInstanceState()
+onNewIntent() 和 onConfigurationChanged()
+Service 难点
+startService 与 bindService 的区别？
+Service 中 onStartCommand 返回值的作用？
+bindService后，ServiceConnection 里面的回调方法运行在哪个线程？它们的调用时机分别是什么？
+Service 的 onCreate 运行在哪个线程？
+ContentProvider 难点
+ContentProvider 的生命周期
+ContentProvider 的 onCreate 和 CRUD 运行在哪个线程？它们是线程安全的吗？
+ContentProvider 的内部存储只能是 SQLite 吗？
+RemoteViews
+熟悉 RemoteViews 的使用，并了解其运行原理
+Material Design（材料设计）
+熟练使用材料设计的控件及布局
+自定义 View
+View 的绘制流程
+onMeasure
+onLayout
+onDraw
+invalidate() 与 postInvalidate()
+事件分发机制
+onDispatchTouchEvent
+onInterceptTouchEvent
+onTouchEvent
+事件冲突处理
+贝塞尔曲线、粒子效果
+性能优化
+布局优化：ViewStub、include、merge 的使用，它们的区别？
+过度渲染的处理
+ANR 的处理
+监控：埋点、Crash 上报
+内存优化
+OOM 的处理
+
+内存泄露的处理
+
+内存检测
+
+内存分析
+
+Bitmap 的优化：超大图的加载原理
+
+网络优化
+API 优化
+流量优化
+弱网优化
+电量优化
+WakeLock 机制
+JobScheduler 机制
+第三方开源库
+OKHttp 原理
+Retrofit 原理
+RxJava 原理
+Glide 原理：加载原理、三级缓存、LRU 算法
+Dagger2 原理
+ButterKnife 原理
+EventBus 原理
+RxJava 原理
+混合开发
+WebView
+React Native
+Flutter
+NDK 开发
+熟悉调用 JNI 方法的方式，熟悉如何回调 Java 方法。
+
+安全
+熟悉各种发编译，二次打包工具，了解 smali。
+
+动态化
+阅读 VirtualAPK、Tinker 的源码，熟悉常见的热修复和插件化原理。
+
+Gradle
+Groovy 语法
+Gradle 插件开发基础
+设计模式与架构
+熟悉 6 大基本原则
+
+MVC、MVP、MVVM
+
+组件化
+
+Jetpack
+
+其他问题
+Activity、Window，View 之间的关系？
+子线程访问 UI 却不报错的原因？
+主线程的消息循环是一个死循环，为何不会卡死？
+Binder、IBinder、IInterface 的关系？
+Java 知识
+String 常量池
+类型转换原理
+ArrayList 实现原理
+HashMap 实现原理
+常见锁（乐观锁、悲观锁），死锁解决方法
+synchronized 关键字
+volatile 关键字
+常见 IO（AIO，BIO，NIO）
+常见并发框架
+了解类加载机制
+了解垃圾回收机制
+总结
+以上就是 Android 高级工程师 需要掌握的知识点，高级工程师需要掌握的知识点还是比较多的。如果说初级工程师是打捞基础的过程，那么高级工程师就是一个沉淀技术进阶的过程。
+
+高级工程师一般是指 3 - 5 年工作经验，如果学习能力比较强 3 工作经验足够进阶到高级工程师的。应聘高级工程师薪资一般在 15k - 25k 左右，这里的薪资范围一般会根据是否有亮点上下浮动。
+
+高级工程师对 Android 的理解，不应该还停留在对 API 的使用。初级工程师可以说是对 API 熟悉的过程，高级工程师更应该注重的是 API 内部的原理，知其然而知其所以然。
+
+这个阶段阅读源码是最好的进阶方式，当然阅读源码很容易陷入细节无法自拔。这里推荐看一下高质量的博客和一些进阶书籍，根据博客和书的思路有针对性的看源码是比较推荐的方式。
+
+Android 方面推荐看下：
+
+任玉刚的《Android 开发艺术探索》
+刘望舒的《Android 进阶揭秘》
+《Android 系统源代码情景分析》
+《深入理解 Android》系列
+《深入理解 Android 热修复技术原理》
+由于 Android 与 Java 有很大的渊源，所以 Java 知识对高级工程师来说也是很重要的。这个阶段需要对 Java 有更深入的理解，还要对 Java 虚拟机有一定的研究。
+
+Java 方面推荐看下：
+
+《Java 并发编程的艺术》
+《Java 并发编程实战》
+《Java 多线程编程核心技术》
+《深入理解 Java 虚拟机》
+如果想让自己更加有亮点，推荐注重下面几个方面：
+
+创建一个 GitHub 账号，多输出一些高质量的开源项目
+拥有一个持续输出的技术博客
+阅读源码
+做技术开发的前 5 年是努力学习知识和技术沉淀的一个过程。有些人天赋比较好，进阶很快；有些人天赋虽然不好，但很勤奋，进阶也能很块。一定要让自己的工作经验与技术能力成正比，技术能力永远跟薪资成正比，能力越强薪资越高。
+
+如果以上知识点对你来说仍然太简单了，那么请接受我称你为「大佬」。敬请期待下一期 Android 资深/专家工程师 的学习指南，视频和书籍对资深/专家级别的工程师来说帮助不大了，这里不做推荐了。
+```
+
+## 面试
+
+```
+随着Android技术发展的成熟，Kotlin、大前端技术RN、Flutter、小程序等一下子就进入了我们的视野内，同时，Android自身的技术栈也正在不断扩展，比如前段时间Google推出的Jetpack。因此，Android开发者们越来越焦虑，越来越迷茫，每个人的时间和精力是有限的，我们到底该学什么才能有效地提高自身的竞争力呢?其实，首先我们应该优先深入学习工作中用到的技术，其次，关注这2年来Android最新的面试题所涉及的知识点，根据自身的实际情况有选择地进行针对性的学习和提升。只有这样，自身才不会被所谓的 互联网寒冬 吓倒。Awesome-Android-Interview搜集了国内一线及二线互联网公司最常出现的面试题，非常全面，笔者花费了很大的精力和时间，希望得到大家的支持。Android面试中常涉及的问题有如下几方面：
+
+1、计算机基础：TCP/IP, HTTP/HTTPS, Socket、操作系统、数据库相关。
+
+2、Java基础：面向对象、反射、泛型、集合类库相关。
+
+3、Java并发：线程/线程池，volatile，悲观锁/乐观锁等等。
+
+4、Jvm虚拟机：比如执行过程、JMM模型、Java的GC回收原理、类加载器。
+
+5、数据结构和算法：LeetCode + 剑指Offer。
+
+6、Android基础：启动模式、动画、自定义View。
+
+7、Android进阶：Binder、AIDL、进程间通信、AMS/WMS/PMS、事件分发、滑动冲突、View的绘制流程、性能优化、重要的Android源码和开源库分析。
+
+8、Android高新技术：模块化、组件化、热更新、插件化实现原理。
+
+9、最后，如果你会其他的开发方式或语言也会加分不少。比如Kotlin、ReactNative、Flutter、Python、前后端开发。
+
+
+基础
+什么是面向对象（OOP）？
+什么是多态？实现多态的机制是什么？
+接口（Interface）与抽象类（Abstract Class）的区别？
+重写（Override）与重载（Overload）的区别?
+父类的静态方法能否被子类重写？
+静态属性和静态方法是否可以被继承？是否可以被重写？为什么？
+什么是内部类？内部类、静态内部类、局部内部类和匿名内部类的区别及作用？
+== 和 equals() 和 hashCode() 的区别？
+Integer 和 int 之间的区别？
+String 转换成 Integer 的方式及原理？
+自动装箱实现原理？类型转换实现原理？
+对 String 的了解？
+String 为什么要设计成不可变的？
+final、finally 和 finalize 的区别？
+static 关键字有什么作用？
+列举 Java 的集合以及集合之间的继承关系?
+List、Set、Map 的区别？
+ArrayList、LinkedList 的区别？
+HashMap，HashTable，ConcurrentHashMap 实现原理以及区别？
+HashSet 与 HashMap 怎么判断集合元素重复？
+String、StringBuffer、StringBuilder 之间的区别？
+什么是序列化？怎么实现？有哪些方式？
+对反射的了解？
+对注解的了解？
+对依赖注入的了解？
+对泛型的了解？
+泛型中 extends 和 super 的区别？
+对 Java 的异常体系的了解？
+对解析与分派的了解？
+静态代理和动态代理的区别？有什么场景使用？
+谈谈对 Java 状态机理解？
+线程与并发
+线程和进程的区别？
+开启线程的三种方式
+如何正确的结束一个Thread?
+Thread 与 Runnable 的区别？
+run() 与 start() 方法的区别？
+sleep() 与 wait() 方法的区别？
+wait 与 notify 关键字的区别？
+synchronized 关键字的用法、作用及实现原理？
+volatile 关键字的用法、作用及实现原理？
+transient 关键字的用法、作用及实现原理？
+ReentrantLock、synchronized、volatile 之间的区别？
+什么是线程池，如何使用?
+多线程断点续传的实现原理？
+什么是深拷贝和浅拷贝？
+Java 中对象的生命周期？
+对并发编程的了解？
+JVM
+简述 JVM 内存模型和内存区域？
+简述垃圾回收器的工作原理？
+如何判断对象的生死？垃圾回收算法？新生代，老生代？
+哪些情况下的对象会被垃圾回收机制处理掉？
+垃圾回收机制与调用 System.gc() 的区别？
+强引用、软引用、弱引用、虚引用之间的区别？
+强引用设置为 null，会不会被回收？
+简述 ClassLoader 类加载机制？
+对双亲委派模型的了解？
+String a = "a"+"b"+"c" 在内存中创建几个对象？
+对 Dalvik、ART 虚拟机的了解？
+对动态加载（OSGI）的了解？
+常见编码方式有哪些？
+utf-8 编码中的中文占几个字节？int 型占几个字节？
+Android
+基础
+四大组件是什么？
+Activity 的生命周期？
+Activity 之间的通信方式？
+Activity 各种情况下的生命周期？
+横竖屏切换时 Activity 的生命周期
+前台切换到后台，然后再回到前台时 Activity 的生命周期
+弹出 Dialog 的时候按 Home 键时 Activity 的生命周期
+两个 Activity 之间跳转时的生命周期
+下拉状态栏时 Activity 的生命周期
+Activity 与 Fragment 之间生命周期比较？
+Activity 的四种 LaunchMode（启动模式）的区别？
+Activity 状态保存与恢复？
+Fragment 各种情况下的生命周期？
+Activity 和 Fragment 之间怎么通信， Fragment 和 Fragment 怎么通信？
+Service 的生命周期？
+Service 的启动方式？
+Service 与 IntentService 的区别?
+Service 和 Activity 之间的通信方式？
+对 ContentProvider 的理解？
+ContentProvider、ContentResolver、ContentObserver 之间的关系？
+对 BroadcastReceiver 的了解？
+广播的分类？使用方式和场景？
+动态广播和静态广播有什么区别？
+AlertDialog、popupWindow、Activity 之间的区别？
+Application 和 Activity 的 Context 之间的区别？
+Android 属性动画特性？
+请列举 Android 中常见的布局（Layout）类型，并简述其用法，以及排版效率。【猎豹移动】 LinearLayout、RelativeLayout、FrameLayout 的特性对比及使用场景？
+对 SurfaceView 的了解？
+Serializable 和 Parcelable 的区别？
+Android 中数据存储方式有哪些？
+屏幕适配的处理技巧都有哪些?
+Android 各个版本 API 的区别？
+动态权限适配方案，权限组的概念？
+为什么不能在子线程更新 UI？
+ListView 图片加载错乱的原理和解决方案？
+对 RecycleView 的了解？
+Recycleview 和 ListView 的区别？
+RecycleView 实现原理？
+Android Manifest 的作用与理解？
+多线程在 Android 中的使用？
+区别 Animation 和 Animator 的用法，概述实现原理？【猎豹移动】
+高级
+画出 Android 的大体架构图
+低版本 SDK 如何使用高版本 API？
+AsyncTask 如何使用?
+AsyncTask 机制、原理及不足？
+如果在 onStop() 的时候做了网络请求，onResume() 的时候怎么恢复？
+Handler 机制和底层实现？
+Handler、Thread、HandlerThread 区别？ Thread、Looper、MessageQueue、Handler、Message，每个类的功能是什么，这些类之间是什么关系？【猎豹移动】
+ThreadLocal 原理、实现及如何保证 Local 属性？
+自定义 View 的流程？如何机型适配？
+自定义 View 的时怎么获取 View 的大小？
+View 的绘制流程？
+View 的事件传递分发机制？
+requestLayout()，onLayout()，onDraw()，drawChild() 区别与联系？
+invalidate() 和 postInvalidate() 的区别？
+如何计算一个 View 的嵌套层级？
+Android 动画框架及实现原理？
+进程和 Application 的生命周期的关系？
+SpareArray 的实现原理？
+SharedPreferences 的实现眼里？是否进程同步？如何做到同步？
+ContentProvider 是如何实现数据共享的？
+ContentProvider 的权限管理？ -. Android 系统为什么会设计 ContentProvider？
+Android 线程有没有上限？
+怎么去除重复代码？
+Android 中开启摄像头的主要流程？
+对 Bitmap 对象的了解？
+图片加载原理？
+图片压缩原理？
+图片框架实现原理？LRUCache 原理？
+EventBus 实现原理？
+ButterKnife 实现原理？
+Volley 实现原理？
+okhttp 实现原理？
+服务器只提供数据接收接口，在多线程或多进程条件下，如何保证数据的有序到达？
+SQLite 数据库升级，数据迁移问题？
+数据库框架对比和源码分析？
+CAS介绍，OAuth 授权机制？
+谈谈你对安卓签名的理解
+App 是如何沙箱化，为什么要这么做？
+混合开发
+混合开发的方式？各自优缺点和使用场景？
+Hybird
+React Native
+Weex
+Flutter
+Dart
+快应用
+Framework
+请介绍一下 NDK？
+如何加载 ndk 库？如何在 jni 中注册 native 函数，有几种注册方式?【猎豹移动】
+Android 进程分类？
+谈谈对进程共享和线程安全的认识？
+谈谈对多进程开发的理解以及多进程应用场景？
+什么是协程？
+逻辑地址与物理地址，为什么使用逻辑地址？
+Android 为每个应用程序分配的内存大小是多少？
+进程保活的方式？
+系统启动流程是什么？
+一个应用程序安装到手机上的过程发生了什么？
+App 启动流程，从点击桌面开始（Activity 启动流程）？
+什么是 AIDL？解决了什么问题？如何使用？
+Binder 机制及工作原理？
+App 中唤醒其他进程的实现方式？
+Activity、Window、View 三者的关系与区别？
+ApplicationContext 和 ActivityContext 的区别？
+ActivityThread，ActivityManagerService，WindowManagerService 的工作原理？
+PackageManagerService 的工作原理？
+PowerManagerService 的工作原理？
+权限管理系统（底层的权限是如何进行 grant 的）？
+操作系统中进程和线程有什么区别？系统在什么情况下会在用户态和内核态中切换？【猎豹移动】
+如果一个 App 里面有多个进程存在，请列举你所知道的全部 IPC 方法。
+性能优化
+如何对 Android 应用进行性能分析以及优化?
+ANR 产生的原因是什么？怎么定位？
+OOM 是什么？怎么解决？是否可以 try catch？
+内存泄露的解决方法？
+ddms 和 traceView 的使用？
+性能优化如何分析 systrace？
+用 IDE 如何分析内存泄漏？
+Java 多线程引发的性能问题，怎么解决？
+启动页白屏、黑屏、太慢怎么解决？
+App 启动崩溃异常怎么捕捉？ 对于 Android App 闪退，可能有哪些原因？请针对每种情况简述分析过程。【猎豹移动】
+如何保持应用的稳定性？
+RecyclerView 和 ListView 的性能对比？
+Bitmap 如何处理大图？如何预防 OOM？
+如何缩小 Apk 的体积?
+如何统计启动时长？
+Gradle
+Gradle 源码解析
+对热修复和插件化的理解？
+插件化原理分析
+模块化实现（好处，原因）
+项目组件化的理解
+描述清点击 Android Studio 的 build 按钮后发生了什么？
+Kotlin
+谈谈对 Kotlin 的理解
+闭包和局部内部类的区别?
+网络技术
+描述一次网络请求的流程?
+TCP 中 3 次握手和 4 次挥手的过程?
+TCP 与 UDP 的区别及应用?
+HTTP 协议
+HTTP 1.0 与 2.0 的区别
+HTTP 报文结构
+HTTP 与 HTTPS 的区别以及如何实现安全性
+HTTPS 原理
+谈谈你对 WebSocket 的理解
+WebSocket 与 socket 的区别
+视频加密传输
+数据结构与算法
+数据结构
+简述常见的数据结构？
+堆的结构？
+树、B+ 树、二叉树、红黑树的了解？
+二叉树的深度优先遍历和广度优先遍历？
+堆和树的区别？
+图的了解？
+算法
+排序算法有哪些？
+最快的排序算法是哪个？
+手写冒泡排序
+手写快速排序
+快速排序的过程、时间复杂度、空间复杂度
+手写堆排序
+常见算法问题
+给阿里2万多名员工按年龄排序应该选择哪个算法？
+GC算法(各种算法的优缺点以及应用场景)
+蚁群算法与蒙特卡洛算法
+子串包含问题(KMP 算法)写代码实现
+一个无序，不重复数组，输出N个元素，使得N个元素的和相加为M，给出时间复杂度、空间复杂度。手写算法
+万亿级别的两个URL文件A和B，如何求出A和B的差集C(提示：Bit映射->hash分组->多文件读写效率->磁盘寻址以及应用层面对寻址的优化)
+两个不重复的数组集合中，求共同的元素。
+两个不重复的数组集合中，这两个集合都是海量数据，内存中放不下，怎么求共同的元素？
+一个文件中有100万个整数，由空格分开，在程序中判断用户输入的整数是否在此文件中。说出最优的方法
+一张Bitmap所占内存以及内存占用的计算
+2000万个整数，找出第五十大的数字？
+求1000以内的水仙花数以及40亿以内的水仙花数
+烧一根不均匀的绳，从头烧到尾总共需要1个小时。现在有若干条材质相同的绳子，问如何用烧绳的方法来计时一个小时十五分钟呢？
+5枚硬币，2正3反如何划分为两堆然后通过翻转让两堆中正面向上的硬8币和反面向上的硬币个数相同
+时针走一圈，时针分针重合几次
+设计模式与架构
+设计模式
+谈谈你对 Android 设计模式的理解
+项目中常用的设计模式有哪些？
+手写生产者-消费者模式？
+手写观察者模式？
+适配器模式、装饰者模式、外观模式的异同？
+架构
+MVC、MVP、MVVM 原理和区别？ 请画出 MVC、MVP 的差异？【猎豹移动】
+对 RxJava 的理解，功能与原理，优缺点？
+从 0 设计一款 App 整体架构，如何去做？
+Fragment 如果在 Adapter 中使用应该如何解耦？
+对于应用更新这块是如何做的？(解答：灰度，强制更新，分区域更新)？
+实现一个 Json 解析器（可以通过正则提高速度）？
+```
+
+
+
+
+
+
 
 
 

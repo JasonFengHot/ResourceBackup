@@ -39,6 +39,10 @@
 
 # TODO : 通过爬虫自动抓取 FAQ 上的内容
 
+# TODO : push framework/service 之后，只要 kill system_server 就可以生效 ????
+
+# TODO : 如何用 fastboot 刷机？？？
+
     # TODO : push 之后点亮屏幕
     #adb shell input keyevent 224 //KEYCODE_WAKEUP
 
