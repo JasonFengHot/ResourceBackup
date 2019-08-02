@@ -3,6 +3,27 @@
 把培训做成视频
 整理bug并归类？？？？？？？
 
+## Android学习视频
+
+```
+https://github.com/open-android/Android
+```
+
+## 进阶学习书籍
+
+```
+《Code clean》 代码整洁之道
+《App研发录》
+《HeadFirst设计模式》
+《重构：改善既有代码的设计》
+《Linux内核设计与实现》
+《深入理解Linux内核》
+《深入理解Android ***》系列书籍，邓凡平老师写的系列。
+《Android源码设计模式》，结合设计模式分析源码
+《Android框架揭秘》，底层架构的一本好书
+《黑客与画家》
+```
+
 ## mtk开发论坛
 
 ```
@@ -39134,6 +39155,2218 @@ Fragment 如果在 Adapter 中使用应该如何解耦？
 对于应用更新这块是如何做的？(解答：灰度，强制更新，分区域更新)？
 实现一个 Json 解析器（可以通过正则提高速度）？
 ```
+
+## 如何导入导出外部数据库
+
+```
+把原数据库包括在项目源码的 res/raw
+
+android系统下数据库应该存放在 /data/data/com..（package name）/ 目录下，所以我们需要做的是把已有的数据库传入那个目录下.操作方法是用FileInputStream读取原数据库，再用FileOutputStream把读取到的东西写入到那个目录.
+```
+
+## TextView 性能优化
+
+```
+我们可以不用从SpannableStringBuilder转化到String。根据你的文本中是否包含链接，底层的TextView可能会复制一份你的字符串，这需要分配一些内存。
+
+我们可以一直使用StaticLayout，这比DynamicLayout要稍微快一些。
+
+我们可以避免使用TexView中其他的逻辑： 监听文本修改的逻辑，展示嵌入drawable的逻辑，绘制编辑器的逻辑以及弹出下拉列表的逻辑。
+
+
+// 优化后的 StaticLayoutView
+public class StaticLayoutView extends View {
+    private Layout layout;
+    private int width ;
+    private int height;
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public StaticLayoutView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+    }
+
+    public StaticLayoutView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    public StaticLayoutView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public StaticLayoutView(Context context) {
+        super(context);
+    }
+
+    public void setLayout(Layout layout) {
+        this.layout = layout;
+        if (this.layout.getWidth() != width || this.layout.getHeight() != height) {
+            width = this.layout.getWidth();
+            height = this.layout.getHeight();
+            requestLayout();
+        }
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        canvas.save();
+        if (layout != null) {
+            layout.draw(canvas, null, null, 0);
+        }
+        canvas.restore();
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (layout != null) {
+            setMeasuredDimension(layout.getWidth(), layout.getHeight());
+        } else {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        }
+    }
+
+}
+```
+
+## LocalBroadcastManager 代替普通 BroadcastReceiver，效率和安全性都更高 ？？？？ LocalBroadcastManager 是什么？？？
+
+## 优化
+
+```
+2、异步，利用多线程提高TPS
+充分利用多核Cpu优势，利用线程解决密集型计算、IO、网络等操作。
+关于多线程可参考：Java线程池
+在Android应用程序中由于系统ANR的限制，将可能造成主线程超时操作放入另外的工作线程中。在工作线程中可以通过handler和主线程交互。
+
+3、提前或延迟操作，错开时间段提高TPS
+(1) 延迟操作
+不在Activity、Service、BroadcastReceiver的生命周期等对响应时间敏感函数中执行耗时操作，可适当delay。
+Java中延迟操作可使用ScheduledExecutorService，不推荐使用Timer.schedule;
+Android中除了支持ScheduledExecutorService之外，还有一些delay操作，如
+handler.postDelayed，handler.postAtTime，handler.sendMessageDelayed，View.postDelayed，AlarmManager定时等。
+
+(2) 提前操作
+对于第一次调用较耗时操作，可统一放到初始化中，将耗时提前。如得到壁纸wallpaperManager.getDrawable();
+
+4、网络优化
+更多见 性能优化第四篇——移动网络优化
+
+以下是网络优化中一些客户端和服务器端需要尽量遵守的准则：
+a. 图片必须缓存，最好根据机型做图片做图片适配
+b. 所有http请求必须添加httptimeout
+
+c. 开启gzip压缩
+d. api接口数据以json格式返回，而不是xml或html
+e. 根据http头信息中的Cache-Control及expires域确定是否缓存请求结果。
+
+f. 确定网络请求的connection是否keep-alive
+g. 减少网络请求次数，服务器端适当做请求合并。
+h. 减少重定向次数
+i. api接口服务器端响应时间不超过100ms
+google正在做将移动端网页速度降至1秒的项目，关注中https://developers.google.com/speed/docs/insights/mobile
+```
+
+## 破解android签名验证
+
+```
+services.jar
+
+PackageManagerService.smali
+
+修改方法:
+verifySignaturesLP返回1
+
+修改方法:
+compareSignatures返回0
+```
+
+## android 查看so的依赖关系
+
+```
+/data/android-ndk/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/arm-linux-androideabi/bin/objdump -x ../bin/system_server | grep NEEDED
+```
+
+## 怎样将zip文件保存在图片中
+
+```
+linux下执行：
+
+cat aaa.png  bbb.zip >> zzz.png
+windows下执行：
+
+COPY /b aaa.png+bbb.zip zzz.png
+命令运行完得到的zzz.png打开就是和aaa.png一样的图片，修改扩展名为zip后就是bbb.zip的内容。
+
+其他图片格式也支持哦，自己尝试一下。
+```
+
+## Prototype（原型模式）
+
+```
+原型模式（Prototype Pattern）是用于创建重复的对象，同时又能保证性能。 这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。
+
+这种模式是实现了一个原型接口，该接口用于创建当前对象的克隆。 当直接创建对象的代价比较大时，则采用这种模式。
+
+例如，一个对象需要在一个高代价的数据库操作之后被创建。 我们可以缓存该对象，在下一个请求时返回它的克隆，在需要的时候更新数据库，以此来减少数据库调用。
+
+使用
+实现
+创建原型类
+
+public class Prototype implements Cloneable, Serializable { 
+
+    private static final long serialVersionUID = 1L;
+    private String string;
+
+    private SerializableObject obj; 
+
+    /* 浅复制 */
+    public Object clone() throws CloneNotSupportedException {
+        Prototype proto = (Prototype) super.clone();  
+        return proto;  
+    }
+
+    /* 深复制 */
+    public Object deepClone() throws IOException, ClassNotFoundException {
+
+        /* 写入当前对象的二进制流 */  
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();  
+        ObjectOutputStream oos = new ObjectOutputStream(bos);  
+        oos.writeObject(this);  
+
+        /* 读出二进制流产生的新对象 */  
+        ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());  
+        ObjectInputStream ois = new ObjectInputStream(bis);  
+        return ois.readObject();  
+    }
+
+    public String getString() { 
+        return string;
+    }
+
+    public void setString(String string) {
+        this.string = string;
+    }
+
+    public SerializableObject getObj() {
+        return obj;
+    }
+
+    public void setObj(SerializableObject obj) {
+        this.obj = obj;  
+    }
+
+}
+
+class SerializableObject implements Serializable {
+    private static final long serialVersionUID = 1L;
+}
+浅复制：将一个对象复制后，基本数据类型的变量都会重新创建，而引用类型，指向的还是原对象所指向的。
+
+深复制：将一个对象复制后，不论是基本数据类型还有引用类型，都是重新创建的。 简单来说，就是深复制进行了完全彻底的复制，而浅复制不彻底。
+
+使用场景
+资源优化场景。
+类初始化需要消化非常多的资源，这个资源包括数据、硬件资源等。
+性能和安全要求的场景。
+通过 new 产生一个对象需要非常繁琐的数据准备或访问权限，则可以使用原型模式。
+一个对象多个修改者的场景。
+一个对象需要提供给其他对象访问，而且各个调用者可能都需要修改其值时，可以考虑使用原型模式拷贝多个对象供调用者使用。
+在实际项目中，原型模式很少单独出现，一般是和工厂方法模式一起出现，通过 clone 的方法创建一个对象，然后由工厂方法提供给调用者。原型模式已经与 Java 融为浑然一体，大家可以随手拿来使用。
+优点
+性能提高。
+逃避构造函数的约束。
+缺点
+配备克隆方法需要对类的功能进行通盘考虑，这对于全新的类不是很难，但对于已有的类不一定很容易，特别当一个类引用不支持串行化的间接对象，或者引用含有循环结构的时候。
+必须实现 Cloneable 接口。
+注意事项
+与通过对一个类进行实例化来构造新对象不同的是，原型模式是通过复制一个现有对象生成新对象的。 浅复制实现 Cloneable，重写，深复制是通过实现 Serializable 读取二进制流。
+```
+
+## 一篇文章看明白 TCP/IP，TCP，UDP，IP，Socket 之间的关系
+
+```
+https://jeanboy.blog.csdn.net/article/details/72236734
+```
+
+## 仿 wechat 和 支付宝 防止截屏？？？
+
+## 搭建Simba 文件共享服务器
+
+```
+Ubuntu下使用Simba服务实现局域网内文件共享
+Ubuntu下安装Simba服务器将linux电脑上的内容共享，同一局域网内的另外一台Windows PC即可访问其共享内容，
+从而实现Windows电脑向访问本地文件一样访问Linux文件系统的内容。
+
+(1)安装Simaba服务器
+sudo apt-get install samba
+
+(2)安装samba图形化配置软件
+sudo apt-get install system-config-samba
+
+(3)创建一个Simba专用用户
+从“系统”—“系统管理”—“用户和组”，来创建。如图，先点击“解锁”，然后“添加新用户”
+然后输入新用户名字(如Simba)和密码(如111111)，然后在“高级”里面，选择“主组”为sambashare后点击"确定"即可
+一句话来概括，就是创建一个主组为sambashare的用户
+
+(4)配置samba共享
+从“系统”—“系统管理—”samba“，运行配置界面
+然后”首选项“—”服务器设置“。点击：安全性，在最后的”来宾帐号“里面， 
+选择我们新建立的那个用户simba后点击确定
+
+(5)修改samba配置文件
+打开/etc/samba/smb.conf，修改valid users = XXXX为valid users = simba
+
+(6)重启samba服务
+sudo /etc/init.d/samba restart
+
+(7)添加共享文件
+从“系统”—“系统管理—”samba“，运行配置界面
+点击"添加"来添加共享文件夹,点击"浏览"来选择需要共享的文件夹，选择"可擦写"和"显示"，点击"访问"可以设置访问权限，最好设置成"允许所有用户访问"
+
+本文来自CSDN博客，转载请标明出处：http://blog.csdn.net/jiajie961/archive/2010/11/04/5987821.aspx
+```
+
+## 搭建tftp服务器
+
+```
+Ubuntu下tftp服务器的创建
+实验平台：Ubuntu9.04
+
+(1)安装tftp服务
+sudo apt-get install tftp tftpd openbsd-inetd
+
+(2)在根目录下创建文件夹 tftpboot文件夹并修改权限 
+cd / 
+sudo mkdir tftpboot 
+sudo chmod 777 tftpboot
+
+(3)修改/etc/inetd.conf文件如下：
+tftp  dgram    udp    wait    nobody    /usr/sbin/tcpd    /usr/sbin/in.tftpd   /tftpboot
+
+(4)开启tftp服务
+sudo /etc/init.d/openbsd-inetd reload 
+sudo in.tftpd -l /tftpboot
+
+(5)重启电脑，然后将测试文件放入/tftpboot目录下即可开始测试，出现问题可能一般都是权限问题
+/tftpboot目录下的文件访问权限改成0777
+```
+
+## ubifs
+
+```
+制作ubifs文件系统
+1,安装相关的软件包
+apt-get install liblzo2-dev
+
+2,获取相关的工具mkfs.ubifs和ubinize
+这两个工具是制作ubifs文件系统的时候用到，它们是mtd-utils工具包中的内容，mtd-utils工具包你可以从下面的网站下载和编译出来：
+官方网站：http://www.linux-mtd.infradead.org/index.html
+资源下载网站：http://git.infradead.org/
+
+3,创建一个create-ubifs.sh脚本，主要是调用mkfs.ubifs和ubinize工具和相关参数来制作ubifs文件系统，内容如下：
+#!/bin/bash
+
+##########################################################
+#    Script to generate ubifs filesystem image.     #
+##########################################################
+
+##### ubinize configuration file
+config_file=rootfs_ubinize.cfg
+
+##### Function to check result of the command
+check_result() {
+if [ $? -ne 0 ]
+then
+    echo "FAILED"
+else
+    echo "SUCCESSFUL"
+fi
+}
+
+######  Function to check whether an application exists
+check_program() {
+for cmd in "$@"
+do
+        which ${cmd} > /dev/null 2>&1
+        if [ $? -ne 0 ]
+        then
+                echo
+                echo "Cannot find command \"${cmd}\""
+                echo
+                exit 1
+        fi
+done
+}
+
+if [ $# -ne 5 ]
+then
+    echo
+    echo 'Usage: create-ubifs.sh [page_size_in_bytes] [pages_per_block] [partition_size_in_bytes] [blocks_per_device] [path_to_rootfs]'
+    echo
+    exit
+fi
+
+page_size_in_bytes=$1
+echo "Page size                                                 [$page_size_in_bytes]bytes."
+pages_per_block=$2
+echo "Pages per block                                           [$pages_per_block]"
+partition_size_in_bytes=$3
+echo "File-system partition size                                [$partition_size_in_bytes]bytes."
+blocks_per_device=$4
+echo "Blocks per device                                         [$blocks_per_device]"
+path_to_rootfs=$5
+
+# wear_level_reserved_blocks is 1% of total blcoks per device
+wear_level_reserved_blocks=`expr $blocks_per_device / 100`
+echo "Reserved blocks for wear level                            [$wear_level_reserved_blocks]"
+
+#logical_erase_block_size is physical erase block size minus 2 pages for UBI
+logical_pages_per_block=`expr $pages_per_block - 2`
+logical_erase_block_size=`expr $page_size_in_bytes \* $logical_pages_per_block`
+echo "Logical erase block size                                  [$logical_erase_block_size]bytes."
+
+#Block size = page_size * pages_per_block
+block_size=`expr $page_size_in_bytes \* $pages_per_block`
+echo "Block size                                                [$block_size]bytes."
+
+#physical blocks on a partition = partition size / block size
+partition_physical_blocks=`expr $partition_size_in_bytes / $block_size`
+echo "Physical blocks in a partition                            [$partition_physical_blocks]"
+
+#Logical blocks on a partition = physical blocks on a partitiion - reserved for wear level
+patition_logical_blocks=`expr $partition_physical_blocks - $wear_level_reserved_blocks`
+echo "Logical blocks in a partition                             [$patition_logical_blocks]"
+
+#File-system volume = Logical blocks in a partition * Logical erase block size
+fs_vol_size=`expr $patition_logical_blocks \* $logical_erase_block_size`
+echo "File-system volume                                        [$fs_vol_size]bytes."
+
+echo
+echo "Generating configuration file..."
+echo "[rootfs-volume]"  > $config_file
+echo "mode=ubi" >> $config_file
+echo "image=rootfs_ubifs.img" >> $config_file
+echo "vol_id=0" >> $config_file
+echo "vol_size=$fs_vol_size" >> $config_file
+echo "vol_type=dynamic" >> $config_file
+echo "vol_name=system" >> $config_file
+echo
+
+# Note: Check necessary program for installation
+#echo -n "Checking necessary program for installation......"
+#check_program mkfs.ubifs ubinize
+#echo "Done"
+
+#Generate ubifs image
+echo -n "Generating ubifs..."
+./mkfs.ubifs -x lzo -m $page_size_in_bytes -e $logical_erase_block_size -c $patition_logical_blocks -o rootfs_ubifs.img -d $path_to_rootfs
+check_result
+echo -n "Generating ubi image out of the ubifs..."
+./ubinize -o ubi.img -m $page_size_in_bytes -p $block_size -s $page_size_in_bytes $config_file -v
+check_result
+
+rm -f rootfs_ubifs.img
+rm -f $config_file
+
+(4)将mkfs.ubifs和ubinize以及create-ubifs.sh放置在同一目录下，然后调用create-ubifs.sh即可创建ubifs文件系统，create-ubifs.sh用法如下：
+create-ubifs.sh  page_size_in_bytes(页大小) pages_per_block(每个扇区的页数量) partition_size_in_bytes(分区大小) blocks_per_device(扇区数量) path_to_rootfs(文件系统路径)
+举例如下：
+./create-ubifs.sh 2048 64 83886080 4096 ./rootfs
+上面命令的意思是调用create-ubifs.sh将当前目录下的rootfs文件夹的内容制作成ubifs文件系统，nand flash的页大小为2k,每个扇区有64页，
+总共有4096个扇区，要制作的文件系统的大小为83886080字节。
+```
+
+## android makefile 文件的编写
+
+```
+android编译系统makefile(Android.mk)写法
+android编译系统的makefile文件Android.mk写法如下
+
+(1)Android.mk文件首先需要指定LOCAL_PATH变量，用于查找源文件。由于一般情况下
+Android.mk和需要编译的源文件在同一目录下，所以定义成如下形式：
+LOCAL_PATH:=$(call my-dir)
+上面的语句的意思是将LOCAL_PATH变量定义成本文件所在目录路径。
+
+(2)Android.mk中可以定义多个编译模块，每个编译模块都是以include $(CLEAR_VARS)开始
+以include $(BUILD_XXX)结束。
+include $(CLEAR_VARS)
+CLEAR_VARS由编译系统提供，指定让GNU MAKEFILE为你清除除LOCAL_PATH以外的所有LOCAL_XXX变量，
+如LOCAL_MODULE，LOCAL_SRC_FILES，LOCAL_SHARED_LIBRARIES，LOCAL_STATIC_LIBRARIES等。
+include $(BUILD_STATIC_LIBRARY)表示编译成静态库
+include $(BUILD_SHARED_LIBRARY)表示编译成动态库。
+include $(BUILD_EXECUTABLE)表示编译成可执行程序
+
+(3)举例如下(frameworks/base/libs/audioflinger/Android.mk)：
+LOCAL_PATH:= $(call my-dir)
+include $(CLEAR_VARS)  模块一
+ifeq ($(AUDIO_POLICY_TEST),true)
+  ENABLE_AUDIO_DUMP := true
+endif
+LOCAL_SRC_FILES:= \
+    AudioHardwareGeneric.cpp \
+    AudioHardwareStub.cpp \
+    AudioHardwareInterface.cpp
+ifeq ($(ENABLE_AUDIO_DUMP),true)
+  LOCAL_SRC_FILES += AudioDumpInterface.cpp
+  LOCAL_CFLAGS += -DENABLE_AUDIO_DUMP
+endif
+LOCAL_SHARED_LIBRARIES := \
+    libcutils \
+    libutils \
+    libbinder \
+    libmedia \
+    libhardware_legacy
+ifeq ($(strip $(BOARD_USES_GENERIC_AUDIO)),true)
+  LOCAL_CFLAGS += -DGENERIC_AUDIO
+endif
+LOCAL_MODULE:= libaudiointerface
+ifeq ($(BOARD_HAVE_BLUETOOTH),true)
+  LOCAL_SRC_FILES += A2dpAudioInterface.cpp
+  LOCAL_SHARED_LIBRARIES += liba2dp
+  LOCAL_CFLAGS += -DWITH_BLUETOOTH -DWITH_A2DP
+  LOCAL_C_INCLUDES += $(call include-path-for, bluez)
+endif
+include $(BUILD_STATIC_LIBRARY)  模块一编译成静态库
+include $(CLEAR_VARS)  模块二
+LOCAL_SRC_FILES:=               \
+    AudioPolicyManagerBase.cpp
+LOCAL_SHARED_LIBRARIES := \
+    libcutils \
+    libutils \
+    libmedia
+ifeq ($(TARGET_SIMULATOR),true)
+ LOCAL_LDLIBS += -ldl
+else
+ LOCAL_SHARED_LIBRARIES += libdl
+endif
+LOCAL_MODULE:= libaudiopolicybase
+ifeq ($(BOARD_HAVE_BLUETOOTH),true)
+  LOCAL_CFLAGS += -DWITH_A2DP
+endif
+ifeq ($(AUDIO_POLICY_TEST),true)
+  LOCAL_CFLAGS += -DAUDIO_POLICY_TEST
+endif
+include $(BUILD_STATIC_LIBRARY) 模块二编译成静态库
+include $(CLEAR_VARS) 模块三
+LOCAL_SRC_FILES:=               \
+    AudioFlinger.cpp            \
+    AudioMixer.cpp.arm          \
+    AudioResampler.cpp.arm      \
+    AudioResamplerSinc.cpp.arm  \
+    AudioResamplerCubic.cpp.arm \
+    AudioPolicyService.cpp
+LOCAL_SHARED_LIBRARIES := \
+    libcutils \
+    libutils \
+    libbinder \
+    libmedia \
+    libhardware_legacy
+ifeq ($(strip $(BOARD_USES_GENERIC_AUDIO)),true)
+  LOCAL_STATIC_LIBRARIES += libaudiointerface libaudiopolicybase
+  LOCAL_CFLAGS += -DGENERIC_AUDIO
+else
+  LOCAL_SHARED_LIBRARIES += libaudio libaudiopolicy
+endif
+ifeq ($(TARGET_SIMULATOR),true)
+ LOCAL_LDLIBS += -ldl
+else
+ LOCAL_SHARED_LIBRARIES += libdl
+endif
+LOCAL_MODULE:= libaudioflinger
+ifeq ($(BOARD_HAVE_BLUETOOTH),true)
+  LOCAL_CFLAGS += -DWITH_BLUETOOTH -DWITH_A2DP
+  LOCAL_SHARED_LIBRARIES += liba2dp
+endif
+ifeq ($(AUDIO_POLICY_TEST),true)
+  LOCAL_CFLAGS += -DAUDIO_POLICY_TEST
+endif
+ifeq ($(TARGET_SIMULATOR),true)
+    ifeq ($(HOST_OS),linux)
+        LOCAL_LDLIBS += -lrt -lpthread
+    endif
+endif
+ifeq ($(BOARD_USE_LVMX),true)
+    LOCAL_CFLAGS += -DLVMX
+    LOCAL_C_INCLUDES += vendor/nxp
+    LOCAL_STATIC_LIBRARIES += liblifevibes
+    LOCAL_SHARED_LIBRARIES += liblvmxservice
+#    LOCAL_SHARED_LIBRARIES += liblvmxipc
+endif
+include $(BUILD_SHARED_LIBRARY) 模块三编译成动态库
+
+
+(4)编译一个应用程序(APK)
+  LOCAL_PATH := $(call my-dir)
+  include $(CLEAR_VARS)
+   
+  # Build all java files in the java subdirectory
+  LOCAL_SRC_FILES := $(call all-subdir-java-files)
+   
+  # Name of the APK to build
+  LOCAL_PACKAGE_NAME := LocalPackage
+   
+  # Tell it to build an APK
+  include $(BUILD_PACKAGE)
+
+(5)编译一个依赖于静态Java库(static.jar)的应用程序
+  LOCAL_PATH := $(call my-dir)
+  include $(CLEAR_VARS)
+   
+  # List of static libraries to include in the package
+  LOCAL_STATIC_JAVA_LIBRARIES := static-library
+   
+  # Build all java files in the java subdirectory
+  LOCAL_SRC_FILES := $(call all-subdir-java-files)
+   
+  # Name of the APK to build
+  LOCAL_PACKAGE_NAME := LocalPackage
+   
+  # Tell it to build an APK
+  include $(BUILD_PACKAGE)
+
+(6)编译一个需要用平台的key签名的应用程序
+  LOCAL_PATH := $(call my-dir)
+  include $(CLEAR_VARS)
+   
+  # Build all java files in the java subdirectory
+  LOCAL_SRC_FILES := $(call all-subdir-java-files)
+   
+  # Name of the APK to build
+  LOCAL_PACKAGE_NAME := LocalPackage
+   
+  LOCAL_CERTIFICATE := platform
+   
+  # Tell it to build an APK
+  include $(BUILD_PACKAGE)
+
+
+(7)编译一个需要用特定key前面的应用程序
+  LOCAL_PATH := $(call my-dir)
+  include $(CLEAR_VARS)
+   
+  # Build all java files in the java subdirectory
+  LOCAL_SRC_FILES := $(call all-subdir-java-files)
+   
+  # Name of the APK to build
+  LOCAL_PACKAGE_NAME := LocalPackage
+   
+  LOCAL_CERTIFICATE := vendor/example/certs/app
+   
+  # Tell it to build an APK
+  include $(BUILD_PACKAGE)
+
+(8)添加一个预编译应用程序
+  LOCAL_PATH := $(call my-dir)
+  include $(CLEAR_VARS)
+   
+  # Module name should match apk name to be installed.
+  LOCAL_MODULE := LocalModuleName
+  LOCAL_SRC_FILES := $(LOCAL_MODULE).apk
+  LOCAL_MODULE_CLASS := APPS
+  LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
+   
+  include $(BUILD_PREBUILT)
+
+(9)添加一个静态JAVA库
+  LOCAL_PATH := $(call my-dir)
+  include $(CLEAR_VARS)
+   
+  # Build all java files in the java subdirectory
+  LOCAL_SRC_FILES := $(call all-subdir-java-files)
+   
+  # Any libraries that this library depends on
+  LOCAL_JAVA_LIBRARIES := android.test.runner
+   
+  # The name of the jar file to create
+  LOCAL_MODULE := sample
+   
+  # Build a static jar file.
+  include $(BUILD_STATIC_JAVA_LIBRARY)
+
+(10)Android.mk的编译模块中间可以定义相关的编译内容，也就是指定相关的变量如下：
+LOCAL_AAPT_FLAGS
+
+LOCAL_ACP_UNAVAILABLE  
+
+LOCAL_ADDITIONAL_JAVA_DIR 
+ 
+LOCAL_AIDL_INCLUDES  
+
+LOCAL_ALLOW_UNDEFINED_SYMBOLS  
+
+LOCAL_ARM_MODE  
+
+LOCAL_ASFLAGS  
+
+LOCAL_ASSET_DIR  
+
+LOCAL_ASSET_FILES 在Android.mk文件中编译应用程序(BUILD_PACKAGE)时设置此变量，表示资源文件，
+                  通常会定义成LOCAL_ASSET_FILES += $(call find-subdir-assets)
+ 
+LOCAL_BUILT_MODULE_STEM  
+LOCAL_C_INCLUDES 额外的C/C++编译头文件路径，用LOCAL_PATH表示本文件所在目录
+                 举例如下：
+                 LOCAL_C_INCLUDES += extlibs/zlib-1.2.3
+                 LOCAL_C_INCLUDES += $(LOCAL_PATH)/src 
+ 
+LOCAL_CC 指定C编译器 
+
+LOCAL_CERTIFICATE  签名认证
+
+LOCAL_CFLAGS 为C/C++编译器定义额外的标志(如宏定义)，举例：LOCAL_CFLAGS += -DLIBUTILS_NATIVE=1
+ 
+LOCAL_CLASSPATH  
+
+LOCAL_COMPRESS_MODULE_SYMBOLS  
+
+LOCAL_COPY_HEADERS install应用程序时需要复制的头文件，必须同时定义LOCAL_COPY_HEADERS_TO
+ 
+LOCAL_COPY_HEADERS_TO install应用程序时复制头文件的目的路径
+
+LOCAL_CPP_EXTENSION 如果你的C++文件不是以cpp为文件后缀，你可以通过LOCAL_CPP_EXTENSION指定C++文件后缀名 
+                    如：LOCAL_CPP_EXTENSION := .cc
+                    注意统一模块中C++文件后缀必须保持一致。
+
+LOCAL_CPPFLAGS 传递额外的标志给C++编译器，如：LOCAL_CPPFLAGS += -ffriend-injection
+
+LOCAL_CXX 指定C++编译器
+ 
+LOCAL_DX_FLAGS
+
+LOCAL_EXPORT_PACKAGE_RESOURCES
+
+LOCAL_FORCE_STATIC_EXECUTABLE 如果编译的可执行程序要进行静态链接(执行时不依赖于任何动态库)，则设置LOCAL_FORCE_STATIC_EXECUTABLE:=true 
+                              目前只有libc有静态库形式，这个只有文件系统中/sbin目录下的应用程序会用到，这个目录下的应用程序在运行时通常
+                              文件系统的其它部分还没有加载，所以必须进行静态链接。
+ 
+LOCAL_GENERATED_SOURCES
+ 
+LOCAL_INSTRUMENTATION_FOR
+
+LOCAL_INSTRUMENTATION_FOR_PACKAGE_NAME
+
+LOCAL_INTERMEDIATE_SOURCES
+
+LOCAL_INTERMEDIATE_TARGETS
+
+LOCAL_IS_HOST_MODULE
+
+LOCAL_JAR_MANIFEST
+
+LOCAL_JARJAR_RULES
+
+LOCAL_JAVA_LIBRARIES 编译java应用程序和库的时候指定包含的java类库，目前有core和framework两种
+                     多数情况下定义成：LOCAL_JAVA_LIBRARIES := core framework
+                     注意LOCAL_JAVA_LIBRARIES不是必须的，而且编译APK时不允许定义(系统会自动添加)
+ 
+LOCAL_JAVA_RESOURCE_DIRS  
+
+LOCAL_JAVA_RESOURCE_FILES  
+
+LOCAL_JNI_SHARED_LIBRARIES  
+
+LOCAL_LDFLAGS 传递额外的参数给连接器(务必注意参数的顺序)
+ 
+LOCAL_LDLIBS 为可执行程序或者库的编译指定额外的库，指定库以"-lxxx"格式，举例：
+             LOCAL_LDLIBS += -lcurses -lpthread
+             LOCAL_LDLIBS += -Wl,-z,origin 
+ 
+LOCAL_MODULE 生成的模块的名称(注意应用程序名称用LOCAL_PACKAGE_NAME而不是LOCAL_MODULE)
+
+LOCAL_MODULE_PATH 生成模块的路径
+ 
+LOCAL_MODULE_STEM 
+ 
+LOCAL_MODULE_TAGS 生成模块的标记 
+ 
+LOCAL_NO_DEFAULT_COMPILER_FLAGS  
+
+LOCAL_NO_EMMA_COMPILE  
+
+LOCAL_NO_EMMA_INSTRUMENT  
+
+LOCAL_NO_STANDARD_LIBRARIES  
+
+LOCAL_OVERRIDES_PACKAGES  
+
+LOCAL_PACKAGE_NAME APK应用程序的名称  
+
+LOCAL_POST_PROCESS_COMMAND
+ 
+LOCAL_PREBUILT_EXECUTABLES 预编译including $(BUILD_PREBUILT)或者$(BUILD_HOST_PREBUILT)时所用,指定需要复制的可执行文件 
+
+LOCAL_PREBUILT_JAVA_LIBRARIES  
+
+LOCAL_PREBUILT_LIBS 预编译including $(BUILD_PREBUILT)或者$(BUILD_HOST_PREBUILT)时所用, 指定需要复制的库. 
+
+LOCAL_PREBUILT_OBJ_FILES  
+
+LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES  
+ 
+LOCAL_PRELINK_MODULE 是否需要预连接处理(默认需要，用来做动态库优化)
+
+LOCAL_REQUIRED_MODULES 指定模块运行所依赖的模块(模块安装时将会同步安装它所依赖的模块)
+ 
+LOCAL_RESOURCE_DIR
+
+LOCAL_SDK_VERSION
+
+LOCAL_SHARED_LIBRARIES 可链接动态库
+ 
+LOCAL_SRC_FILES 编译源文件
+
+LOCAL_STATIC_JAVA_LIBRARIES
+
+LOCAL_STATIC_LIBRARIES 可链接静态库 
+ 
+LOCAL_UNINSTALLABLE_MODULE
+
+LOCAL_UNSTRIPPED_PATH
+ 
+LOCAL_WHOLE_STATIC_LIBRARIES 指定模块所需要载入的完整静态库(这些精通库在链接是不允许链接器删除其中无用的代码)
+ 
+LOCAL_YACCFLAGS
+ 
+OVERRIDE_BUILT_MODULE_PATH 
+
+本文来自CSDN博客，转载请标明出处：http://blog.csdn.net/jiajie961/archive/2010/11/09/5997147.aspx
+```
+
+## 按键移植
+
+```
+Android系统移植(二)-按键移植
+
+这一部分主要是移植android的键盘和按键
+(1)Android使用标准的linux输入事件设备(/dev/input目录下)和驱动，按键定义在内核include/linux/input.h文件中，
+按键定义形式如下：
+#define KEY_ESC            1
+#define KEY_1            2
+#define KEY_2            3
+
+(2)内核中(我的平台是arch/arm/mach-mmp/merlin.c文件)中按键的定义如下形式：
+static struct gpio_keys_button btn_button_table[] = {
+    [0] = {
+        .code            =    KEY_F1,
+        .gpio            =    MFP_PIN_GPIO2,
+        .active_low        =    1,        /* 0 for down 0, up 1; 1 for down 1, up 0 */
+        .desc            =    "H_BTN button",
+        .type            =    EV_KEY,
+        /* .wakeup            = */
+        .debounce_interval    =    10,        /* 10 msec jitter elimination */
+    },
+    [1] = {
+        .code            =    KEY_F2,
+        .gpio            =    MFP_PIN_GPIO3,
+        .active_low        =    1,        /* 0 for down 0, up 1; 1 for down 1, up 0 */
+        .desc            =    "O_BTN button",
+        .type            =    EV_KEY,
+        /* .wakeup            = */
+        .debounce_interval    =    10,        /* 10 msec jitter elimination */
+    },
+    [2] = {
+        .code            =    KEY_F4,
+        .gpio            =    MFP_PIN_GPIO1,
+        .active_low        =    1,        /* 0 for down 0, up 1; 1 for down 1, up 0 */
+        .desc            =    "S_BTN button",
+        .type            =    EV_KEY,
+        /* .wakeup            = */
+        .debounce_interval    =    10,        /* 10 msec jitter elimination */
+    },
+};
+static struct gpio_keys_platform_data gpio_keys_data = {
+    .buttons  = btn_button_table,
+    .nbuttons = ARRAY_SIZE(btn_button_table),
+};
+
+static struct platform_device gpio_keys = {
+    .name = "gpio-keys",
+    .dev  = {
+        .platform_data = &gpio_keys_data,
+    },
+    .id   = -1,
+};
+上面定义是将MFP_PIN_GPIO2这个GPIO口的按键映射到Linux的KEY_F1按键，MPF_PIN_GPIO3映射到KEY_F2，MFP_PIN_GPIO1映射到KEY_F4
+
+(3)上面(2)步实现了从硬件GPIO口到内核标准按键的映射,但是android并没有直接使用映射后的键值，而且对其再进行了一次映射，从内核标准键值
+到android所用键值的映射表定义在android文件系统的/system/usr/keylayout目录下。标准的映射文件为qwerty.kl，定义如下：
+key 399   GRAVE
+key 2     1
+key 3     2
+key 4     3
+key 5     4
+key 6     5
+key 7     6
+key 8     7
+key 9     8
+key 10    9
+key 11    0
+key 158   BACK              WAKE_DROPPED
+key 230   SOFT_RIGHT        WAKE
+key 60    SOFT_RIGHT        WAKE
+key 107   ENDCALL           WAKE_DROPPED
+key 62    ENDCALL           WAKE_DROPPED
+key 229   MENU              WAKE_DROPPED
+key 139   MENU              WAKE_DROPPED
+key 59    MENU              WAKE_DROPPED
+key 127   SEARCH            WAKE_DROPPED
+key 217   SEARCH            WAKE_DROPPED
+key 228   POUND
+key 227   STAR
+key 231   CALL              WAKE_DROPPED
+key 61    CALL              WAKE_DROPPED
+key 232   DPAD_CENTER       WAKE_DROPPED
+key 108   DPAD_DOWN         WAKE_DROPPED
+key 103   DPAD_UP           WAKE_DROPPED
+key 102   HOME              WAKE
+key 105   DPAD_LEFT         WAKE_DROPPED
+key 106   DPAD_RIGHT        WAKE_DROPPED
+key 115   VOLUME_UP
+key 114   VOLUME_DOWN
+key 116   POWER             WAKE
+key 212   CAMERA
+
+key 16    Q
+key 17    W
+key 18    E
+key 19    R
+key 20    T
+key 21    Y
+key 22    U
+key 23    I
+key 24    O
+key 25    P
+key 26    LEFT_BRACKET
+key 27    RIGHT_BRACKET
+key 43    BACKSLASH
+
+key 30    A
+key 31    S
+key 32    D
+key 33    F
+key 34    G
+key 35    H
+key 36    J
+key 37    K
+key 38    L
+key 39    SEMICOLON
+key 40    APOSTROPHE
+key 14    DEL
+        
+key 44    Z
+key 45    X
+key 46    C
+key 47    V
+key 48    B
+key 49    N
+key 50    M
+key 51    COMMA
+key 52    PERIOD
+key 53    SLASH
+key 28    ENTER
+        
+key 56    ALT_LEFT
+key 100   ALT_RIGHT
+key 42    SHIFT_LEFT
+key 54    SHIFT_RIGHT
+key 15    TAB
+key 57    SPACE
+key 150   EXPLORER
+key 155   ENVELOPE        
+
+key 12    MINUS
+key 13    EQUALS
+key 215   AT
+
+(4)android对底层按键的处理方法
+android按键的处理是Window Manager负责，主要的映射转换实现在android源代码frameworks/base/libs/ui/EventHub.cpp
+此文件处理来自底层的所有输入事件，并根据来源对事件进行分类处理，对于按键事件，处理过程如下：
+(a)记录驱动名称为
+(b)获取环境变量ANDROID_ROOT为系统路径(默认是/system，定义在android源代码/system/core/rootdir/init.rc文件中)
+(c)查找路径为"系统路径/usr/keylayout/驱动名称.kl"的按键映射文件，如果不存在则默认用路径为"系统路径/usr/keylayout/qwerty.kl"
+这个默认的按键映射文件，映射完成后再把经映射得到的android按键码值发给上层应用程序。
+所以我们可以在内核中定义多个按键设备，然后为每个设备设定不同的按键映射文件，不定义则会默认用qwerty.kl
+
+(5)举例
+上面(2)步我们在内核中声明了一个名为"gpio-keys"的按键设备，此设备定义在内核drivers/input/keyboard/gpio_keys.c文件中
+然后我们在内核启动过程中注册此设备：  platform_device_register(&gpio_keys);
+然后我们可以自己定义一个名为gpio-keys.kl的android按键映射文件，此文件的定义可以参考querty.kl的内容，比如说我们想将MPF_PIN_GPIO3
+对应的按键作android中的MENU键用，首先我们在内核中将MPF_PIN_GPIO3映射到KEY_F2，在内核include/linux/input.h中查找KEY_F2发现
+#define KEY_F2            60
+参照KEY_F2的值我们在gpio-keys.kl中加入如下映射即可
+key 60    MENU              WAKE
+其它按键也照此添加，完成后将按键表放置到/system/usr/keylayout目录下即可。
+
+补充：
+(1)android按键设备的映射关系可以在logcat开机日志中找的到(查找EventHub即可)
+(2)android按键设备由Window Manager负责，Window Manager从按键驱动读取内核按键码，然后将内核按键码转换成android按键码，转换完成
+后Window Manager会将内核按键码和android按键码一起发给应用程序来使用，这一点一定要注意。
+Android系统开发小知识-在android产品开发中添加新的编译模块
+
+Android开发中用户内容定义在vendor目录下，而用户产品的内容都定义在vendor/<company_name>/<board_name>目录下
+如果需要添加新的内容，可以在该目录下新建子目录，同时修改AndroidBoard.mk文件即可。比如说要添加一个按键映射文件：
+(1)在vendor/<company_name>/<board_name>目录下建立一个keymaps子目录
+(2)将我们需要的按键映射文件gpio-keys.kl和power-button.kl复制到keymaps目录下
+(3)在keymaps目录下新建一个Mdroid.mk文件，内容如下：
+LOCAL_PATH:= $(call my-dir)
+include $(CLEAR_VARS)
+
+file := $(TARGET_OUT_KEYLAYOUT)/gpio-keys.kl
+ALL_PREBUILT += $(file)
+$(file): $(LOCAL_PATH)/gpio-keys.kl | $(ACP)
+    $(transform-prebuilt-to-target)
+
+file := $(TARGET_OUT_KEYLAYOUT)/power-button.kl
+ALL_PREBUILT += $(file)
+$(file): $(LOCAL_PATH)/power-button.kl | $(ACP)
+    $(transform-prebuilt-to-target)
+(4)在vendor/<company_name>/<board_name>目录下的AndroidBoard.mk添加如下内容：
+include $(LOCAL_PATH)/keymaps/Mdroid.mk
+```
+
+## 按键字符表
+
+```
+Android系统移植(三)-按键字符表
+上节讲android的Window Manager将内核按键码通过按键映射表转换成android按键码，
+这节讲的是android按键码向android字符的转换，转换也是通过Window Manager来完成的
+(1)原始按键字符表，我们知道一个按键是可以显示多个字符的，决定显示字符的是CAPS(大小写),FN,NUNMBER等按键
+举例如下：
+[type=QWERTY]                                           
+                                                        
+# keycode       display number  base    caps    fn      caps_fn
+                                                        
+A               'A'     '2'     'a'     'A'     '#'     0x00
+B               'B'     '2'     'b'     'B'     '<'     0x00
+C               'C'     '2'     'c'     'C'     '9'     0x00E7
+D               'D'     '3'     'd'     'D'     '5'     0x00
+E               'E'     '3'     'e'     'E'     '2'     0x0301
+F               'F'     '3'     'f'     'F'     '6'     0x00A5
+G               'G'     '4'     'g'     'G'     '-'     '_'
+H               'H'     '4'     'h'     'H'     '['     '{'
+I               'I'     '4'     'i'     'I'     '$'     0x0302
+J               'J'     '5'     'j'     'J'     ']'     '}'
+K               'K'     '5'     'k'     'K'     '"'     '~'
+L               'L'     '5'     'l'     'L'     '''     '`'
+M               'M'     '6'     'm'     'M'     '!'     0x00
+N               'N'     '6'     'n'     'N'     '>'     0x0303
+O               'O'     '6'     'o'     'O'     '('     0x00
+P               'P'     '7'     'p'     'P'     ')'     0x00
+Q               'Q'     '7'     'q'     'Q'     '*'     0x0300
+R               'R'     '7'     'r'     'R'     '3'     0x20AC
+S               'S'     '7'     's'     'S'     '4'     0x00DF
+T               'T'     '8'     't'     'T'     '+'     0x00A3
+U               'U'     '8'     'u'     'U'     '&'     0x0308
+V               'V'     '8'     'v'     'V'     '='     '^'
+W               'W'     '9'     'w'     'W'     '1'     0x00
+X               'X'     '9'     'x'     'X'     '8'     0xEF00
+Y               'Y'     '9'     'y'     'Y'     '%'     0x00A1
+Z               'Z'     '9'     'z'     'Z'     '7'     0x00
+                                                        
+# on pc keyboards
+COMMA           ','     ','     ','     ';'     ';'     '|'
+PERIOD          '.'     '.'     '.'     ':'     ':'     0x2026
+AT              '@'     '0'     '@'     '0'     '0'     0x2022
+SLASH           '/'     '/'     '/'     '?'     '?'     '\'
+                                                        
+SPACE           0x20    0x20    0x20    0x20    0xEF01  0xEF01
+ENTER         0xa     0xa     0xa     0xa     0xa     0xa
+                                                        
+TAB             0x9     0x9     0x9     0x9     0x9     0x9
+0               '0'     '0'     '0'     ')'     ')'     ')'
+1               '1'     '1'     '1'     '!'     '!'     '!'
+2               '2'     '2'     '2'     '@'     '@'     '@'
+3               '3'     '3'     '3'     '#'     '#'     '#'
+4               '4'     '4'     '4'     '$'     '$'     '$'
+5               '5'     '5'     '5'     '%'     '%'     '%'
+6               '6'     '6'     '6'     '^'     '^'     '^'
+7               '7'     '7'     '7'     '&'     '&'     '&'
+8               '8'     '8'     '8'     '*'     '*'     '*'
+9               '9'     '9'     '9'     '('     '('     '('
+                                                        
+GRAVE           '`'     '`'     '`'     '~'     '`'     '~'
+MINUS           '-'     '-'     '-'     '_'     '-'     '_'
+EQUALS          '='     '='     '='     '+'     '='     '+'
+LEFT_BRACKET    '['     '['     '['     '{'     '['     '{'
+RIGHT_BRACKET   ']'     ']'     ']'     '}'     ']'     '}'
+BACKSLASH       '\'     '\'     '\'     '|'     '\'     '|'
+SEMICOLON       ';'     ';'     ';'     ':'     ';'     ':'
+APOSTROPHE      '''     '''     '''     '"'     '''     '"'
+STAR            '*'     '*'     '*'     '*'     '*'     '*'
+POUND           '#'     '#'     '#'     '#'     '#'     '#'
+PLUS            '+'     '+'     '+'     '+'     '+'     '+'
+
+(2)android为了减少载入时间，并没有使用原始按键表文件，而是将其转换成二进制文件
+转换的工具源代码在android源代码build/tools/kcm目录下，android在编译过程中会
+首先编译转换工具，然后利用转换工具将android源代码sdk/emulator/keymaps目录下
+的qwerty.kcm和qwerty2.kcm文件分别转换成qwerty.kcm.bin和qwerty2.kcm.bin
+转换后的二进制文件复制到out/target/product/<board_name>/system/usr/keychars
+目录下，也就是目标平台的/system/usr/keychars目录中。
+
+(3)Window Manager对按键的处理在android源代码frameworks/base/libs/ui/EventHub.cpp文件中
+Window Manager从内核接收到一个按键输入事件后会首先调用按键映射表将内核按键码映射成android按键码(这部分上节已讲)，然后会
+将android按键码转换成字符，具体过程如下：
+(a)设置系统系统属性hw.keyboards.设备号.devname的值为设备名
+以上节的gpio-keys设备为例，会设置系统属性hw.keyboards.65539.devname的值为gpio-keys
+(b)载入按键字符表，首先载入/system/usr/keychars目录下的设备名.kcm.bin文件(此例即gpio-keys.kcm.bin文件)，如果载入失败
+则载入该目录下的querty.kcm.bin.
+(c)利用载入的按键字符表将android按键转换成按键字符发给上层应用程序。
+
+(4)一般情况下一个控制按键是不需要作按键字符表的，系统会调用默认的去处理，但是如果要开发一个全功能键盘(包含了字母和数字)，那可能就需要
+自己作一个专用的按键字符表了。
+android系统开发小问题－启动过程中android字符没有显示出来
+
+android目标平台可以正常启动，但是启动过程中的android字符没有显示出来，这个是linux内核配置的问题
+打开内核framebuffer控制台即可。
+(1)make menuconifg后选择Device Drivers->Graphics support->Console display driver support->Framebuffer Console support
+然后打开相关的几个配置选项即可。
+(2)直接修改内核配置文件，如下：
+CONFIG_FRAMEBUFFER_CONSOLE=y
+CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY=y
+# CONFIG_FRAMEBUFFER_CONSOLE_ROTATION is not set
+CONFIG_FONTS=y
+CONFIG_FONT_8x8=y
+CONFIG_FONT_8x16=y
+CONFIG_FONT_6x11=y
+# CONFIG_FONT_7x14 is not set
+# CONFIG_FONT_PEARL_8x8 is not set
+# CONFIG_FONT_ACORN_8x8 is not set
+# CONFIG_FONT_MINI_4x6 is not set
+# CONFIG_FONT_SUN8x16 is not set
+# CONFIG_FONT_SUN12x22 is not set
+# CONFIG_FONT_10x18 is not set
+(3)android启动过程中的android字符显示在源代码的system/core/init.c中，如下：
+if( load_565rle_image(INIT_IMAGE_FILE) ) {
+    fd = open("/dev/tty0", O_WRONLY);
+    if (fd >= 0) {
+        const char *msg;
+            msg = "\n"
+        "\n"
+        "\n"
+        "\n"
+        "\n"
+        "\n"
+        "\n"  // console is 40 cols x 30 lines
+        "\n"
+        "\n"
+        "\n"
+        "\n"
+        "\n"
+        "\n"
+        "\n"
+        "             A N D R O I D ";
+        write(fd, msg, strlen(msg));
+        close(fd);
+    }
+}
+```
+
+## android启动过程配置文件的解析与语法
+
+```
+(1)android启动文件系统后调用的第一个应用程序是/init，此文件的很重要的内容是解析了init.rc和init.xxx.rc
+两个配置文件，然后执行解析出来的任务。相关代码在android源代码/system/core/init/init.c文件中，如下：
+    parse_config_file("/init.rc");
+
+    /* pull the kernel commandline and ramdisk properties file in */
+    qemu_init();
+    import_kernel_cmdline(0);
+
+    get_hardware_name();
+    snprintf(tmp, sizeof(tmp), "/init.%s.rc", hardware);
+    parse_config_file(tmp);
+
+(2)从上面代码可以看到，第一个配置文件名称固定为init.rc,而第二个配置文件格式为init.xxx.rc，其中xxx部分的内容
+是从内核读取的，具体是读取文件/proc/cpuinfo中的Hardware部分，然后截取其部分内容。Hardware部分是定义在内核的
+主板定义文件中，我的平台是定义在内核arch/arm/mach-mmp/merlin.c中，我的平台定义如下：
+MACHINE_START(ARDENT_MERLIN, "PXA168-based Merlin Platform")
+    .phys_io = APB_PHYS_BASE,
+    .boot_params = 0x00000100,
+    .io_pg_offst = (APB_VIRT_BASE >> 18) & 0xfffc,
+    .map_io = pxa_map_io,
+    .init_irq = pxa168_init_irq,
+    .timer = &pxa168_timer,
+    .init_machine = merlin_init,
+MACHINE_END
+这样截取到的hardware部分的内容就为pxa168-based，也就是说我的平台的第二个配置文件应该命名为init.pxa168-based.rc
+
+(3)从上面看init.xxx.rc中的xxx内容是取决是内核中主板的定义的，如果觉得麻烦，可以将其在代码中写死，例如：
+    parse_config_file(“init.merlin.rc”);
+
+(4)配置文件的语法如下：
+(a)配置文件的内容包含有4种：
+     动作(Action)
+     命令(Commands)
+     服务(Services)
+     选项(Options)
+(b)动作和命令一起使用，形式如下：
+on <trigger>
+  <command>
+  <command>
+  <command>
+其中trigger是触发条件，也就是说在满足触发条件的情况下执行1个或多个相应的命令，举例如下：
+on property:persist.service.adb.enable=1
+    start adbd
+
+(c)服务和选项一起使用，形式如下：
+  service <name> <pathname> [ <argument> ]*
+  <option>
+  <option>
+  ...
+上面内容解释为：
+  service 服务名称 服务对应的命令的路径 命令的参数
+    选项
+    选项
+  ...
+举例如下：
+service ril-daemon /system/bin/rild
+    socket rild stream 660 root radio
+    socket rild-debug stream 660 radio system
+    user root
+    group radio cache inet misc audio
+上面的服务对应到/system/bin/rild命令，没有参数，服务名称为ril-daemon,后面的内容都是服务的选项。
+
+(d)选项是影响服务启动和运行的参数，主要的选项如下：
+
+disabled  禁用服务，此服务开机时不会自动启动，但是可以在应用程序中手动启动它。
+
+socket <type> <name> <perm> [ <user> [ <group> ] ]
+套接字    类型        名称           权限           用户           组
+创建一个名为/dev/socket/<name>，然后把它的fd传给启动程序
+类型type的值为dgram或者stream
+perm表示该套接字的访问权限,user和group表示改套接字所属的用户和组，这两个参数默认都是0，因此可以不设置。
+
+user <username>
+执行服务前切换到用户<username>，此选项默认是root，因此可以不设置。
+
+group <groupname> [ <groupname> ]*
+执行服务前切换到组<groupname>,此选项默认是root,因此可以不设置
+
+capability [ <capability> ]+
+执行服务前设置linux capability，没什么用。
+
+oneshot
+服务只启动一次，一旦关闭就不能再启动。
+
+class <name>
+为服务指定一个类别，默认为"default"，同一类别的服务必须一起启动和停止
+
+(e)动作触发条件<trigger>
+boot  首个触发条件，初始化开始(载入配置文件)的时候触发
+
+<name>=<value>
+当名为<name>的属性(property)的值为<value>的时候触发
+
+device-added-<path>
+路径为<path>的设置添加的时候触发
+
+device-removed-<path>
+路径为<path>的设置移除的时候触发
+
+service-exited-<name>
+名为<name>的服务关闭的时候触发
+
+(f)命令(Command)的形式
+exec <path> [ <argument> ]*
+复制(fork)和执行路径为<path>的应用程序，<argument>为该应用程序的参数，在该应用程序执行完前，此命令会屏蔽，
+
+export <name> <value>
+声明名为<name>的环境变量的值为<value>，声明的环境变量是系统环境变量，启动后一直有效。
+
+ifup <interface>
+启动名为<interface>的网络接口
+
+import <filename>
+加入新的位置文件，扩展当前的配置。
+
+hostname <name>
+设置主机名
+
+class_start <serviceclass>
+启动指定类别的所有服务
+
+class_stop <serviceclass>
+停止指定类别的所有服务
+
+domainname <name>
+设置域名
+
+insmod <path>
+加载路径为<path>的内核模块
+
+mkdir <path>
+创建路径为<path>目录
+
+mount <type> <device> <dir> [ <mountoption> ]*
+挂载类型为<type>的设备<device>到目录<dir>,<mountoption>为挂载参数，距离如下：
+    mount ubifs ubi1_0 /data nosuid nodev
+
+setkey
+暂时未定义
+
+setprop <name> <value>
+设置名为<name>的系统属性的值为<value>
+
+setrlimit <resource> <cur> <max>
+设置资源限制，举例：
+# set RLIMIT_NICE to allow priorities from 19 to -20
+    setrlimit 13 40 40
+没看懂是什么意思。
+
+start <service>
+启动服务(如果服务未运行)
+
+stop <service>
+停止服务(如果服务正在运行)
+
+symlink <target> <path>
+创建一个从<path>指向<target>的符号链接，举例：
+    symlink /system/etc /etc
+
+write <path> <string> [ <string> ]*
+打开路径为<path>的文件并将一个多这多个字符串写入到该文件中。
+
+(g)系统属性(Property)
+android初始化过程中会修改一些属性，通过getprop命令我们可以看到属性值，这些属性指示了某些动作或者服务的状态，主要如下：
+init.action      如果当前某个动作正在执行则init.action属性的值等于该动作的名称，否则为""
+init.command     如果当前某个命令正在执行则init.command属性的值等于该命令的名称，否则为""
+init.svc.<name>  此属性指示个名为<name>的服务的状态("stopped", "running", 或者 "restarting").
+```
+
+## 背光灯模块
+
+```
+android系统开发(七)-背光模块
+1,总论
+背光模块属于HAL层开发，HAL层开发，用一句话来概括就是定义一个hardware.h中定义的名称为宏HAL_MODULE_INFO_SYM的hw_module_t结构体，
+然后实现结构体的相关内容
+
+2,驱动方面的准备
+简单的嵌入式linux驱动，编写LCD背光驱动，并提供接口给上层修改，我所用的是直接修改接口文件，接口如下：
+/sys/class/backlight/pwm-backlight/brightness  这个是亮度调节
+/sys/class/backlight/pwm-backlight/max_brightness 这个是最大亮度，按照android系统的要求应该设置成255
+控制亮度直接写brightness文件即可
+背光驱动主要是通过PWM来完成，这里不详细说明。
+
+3,需要包含的头文件
+/hardware/libhardware/include/hardware目录下的hardware.h和lights.h
+其中hardware.h中定义了通用硬件模块，lights.h中定义了背光设备相关的内容
+
+4,android已有的硬件模块在/hardware/libhardware/modules目录下，为了区分，我们开发的背光模块放置在如下的目录：
+vendor/ardent/merlin/lights目录下，编译成lights.default.so放置到/system/lib/hw目录下，模块命名规则可以
+参考上一节的内容。
+
+5,修改vendor/ardent/merlin目录下AndroidBoard.mk文件，添加如下内容：
+include $(LOCAL_PATH)/lights/Mdroid.mk
+
+6,lights目录新建Mdroid.mk文件，内容如下：
+LOCAL_PATH:= $(call my-dir)
+include $(CLEAR_VARS)
+
+LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/hw
+LOCAL_SRC_FILES:= lights.c
+
+LOCAL_SHARED_LIBRARIES := \
+    libutils \
+    libcutils \
+    libhardware
+
+LOCAL_PRELINK_MODULE := false
+
+LOCAL_MODULE := lights.default
+
+include $(BUILD_SHARED_LIBRARY)
+
+7,lights目录下新建一个lights.c文件，如下：
+const struct hw_module_t HAL_MODULE_INFO_SYM = {
+    .tag = HARDWARE_MODULE_TAG,
+    .version_major = 1,
+    .version_minor = 0,
+    .id = LIGHTS_HARDWARE_MODULE_ID,
+    .name = "lights module",
+    .author = "allen",
+    .methods = NULL,
+};
+
+8，上面的内容可以直接编译通过，但是因为我将其methods部分指向了空指针，因此没有任何功能，下面来实现此部分
+hw_module_t机构体的methods成员是一个指向hw_module_methods_t结构体的一个指针，hw_module_methods_t结构体定义如下：
+typedef struct hw_module_methods_t {
+    int (*open)(const struct hw_module_t* module, const char* id,struct hw_device_t** device);
+} hw_module_methods_t;
+据此我们定义一个hw_module_methods_t类型的参数lights_module_methods如下：
+struct hw_module_methods_t lights_module_methods = {
+    .open = lights_device_open
+};
+然后将上面的methods由NULL改成lights_module_methods
+
+9,接下来就是定义lights_device_open函数了，此函数的参数和返回值由hw_module_methods_t结构体的open成员决定，此函数定义如下：
+static int lights_device_open(const struct hw_module_t *module,const char *id, struct hw_device_t **device)
+从lights_device_open函数的参数来看，第一个参数和第二个参数是常量，第三个参数是 一个指向hw_device_t结构体的指针，因此可以断定
+实现此函数也就是要完成第三个参数的内容，详细的内容我们可以参考直接调用该函数的内容，在frameworks/base/services/jni目录下的
+com_android_server_LightsService.cpp文件中，内容如下：
+static light_device_t* get_device(hw_module_t* module, char const* name)
+{
+    int err;
+    hw_device_t* device;
+    err = module->methods->open(module, name, &device);
+    if (err == 0) {
+        return (light_device_t*)device;//device由hw_device_t指针强制转换成light_device_t指针
+    } else {
+        return NULL;
+    }
+}
+
+static jint init_native(JNIEnv *env, jobject clazz)
+{
+    int err;
+    hw_module_t* module;
+    Devices* devices;
+    
+    devices = (Devices*)malloc(sizeof(Devices));
+
+    err = hw_get_module(LIGHTS_HARDWARE_MODULE_ID, (hw_module_t const**)&module);
+    if (err == 0) {
+        devices->lights[LIGHT_INDEX_BACKLIGHT]
+                = get_device(module, LIGHT_ID_BACKLIGHT);
+        devices->lights[LIGHT_INDEX_KEYBOARD]
+                = get_device(module, LIGHT_ID_KEYBOARD);
+        devices->lights[LIGHT_INDEX_BUTTONS]
+                = get_device(module, LIGHT_ID_BUTTONS);
+        devices->lights[LIGHT_INDEX_BATTERY]
+                = get_device(module, LIGHT_ID_BATTERY);
+        devices->lights[LIGHT_INDEX_NOTIFICATIONS]
+                = get_device(module, LIGHT_ID_NOTIFICATIONS);
+        devices->lights[LIGHT_INDEX_ATTENTION]
+                = get_device(module, LIGHT_ID_ATTENTION);
+        devices->lights[LIGHT_INDEX_BLUETOOTH]
+                = get_device(module, LIGHT_ID_BLUETOOTH);
+        devices->lights[LIGHT_INDEX_WIFI]
+                = get_device(module, LIGHT_ID_WIFI);
+    } else {
+        memset(devices, 0, sizeof(Devices));
+    }
+
+    return (jint)devices;
+}
+从上面的内容我们可以看出lights_device_open的第一个参数是JNI层用hw_get_module所获得，第二个参数根据设备的不同有很多种情况
+该参数的内容定义在lights.h中，全部情况如下：
+#define LIGHT_ID_BACKLIGHT          "backlight"
+#define LIGHT_ID_KEYBOARD           "keyboard"
+#define LIGHT_ID_BUTTONS            "buttons"
+#define LIGHT_ID_BATTERY            "battery"
+#define LIGHT_ID_NOTIFICATIONS      "notifications"
+#define LIGHT_ID_ATTENTION          "attention"
+#define LIGHT_ID_BLUETOOTH          "bluetooth"
+#define LIGHT_ID_WIFI               "wifi"
+lights调节有背光，键盘，按键，电池，通知，提醒，蓝牙和WIF
+第三个参数是一个指向一个hw_device_t的指针，但是com_android_server_LightsService.cpp文件中的背光调节函数定义如下：
+static void setLight_native(JNIEnv *env, jobject clazz, int ptr, int light, int colorARGB, int flashMode, int onMS, int offMS, int brightnessMode) {
+    Devices* devices = (Devices*)ptr;
+    light_state_t state;
+
+    if (light < 0 || light >= LIGHT_COUNT || devices->lights[light] == NULL) {
+        return ;
+    }
+
+    memset(&state, 0, sizeof(light_state_t));
+    state.color = colorARGB;
+    state.flashMode = flashMode;
+    state.flashOnMS = onMS;
+    state.flashOffMS = offMS;
+    state.brightnessMode = brightnessMode;
+
+    devices->lights[light]->set_light(devices->lights[light], &state);
+}
+get_device函数中将hw_device_t指针强制转换成light_device_t指针给调节背光用，而light_device_t定义如下：
+struct light_device_t {
+    struct hw_device_t common;
+    int (*set_light)(struct light_device_t* dev,
+            struct light_state_t const* state);
+};
+因此在实现lights_device_open的第三个参数的时候，我们应该定义一个light_device_t类型结构体，然后
+将起common域的指针地址传递过去。这样虽然传递的是一个hw_device_t指针地址，但是JNI层可以将其强制转换
+成light_device_t指针地址用，否则devices->lights[light]->set_light就会起不到作用了。实现如下：
+static int lights_device_open(const struct hw_module_t *module,const char *id, struct hw_device_t **device)
+{
+    struct light_device_t *dev = NULL;
+    int resvalue = -1;
+    dev = calloc(sizeof(struct light_device_t),1);
+    dev->common.tag = HARDWARE_DEVICE_TAG;
+    dev->common.version = 0;
+    dev->common.module = (struct hw_module_t *)module;
+    dev->common.close = lights_device_close;
+    if(!strcmp(id, LIGHT_ID_BACKLIGHT))
+    {
+        dev->set_light = lcd_set_light;
+        resvalue = 0;
+    }
+    else
+    {
+        dev->set_light = other_set_light;
+        resvalue = 0;
+    }
+    *device = &dev->common;
+    return resvalue;
+}
+
+10，实现lights_device_close，lcd_set_light和other_set_light，这个主要是调用驱动提供的接口直接控制硬件，举例如下：
+static int lights_device_close(struct hw_device_t* device)
+{
+    struct light_device_t *m_device = (struct light_device_t *)device;
+    if(m_device)
+        free(m_device);
+    return 0;
+}
+static int lcd_set_light(struct light_device_t* dev,struct light_state_t const* state)
+{
+    int fd = -1;
+    int bytes = 0;
+    int rlt = -1;
+    unsigned char brightness = ((77*((state->color>>16)&0x00ff))
+                               + (150*((state->color>>8)&0x00ff)) 
+                               + (29*(state->color&0x00ff))) >> 8;
+    fd = open("/sys/class/backlight/pwm-backlight/brightness", O_RDWR);
+    if(fd>0)
+    {
+        char buffer[20];
+     memset(buffer, 0, 20);
+    bytes = sprintf(buffer, "%d", brightness);
+    rlt = write(fd, buffer, bytes);
+        if(rlt>0)
+        {
+           close(fd);
+           return 0;
+        }
+    }
+    close(fd);
+    return -1;
+}
+
+static int other_set_light(struct light_device_t* dev,struct light_state_t const* state)
+{
+    return 0;
+}
+
+11，因为上面调节背光是通过写/sys/class/backlight/pwm-backlight/brightness文件来完成，因此一定要设置该文件的权限，
+在init.xxx.rc文件中添加如下的内容：
+    # for control LCD backlight
+    chown system system /sys/class/backlight/pwm-backlight/brightness
+    chmod 0666 /sys/class/backlight/pwm-backlight/brightness
+
+12，修改完成后经验证亮度调节可用，上面的例子只是实现了lights部分功能，如果需要完成所有的功能，请参考hardware.h, lights.h和com_android_server_LightsService.cpp文件中的内容。
+
+
+本文来自CSDN博客，转载请标明出处：http://blog.csdn.net/jiajie961/archive/2010/11/23/6030405.aspx
+```
+
+## android系统开发(八)-SDCARD
+
+```
+关于android系统开发sdcard移植，主要有如下工作：
+1，内核驱动开发，完成后每次插入和拔出sdcard系统都会有相关的信息显示，而且sdcard可以手动挂载。
+
+2，android的sdcard挂载主要是vold来完成，vold的源代码在/system/vold目录下，编译成/system/bin/vold
+init.rc文件中有vold系统服务，确保android系统开机后vold有正常运行。
+
+3，添加vold的配置文件，先查看/system/bin/vold/main.cpp文件中的process_config函数，发现配置文件路径如下：
+/etc/vold.fstab
+android2.2下/etc目录指向了/system/etc目录，因此我们要新建一个vold.fstab文件，目标路径为/system/etc/vold.fstab
+
+4,vold.fstab文件的写法，参考/system/core/rootdir/etc目录下的vold.fstab,里面有详细的说明和例子，写法如下：
+dev_mount       <label>     <mount_point>     <part>       <sysfs_path1...>
+dev_mount命令        标签                挂载点                            子分区               设备在sysfs文件系统下的路径(可多个)
+按照上面的要求和我的平台的实际情况，在vold.fstab中添加如下内容：
+dev_mount sdcard /mnt/sdcard auto         /block/mmcblk0
+上面的/block/mmcblk0表示sysfs下的路径，由于linux的sysfs文件系统是在sys目录下，所以对应到/sys/block/mmcblk0目录
+
+5，完成后发现android系统中sdcard可用了，总结下载，sdcard部分很简单，主要是找到sdcard设备对应的sysfs文件系统路径
+
+
+本文来自CSDN博客，转载请标明出处：http://blog.csdn.net/jiajie961/archive/2010/11/25/6035369.aspx
+```
+
+## android系统开发小知识-启动脚本文件内部的执行顺序
+
+```
+我们知道android在启动的时候通过init进程来解析init.rc和init.xxx.rc文件，
+然后执行这两个文件解析出来的内容，init.rc和init.xxx.rc文件中的内容却并不是
+按照顺序来执行的，而是有固定的执行顺序，首先，init.rc和init.xxx.rc文件中的内容
+全部会放在4个关键字下：
+early-init, init, early-boot, boot
+所以一个典型的rc文件的写法如下：
+on early-init
+--------------
+
+on init
+--------------
+
+on early-boot
+--------------
+
+on boot
+--------------
+rc文件中这4个部分是可以打乱顺序随便写的，甚至可以有多个部分出现，但是解析完了以后的执行
+顺序确实固定的，执行顺序如下：
+early-init -> init -> early-boot -> boot
+
+本文来自CSDN博客，转载请标明出处：http://blog.csdn.net/jiajie961/archive/2010/12/01/6047219.aspx
+```
+
+## ANR 问题一般解决思路
+
+```
+https://mp.weixin.qq.com/s/kT0hZaYRlW9X8fIVEQKJLQ
+```
+
+## Android系统增加字体库及修改系统默认字体
+
+```
+https://blog.csdn.net/hsaekong/article/details/80305263
+
+一、Android系统增加字体库
+
+1.把字体cordiau.ttf文件copy到frameworks\base\data\fonts目录
+2.修改frameworks\base\data\fonts\Android.mk文件,如下图:
+3.修改frameworks\base\data\fonts\fonts.mk文件,如下图
+4.在frameworks/base/data/fonts目录下单编,执行mm
+5.编译成功后,把文件push到system/fonts
+
+二、修改系统默认字体
+1、  修改frameworks/base/data/fonts/system_fonts.xml文件，如下图：
+
+然后push到system/etc，重启后，系统默认字体替换为cordiau.ttf了
+```
+
+## Android 原生拼音输入法分析
+
+```
+当一个可编辑的文本框获得焦点时，系统就会启动当前输入法，首先调用当前输入法的onCreate()函数。
+
+Android系统的输入法通常都派生自基类android.inputmethodservice.InputMethodService，基类InputMethodService定义了Android输入法的公共API集合，其中onCreate就是其中的一个API函数。各个具体的输入法实现根据需要重载实现这些API的全部或者一部分。
+
+Android SDK提供了一个最简单的输入法示例，SoftKeyboard ，这个示例可以在SDK安装目录下samples/plaform-X下找到（其中X为SDK的API level数，如cupcake为3，donut为4，froyo为8）。SoftKeyboard 的onCreate()函数代码如下：
+    @Override public void onCreate() {
+        super.onCreate();
+        mWordSeparators = getResources().getString(R.string.word_separators);
+    }
+除了简单调用父类的同名函数外，从资源文件中读出单词分隔符的串并保存在成员变量里。每个输入法在被创建时要进行的初始化不尽相同。如Android源代码树在packags/inputmethods子目录下还有其它具体的输入法实例。（参考文档http://android.git.kernel.org/?p=platform/packages/inputmethods/LatinIME.git;a=tree）可以把Android源码取到本地计算机，还可以在线浏览另一个输入法实例LatinIME的onCreate()函数，它要做的工作就复杂得多：创建键盘，读取系统信息，注册系统铃声变化的监听器等等。
+
+回来PinyinIME（也在Android源码的packags/inputmethods下）的onCreate()函数，省略掉与LatinIME类似的代码。
+    @Override
+    public void onCreate() {
+        ...
+        startPinyinDecoderService();
+        ...
+    }
+函数startPinyinDecoderService（）检测PinyinDecoderService服务如果未运行，则通过系统函数bindService（）来启动它。bindService的第2个参数对象有2个成员函数会在PinyinDecoderService服务启动过程中被调用：
+onServiceConnected()    -- PinyinDecoderService建立，PinyinDecoderService.onBind()返回的binder对象作为函数的第2个参数传入。
+onServiceDisconnected() -- PinyinDecoderService结束。
+
+关于bindService()的第2个参数以及其在进程间调用的作用可参见http://developer.android.com/guide/developing/tools/aidl.html，在PinyinIME中，它是ServiceConnection接口的一个实现，onServiceDisconnected（）什么都不用做，onServiceConnected()在PinyinDecoderService建立时被调用，远程service进程的binder对象作为函数的第2个参数传入。输入法作为客户端进程，需要借助以下辅助函数把传入的binder对象转化成可用的接口：
+IPinyinDecoderService.Stub.asInterface（）
+PinyinIME输入法把转化后的接口对象保存在类DecodingInfo对象mDecInfo的mIPinyinDecoderService成员，以供其后的调用：
+    public class PinyinDecoderServiceConnection implements ServiceConnection {
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mDecInfo.mIPinyinDecoderService = IPinyinDecoderService.Stub
+                    .asInterface(service);
+        }
+        ....
+    }
+
+mDecInfo.mIPinyinDecoderService的声明如下：
+    public class DecodingInfo {
+        ......
+        
+        private IPinyinDecoderService mIPinyinDecoderService;
+        ......
+    }
+
+现在再来看在输入法（客户端进程）调用bindService时，服务端进程启动的详细过程：
+因为第1个参数Intent对象的类名在调用前被设成PinyinDecoderService.class，所以系统进程响应bindService时，如果服务未运行时首先调用PinyinDecoderService的onCreate()
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mUsr_dict_file = getFileStreamPath("usr_dict.dat").getPath();
+        ......
+        initPinyinEngine();
+    }
+接下来调用PinyinDecoderService的onBind()函数，并把返回的binder对象传给前面说过的ServiceConnection.onServiceConnected():
+    @Override
+    public IBinder onBind(Intent intent) {
+        return mBinder;
+    }
+
+辅助的初始化函数initPinyinEngine（）首先打算系统静态字典资源文件res/raw/dict_pinyin.dat，然后把用户字典名写到一个byte数组里，最后把静态字典文件信息与用户字典名作为参数，调用本地c/c++函数nativeImOpenDecoderFd（）。
+
+onBind函数返回的binder对象，就是
+private final IPinyinDecoderService.Stub mBinder = new IPinyinDecoderService.Stub() {
+    ....
+};
+
+当PinyinDecoderService创建时，初始化工作包括了收集系统静态字典文件信息以及用户字典路径信息，然后调用C++代码接口nativeImOpenDecoderFd完成底层服务的启动（另一个C++代码接口nativeImOpenDecoder也完成同样的功能，除了传递不同的参数）。
+
+下图是C++函数nativeImOpenDecoderFd的原形如下：
+JNIEXPORT jboolean JNICALL nativeImOpenDecoderFd(JNIEnv* env, jclass jclazz,
+                                                 jobject fd_sys_dict,
+                                                 jlong startoffset,
+                                                 jlong length,
+```
+
+## MTK 芯片命名规则
+
+```
+MT6795M
+第一个数字6:表示芯片用途，6为手机，8为平板
+第二个数字7:标示指令集类型，5为32位，7为64位
+第三个数字9:芯片定位，9为旗舰，5为中端，3为入门
+第四个数字5:芯片世代，数字越大发布越晚，性能越强
+最后一个字母M:细分版本，T为高端增强版，没有字母为标准版，M为降频低配版
+
+https://blog.csdn.net/zhangbijun1230/article/details/79440291
+```
+
+## 代码区分高通和MTK平台
+
+```
+public static boolean isHardWareVendorQualcomm() {
+    String hardware = android.os.Build.HARDWARE;
+    if (hardware.matches("qcom")) {
+        Log.d(TAG, "Qualcomm platform");
+        return true;
+    }
+    return false;
+}
+
+public static boolean isHardWareVendorMediaTek() {
+    String hardware = android.os.Build.HARDWARE;
+    if (hardware.matches("mt[0-9]*")) {
+        Log.d(TAG, "MediaTek platform");
+        return true;
+    }
+    return false;
+}
+```
+
+## LK
+
+```
+LK全称little Kernel,其主要功能为：
+A.          硬件初始化，包括建立vector table,MMU,cache,初始化peripherals,storage,USB,crypto等等;
+B.          加载boot.img；
+C.          支持烧写和进入recovery
+```
+
+## Fastboot
+
+```
+fastboot协议是一种通过USB连接与bootloaders通讯的机制。它被设计的非常容易实现，能够用于多种设备和运行Linux、Windows或者OSX的主机;
+```
+
+## 安卓bootloader：三分钟让你彻底理解uboot的启动与功能
+
+```
+https://blog.csdn.net/kai_zone/article/details/80443820
+
+1.  Bootloader简介
+系统上电后，需要一段程序来进行初始化：关闭看门狗，改变系统时钟，初始化存储控制器，将更多的代码复制到内存中等。它就是bootloader。
+
+bootloader的实现非常依赖具体硬件，在嵌入式系统中，硬件配置千差万别，即使是相同的CPU，它的外设（比如flash）也可能不同，所以不可能有一个bootloader支持所有的CPU,所有的电路板。即使是支持CPU架构比较多的UBoot，也不是一拿来就可以使用（除非里面的配置刚好和你的板子相同）。需要进行一些配置。
+
+CPU上电后，会从某个地址开始执行，比如MIPS结构的CPU会从0xBFC00000取第一条指令，而ARM结构的CPU则会从0x00000000开始，嵌入式开发板中，需要把存储器件的ROM或Flash等映射到这个地址，Bootloader就存放在这个地址的开始处，一上电就开始执行。（手机中的RAM和ROM分别对应电脑的内存和硬盘）
+
+2.  启动流程。
+u-boot系统启动流程 大多数bootloader都分为stage1和stage2两部分，u-boot也不例外。
+
+依赖于CPU体系结构的代码（如设备初始化代码等）通常都放在stage1且可以用汇编语言来实现，而stage2则通常用C语言来实现，这样可以实现复杂的功能，而且有更好的可读性和移植性。
+
+1.Stage1 start.S代码结构 u-boot的stage1代码通常放在start.S文件中，他用汇编语言写成，其主要代码部分如下
+
+（1） 定义入口。： 该工作通过修改连接器脚本来完成。
+
+（2）设置异常向量（Exception Vector）。 
+
+（3）设置CPU的速度、时钟频率及终端控制寄存器。 
+
+（4）初始化内存控制器。 
+
+（5）将ROM中的程序复制到RAM中。 
+
+（6） 关中断，关看门狗
+
+（7）初始化堆栈，清bss段，为第二阶段准备。
+
+（8）转到RAM中执行，该工作可使用指令ldr pc来完成。
+```
+
+## Makefile Android.mk Ninja Soong Blueprint kati Android.bp
+
+```
+https://blog.csdn.net/itachi85/article/details/89038370
+
+1.编译系统概述
+了解以下一些概念，会对Android编译系统有大概的了解。
+Makefile
+Android平台的编译系统，其实就是用Makefile写出来的一个独立项目。它定义了编译的规则，实现了“自动化编译”，不仅把分散在数百个Git库中的代码整合起来、统一编译， 而且还把产物分门别类地输出到一个目录，打包成手机ROM，还可以生成应用开发时所使用的SDK、NDK等。
+因此，采用Makefile编写的编译系统，也可以称为Makefile编译系统。
+Android.mk
+Makefile编译系统的一部分，定义了一个模块的必要参数，使模块随着平台编译。通俗来讲就是告诉编译系统，以什么样的规则编译你的源代码，并生成对应的目标文件。
+
+Ninja
+Ninja是一个致力于速度的小型编译系统，如果把其他的编译系统看作高级语言，那么Ninja 目标就是汇编。
+
+Soong
+Soong是谷歌用来替代此前的Makefile编译系统的替代品，负责解析Android.bp文件，并将之转换为Ninja文件
+
+Blueprint
+Blueprint用来解析Android.bp文件翻译成Ninja语法文件。
+
+kati
+kati是谷歌专门为了Android而开发的一个小项目，基于Golang和C++。 目的是把Android中的Makefile，转换成Ninja文件。
+
+Android.bp
+Android.bp，是用来替换Android.mk的配置文件。
+
+Blueprint负责解析Android.bp文件内容，Blueprint类似一个处理相关语法的库文件，Soong则是定义具体如何处理相应的语法以及命令实现。通俗来讲就是Soong借助于Blueprint定义的Android.bp语法，完成Android.bp的解析，最终转换成Ninja文件。
+Makefile文件会通过kati转换为Ninja文件。
+随着Android工程越来越大，采用Makefile的编译系统花费的时间也越来越长，因此谷歌在Android 7.0开始引入了Ninja来编译系统，相对于Makefile来说Ninja在大的项目管理中速度和并行方面有突出的优势。
+Makefile默认文件名为Makefile或makefile，也常用.make或.mk作为文件后缀。 Ninja的默认文件名是build.ninja，其它文件以.ninja为后缀。Makefile与Ninja的区别在于, Makefile是设计来给开发编写的，而Ninja设计出来是给其它程序生成的。如果Makefile是Java语言，那么Ninja就是汇编语言。
+
+2.编译源码的方式
+Androd系统源码编译有很多种方式，主要有以下几种：
+
+在Linux中直接进行系统源码编译（Android官方支持）
+在Mac OS中直接进行系统源码编译（Android官方支持）
+使用Docker编译，支持Mac OS和Windows
+其中需要注意的是，Docker的最低支持版本为Windows7，建议用Windows10环境下使用Docker，因为在Windows7种还需要借助Docker Toolbox和VirtualBox中的容器进行通信，效率相对低些。
+考虑到大多数人的设备和上手难易程度，本为讲解在Linux中直接进行系统源码编译，如果你的系统不是Ubuntu，可以查看Android AOSP基础（一）VirtualBox 安装 Ubuntu这篇文章。
+```
+
+## Android系统定制视频收藏
+
+```
+https://blog.csdn.net/m0_37203554/article/details/81357704
+
+http://toutiao.com/item/6432821122323972610/   android系统定制-Vbox及Ubuntu的安装
+http://toutiao.com/item/6432823051523457538/   android系统定制-常见Linux命令介绍-上
+http://toutiao.com/item/6432826510821818881/   android系统定制-常见Linux命令介绍-下
+http://www.365yg.com/item/6434362415713878530/ android系统定制-OpenJDK和依赖包的安装&amp;配置USB访问权限
+http://www.365yg.com/item/6434633590172025346/ android系统定制-其他可选配置介绍
+http://toutiao.com/item/6434633933505167873/   android系统定制-AOSP源码的下载
+http://toutiao.com/item/6434640927519670785/   android系统定制-Repo的工作原理
+http://www.365yg.com/item/6435007280990650881/ android系统定制-源码下载的其他配置
+http://toutiao.com/item/6435007754082976258/   android系统定制-Nexus驱动的下载安装&amp;源码编译
+http://toutiao.com/item/6436594902649274881/   android系统定制-编译结果展示&amp;刷机介绍&amp;Android系统分区&amp;out目录介绍
+http://toutiao.com/item/6436590437795889665/   android系统定制-AOSP下的一些常用命令
+http://www.365yg.com/item/6436589910819340801/ android系统定制-AOSP常见工作目录介绍
+http://www.toutiao.com/i6436361010902204929/   android系统定制-AndroidBuildSystem介绍
+http://www.toutiao.com/i6436848445700440578/   android系统定制-系统开发做什么
+http://www.toutiao.com/i6436589000256913921/   android系统定制-Android系统启动流程-从Init到Zygote
+http://www.toutiao.com/i6436849268975206913/   android系统定制-Android系统启动流程-从syste_server到Launcher
+http://www.toutiao.com/i6436850885292196353/   android系统定制-修改系统APP后进行编译
+http://www.toutiao.com/i6436851843262841346/   android系统定制-Dalvik&amp;ART的区别及ODEX文件介绍
+http://www.toutiao.com/i6436852898566504962/   android系统定制-编译时odex化的原因
+http://www.toutiao.com/i6436853799767245314/   android系统定制-修改Calclator.apk代码并运行
+http://www.toutiao.com/i6436853139567018498/   android系统定制-Framework定制及Mac环境介绍
+http://www.toutiao.com/i6436857505522909698/   android系统定制-services.jar&amp;framework.jar的修改与运行
+http://www.toutiao.com/i6436857259367596545/   android系统定制-libandroid_runtime.so(JNI层)的修改与运行
+http://www.toutiao.com/i6436857357145211394/   android系统定制-liblog.so(native层)的修改与编译
+http://www.toutiao.com/i6436859125199536641/   android系统定制-系统开发实战回顾
+http://www.toutiao.com/i6436351531619975682/   android系统定制-系统级开发的职业发展
+
+https://github.com/open-android/Android
+```
+
+## 制作修改开机logo
+
+```
+修改开机logo有两种方法，一种直接去改c语言代码，第二种替换图片用python生成splash。第一种方法我没试过，感觉挺麻烦的，还有分辨率限制，超过多少分辨率就不能用第一种方法。
+
+修改的文件路径LINUX/android/bootable/bootloader/lk/splash
+准备好logo图片(png、bmp格式)
+查看中原图片的分辨率，修改logo图片 保证 分辨率 一致
+生成splash.img镜像文件
+注：图片分辨率很重要！很重要！很重要！
+
+生成splash.img 步骤
+
+The steps to generate a splash.img:
+ 
+sudo apt-get install python-imaging
+python ./logo_gen.py boot_001.png (*.bmp)
+
+为了减少编译时间可以直接将生成好的splash.img将刷机包中的文件替换掉。
+```
+
+## Android--隐藏状态栏图标
+
+```
+目前状态栏图标有通知图标和系统图标
+通知图标主要是指各应用发过来的通知，比如未接电话，截图，后台播放音乐等，系统图标主要有蓝牙，耳机，wifi，数据流量，时间和电池...
+
+1，不显示通知图标，
+在/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/StatusBarIconController.java中
+public void updateNotificationIcons {
+
+     for (int i = 0; i < N; i++) {
+            NotificationData.Entry ent = activeNotifications.get(i);
+  +          final String pkg = ent.notification.getPackageName();
+  +           android.util.Log.d("StatusBarIconController","pkg========"+pkg);
+
+            //比如如果包名不是收音机的，就不显示图标
+  +        if (!pkg.contains("com.android.fmradio")) {
+  +              continue;
+            }
+            if (notificationData.isAmbient(ent.key)
+                    && !NotificationData.showNotificationEvenIfUnprovisioned(ent.notification)) {
+                continue;
+            }
+}
+
+2.不显示系统图标，系统图标的显示是在以下文件，比如蓝牙，wifi，耳机等
+/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/
+PhoneStatusBarPolicy.java
+
+将不要显示图标，将setIconVisibility()改为false即可，比如，如果不要闹钟图标
+private void updateAlarm() {
+        ....
+- - -       mService.setIconVisibility(SLOT_ALARM_CLOCK, mCurrentUserSetup && hasAlarm);
+
++++ mService.setIconVisibility(SLOT_ALARM_CLOCK, false);
+    }
+3,系统图标中比较特殊的时间和电池在
+/frameworks/base/packages/SystemUI/res/layout/status_bar.xml
+<com.android.systemui.statusbar.policy.Clock
+                android:id="@+id/clock"
+                android:textAppearance="@style/TextAppearance.StatusBar.Clock"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:singleLine="true"
+                android:paddingStart="7dp"
+                android:gravity="center_vertical|start"
++++            android:visibility="gone"   //时间
+                />
+/frameworks/base/packages/SystemUI/res/layout/system_icons.xml
+
+<com.android.systemui.BatteryMeterView android:id="@+id/battery"
+        android:layout_height="14.5dp"
+        android:layout_width="9.5dp"
++++    android:visibility="gone"      电池
+        android:layout_marginBottom="@dimen/battery_margin_bottom"/>
+```
+
+## android 5.1 usb调试默认关闭设置方法
+
+```
+packages/apps/Provision/src/com/android/provision/DefaultActivity.java 
+在该文件中加入下面的代码：
+if (!android.os.SystemProperties.getBoolean("ro.inet.adb_enabled",true)) {
+    Settings.Secure.putInt(getContentResolver(), Settings.Secure.ADB_ENABLED, 0);
+}
+同时在system.prop中添加：
+ro.inet.adb_enabled=false
+```
+
+## android:关掉系统的 安全模式(Safe mode)
+
+```
+当 Android 设备在安全模式（Safe Mode）下工作时，任何的第三方应用程序或相关文件（主要为apk应用程序文件）都不可以使用，但可以使用 Android 设备的任务管理器选项进行卸载或管理应用程序，即Android 设备的操作系统或软件或相关文件出现问题导致系统进不了正常界面或不能正常启动系统时，则可以将设备进入安全模式（Safe Mode）卸载或管理原系统以外安装的应用程序或驱动文件或其他第三方相关文件，当在安全模式（Safe Mode）下完全卸载或管理了相关第三方安装的应用程序仍然不可以解决问题后，再进行安装或升级或更新操作系统或其他方法来解决问题。进入安全模式时，主界面的左下方显示“安全模式”或“Safe Mode”提示。安全模式进入方法：机器启动后，在开机动画前， 按住 Menu 或 音量减键至开机完成，就可以进入安全模式。安全模式退出方法：若需要退出安全模式，当且Android 设备在没有进行过特别使用或使用不当时（设备未使用非原装充电器充电，设备未拆过机等），将设备关机，然后重新开机，即可以退出安全模式，正常进入系统.系统检测是否进入安全模式的调用实现列出：frameworks/base/services/java/com/android/server/SystemServer.java frameworks/base/services/java/com/android/server/wm/WindowManagerService.javaframeworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
+
++++ frameworks/base/services/core/java/com/android/server/wm/WindowManagerService.java
+@@ -7532,7 +7532,7 @@ public class WindowManagerService extends IWindowManager.Stub
+             Log.i(TAG, "SAFE MODE not enabled");
+         }
+         mPolicy.setSafeMode(mSafeMode);
+-        return mSafeMode;
++        return false;
+     }
+ 
+     public void displayReady() {
+```
+
+## 屏蔽所有物理按键
+
+```
+frameworks\base\services\core\java\com\android\server\wm\WindowManagerService.java
+
+computeScreenConfigurationLocked 方法将hardKeyboardAvailable改为false。
+
+boolean hardKeyboardAvailable = false;
+```
+
+## 消除原生Android网络状态上的惊叹号
+
+```
+谷歌在Android5.0之后的版本加入了CaptivePotalLogin服务。本服务的功能是检查网络连接互联网情况，主要针对于Wi-Fi，不让Android设备自动连接那些不能联网的无线热点，白白耗电。
+该服务的原理就是让接入无线热点后，测一下网站connectivitycheck.gstatic.com的联通情况。
+但对于不能访问谷歌服务器的地区，问题就来了：
+
+如果谷歌（谷歌服务）认为WiFi网络无法联网，就不会自动连接到该WiFi热点。而且如果设备有移动网络可用，就会自动切换到2G/3G/LTE。并且让WiFi网络的标志上面显示感叹号标志。
+
+出现感叹号的同时，该服务会一直试探服务器，直到联通为止。该过程会消耗流量和电量，甚至导致部分设备无法休眠。
+
+这个感叹号会使广大强迫症晚期患者无法接受。
+
+对于Android Source开发的同学，最好的解决办法自然是修改源码：
+方案1：更换测试地址
+frameworks/base/packages/SettingsProvider/res/values/defaults.xml：
+
+diff --git a/frameworks/base/packages/SettingsProvider/res/values/defaults.xml b/frameworks/base/packages/SettingsProvider/res/values/defaults.xml
+index bede17d..508d384 100644
+--- a/frameworks/base/packages/SettingsProvider/res/values/defaults.xml
++++ b/frameworks/base/packages/SettingsProvider/res/values/defaults.xml
+@@ -215,5 +215,5 @@
+     <bool name="def_guest_user_enabled">true</bool>
+ 
+     <!-- Default for Settings.Global.CAPTIVE_PORTAL_DETECTION_ENABLED -->
+-    <integer name="def_captive_portal_detection_enabled" translatable="false">1</integer>
++    <integer name="def_captive_portal_detection_enabled" translatable="false">0</integer>
+ </resources>
+```
+
+## Android系统修改所有应用能读写SD卡
+
+```
+需要Android源码/frameworks\base\data\etc\platform.xml
+找到
+<permission name="android.permission.WRITE_EXTERNAL_STORAGE">
+<group gid="sdcard_rw" />
+
+修改为
+
+<permission name="android.permission.WRITE_EXTERNAL_STORAGE">
+<group gid="sdcard_rw" />
+
+<group gid="media_rw" />
+
+保存，将系统烧录到板中即可。 
+```
+
+## 3gpp 协议
+
+```
+https://blog.csdn.net/zhangbijun1230/article/details/79951310
+```
+
+## FFmpeg
+
+```
+https://blog.csdn.net/gjy_it/article/details/90448722
+```
+
+## Android 7.0 之后的 ota 升级方式 A/B system
+
+```
+https://blog.csdn.net/guyongqiangx/article/details/71334889
+
+https://blog.csdn.net/guyongqiangx/article/details/71516768
+
+https://blog.csdn.net/guyongqiangx/article/details/72480154
+
+https://blog.csdn.net/guyongqiangx/article/details/72604355
+```
+
+## log抓取
+
+```
+1、日志抓取（四类log buffer是main，radio，system，events）
+adb wait-for-device logcat  
+adb logcat -v time > logcat.txt      //默认是-b main -b system
+adb logcat -v time -b main        //main log
+adb logcat -v time -b radio        //radio log
+adb logcat -v time -b system        //system log
+adb shell dmesg                       //kernel log
+adb logcat -v time -b events
+
+2、anr log
+
+adb pull /data/anr
+
+3、tombstone log
+
+adb pull /data/tombstones
+
+4、core log
+
+adb pull  /data/log/core
+
+5、开机log
+
+adb shell dmesg > dmesg.txt
+
+6、logcatch
+
+adb pull /data/logcatch
+
+7、qxdm log
+
+adb pull /sdcard/logs
+
+8、 hprof log
+
+在分析app 时，我们通常需要分析app 的java heap 资料，如分析java 的memory leak, 追查heap
+中相关变量情况等。
+在android 中抓取app 的hprof 操作方式有下面几种:
+第一种方式: 使用am 命令
+   adb shell am dumpheap {Process} file
+   如 adb shell am dumpheap com.android.phone /data/anr/phone.hprof
+   adb pull /data/anr/phone.hprof
+第二种方式: 使用DDMS 命令
+   在DDMS 中选择对应的process, 然后在Devices 按钮栏中选择Dump Hprof file， 保存即可
+第三种方式: 通过代码的方式
+   在android.os.Debug 这个class 中有定义相关的抓取hprof 的method.
+如: public static void dumpHprofData(String fileName) throws IOException;
+这样即可在代码中直接将这个process 的hprof 保存到相对应的文件中，注意这个只能抓取当时的
+process.
+如果想抓其他的process 的hprof, 那么就必须通过AMS 帮忙了。
+可以先获取IActivityManager 接口，然后调用它的dumpheap 方法。具体的代码，大家可以参考
+frameworks/base/cmds/am/src/com/android/commands/am/am.java 中的调用代码
+抓取回hprof 后，就可以用hprof-conv 命令将DVM 格式的hprof 转换成标准的java 命令的hprof
+   hprof-conv in.hprof out.hprof
+然后使用如MAT 之类的工具进行具体的分析
+
+9、bugreport
+adb bugreport > bugreport.txt
+
+10、kernel log(只有从当前时间起的很少的log)
+cat proc/kmsg > kmsg.txt
+
+11、其他
+adb shell dumpstate //各类信息，比如进程信息，内存信息，进程是否异常，kernnel的log等
+adb shell dumpcrash
+adb shell dumpsys  //查询所有service的状态
+```
+
+## Android 源码 修改系统默认横屏
+
+```
+https://blog.csdn.net/gjy_it/article/details/80743448
+```
+
+## 修改开机弹出欢迎使用SIM
+
+```
+MTK工程/mediatek/packages/apps/Stk1/src/com/android/stk/StkAppService.java
+（\frameworks\base\packages\Keyguard\src\com\mediatek\keyguard\Telephony\KeyguardDialogManager.java）
+    case DISPLAY_TEXT:
+        //显示SIM卡信息
+        launchTextDialog(slotId);
+        break;
+```
+
+## 关闭通知栏通能
+
+```
+\frameworks\base\core\java\android\app\NotificationManager.java
+public void notify(int id, Notification notification) {
+    boolean close=false;
+    if(close) {
+        notify(null, id, notification);
+    }
+}
+```
+
+## 屏蔽掉下拉通知栏和状态栏
+
+```
+..\frameworks\base\packages\SystemUI\src\com\android\systemui\statusbar\phone\PhoneStatusBarView.java
+    @Override
+    public void addPanel(PanelView pv) {
+        super.addPanel(pv);
+//        if (pv.getId() == R.id.notification_panel) {
+//            mNotificationPanel = pv;
+//        } else if (pv.getId() == R.id.settings_panel){
+//            mSettingsPanel = pv;
+//        }
+        pv.setRubberbandingEnabled(!mFullWidthNotifications);
+    }
+```
+
+## 去掉GPS功能
+
+```
+a. 在 mediatek/config/$(pro)/ProjectConfig.mk 更改如下两项为no
+MTK_AGPS_APP=no
+MTK_GPS_SUPPORT=no
+MTK_YGPS_APP=no
+
+b. 在 mediatek/config/$(pro)/autoconfig/kconfig/project 中添加
+CONFIG_MTK_GPS=n CONFIG_GPS=n
+```
+
+## 平板改为手机
+
+```
+build/target/product/$(pro).mk中PRODUCT_CHARACTERISTICS := tablet改为PRODUCT_CHARACTERISTICS := default
+```
+
+## MTK 常用默认值修改(KK之前)
+
+```
+https://blog.csdn.net/zengrunxiu/article/details/83446881
+```
+
+## etckeeper
+
+```
+https://blog.csdn.net/guyongqiangx/article/details/71750903
+```
+
+## Android脚本envsetup.sh逐行分析
+
+```
+https://blog.csdn.net/guyongqiangx/article/details/73188477
+
+gettop 函数从指定的$TOP目录或当前目录开始查找build/core/envsetup.mk文件，并将能找到该文件的目录返回给调用函数作为操作的根目录
+
+croot命令切换到当前编译环境的根目录。
+
+cproj命令用于切换到当前模块的编译目录下（含有Android.mk）
+
+getprebuilt返回ANDROID_PREBUILTS的路径
+
+printconfig输出当前的编译配置
+
+pez函数的参数”$@”是一条可执行命令，通过执行结果来决定打印FAILUE和SUCCESS的颜色，失败打印红色的FAILURE，成功打印绿色的SUCCESS
+
+sgrep，基于(c|h|cc|cpp|S|java|xml|sh|mk|aidl|vts)文件查找
+ggrep，基于(.gradle)的文件查找
+jgrep，基于(.java)文件查找
+cgrep，基于(c|cc|cpp|h|hpp)文件查找
+resgrep，基于res目录下(xml)文件查找
+mangrep，基于AndroidManifest.xml文件查找
+sepgrep，基于sepolicy目录下查找
+rcgrep，基于*.rc*文件查找
+mgrep，基于(Makefile|Makefile\..*|.*\.make|.*\.mak|.*\.mk)的Makefile文件查找
+treegrep，基于代码的文件(c|h|cpp|S|java|xml)进行查找
+
+qpid
+
+pid
+
+smoketest
+
+runtest
+
+provision
+```
+
+## external/autotest 怎么用？？？
+
+
+
+
+
+
+
+
+
+
 
 
 
