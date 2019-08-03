@@ -227,6 +227,18 @@ libssl-dev包含libraries, header files and manpages，他是openssl的一部分
 sudo apt-get install libssl-dev
 ```
 
+## 配置 Jack-server
+
+```
+export ANDROID_JACK_VM_ARGS="-Xmx8g -Dfile.encoding=UTF-8 -XX:+TieredCompilation"
+```
+
+## 查看cpu核数
+
+```
+nproc
+```
+
 ## 安装git
 
 ``` bash

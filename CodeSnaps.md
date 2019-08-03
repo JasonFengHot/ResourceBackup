@@ -9,6 +9,25 @@
 https://github.com/open-android/Android
 ```
 
+## Android学习网站
+
+```
+https://www.androiddevtools.cn/
+
+http://bbs.16rd.com/forum-263-1.html
+http://www.codeceo.com/article/tag/android
+http://www.iteye.com/
+http://www.v2ex.com/
+http://www.imooc.com/
+http://www.html-js.com/
+```
+
+## 大神的blog
+
+```
+https://blog.csdn.net/zhangbijun1230/article/details/79745654
+```
+
 ## 进阶学习书籍
 
 ```
@@ -24,10 +43,12 @@ https://github.com/open-android/Android
 《黑客与画家》
 ```
 
-## mtk开发论坛
+## 必备软件
 
 ```
-http://bbs.16rd.com/forum-263-1.html
+Fiddler
+Wireshark
+vscode
 ```
 
 ## 常用Base类
@@ -41357,6 +41378,826 @@ provision
 ```
 
 ## external/autotest 怎么用？？？
+
+## Android 编写开启自启动的脚本服务
+
+```
+因为公司有一款手机在升级之后用户找不到内部sdcard 中的数据，分析了主要原因是因为升级前后内部sdcard 的链接的路径改变了。之前sdcard的数据在/sdcard/emulated/ 目录下，升级时候放在了/sdcard/emulated/0/ 下面。一个解决方案就是在手机启动的时候开启一个脚本服务检测一下当前的目录是否是正确的，如果不对就进行目录得调整。主要的操作就是mv 操作，效率很高。
+
+目录
+1. 编写Shell脚本
+2. fs_config.c 提交文件权限
+3. 增加selinux te 文件，增加Shell脚本的一些权限
+4. 添加新增文件上下文
+5. 增加mk 文件实现编译拷贝
+6. 在init.rc 中加入开机启动的Service
+
+正文
+
+1. 编写Shell 脚本 
+adjust_sdcard.sh
+
+#!/system/bin/sh
+i=1
+num=0
+while :
+do
+log -t ota-sdcard "try ..."$i
+need_adjust=`ls /storage/emulated/ -l |grep "^d"|wc -l`
+log -t ota-sdcard "need adjust ="$need_adjust
+if [ "$need_adjust" == "2" ]
+then
+log -t ota-sdcard "adjust inner sdcard success ."
+break
+else
+log -t ota-sdcard "try adjust inner adcard dir..."
+for file in /storage/emulated/*
+do
+    if test -f $file
+    then
+        echo "move $file -> /storage/emulated/0/${file##*/}"
+        log -t ota-sdcard "move $file -> /storage/emulated/0/${file##*/}"
+        let num++
+        mv $file /storage/emulated/0/${file##*/}
+    fi
+    if test -d $file && [ ${file##*/} != "0" ] && [ ${file##*/} != "obb" ]
+    then
+        echo "move $file -> /storage/emulated/0/${file##*/}"
+        log -t ota-sdcard "move $file -> /storage/emulated/0/${file##*/}"
+        let num++
+        mv $file /storage/emulated/0/${file##*/}
+    fi
+done
+log -t ota-sdcard "move num = $num"
+fi
+sleep 2
+i=$(($i+1))
+done
+
+具体的功能就是判断一下目录结构对不对，如果不对就会调用mv 进行目录的调整。上面的脚本只是演示了主要的功能，用作调试用的。用兴趣可以看一下。
+
+
+2. fs_config.c 提交文件权限
+
+这个文件就是设置文件在系统中的权限
+
+fs_path_config android_files 中增加
+{ 00750, AID_ROOT, AID_ROOT, 0, "system/bin/adjust_sdcard.sh" },
+
+3. 增加selinux te 文件，增加Shell脚本的一些权限
+我们知道Android 4.4 之后引入了selinux的机制，所以我们编写的Shell的脚本的中很多命令代码都需要给予相应的selinux 权限。
+#ota_sdcard.te
+type ota_sdcard, domain;
+type ota_sdcard_exec, exec_type, file_type;
+
+init_daemon_domain(ota_sdcard)
+allow ota_sdcard system_file:file execute_no_trans;
+allow ota_sdcard shell_exec:file rx_file_perms;
+allow ota_sdcard storage_file:dir search;
+allow ota_sdcard fuse:dir {open read search getattr write remove_name rename add_name reparent};
+allow ota_sdcard fuse:file {open read getattr write rename create};
+
+4. 增加Shell 脚本文件的上下文
+/system/bin/adjust_sdcard.sh u:object_r:ota_sdcard_exec:s0
+
+5. 增加mk 文件实现编译拷贝
+PRODUCT_COPY_FILES += \
+device/qcom/msm8916/adjust_sdcard.sh:/system/bin/adjust_sdcard.sh
+
+6. 在init.rc 中加入开机启动的Service
+service ota-sdcard /system/bin/adjust_sdcard.sh
+class main
+oneshot
+开机作为main 自启动。
+
+上面的6个步骤是实现整个机制的核心步骤，细节并没有过多的讲述，后面增加每个步骤具体涉及到的知识点。
+```
+
+## Android 优化和调试技巧
+
+```
+https://blog.csdn.net/zhangbijun1230/article/details/79514284
+```
+
+## 内核日志
+
+```
+adb shell dmesg
+
+输出示例：
+
+<6>[14201.684016] PM: noirq resume of devices complete after 0.982 msecs
+<6>[14201.685525] PM: early resume of devices complete after 0.838 msecs
+<6>[14201.753642] PM: resume of devices complete after 68.106 msecs
+<4>[14201.755954] Restarting tasks ... done.
+<6>[14201.771229] PM: suspend exit 2016-08-28 13:31:32.679217193 UTC
+<6>[14201.872373] PM: suspend entry 2016-08-28 13:31:32.780363596 UTC
+<6>[14201.872498] PM: Syncing filesystems ... done.
+中括号里的 [14201.684016] 代表内核开始启动后的时间，单位为秒。
+
+通过内核日志我们可以做一些事情，比如衡量内核启动时间，在系统启动完毕后的内核日志里找到 Freeing init memory 那一行前面的时间就是。
+```
+
+## 设置时间
+
+```
+adb shell date 08281319
+```
+
+## adb 命令大全
+
+```
+https://blog.csdn.net/zhangbijun1230/article/details/79740582
+```
+
+## 获取其他包的Context
+
+```
+Context c = createPackageContext("chroya.demo", Context.CONTEXT_INCLUDE_CODE | Context.CONTEXT_IGNORE_SECURITY);
+//载入这个类
+Class clazz = c.getClassLoader().loadClass("chroya.demo.Main");
+//新建一个实例
+Object owner = clazz.newInstance();
+//获取print方法，传入参数并执行
+Object obj = clazz.getMethod("print", String.class).invoke(owner, "Hello");
+```
+
+## 语言列表
+
+```
+https://blog.csdn.net/zhangbijun1230/article/details/80107594
+```
+
+## Android 判断你的应用在前台还是在后台 ActivityLifecycleCallbacks
+
+```
+https://blog.csdn.net/zhangbijun1230/article/details/80317765
+
+public class MyLifecycleHandler implements Application.ActivityLifecycleCallbacks {
+    private static int resumed;
+    private static int paused;
+    private static int started;
+    private static int stopped;
+ 
+    @Override
+    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+    }
+ 
+    @Override
+    public void onActivityStarted(Activity activity) {
+        ++started;
+    }
+ 
+    @Override
+    public void onActivityResumed(Activity activity) {
+        ++resumed;
+    }
+ 
+    @Override
+    public void onActivityPaused(Activity activity) {
+        ++paused;
+        android.util.Log.w("test", "application is in foreground: " + (resumed > paused));
+    }
+ 
+    @Override
+    public void onActivityStopped(Activity activity) {
+        ++stopped;
+        android.util.Log.w("test", "application is visible: " + (started > stopped));
+    }
+ 
+    @Override
+    public void onActivityDestroyed(Activity activity) {
+    }
+ 
+    @Override
+    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+    }
+ 
+    public static boolean isApplicationVisible() {
+        return started > stopped;
+    }
+ 
+    public static boolean isApplicationInForeground() {
+    // 当所有 Activity 的状态中处于 resumed 的大于 paused 状态的，即可认为有Activity处于前台状态中 
+        return resumed > paused;
+    }
+}
+
+然后在自己定义的 Application 中的 onCreate() 方法中注册该 ActivityLifecycleCallbacks：
+registerActivityLifecycleCallbacks(new MyLifecycleHandler());
+```
+
+## Android 系统（67）---android apk 的root 权限和USB adb 权限的区别
+
+```
+USB adb 权限是指，当adb 连接手机时，手机中的守护进程adbd 的权限为root 权限，从而它的子进程也具有root 权限，通常如果adb shell 看到是：
+Android 4.0 以后版本:
+C:\>adb shell
+root@android:/ #
+Android 2.3 版本：
+C:\>adb shell
+#
+即表明adb 的连接是root 权限的，相反如果看到是$ 即表明是shell 权限
+Android 的APK 本身都是不具备root 权限的，如果想启用root 权限，那么就必须借助具有root 权限的进程或者具有s bit 的文件，目前比较通用的手法是，手机root 后，内置了su到system/bin, 然后普通APP 即可借助su 命令来达到root 权限切换。 
+网络上已经有同仁修改su 命令，并通过一个APK 来控制su 命令的权限控制。
+ SuperSU: http://forum.xda-developers.com/showthread.php?t=1538053 (更新速度很快，推荐使用)
+ 
+综上所叙，如果adb 已经有root 权限，那么让apk 行使root 权限就很简单了。
+```
+
+## Android修改分区格式为F2FS
+
+```
+本文介绍如何将Android系统的/data分区改变成F2FS格式。修改的原因是F2FS分区格式拥有更加的I/O性能。
+
+修改文件系统格式成F2FS方法
+在改动之前我们先看看当前Android系统的主要分区格式,可以用如下方式查看
+
+$ adb shell df -t ext4
+Filesystem                             1K-blocks    Used Available Use% Mounted on
+/dev/block/bootdevice/by-name/system     1007736  907964     83388  92% /system
+/dev/block/bootdevice/by-name/userdata  12168972 6740960   5411628  56% /data
+/dev/block/bootdevice/by-name/cache       259856     332    254160   1% /cache
+/dev/block/bootdevice/by-name/persist      28144     200     27292   1% /persist
+
+大多数情况下可以看到我们系统当前的主要分区格式都是EXT4。
+现在来将/data分区格式更改成F2FS格式，因为应用的好多私有数据都存放在该分区知悉，比如database，SharedPreferences.更改成F2FS格式能有效提升应用的I/O访问速度，提升性能。 
+修改的地方有三点：
+
+１．打开kernel config中对F2FS的支持 
+项目的kernel　config 文件中加入
+
+CONFIG_F2FS_FS=y
+CONFIG_F2FS_STAT_FS=y
+CONFIG_F2FS_FS_XATTR=y
+CONFIG_F2FS_FS_POSIX_ACL=y
+CONFIG_F2FS_FS_SECURITY=y
+CONFIG_F2FS_CHECK_FS=y
+
+２．配置/data分区文件格式为F2FS. 
+在文件BoardConfig.mk中做如下修改
+
+TARGET_USERIMAGES_USE_F2FS := true
+BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := f2fs
+
+３．更改分区文件fstab，使得mount /data分区时的文件类型为F2FS。 
+fstab可能有多个类似文件，需要根据具体项目定位。修改形式大致如下:
+
+- /data     ext4        noatime,nosuid,nodev,discard
++ /data     f2fs        noatime,nosuid,nodev,discard
+
+第３点的修改可以参考： 
+https://github.com/anpage/android_device_asus_grouper/commit/9d6899d95af972ae7613d02dc30eb36bb74062b8
+
+以上修改完毕，查看当前的/data分区已经变成了F2FS格式。
+
+F2FS vs EXT4
+修改了之后为了验证I/O性能确实提升了，可以借助Androbench APK测试。结果如下图。 
+这里写图片描述
+
+从跑分结果看f2fs格式的结果要好于ext4,但似乎优势不明显。我们在用dd命令测试： 
+这里写图片描述
+
+最后放上一个官方的分区格式不同的性能对比图。 
+这里写图片描述
+
+拓展知识点
+什么是文件系统： 
+文件系统是用来控制如何存取数据的一套规则。如果没有这套规则，那么所有数据都会放在一个大的存储区域上，我们很难找到需要的数据位于该区域的哪一个地方。于是就制定了一套规则，它将整个大的存储区域分割成若干个独立的子区域，每个子区域对应一个名称，如何分割子区域，以及从子区域中读写目标数据的整套规则就是文件系统。
+F2FS文件系统优缺点
+F2FS (Flash-Friendly File System)文件系统格式是由三星公司开发的，它专为移动设备而生。 
+优点：
+
+卓越的读写速度
+降低了写的的次数，因此延长了磁盘的寿命。
+缺点:
+
+占用的空间更大
+没有ext4稳定
+没有ext4通用，某些手机可能不支持
+EXT4文件系统优缺点
+EXT4是Linux的标准文件系统，它基于EXT3而来，EXT3又基于EXT2而来，但从EXT3到EXT4做的改动巨大。 
+优点：
+
+良好的稳定性，使用广泛
+所有的智能手机都支持。
+缺点：
+
+相对与F2FS　I/O速度较慢。
+```
+
+## 为什么 Android8.1 使用f2fs文件系统的预置app到data/app不行？
+
+```
+https://blog.csdn.net/lb5761311/article/details/83617744
+
+最近使用mtk6739平台开发。有一个需求是想预置系统中，恢复出厂设置后把app删除。
+再8.1 的流程是
+
+在 package/apps/3rd-party 下面以需要预置的apk名字新建文件夹，以预置 facebook 为例。
+将 facebook.apk 放到 package/apps/3rd-party/facebook 中。
+在 package/apps/3rd-party/facebook 下面创建文件 Android.mk，文件内容如下
+在 build/make/target/product/core.mk或device/mediatek/common/device.mk中添加PRODUCT_PACKAGES += facebook
+
+LOCAL_PATH := $(call my-dir)
+include $(CLEAR_VARS)
+LOCAL_MODULE := facebook
+LOCAL_MODULE_TAGS := optional
+LOCAL_SRC_FILES := $(LOCAL_MODULE).apk
+LOCAL_MODULE_CLASS := APPS
+LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
+LOCAL_CERTIFICATE := PRESIGNED
+
+include $(BUILD_PREBUILT)
+
+然后再下面文件添加facebook的包名
+vendor/mediatek/proprietary/frameworks/base/data/etc/pms_sysapp_removable_system_list.txt
+就可以完成卸载apk，但是这个做法有一个问题，恢复出厂设置facebook这个app有返回到桌面了。而我们设计需求是不能回到桌面。
+这个方法不行。
+第二种方法
+需要预置apk，卸载以后，恢复出厂设置以后，apk不存在。这种需要预置apk到/data/app目录下。但是android o 版本以后google 加入了patch,不允许预置apk到data/app目录下，只允许使用adb install 的方式来安装apk到data/app目录下，需要将其roll back 回以前的版本，然后用下列方法可以完成预置。
+
+diff --git a/services/core/java/com/android/server/pm/PackageManagerService.javab/services/core/java/com/android/server/pm/PackageManagerService.javaindex bafcad4…71d3d9a 100644
+--- a/services/core/java/com/android/server/pm/PackageManagerService.java
++++ b/services/core/java/com/android/server/pm/PackageManagerService.java
+@@ -11394,6 +11394,10 @@
+                                     + " but expected at " + known.codePathString
+                                     + "; ignoring.");
+                         }
++                    } else {
++                        throw new PackageManagerException(INSTALL_FAILED_INVALID_INSTALL_LOCATION,
++                                "Application package " + pkg.packageName
++                                + " not found; ignoring.");
+                     }
+                 }
+             }
+在PMS中将其中增加的代码删除。
+2.在 packages/apps 下面以需要预置的 APK 名字创建文件夹，以预置一个名为Test的APK为例
+3.将 Test.apk 放到 packages/apps/Test
+4. 在 packages/apps/Test 下面创建文件 Android.mk，文件内容如下：
+
+LOCAL_PATH := $(call my-dir)
+
+include $(CLEAR_VARS)
+
+ 
+
+# Module name should match apk name to be installed
+
+LOCAL_MODULE := Test
+
+LOCAL_MODULE_TAGS := optional
+
+ 
+
+LOCAL_SRC_FILES := $(LOCAL_MODULE).apk
+
+LOCAL_MODULE_CLASS := APPS
+
+LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
+
+# LOCAL_PRIVILEGED_MODULE := true
+
+LOCAL_MODULE_PATH := $(TARGET_OUT_DATA_APPS)
+
+ 
+
+LOCAL_CERTIFICATE := platform
+
+include $(BUILD_PREBUILT)
+
+5.打开文件 device\mediatek\common\device.mk
+
+将 Test 添加到 PRODUCT_PACKAGES 里面。
+
+PRODUCT_PACKAGES += Test
+6.重新 build 整个工程
+但是测试后发现 data/app 根本没有打包到userdata.img中。整个userdata.img大小 64K。
+只能自己分析原因。
+执行 生成userdata.img的命令 make userdataimage-nodeps
+
+.PHONY: userdataimage-nodeps
+userdataimage-nodeps: | $(INTERNAL_USERIMAGES_DEPS)
+	$(build-userdataimage-target)
+
+INTERNAL_USERIMAGES_DEPS 依赖 ，表示执行 生成userdata.img 需要哪些条件
+这个命令 最终执行 build-userdataimage-target
+内容如下：
+
+define build-userdataimage-target
+  $(call pretty,"Target userdata fs image: $(INSTALLED_USERDATAIMAGE_TARGET)")
+  @mkdir -p $(TARGET_OUT_DATA)
+  @mkdir -p $(userdataimage_intermediates) && rm -rf $(userdataimage_intermediates)/userdata_image_info.txt
+  $(call generate-userimage-prop-dictionary, $(userdataimage_intermediates)/userdata_image_info.txt, skip_fsck=true)
+  $(hide) PATH=$(foreach p,$(INTERNAL_USERIMAGES_BINARY_PATHS),$(p):)$$PATH \
+      ./build/tools/releasetools/build_image.py \
+      $(TARGET_OUT_DATA) $(userdataimage_intermediates)/userdata_image_info.txt $(INSTALLED_USERDATAIMAGE_TARGET) $(TARGET_OUT)
+  $(hide) $(call assert-max-image-size,$(INSTALLED_USERDATAIMAGE_TARGET),$(BOARD_USERDATAIMAGE_PARTITION_SIZE))
+endef
+
+$(TARGET_OUT_DATA) = out/target/product/k39tv1_bsp_1g/data
+$(userdataimage_intermediates) = out/target/product/k39tv1_bsp_1g/obj/PACKAGING/userdata_intermediates
+make userdata 的log
+
+PRODUCT_COPY_FILES device/mediatek/common/fstab.enableswap:root/fstab.enableswap ignored.
+No private recovery resources for TARGET_DEVICE k39tv1_bsp_1g
+[100% 1/1] Target userdata fs image: out/target/product/k39tv1_bsp_1g/userdata.img
+Target userdata fs image: out/target/product/k39tv1_bsp_1g/data
+Running:  mkf2fsuserimg.sh out/target/product/k39tv1_bsp_1g/userdata.img 3221225472
+in mkf2fsuserimg.sh PATH=out/host/linux-x86/bin/:/usr/lib/jvm/java-8-openjdk-amd64/bin:/home/stonecom/mtk6739/out/soong/host/linux-x86/bin:/home/stonecom/mtk6739/out/host/linux-x86/bin:/home/stonecom/mtk6739/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/bin::/home/stonecom/mtk6739/development/scripts:/home/stonecom/mtk6739/prebuilts/devtools/tools:/home/stonecom/mtk6739/external/selinux/prebuilts/bin:/home/stonecom/mtk6739/prebuilts/misc/linux-x86/dtc:/home/stonecom/mtk6739/prebuilts/misc/linux-x86/libufdt:/home/stonecom/mtk6739/prebuilts/android-emulator/linux-x86_64:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/home/stonecom/bin
+make_f2fs -S 3221225472 out/target/product/k39tv1_bsp_1g/userdata.img
+
+        F2FS-tools: mkfs.f2fs Ver: 1.8.0 (2017-02-03)
+
+Info: Disable heap-based policy
+Info: Debug level = 0
+Info: Label = 
+Info: Trim is disabled
+Info: Segments per section = 1
+Info: Sections per zone = 1
+Info: sector size = 512
+Info: total sectors = 6291456 (3072 MB)
+Info: zone aligned segment0 blkaddr: 512
+Info: format version with
+  ""
+Info: Overprovision ratio = 3.640%
+Info: Overprovision segments = 115 (GC reserved = 62)
+Info: format successful
+out/target/product/k39tv1_bsp_1g/userdata.img maxsize=3288667008 blocksize=4224 total=57624 reserve=33221760
+
+mkf2fsuserimg.sh 是生成 img脚本，地址在out/host/linux-x86/bin
+内容：
+
+#!/bin/bash
+#
+# To call this script, make sure make_f2fs is somewhere in PATH
+
+function usage() {
+cat<<EOT
+Usage:
+${0##*/} OUTPUT_FILE SIZE
+EOT
+}
+
+echo "in mkf2fsuserimg.sh PATH=$PATH"
+
+if [ $# -lt 2 ]; then
+  usage
+  exit 1
+fi
+
+OUTPUT_FILE=$1
+SIZE=$2
+shift; shift
+
+
+if [ -z $SIZE ]; then
+  echo "Need size of filesystem"
+  exit 2
+fi
+
+MAKE_F2FS_CMD="make_f2fs -S $SIZE $OUTPUT_FILE"
+echo $MAKE_F2FS_CMD
+$MAKE_F2FS_CMD
+if [ $? -ne 0 ]; then
+  exit 4
+fi
+
+里面最重要的内容就是这句话，
+MAKE_F2FS_CMD=“make_f2fs -S $SIZE $OUTPUT_FILE”
+$SIZE $OUTPUT_FILE = out/target/product/k39tv1_bsp_1g/userdata.img
+make_f2fs 实际使用的命令是mkfs.f2fs ，这是f2fs文件系统的命令
+mkfs.f2fs指令使用指南
+-s只是指定了段大小。整个命令是生成一个空的userdata.img并指定img段大小。
+所以只要使用了 f2fs无法预置data/app到userdata.img,可以修改userdata img 为ext4支持，希望以后f2fs以后能支持
+```
+
+## mtk平台上如何开启f2fs
+
+```
+1、  MTK Android O1   SW 版本
+ 
+2、  F2FS 在下列平台已经做了验证，其他平台没有验证
+     1)6580/6570  
+     2)6735/53/37 系列    
+     3) 6739
+ 
+3.  开启f2fs :
+ 
+    1)Kernel Config (kernel-xxx/arch/armxx/configs/$project_[debug]_config)
+添加如下设定（如已有，请配置为如下设定）
+CONFIG_F2FS_FS=y
+CONFIG_F2FS_FS_SECURITY=y
+CONFIG_F2FS_FS_ENCRYPTION=y
+ 
+  2)add F2FS Property of MTK
+device/mediateksample (mediatekprojects) / <Project Name> /device.mk
+添加如下设定（如已有，请配置为如下设定）：
+# F2FS filesystem
+PRODUCT_PROPERTY_OVERRIDES += ro.mtk_f2fs_enable=1
+  3)CONFIG data partition as F2FS as below
+device/mediateksample (mediatekprojects) / <Project Name> /BoardConfig.mk
+ 添加如下设定（如已有，请配置为如下设定）：
+#Config data partition for F2FS
+BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := f2fs
+
+# This ensures the needed build tools are available.
+# TODO: make non-linux builds happy with external/f2fs-tool; system/extras/f2fs_utils
+ifeq ($(HOST_OS),linux)
+TARGET_USERIMAGES_USE_F2FS := true
+endif
+# Filesystem management tools
+PRODUCT_PACKAGES += fsck.f2fs mkfs.f2fs
+ 4.vendor/mediatek/proprietary/bootable/bootloader/lk/project/
+ $project.mk (for fastboot)
+Add the following line
+  MTK_USERIMAGES_USE_F2FS = yes
+ 
+ 以上修改后，请make clean后编译，确保修改生效
+```
+
+## Alarm的机制
+
+```
+https://blog.csdn.net/zhangbijun1230/article/details/80166185
+
+Alarm和Timer以及Handler在定时任务上的区别
+相同点：
+
+三者都可以完成定时任务，都支持一次性定时和循环定时（注：Handler可以间接支持循环定时任务）
+
+不同点：
+
+Handler和Timer在定时上是类似的，二者在系统休眠的情况下无法正常工作，定时任务不会按时触发。Alarm在系统休眠的情况下可以正常工作，并且还可以决定是否唤醒系统，同时Alarm在自身不启动的情况下仍能正常收到定时任务提醒，但是当系统重启或者应用被杀死的情况下，Alarm定时任务会被取消。另外，从Android4.4开始，Alarm事件默认采用非精准方式，即定时任务可能会有小范围的提前或延后，当然我们可以强制采用精准方式，而在此之前，Alarm事件都是精准方式。
+```
+
+## LOCAL_PRIVILEGED_MODULE
+
+```
+https://blog.csdn.net/zhanglianyu00/article/details/75099025
+```
+
+## Android关键字persistent
+
+```
+https://blog.csdn.net/zhangbijun1230/article/details/80587004
+```
+
+## Android应用程序安装过程解析
+
+```
+https://blog.csdn.net/zhangbijun1230/article/details/80548728
+```
+
+## Android 8.1预置apk为可卸载
+
+```
+在MTK Android O1平台预置apk为可卸载时。预置到旧的路径system/vendor/operator/app会编译报错，"You cannot install files to out/target/product/xxx/system/vendor while building a separate vendor.img!"改为预置到vendor/operator/app就可以编译通过，预置可卸载成功,恢复出厂设置可恢复。
+
+旧的
+
+LOCAL_PATH := $(call my-dir)
+
+include $(CLEAR_VARS)
+
+# Module name should match apk name to be installed
+LOCAL_MODULE := Test
+LOCAL_MODULE_TAGS := optional
+LOCAL_SRC_FILES := $(LOCAL_MODULE).apk
+LOCAL_MODULE_CLASS := APPS
+LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
+#LOCAL_PREBUILT_JNI_LIBS := \
+#LOCAL_PRIVILEGED_MODULE := true
+LOCAL_MODULE_PATH := $(TARGET_OUT)/vendor/operator/app
+LOCAL_CERTIFICATE := PRESIGNED
+
+include $(BUILD_PREBUILT)
+
+修改LOCAL_MODULE_PATH为
+
+LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/operator/app
+```
+
+## 模拟电源键长按(getevent,sendevent)
+
+```
+首先我在手机的shell下输入了getevent命令，这样就可以接收到手机上操作的所有event事件。
+这个时候我们按下我们手机电源键，来看看可以接收到哪些事件信息，按下电源键后：
+我们得到了以上四条信息。
+我们来以第一条为例分析一下获得是什么？
+/dev/input/event0:  代表 device
+0001                         代表一个type
+0074                         代表power键的code(为16进制)
+00000001                 代表value 一般 1代表按下，0代表放开。
+
+根据查阅sendevent 需要的参数为就是device、type、code、value。
+
+于是我们就可以通过下面四条命令即可完成按power键的操作，中间sleep的时间长度大于2秒，系统就认为是长按：
+sendevent /dev/input/event0 1 116 1（0074转化为十进制后为116）
+sendevent /dev/input/event0 0 0 0
+sleep 3
+sendevent /dev/input/event0 1 116 0
+sendevent /dev/input/event0 0 0 0
+```
+
+## Android 如何快速写满存储空间
+
+```
+方法一：
+通过如下 adb 命令在 /mnt/sdcard/ 目录下产生一个名为 bigfile 的文件，让其自动增长到磁盘剩余空间大小。
+
+adb shell dd if=/dev/zero of=/mnt/sdcard/bigfile
+
+方法二：
+使用的是android sdk工具创建一个sdcard.img文件，由于Android单个文件传输大小限制，注意不要超过4G。
+
+mksdcard 3G sdcard.img
+
+方法三：
+使用微软提供的fsutil.exe命令来创建指定大小的文件。
+
+fsutil file createnew bigfile.txt  100000000
+```
+
+## 手机收到8bit编码的短信无法显示
+
+```
+android默认不支持8bit编码，8bit只是数据传输的一种方式，8bit编码并没有定义唯一的字符编码表来指明某个编码表示某个字符，所以没办法唯一去解析它
+代码可见framework/base/telephony/java/com/android/internal/telephony/gsm/SmsMessage.java
+parseUserData方法
+switch (encodingType) {
+            case ENCODING_UNKNOWN:
+            case ENCODING_8BIT:
+                messageBody = null;
+                break;
+ 
+这也是google default设计，MTK也没有做扩展，因为上面所说的，8bit没有唯一表来定义其编码。
+如果发现某个对比机可以显示，那是对比机指定了某种解码方式去解析8bit，但这有风险，只要那些8bit数据不是用指定的那种解码方式去编码的话，会显示乱码。
+如果客户一定要用解析8bit编码的短信，可以自行修改代码
+以下以UTF-8来解析为例，修改方法：
+framework/base/telephony/java/com/android/internal/telephony/gsm/SmsMessage.java
+1.parseUserData方法
+case ENCODING_8BIT:
+                messageBody = null;
+  break;
+修改为：
+case ENCODING_8BIT:
+                //messageBody = null;
+                messageBody = p.getUserDataUTF8(count);
+                break;
+
+2.getUserDataUCS2这个方法后面增加一个方法 getUserDataUTF8，如下：
+  String getUserDataUTF8(int byteCount) {
+            String ret;
+            try {
+                ret = new String(pdu, cur, byteCount, "utf-8");
+            } catch (UnsupportedEncodingException ex) {
+                ret = "";
+                Log.e(LOG_TAG, "Utf-8,implausible UnsupportedEncodingException", ex);
+            }
+            cur += byteCount;
+            return ret;
+        }
+
+这种修改是有风险的：可能解析出来的短信都是乱码。请客户自行评估风险，谨慎修改。
+ 
+ Android 5及之后的版本，Google提供了一个变量来控制是否支持8bit编码。
+默认是false，改成true之后就能支持解码8bit
+/frameworks/base/core/res/res/values/config.xml
+<bool translatable="false" name="config_sms_decode_gsm_8bit_data">false</bool>
+ 
+注意：开启8bit之后会导致CTS fail. 目前没有能兼顾8bit和CTS测试的解决方案。
+```
+
+## 浏览器默认搜索引擎更改
+
+```
+vendor/mediatek/proprietary/packages/apps/Browser/src/com/android/browser/preferences/SearchEngineSettings.java）
+
+                 mEntries[i] = searchEngines.get(i).getLabel();  
+                 mEntryFavicon[i] = searchEngines.get(i).getFaviconUri();  
+                 if (mEntryValues[i].equals(searchEngineName)) {  
+-                    selectedItem = i;
++                    selectedItem = 1;
+                 }  
+             }  
+```
+
+## 语音邮件通知无法移除
+
+```
+（frameworks/base/telephony/java/android/telephony/CarrierConfigManager.java）
+
+         sDefaults.putBoolean(KEY_SUPPORT_SWAP_AFTER_MERGE_BOOL, true);  
+         sDefaults.putBoolean(KEY_USE_HFA_FOR_PROVISIONING_BOOL, false);  
+         sDefaults.putBoolean(KEY_USE_OTASP_FOR_PROVISIONING_BOOL, false);  
+-        sDefaults.putBoolean(KEY_VOICEMAIL_NOTIFICATION_PERSISTENT_BOOL, false);
++        sDefaults.putBoolean(KEY_VOICEMAIL_NOTIFICATION_PERSISTENT_BOOL, true);
+         sDefaults.putBoolean(KEY_VOICE_PRIVACY_DISABLE_UI_BOOL, false);  
+         sDefaults.putBoolean(KEY_WORLD_PHONE_BOOL, false);  
+         sDefaults.putInt(KEY_VOLTE_REPLACEMENT_RAT_INT, 0);  
+```
+
+## 拍照人脸美化会生成两张照片
+
+```
+（vendor/mediatek/proprietary/packages/apps/Camera/src/com/mediatek/camera/mode/facebeauty/FaceBeautyMode.java）
+
+if (!mIFeatureConfig.isVfbEnable()) {
+                 mIFileSaver.init(FILE_TYPE.JPEG, 0, null, -1);
+                 long time = System.currentTimeMillis();
+-                mIFileSaver.savePhotoFile(data, null, time, mIModuleCtrl.getLocation(), 0,
+-                        mFileSavedListener);
++                // mIFileSaver.savePhotoFile(data, null, time, mIModuleCtrl.getLocation(), 0,
++                //        mFileSavedListener);
+             }
+         }
+     }
+```
+
+## ODM 开发用户常见需求文档
+
+```
+https://blog.csdn.net/zhangbijun1230/article/details/80821483   八
+https://blog.csdn.net/zhangbijun1230/article/details/80821494   九
+https://blog.csdn.net/qq_30796789/article/details/72459556      Android7.0 MTK 需求文档（二）
+https://blog.csdn.net/qq_30796789/article/details/53782091      Android6.0 MTK 需求文档（六）
+```
+
+## 7.0 默认 mtp
+
+```
+（frameworks/base/services/usb/java/com/android/server/usb/UsbDeviceManager.java）
+
+diff --git a/base/services/usb/java/com/android/server/usb/UsbDeviceManager.java b/base/services/usb/java/com/android/server/usb/UsbDeviceManager.java  
+index 9d3b655..4ac7646 100644  
+--- a/base/services/usb/java/com/android/server/usb/UsbDeviceManager.java  
++++ b/base/services/usb/java/com/android/server/usb/UsbDeviceManager.java  
+@@ -453,7 +453,7 @@ functions = addFunction(functions, UsbManager.USB_FUNCTION_ACM);  
+         private boolean mHostConnected;  
+         private boolean mSourcePower;  
+         private boolean mConfigured;  
+-        private boolean mUsbDataUnlocked;  
++        private boolean mUsbDataUnlocked = true;  
+         private String mCurrentFunctions;  
+         private String mDefaultFunctions;  
+         private boolean mCurrentFunctionsApplied;  
+@@ -1361,7 +1361,7 @@ functions = addFunction(functions, UsbManager.USB_FUNCTION_ACM);  
+                     mUsbConfigured = mConfigured;  
+                     if (!mConnected) {  
+                         // When a disconnect occurs, relock access to sensitive user data  
+-                        mUsbDataUnlocked = false;  
++                    //  mUsbDataUnlocked = false;  
+                     }  
+                     updateUsbNotification();  
+                     updateAdbNotification();  
+@@ -1370,7 +1370,7 @@ functions = addFunction(functions, UsbManager.USB_FUNCTION_ACM);  
+                         updateCurrentAccessory();  
+                     } else if (!mConnected) {  
+                         // restore defaults when USB is disconnected  
+-                        setEnabledFunctions(null, false);  
++                  //    setEnabledFunctions(null, false);  
+                     }  
+                     if (mBootCompleted) {  
+                         updateUsbStateBroadcastIfNeeded();  
+```
+
+## 理解Android硬件加速原理的小白文
+
+```
+https://blog.csdn.net/zhangbijun1230/article/details/80993207
+```
+
+## NFC 相关
+
+```
+https://blog.csdn.net/zhangbijun1230/article/details/82589171
+https://blog.csdn.net/zhangbijun1230/article/details/82589034
+https://blog.csdn.net/zhangbijun1230/article/details/82588816
+https://blog.csdn.net/zhangbijun1230/article/details/82588770
+https://blog.csdn.net/zhangbijun1230/article/details/82586436
+https://blog.csdn.net/zhangbijun1230/article/details/82586391
+```
+
+## Android 保活技巧
+
+```
+https://blog.csdn.net/zhangbijun1230/article/details/82586391
+https://blog.csdn.net/zhangbijun1230/article/details/81638694
+https://blog.csdn.net/zhangbijun1230/article/details/81638669
+https://blog.csdn.net/zhangbijun1230/article/details/81638600
+```
+
+
+
+
+
+
+
+
+
+
+
 
 
 
