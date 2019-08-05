@@ -12,6 +12,9 @@ https://github.com/open-android/Android
 ## Android学习网站
 
 ```
+https://developer.android.google.cn/docs/       官方 Android 应用开发者文档
+https://flutterchina.club/widgets-intro/        Flutter 中文开发者网站
+
 https://www.androiddevtools.cn/
 
 http://bbs.16rd.com/forum-263-1.html
@@ -20,6 +23,17 @@ http://www.iteye.com/
 http://www.v2ex.com/
 http://www.imooc.com/
 http://www.html-js.com/
+
+http://gank.io/history
+
+https://github.com/lizhangqu/CoreLink
+https://github.com/GcsSloop/AndroidNote?utm_source=gold_browser_extension
+
+http://p.codekk.com/            android开源项目集合
+https://github.com/luxiaoming   代码GG的github地址
+
+https://github.com/yechaoa/Android-Rapid-Development
+https://github.com/yechaoa/Android-Develop-Tips
 ```
 
 ## 大神的blog
@@ -38,9 +52,14 @@ https://blog.csdn.net/zhangbijun1230/article/details/79745654
 《Linux内核设计与实现》
 《深入理解Linux内核》
 《深入理解Android ***》系列书籍，邓凡平老师写的系列。
+深入理解Android内核设计思想
 《Android源码设计模式》，结合设计模式分析源码
 《Android框架揭秘》，底层架构的一本好书
 《黑客与画家》
+Android应用安全防护和逆向分析
+增长黑客
+深入探索Android热修复技术原理7.3Q
+神策数据-Android_全埋点技术白皮书
 ```
 
 ## 必备软件
@@ -120,13 +139,6 @@ android.util.Log.e("zq8888", Thread.currentThread().getStackTrace()[2].getMethod
 setDuplicateParentStateEnabled(true)
 ```
 
-## Android进阶学习网站
-
-```
-https://github.com/lizhangqu/CoreLink
-https://github.com/GcsSloop/AndroidNote?utm_source=gold_browser_extension
-```
-
 ## [Snippet]OnClickListener
 
 ``` Java
@@ -154,6 +166,12 @@ button.setOnKeyListener(new android.view.View.OnKeyListener() {
         return false;
     }
 });
+```
+
+## 设置窗口为半透明
+
+```
+getWindow().setFormat(PixelFormat.TRANSLUCENT);
 ```
 
 ## [Snippet]对话框的按键监听
@@ -250,6 +268,54 @@ getWindow().getDecorView().addOnLayoutChangeListener(new android.view.View.OnLay
         }
     }
 });
+```
+
+## 判断view是否显示???
+
+```
+isShown()
+```
+
+## ScrollView设置全屏
+
+```
+android:fillViewport=“true”
+```
+
+## 延时操作
+
+```
+SystemClock.sleep()
+```
+
+## 倒计时
+
+```
+CountDownTimer
+```
+
+## 遍历HashMap
+
+```
+public static void printMap(Map mp) {
+    for (Map.Entry m : mp.entrySet()) {
+        System.out.println(m.getKey() + ":" + m.getValue());
+    }
+}
+```
+
+## [Snippet]监听应用的安装和卸载
+
+```
+MyBroadcastReceiver myReceiver = new MyBroadcastReceiver();
+IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_INSTALL);
+filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+filter.addAction(Intent.ACTION_PACKAGE_ADDED);
+filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
+filter.addAction(Intent.ACTION_PACKAGE_RESTARTED);
+...
+filter.addDataScheme("package"); //This line is very important. Otherwise, broadcast can't be received.
+registerReceiver(myReceiver, filter);
 ```
 
 ## [Snippet]ListView上seekbar的按键监听
@@ -40772,7 +40838,7 @@ https://blog.csdn.net/hsaekong/article/details/80305263
 Android系统的输入法通常都派生自基类android.inputmethodservice.InputMethodService，基类InputMethodService定义了Android输入法的公共API集合，其中onCreate就是其中的一个API函数。各个具体的输入法实现根据需要重载实现这些API的全部或者一部分。
 
 Android SDK提供了一个最简单的输入法示例，SoftKeyboard ，这个示例可以在SDK安装目录下samples/plaform-X下找到（其中X为SDK的API level数，如cupcake为3，donut为4，froyo为8）。SoftKeyboard 的onCreate()函数代码如下：
-    @Override public void onCreate() {
+    public void onCreate() {
         super.onCreate();
         mWordSeparators = getResources().getString(R.string.word_separators);
     }
@@ -42186,6 +42252,1687 @@ https://blog.csdn.net/zhangbijun1230/article/details/82586391
 https://blog.csdn.net/zhangbijun1230/article/details/81638694
 https://blog.csdn.net/zhangbijun1230/article/details/81638669
 https://blog.csdn.net/zhangbijun1230/article/details/81638600
+```
+
+## 优化 APK 安装时间长的问题
+
+```
+可以优化的方面：
+1、改变APK install的模式为speed：android N采用JIT，执行阶段会透过dex2oat compile 所以log 中会看到JIT 相关thread 跑占用CPU较多状态
+修改后，使APK安装阶段就进行compile，这样安装的时间会变成，部分APK 采用白名单，强制使用interpret only ，JIT 模式， 
+2、调整：Aggressive LMK policy ，在背景process ，service 数量太多的情况下，调整后，可以更积极的去回收一些不重要的进程，缓解系统loading，和memory
+3、调整pefservice， 延长app launch CPU，Vcore等boost 时间，
+```
+
+## MTK 平台如何PUSH modem 到手机中进行调试
+
+```
+1、编译eng或者userdebug版本：
+   userdebug: adb shell setprop service.adb.root 1 
+              再进入Settings->Developer options，取消 USB debugging，然后再重新勾选上，即可获得root权限
+   eng版本可省略这一步。           
+2、PUSH modem到手机命令：
+adb remount
+adb push xxxx.xx  /system/etc/firmware/
+
+
+modem文件清单：
+ltg: catcher_filter_1_ltg_n.bin dsp_1_ltg_n.bin modem_1_ltg_n.img
+lwg: catcher_filter_1_lwg_n.bin dsp_1_lwg_n.bin modem_1_lwg_n.img
+c2k: boot_3_3g_n.rom fsm_cust_df_3_3g_n.img fsm_rf_df_3_3g_n.img fsm_rw_df_3_3g_n.img modem_3_3g_n.img
+
+
+3、重启机器
+adb reboot
+```
+
+## 一张图看懂光圈、快门、感光度的意义
+
+```
+光圈越大，参照物越模糊。
+快门越高，运动物越清晰。
+感光度越大，照片糙点越多。
+```
+
+## 三、开机时间优化方法
+
+```
+3.1 开机过程中CPU调频调核（kernel，系统），开启多核和调高频率，关注功耗，优化。
+3.2 开机过程PMS多线程进行包扫描
+3.3 PMS扫描过程中直接根据应用的Native层库目录名称确定应用的ABI，加速扫描.
+3.4 添加资源预加载优化
+3.5 关闭系统层和Kernel层日志
+3.6 分区挂载是否重复
+3.7 开机日志分解定位是否有异常耗时点，针对性进行优化
+```
+
+## 减小 OTA 大小
+
+```
+减小 OTA 大小
+本页介绍了为减少多次编译之间不必要的文件变更而对 AOSP 编译系统所做的改动。使用专有编译系统的设备实现人员可根据这项信息采取措施，减小无线下载 (OTA) 更新的大小。
+
+有时，Android OTA 包含的变更文件并非源于代码变更，而是编译系统造成的。在不同时间、不同目录或不同机器上编译相同的代码时可能会发生上述情况，产生大量变更文件。这些多余的文件不仅会增加 OTA 的大小，还会导致难以确定 OTA 中发生变更的代码。
+
+为了使 OTA 的内容更加透明，我们对 AOSP 编译系统做了多项改动，目的是消除多次编译之间不必要的文件变更，以此减小 OTA 的大小。这样做是为了减小 OTA 的大小，使其只包含与 OTA 中所含补丁程序相关的文件。AOSP 还包括编译 diff 工具（可过滤出常见的编译相关文件变更，并提供更清晰的编译文件 diff）以及块映射工具（可协助您确保块分配的一致性）。
+
+编译系统可能会通过多种方式创建不必要的文件 diff。下文讨论了其中一些问题和解决方案，并尽可能提供了 AOSP 中的修复示例。
+
+文件顺序
+问题：文件系统在请求目录中的文件列表时，并不保证文件顺序，尽管对于同一个检出，文件顺序通常是相同的。ls 等工具在默认情况下会对结果进行排序，但 find 和 make 等命令使用的通配符函数却不会对结果进行排序。用户在使用这类工具之前，务必要对输出进行排序。
+
+解决方案：用户在使用支持通配符的 find 和 make 等工具之前，务必要对这些命令的输出进行排序。要在 Android.mk文件中使用 $(wildcard) 或 $(shell find)，也应该进行排序。有些工具（如 Java）确实会对输入进行排序，因此有必要先对排序进行验证。
+
+示例：多处问题在核心编译系统中通过内置的 all-*-files-under 宏得到修正，其中包括 all-cpp-files-under（一些定义分散在其他 makefile 中）。有关详情，请参阅以下 CL：
+
+https://android.googlesource.com/platform/build/+/4d66adfd0e6d599d8502007e4ea9aaf82e95569f
+https://android.googlesource.com/platform/build/+/379f9f9cec4fe1c66b6d60a6c19fecb81b9eb410
+https://android.googlesource.com/platform/build/+/7c3e3f8314eec2c053012dd97d2ae649ebeb5653
+https://android.googlesource.com/platform/build/+/5c64b4e81c1331cab56d8a8c201f26bb263b630c
+编译目录
+问题：变更编译内容所在的目录会导致二进制文件有所不同。Android 编译系统中的大多数路径都是相对路径，因此 C/C++ 中的 __FILE__ 不是问题。不过，默认情况下调试符号会对完整的路径名进行编码，而对预剥离二进制文件进行哈希处理会生成 .note.gnu.build-id，因此调试符号发生变更会致使二进制文件发生变化。
+
+解决方案：AOSP 现在会使调试路径变成相对路径。有关详情，请参阅 CL：https://android.googlesource.com/platform/build/+/6a66a887baadc9eb3d0d60e26f748b8453e27a02。
+
+时间戳
+问题：编译输出中的时间戳会导致不必要的文件变更。这可能会发生在以下位置：
+
+C 或 C++ 代码中的 __DATE__/__TIME__/__TIMESTAMP__ 宏。
+基于 ZIP 的归档中嵌入的时间戳。
+解决方案/示例：要从编译输出中移除时间戳，请遵循下文中的说明操作。
+
+C/C++ 中的 __DATE__/__TIME__/__TIMESTAMP__
+这些宏总是为不同的编译生成不同的输出，因此不建议使用。您可以选择通过以下方法来移除这些宏：
+
+直接将其移除（这些宏通常不是必需的）。要查看示例，请参阅：https://android.googlesource.com/platform/system/core/+/30622bbb209db187f6851e4cf0cdaa147c2fca9f。
+要对运行中的二进制文件进行唯一标识，请从 ELF 标头中读取 build-id。
+要了解操作系统的编译时间，请读取 ro.build.date（应该会对除增量编译之外的所有内容都适用；增量编译可能不会更新此日期）。要查看示例，请参阅：https://android.googlesource.com/platform/external/libchrome/+/8b7977eccc94f6b3a3896cd13b4aeacbfa1e0f84。
+注意：Android 7.0 开启了 -Werror=date-time，因此使用时间戳会导致编译错误。
+
+归档文件（zip、jar）中的嵌入时间戳
+Android 7.0 通过将 -X 添加到 zip 命令的所有用例中，解决了 zip 归档文件中嵌入时间戳的问题，因此编译工具的 UID/GID 和扩展的 Unix 时间戳不会嵌入到 ZIP 文件中。
+
+新工具 ziptime（位于 /platform/build/+/master/tools/ziptime/ 下）会重置 zip 标头中的正常时间戳。有关详情，请参阅 README 文件。
+
+signapk 工具为 APK 文件设置的时间戳可能会因服务器所在的时区而异。有关详情，请参阅 CL：https://android.googlesource.com/platform/build/+/6c41036bcf35fe39162b50d27533f0f3bfab3028。
+
+版本字符串
+问题：APK 版本字符串的硬编码版本通常附加了 BUILD_NUMBER。即使 APK 中并未发生任何其他变更，APK 也仍然会有所不同。
+
+解决方案：从 APK 版本字符串中移除版本号。
+
+示例：
+
+https://android.googlesource.com/platform/packages/apps/Camera2/+/5e0f4cf699a4c7c95e2c38ae3babe6f20c258d27
+https://android.googlesource.com/platform/build/+/d75d893da8f97a5c7781142aaa7a16cf1dbb669c
+一致的编译工具
+问题：生成安装文件的工具必须一致（相同的输入应始终生成相同的输出）。
+
+解决方案/示例：以下编译工具需要进行变更：
+
+NOTICE 文件创建工具。NOTICE 文件创建工具需要变更。请参阅 CL：https://android.googlesource.com/platform/build/+/8ae4984c2c8009e7a08e2a76b1762c2837ad4f64。
+Java Android 编译器套件 (Jack)。Jack 工具链需要更新才能处理生成的构造函数排序的偶然性变更。请参阅 CL：https://android.googlesource.com/toolchain/jack/+/056a5425b3ef57935206c19ecb198a89221ca64b。
+ART AOT 编译器 (dex2oat)。ART 编译器二进制文件需要更新才能创建确定性映像。请参阅 CL：https://android.googlesource.com/platform/art/+/ace0dc1dd5480ad458e622085e51583653853fb9。
+libpac.so 文件 (V8)。每项编译会创建不同的 /system/lib/libpac.so 文件，因为 V8 快照会针对每项编译发生变更。解决方案是移除该快照。请参阅 CL：https://android.googlesource.com/platform/external/v8/+/e537f38c36600fd0f3026adba6b3f4cbcee1fb29。
+预先经过 dexopt 处理的 (.odex) 应用文件。预先经过 dexopt 处理的 (.odex) 文件在 64 位系统上包含未初始化填充。请参阅 CL：https://android.googlesource.com/platform/art/+/34ed3afc41820c72a3c0ab9770be66b6668aa029。
+使用编译 diff 工具
+对于无法消除编译相关文件变更的情况，AOSP 纳入了编译 diff 工具 target_files_diff.py，以用于比较两个文件包。该工具会在两个编译之间执行递归 diff，从而排除常见的编译相关文件变更，例如：
+
+编译输出中的预期变更（例如，由于版本号变更所导致）。
+由于当前编译系统中的已知问题所导致的变更。
+要使用编译 diff 工具，请运行以下命令：
+
+
+ 
+target_files_diff.py dir1 dir2
+
+dir1 和 dir2 是包含每个编译的提取目标文件的基础目录。
+
+使块分配保持一致
+在非 A/B OTA 中，影响时间的因素之一是块移动。对于给定的文件，尽管其内容在两个编译之间会保持不变，但实际持有数据的块可能已发生变化。因此，更新程序会在 OTA 期间执行不必要的 I/O 来四处移动块。
+
+为了解决这个问题，我们在 Android 7.0 中扩展了 make_ext4fs 工具，该工具会尝试使块分配在各编译之间保持一致。make_ext4fs 会接受可选的 -d base_fs 标记，该标记会在生成 ext4 映像时尝试将文件分配给相同的块。您可以从上一个编译的目标文件 zip 文件（IMAGES/system.map 和 IMAGES/vendor.map）中提取块映射文件（即 base_fs 映射文件）。接下来，base_fs 文件便可以通过 PRODUCT_SYSTEM_BASE_FS_PATH 和 PRODUCT_VENDOR_BASE_FS_PATH 进行记录并指定。例如，
+
+
+ 
+PRODUCT_SYSTEM_BASE_FS_PATH := path/to/base_fs_files/base_system.map PRODUCT_VENDOR_BASE_FS_PATH := path/to/base_fs_files/base_vendor.map
+
+虽然这对减小整体的 OTA 更新包大小来说并无帮助，但它确实可以通过减少 I/O 量来改善 OTA 性能。
+```
+
+## 使用Android Studio调试Android Framework代码
+
+```
+3.生成android.ipr和android.iml文件
+进入Android 源码根目录 
+执行 
+mmm development/tools/idegen/ 
+这行命令的意思是编译idegen这个项目,生成idegen.jar文件.生成成功后,会显示这个jar包的位置,并显示 #### make completed successfully 
+然后执行 
+sh ./development/tools/idegen/idegen.sh 
+这行命令的意思是生成对应的文件:android.iws, android.ipr, android.iml .
+
+4.android studio导入源码
+生成上述对应的文件后,打开Android Studio,选择打开一个现有的Android Studio项目,选择Android源码的根目录,导入即可(起作用的是android.irp文件).在配置sdk版本之后就可以查看Android 源码了. 
+导入过程比较慢，可以打开android.iml参考网上文章过滤掉一些模块。
+
+5.调试代码
+Run->Attach debugger to Android process选择要调试的程序
+
+选择要调试的程序。
+
+这里选择了自己的一个程序，来调试ListView，虚拟机中国年滑动下ListView，编辑器中进入了断点，这样就可以开开心心的，一步一步研究android的一些源码的原理
+
+注意： 
+调试的时候，国产手机有的断点进不去，可能是厂商修改了framework的原因（具体有待考证）所以我这里使用的是虚拟机。
+```
+
+## 防止按钮连续点击
+
+```
+public class Utils {
+    private static long lastClickTime;
+    public static boolean isFastDoubleClick() {
+        long time = System.currentTimeMillis();    
+        if ( time - lastClickTime < 500) {
+            return true;
+        }
+        lastClickTime = time;
+        return false;
+    }
+}
+
+public void onClick(View v) {
+    if (Utils.isFastDoubleClick()) {
+        return;
+    }
+}
+```
+
+## dump解码所得图片方法
+
+```
+https://blog.csdn.net/zhangbijun1230/article/details/81414385
+```
+
+## 无需刷机，查看rom包内的文件
+
+```
+静态调试
+有时候为了确认系统内某些文件是否存在、是否编译了odex、反编译apk、反编译oat等，查看一些静态信息的时候，一般我们都会找一个机器通过flash_all，再等开机后adb 进去查看。这样一来很浪费时间，其实我们完全可以将system.img mount到本地pc上查看。
+
+1）下载对应的rom包。
+
+2）本地解压后找到对应的system.img。
+
+3）通过本地编译时提供的host小工具命令simg2img（一般位于out/host/linux-x86/bin下）将system.img转化为raw img文件。simg2img system.img s.raw
+
+4）本地创建挂载点目录，如mkdir system-host，接着直接通过mount s.raw system-host即可（注意mount需要root权限）。
+
+5）挂载成功后，system-host就跟手机上system分区一模一样。
+```
+
+## 精简官方ROM并且内置ROOT权限，开启Romer之路
+
+```
+https://blog.csdn.net/qq_26787115/article/details/50736823
+```
+
+## 密码强度监测工具类
+
+```
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+ 
+public class CheckPWD {
+ 
+	public static Safelevel checkPasswordStrength(String c) {
+		Safelevel d = Safelevel.WEAK;
+		if (isEmptyPassword(c)) {
+			return d;
+		}
+		if (isTooShort(c)) {
+			d = Safelevel.WEAK;
+		} else {
+			if (hasNum(c) && hasLetter(c) && hasSymbol(c)) {
+				d = Safelevel.SECURE;
+			} else {
+				if (hasNum(c) && hasLetter(c)) {
+					d = Safelevel.STRONG;
+				} else {
+					if (hasNum(c) && hasSymbol(c)) {
+						d = Safelevel.STRONG;
+					} else {
+						if (hasSymbol(c) && hasLetter(c)) {
+							d = Safelevel.STRONG;
+						} else {
+							if (isAllNum(c) || isAllLetter(c) || isAllSymbol(c)) {
+								d = Safelevel.WEAK;
+							}
+						}
+					}
+				}
+			}
+		}
+		return d;
+	}
+ 
+	public enum Safelevel {
+ 
+		WEAK, /* 弱 */
+ 
+		STRONG, /* 强 */
+ 
+		SECURE, /* 安全 */
+ 
+	}
+ 
+	public static boolean hasNum(String content) {
+		boolean flag = false;
+		Pattern p = Pattern.compile(".*\\d+.*");
+		Matcher m = p.matcher(content);
+		if (m.matches())
+			flag = true;
+		return flag;
+ 
+	}
+ 
+	public static boolean hasSymbol(String content) {
+		boolean flag = false;
+		Pattern p = Pattern.compile(".*[a-zA-Z0-9\\s<>;'\\\\]+.*");
+		Matcher m = p.matcher(content);
+		if (m.matches())
+			flag = true;
+		return flag;
+ 
+	}
+ 
+	public static boolean isAllSymbol(String content) {
+		boolean flag = false;
+		Pattern p = Pattern.compile("^[a-zA-Z0-9\\s<>;'\\\\]+$");
+		Matcher m = p.matcher(content);
+		if (m.matches())
+			flag = true;
+		return flag;
+ 
+	}
+ 
+	public static boolean hasSpace(String content) {
+		boolean flag = false;
+		Pattern p = Pattern.compile(".*\\s+.*");
+		Matcher m = p.matcher(content);
+		if (m.matches())
+			flag = true;
+		return flag;
+ 
+	}
+ 
+	public static boolean hasIllegalSymbol(String content) {
+		boolean flag = false;
+		Pattern p = Pattern.compile(".*[\\s<>;'\\\\].*");
+		Matcher m = p.matcher(content);
+		if (m.matches())
+			flag = true;
+		return flag;
+ 
+	}
+ 
+	public static boolean hasLetter(String content) {
+		boolean flag = false;
+		Pattern p = Pattern.compile(".*[a-zA-Z]+.*");
+		Matcher m = p.matcher(content);
+		if (m.matches())
+			flag = true;
+		return flag;
+ 
+	}
+ 
+	public static boolean isAllLetter(String content) {
+		boolean flag = false;
+		Pattern p = Pattern.compile("^[a-zA-Z]+$");
+		Matcher m = p.matcher(content);
+		if (m.matches())
+			flag = true;
+		return flag;
+ 
+	}
+ 
+	private static boolean isEmptyPassword(String b) {
+		return (b == null || b.length() == 0);
+	}
+ 
+	private static boolean isTooShort(String b) {
+		return b.length() < 6;
+	}
+ 
+	public static boolean isAllNum(String content) {
+		boolean flag = false;
+		Pattern p = Pattern.compile("^\\d+$");
+		Matcher m = p.matcher(content);
+		if (m.matches())
+			flag = true;
+		return flag;
+ 
+	}
+ 
+	public static boolean hasRepeat6Chars(String content) {
+ 
+		boolean flag = false;
+		Pattern p = Pattern.compile(".*([0-9a-zA-Z])\\1{5}.*");
+		Matcher m = p.matcher(content);
+		if (m.matches())
+			flag = true;
+		return flag;
+ 
+	}
+ 
+	public static boolean hasIncrease6Chars(String g) {
+ 
+		if (g == null || g.length() < 6) {
+			return false;
+		}
+		char h = g.charAt(0);
+		char i = 1;
+		char j = 1;
+		for (j = 1; j < g.length(); j++) {
+			char f = g.charAt(j);
+			if (f == h + 1) {
+				i++;
+				if (i >= 6) {
+					return true;
+				}
+			} else {
+				i = 1;
+			}
+			h = f;
+		}
+		return false;
+ 
+	}
+ 
+	public static boolean hasDecrease6Chars(String g) {
+ 
+		if (g == null || g.length() < 6) {
+			return false;
+		}
+		char h = g.charAt(0);
+		char i = 1;
+		char j = 1;
+		for (j = 1; j < g.length(); j++) {
+			char f = g.charAt(j);
+			if (f == h - 1) {
+				i++;
+				if (i >= 6) {
+					return true;
+				}
+			} else {
+				i = 1;
+			}
+			h = f;
+		}
+		return false;
+ 
+	}
+ 
+	public static boolean hasAllIncreaseChars(String g) {
+ 
+		if (g == null) {
+			return false;
+		}
+		int i = g.length();
+		char h = g.charAt(0);
+		char j = 1;
+		char k = 1;
+		for (k = 1; k < g.length(); k++) {
+			char l = g.charAt(k);
+			if (l == h + 1) {
+				j++;
+				if (j >= i) {
+					return true;
+				}
+			} else {
+				j = 1;
+			}
+			h = l;
+		}
+		return false;
+ 
+	}
+ 
+	public static boolean hasAllDecreaseChars(String g) {
+		if (g == null) {
+			return false;
+		}
+		int i = g.length();
+		char h = g.charAt(0);
+		char j = 1;
+		char k = 1;
+		for (k = 1; k < i; k++) {
+			char l = g.charAt(k);
+			if (l == h - 1) {
+				j++;
+				if (j >= i) {
+					return true;
+				}
+			} else {
+				j = 1;
+			}
+			h = l;
+		}
+		return false;
+ 
+	}
+ 
+	public static boolean isAllSameChars(String content) {
+ 
+		if (content == null || content.length() < 2) {
+			return false;
+		}
+		char h = content.charAt(0);
+		char e = 1;
+		for (e = 1; e < content.length(); e++) {
+			char f = content.charAt(e);
+			if (f != h) {
+				return false;
+			}
+		}
+		return true;
+ 
+	}
+ 
+}
+```
+
+## 深入Android源码系列（二） HOOK技术大作战
+
+```
+https://mp.weixin.qq.com/s?__biz=MzI1MjMyOTU2Ng==&mid=2247484652&idx=1&sn=7795db9405e1ed1594d751410ddb7c7a&chksm=e9e42fddde93a6cbc29e56518b38dbd4ebf86aafe299d1f0dcd80a1397d9bdfbd814c18d0111&scene=21#wechat_redirect
+```
+
+## Qualcomm平台android开发总结 （精）
+
+```
+https://blog.csdn.net/gjsisi/article/details/7716364
+```
+
+## pgrep 查看 ubuntu 下进程id
+
+```
+pgrep eclipse
+```
+
+## Log.wtf()的意思是What a Terrible Failure,而不是What The Fuck!
+
+```
+Log.wtf()的意思是What a Terrible Failure,而不是What The Fuck!
+```
+
+## 把 View 保存为 Bitmap
+
+```
+public static Bitmap createBitmap(View v) {
+    v.setDrawingCacheEnabled(true);
+    v.buildDrawingCache();
+    Bitmap bitmap = Bitmap.createBitmap(v.getDrawingCache());
+    v.setDrawingCacheEnabled(false);
+    return bitmap;
+}
+
+public static Bitmap createBitmap(ScrollView v) {
+    int width = 0, height = 0;
+    for (int i = 0 ; i < v.getChildCount(); i++) {
+        width += v.getChildAt(i).getWidth();
+        height += v.getChildAt(i).getHeight();
+    }
+    Bitmap bitmap = Bitmap.createBitmap(width, height, ConfigARGB_8888);
+    Canvas canvas = new Canvas(bitmap);
+    v.draw(canvas);
+    return bitmap;
+}
+```
+
+## 反调试
+
+```
+方案策略总结
+下面简单几句话总结这几种方案：
+
+第一、自己附加进程，先占坑，ptrace(PTRACE_TRACEME, 0, 0, 0)！
+
+第二、签名校验不可或缺的一个选择，本地校验和服务端校验双管齐下！
+
+第三、借助系统api判断应用调试状态和调试属性，最基础的防护！
+
+第四、轮训检查android_server调试端口信息和进程信息，防护IDA的一种有效方式！
+
+第五、轮训检查自身status中的TracerPid字段值，防止被其他进程附加调试的一种有效方式！
+```
+
+## android处理资源文件复制到database区域java
+
+```
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+ 
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+ 
+final public class CopyRawtodata {
+ 
+	public static boolean CopyRawtodata(String path,String DbName,Context context,int id,boolean IsRawData)
+	{
+		boolean dbExist=checkDataBase(path,DbName);
+		if(!dbExist)
+		{
+        	try{
+        		copyDataBase(path,DbName,context,id,IsRawData);
+        	}catch(IOException e){
+        		throw new Error("Error copying database");
+        	}
+		}
+		return true;
+	}
+	private static boolean checkDataBase(String path,String DbName)
+	{
+    	SQLiteDatabase checkDB = null;
+    	try{
+    		String databaseFilename = path+"/"+DbName;
+    		checkDB =SQLiteDatabase.openDatabase(databaseFilename, null,
+    				SQLiteDatabase.OPEN_READONLY);
+    	}catch(SQLiteException e){
+    		
+    	}
+    	if(checkDB!=null){
+    		checkDB.close();
+    	}
+    	return checkDB !=null?true:false;
+	}
+	private static  void copyDataBase(String path,String DbName,Context context,int ResId,boolean IsRawData) throws IOException{
+	    	String databaseFilenames =path+"/"+DbName;
+	    	InputStream is;
+	    	File dir = new File(path+"/");
+	    	if(!dir.exists())//判断文件夹是否存在，不存在就新建一个
+	    		dir.mkdir();
+	    	FileOutputStream os = null;
+	    	try{
+	    		os = new FileOutputStream(databaseFilenames);//得到数据库文件的写入流
+	    	}catch(FileNotFoundException e){
+	    		e.printStackTrace();
+	    	}
+	    	if(IsRawData)
+	    	{
+	    		 is = context.getResources().openRawResource(ResId);//得到数据库文件的数据流
+	    	}
+	    	else
+	    	{
+	    		is = context.getResources().getAssets().open(DbName);//得到数据库文件的数据流
+	    	}	
+	        byte[] buffer = new byte[8192];
+	        int count = 0;
+	        try{
+	        	
+	        	while((count=is.read(buffer))>0){
+	        		os.write(buffer, 0, count);
+	        		os.flush();
+	        	}
+	        }catch(IOException e){
+	        	
+	        }
+	        try{
+	        	is.close();
+	        	os.close();
+	        }catch(IOException e){
+	        	e.printStackTrace();
+	        }
+	    }
+}
+```
+
+## adb reboot 的几个命令
+
+```
+adb reboot
+adb reboot -p   //关机
+adb reboot recovery
+adb reboot fastboot
+```
+
+## OEM, ODM, OEM 的区别
+
+```
+OEM(Original Equipment Manufactuce，原始设备生产商)。
+ODM(Original Design Manufactuce，原始设计制造商)
+OBM(Orignal Brand Manufactuce，原始品牌制造商)
+```
+
+## MTK PA 相关 (power amplifier)
+
+## Firda hook
+
+```
+https://blog.csdn.net/weixin_39190897/article/details/91979456
+```
+
+## Android获取设备CPU最大频率两种方案
+
+```
+//方案1
+long result = 0L;
+try {
+    String line;
+    BufferedReader br = new BufferedReader(new FileReader("/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq"));
+    if ((line = br.readLine()) != null) {
+        result = Long.parseLong(line);
+    }
+    br.close();
+} catch (Exception e) {
+    e.printStackTrace();
+}
+return result;
+
+
+//方案2
+long result = 0L;
+try {
+    String line;
+    BufferedReader br = new BufferedReader(new FileReader("/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq"));
+    if ((line = br.readLine()) != null) {
+        result = Long.parseLong(line);
+    }
+    br.close();
+} catch (Exception e) {
+    e.printStackTrace();
+}
+return result;
+```
+
+## python爬虫
+
+```
+https://blog.csdn.net/mouday/article/details/83026074
+
+将工具按照以上分类说明，按照学习路线顺序给出参考文章
+
+一、页面下载器
+requests(必学)
+
+python爬虫入门requests模块
+Python爬虫：requests库基本使用
+Python爬虫：使用requests库下载大文件
+Python爬虫：requests多进程爬取猫眼电影榜单
+requests InsecureRequestWarning: Unverified HTTPS request is being made.
+scrapy
+
+Python网络爬虫之scrapy框架
+scrapy学习
+Python爬虫：关于scrapy模块的请求头
+Python爬虫：scrapy框架请求参数meta、headers、cookies一探究竟
+Python爬虫：scrapy辅助功能实用函数
+selenium+chrome + PhantomJS(抓取动态网页，不推荐)
+
+mac下安装selenium+phantomjs+chromedriver
+Python爬虫：selenium模块基本使用
+Python爬虫selenium模块
+Python爬虫：selenium和Chrome无头浏览器抓取烯牛数据动态网页
+Python爬虫：利用selenium爬取淘宝商品信息
+Python爬虫：selenium使用chrome和PhantomJS实用参数
+Splash(抓取动态网页，推荐)
+
+Python爬虫：splash的安装与简单示例
+Python爬虫：splash+requests简单示例
+Python爬虫：scrapy利用splash爬取动态网页
+总结：
+对于下载器而言，python自带的urllib就不要花时间去学了，学了就忘，直接requests能满足大部分测试+抓取需求，进阶工程化scrapy，动态网页优先找API接口，如果有简单加密就破解，实在困难就使用splash渲染
+
+二、页面解析器
+BeautifulSoup(入门级)
+
+Python爬虫入门BeautifulSoup模块
+pyquery （类似jQuery）
+
+Python爬虫：pyquery模块解析网页
+lxml
+
+Python爬虫：使用lxml解析网页内容
+parsel
+
+Extract text using CSS or XPath selectors
+scrapy的Selector (强烈推荐, 比较高级的封装，基于parsel)
+
+选择器(Selectors)
+python爬虫：scrapy框架xpath和css选择器语法
+总结：
+其实解析器学习一个就够了，其他都不用学，很多培训会教你从上到下的学习，我不是很推荐，直接学习scrapy的Selector 就行，简单、直接、高效
+
+三、数据存储
+txt文本
+Python全栈之路：文件file常用操作
+csv文件
+python读取写入csv文件
+sqlite3 （python自带）
+Python编程：使用数据库sqlite3
+MySQL
+SQL：pymysql模块读写mysql数据
+MongoDB
+Python编程：mongodb的基本增删改查操作
+总结：
+数据存储没有什么可深究的，按照业务需求来就行，一般快速测试使用MongoDB，业务使用MySQL
+
+四、其他工具
+execjs ：执行js
+Python爬虫：execjs在python中运行javascript代码
+
+pyv8: 执行js
+mac安装pyv8模块-JavaScript翻译成python
+
+html5lib
+1. Python爬虫：scrapy利用html5lib解析不规范的html文本
+
+五、关于xpath练习
+本人的一个开源项目：PageParser
+https://github.com/mouday/PageParser
+用于解析网页，最终实现6行代码写爬虫，可以贡献代码，顺便练习网页解析的能力
+
+
+
+requests包：是一个实用的python的http客户端库，编写爬虫从web上爬取数据时经常用到 ，简单实用，接口简单 ，requests.get(URL)。
+
+lxml包：主要用来解析通过requests抓取的html内容，从中提取出我们需要的数据，在对html文本内容进行提取、筛选时用到的是xpath语法 ，lxml使用的是xpath语法对html内容进行的定位筛选提取。
+
+lxml包的使用： 
+通过lxml工具可以从html代码中提取我们需要的数据
+一个网页就是一个html的文件  
+需要通过lxml对一个html格式的文件内容进行组织（组织成一个树形结构） 
+html文件是一个树形结构 - 类型linux系统的目录结构  
+通过lxml组织成树形结构后，然后再使用xpath语法对内容进行定位、筛选、过滤
+
+
+xpath的语法使用： 
+路径表示（使用xpath语法来表示xml文本中标签的路径）
+//div  定位到根节点下的所有的div标签，并返回一个可迭代对象
+//div[class="j-r-list-c-desc"]/hl/text()   提取某个标签下的文本数据
+/@href   提取的是某个标签下的属性名称为href的属性值
+
+筛选条件 
+//div[@class="link"] 定位到根目录下的包含class属性并且属性值为link的div标签
+//div[li]  筛选出根目录下所有的包含li子标签的div标签
+//div[@class] 筛选出包含class属性的div标签
+```
+
+## 抓包工具charles神器
+
+```
+1.下载
+
+官方：https://www.charlesproxy.com
+
+其他网站：https://www.52pojie.cn/thread-619994-1-1.html
+
+需要破解，破解文件以及破解方法：Windows平台,将下载的charles.jar文件覆盖到安装目录下的lib文件夹下即可完成破解。Mac 平台,将下载的charles.jar文件右键 Charles.app 显示包内容,覆盖到Content->Java下即可完成破解。
+
+最新版v4.2.0破解文件下载:链接: https://pan.baidu.com/s/1sl4YMK1 密码: b8cy
+
+2.安装
+
+省略
+
+3.配置
+a、 启用proxy代理，proxy菜单下勾选启用proxy
+b、安装charles root 证书或模拟器证书。菜单help>SSL Proxying
+c、 设置http proxy代理
+f、本机为wifi热点，手机端设置代理，于模拟器方式设置代理相同。
+
+4.使用
+```
+
+## Android中APK安装流程解析
+
+```
+复制APK安装包到/data/app目录下，解压缩并扫描安装包，向资源管理器注入APK资源，解析AndroidManifest文件，并在/data/data目录下创建对应的应用数据目录，然后针对Dalvik/ART环境优化dex文件，保存到dalvik-cache目录，将AndroidManifest文件解析出的组件、权限注册到PackageManagerService并发送广播。
+```
+
+## Android开发丶基于mupdf在Android设备上横竖屏查阅pdf文件
+
+```
+https://blog.csdn.net/u014078990/article/details/83011534
+```
+
+## 串口通信
+
+```
+https://blog.csdn.net/gd6321374/article/details/74779770
+```
+
+## FDex2脱壳(腾讯乐固、360加固一键脱壳)
+
+```
+https://zhuanlan.zhihu.com/p/45591754
+```
+
+## 基于Airtest的微信朋友圈自动点赞脚本设计与实现 
+
+```
+Airtest
+Airtest官方文档
+
+本脚本可以通过AirtestIDE和python执行，推荐使用AirtestIDE的环境执行，更稳定一些
+AirtestIDE官方文档
+
+使用python执行该脚本
+安装库 airtest、pocoui
+pip install airtest
+pip install pocoui
+代码如下
+
+# -*- encoding=utf8 -*-
+__author__ = "admin"
+from airtest.core.api import *
+from poco.drivers.android.uiautomation import AndroidUiautomationPoco
+
+poco = AndroidUiautomationPoco(use_airtest_input=True, screenshot_each_action=False)
+connect_device("Android://127.0.0.1:5037/f350e2f7")
+print("start...")
+PKG = "com.tencent.mm"  # 微信包名
+stop_app(PKG)  # 关闭此app
+wake()  # 唤醒并解锁设备
+home()  # 返回HOME界面
+start_app(PKG)  # 启动此app
+
+poco(text='发现').wait(2).click()
+pyq = poco(text='朋友圈')
+pyq.click()
+
+while True:
+    try:
+        # 评论按钮
+        comments = poco("com.tencent.mm:id/eho")
+        for comment in comments:
+            childX, childY = comment.get_position()
+            print(childX)
+            print(childY)
+            if (childY >= 0.1 and childY < 1.0):
+                comment.click()
+                zan = poco(text='赞')
+                if zan.exists():
+                    zan.click()
+    except Exception as e:
+        print('error'+str(e))
+        keyevent("BACK")  # 有可能进入其它页面，调用系统级返回按钮
+        if pyq.exists(): # 如果返回到发现页，重新进入朋友圈
+            pyq.click()
+    swipe((500, 1700), (500, 900))  # 向上滑动
+```
+
+## 逆向实战(破解恶意勒索软件)
+
+```
+https://blog.csdn.net/ALDYS4/article/details/92376145
+```
+
+## MBR分区简介
+
+```
+主引导记录（MBR，Main Boot Record）是位于磁盘最前边的一段引导（Loader）代码。它负责磁盘操作系统(DOS)对磁盘进行读写时分区合法性的判别、分区引导信息的定位，它由磁盘操作系统(DOS)在对硬盘进行初始化时产生的。
+
+MBR 位于硬盘的 0 磁头、0 柱面、1 扇区，大小为 512 字节。它里面包含着操作系统里的分区信息。现在，我就简单介绍怎么从MBR作为入口点，获取系统的主分区、拓展分区以及逻辑分区。
+
+编程实现对MBR数据读写
+https://www.write-bug.com/article/1887.html
+```
+
+## 利用Accessibility分享朋友圈
+
+```
+public class AutoCopyService extends AccessibilityService {
+ 
+    private String TARGET_UI = "";
+    private String EDIT_TEXT_ID = "";
+ 
+ 
+    @Override
+    public void onAccessibilityEvent(final AccessibilityEvent event) {
+        int eventType = event.getEventType();
+        if (eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED || eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
+            //
+            getWeChatSupport();
+            if (TARGET_UI.equals(event.getClassName())) {
+                //如果当前页面是目标页面
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                    final AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
+                    if (nodeInfo == null) {
+                        System.out.println(" onAccessibilityEvent error  null");
+                        return;
+                    }
+                    if (TextUtils.isEmpty(EDIT_TEXT_ID)) {
+                        Toast.makeText(this, "自动复制失败，并重试！", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    List<AccessibilityNodeInfo> openId = nodeInfo.findAccessibilityNodeInfosByViewId(EDIT_TEXT_ID);
+                    if (openId != null && openId.size() > 0) {
+                        String timeLineContent = Preference.create(this).getPrefString("TIME_LINE_CONTENT", "");
+                        if (!TextUtils.isEmpty(timeLineContent)) {
+                            Bundle arguments = new Bundle();
+                            arguments.putCharSequence(AccessibilityNodeInfo
+                                    .ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, timeLineContent);
+                            openId.get(0).performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments);
+                        }
+                        Preference.create(this).setPrefString("TIME_LINE_CONTENT", "");
+                    }
+ 
+ 
+                    //-------------------------673版本處理方案----------------------------------------------
+                    /**
+                     * 添加按钮的GridView的Item的LinearLayout
+                     * 667 com.tencent.mm:id/jz
+                     * 673 com.tencent.mm:id/lr
+                     */
+                    int image_num = Preference.create(getApplicationContext()).getPrefInt("image_num", 0);
+                    if (image_num <= 0)
+                        return;
+                    List<AccessibilityNodeInfo> imageAdd = nodeInfo.findAccessibilityNodeInfosByText("添加照片按钮");
+                    if (null == imageAdd || imageAdd.isEmpty())
+                        return;
+ 
+                    List<AccessibilityNodeInfo> alreadyAdd = nodeInfo.findAccessibilityNodeInfosByText("图片");//已经添加的图片
+                    //如果已经添加的图片数量 等于  模板图片的数量，则不用点击
+                    if (null != alreadyAdd && alreadyAdd.size() == (image_num + 1)) {
+                        return;
+                    }
+                    AccessibilityNodeInfo lin_image_add = imageAdd.get(0).getParent();
+                    if (null == lin_image_add) {
+                        return;
+                    }
+                    //点击相机小图片
+                    lin_image_add.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+ 
+                    sleep(600);
+ 
+                    //点击从相册选择
+                    clickToChooseImage();
+ 
+                }
+            }
+            //自动选择图片
+            if ("com.tencent.mm.plugin.gallery.ui.AlbumPreviewUI".equals(event.getClassName())) {
+                int image_num = Preference.create(getApplicationContext()).getPrefInt("image_num", 0);
+                if (image_num <= 0) {
+                    return;
+                }
+                sleep(500);
+                AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
+ 
+                checkImage(nodeInfo);
+ 
+            }
+        }
+    }
+ 
+ 
+    //选择图片
+    private void checkImage(AccessibilityNodeInfo nodeInfo) {
+        //com.tencent.mm:id/bt3
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            /**
+             * 图片列表的CheckBoc上层的ImageVIew 代替点击的
+             * 667 com.tencent.mm:id/bt4
+             * 673 com.tencent.mm:id/bhl
+             */
+            int image_num = Preference.create(getApplicationContext()).getPrefInt("image_num", 0);
+            int compat_num = Preference.create(getApplicationContext()).getPrefInt("compat_num", 0);
+            if (null == nodeInfo) {
+                if (compat_num > 0) {
+                    sleep(1000);
+                    performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS);
+                    sleep(600);
+                    performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                    Preference.create(getApplicationContext()).setPrefInt("compat_num", 0);
+                } else {
+                    Preference.create(getApplicationContext()).setPrefInt("image_num", 0);
+                    Toast.makeText(this, "当前手机不支持自动选择，请从第" + image_num + "个倒序手动选择图片", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+ 
+            List<AccessibilityNodeInfo> checkList = nodeInfo.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/bhl");
+            if (null == checkList || checkList.isEmpty()) {
+                Preference.create(getApplicationContext()).setPrefInt("image_num", 0);
+                Toast.makeText(this, "本次操作不支持自动选择，请从第" + image_num + "个倒序手动选择图片", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (image_num < checkList.size()) {
+                for (int i = image_num - 1; i >= 0; i--) {
+                    logger("addimage_click", String.format("点击第%d张", i));
+                    checkList.get(i).performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                }
+ 
+                clickSubmitImage(nodeInfo);
+            }
+        }
+    }
+ 
+ 
+    private void clickSubmitImage(AccessibilityNodeInfo nodeInfo) {
+//        com.tencent.mm:id/hg
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            /**
+             * 完成 的 TextView
+             * 667 com.tencent.mm:id/hg
+             * 673 com.tencent.mm:id/j0
+             */
+            Preference.create(getApplicationContext()).setPrefInt("image_num", 0);
+            List<AccessibilityNodeInfo> submit = nodeInfo.findAccessibilityNodeInfosByText("完成");
+//            List<AccessibilityNodeInfo> submit = nodeInfo.findAccessibilityNodeInfosByViewId("com.tencent.mm:id/j0");
+            if (null == submit || submit.isEmpty()) return;
+            submit.get(0).performAction(AccessibilityNodeInfo.ACTION_CLICK);
+ 
+        }
+    }
+ 
+    private void clickToChooseImage() {
+        //
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            final AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
+            if (null != nodeInfo) {
+                /**
+                 * 点击添加图片的弹出框的ListView
+                 * 667 com.tencent.mm:id/i7
+                 * 673 com.tencent.mm:id/jq
+                 */
+                List<AccessibilityNodeInfo> textView = nodeInfo.findAccessibilityNodeInfosByText("从相册选择");
+                if (textView.isEmpty()) return;
+                try {
+                    AccessibilityNodeInfo lin_item = textView.get(0).getParent().getParent();
+                    if (TextUtils.equals(lin_item.getClassName(), "android.widget.LinearLayout"))
+                        lin_item.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                    logger("addimage_click", "跳转到选择图片列表");
+                } catch (Exception e) {
+                    logger("addimage_click", e.getMessage());
+                }
+ 
+ 
+            }
+        }
+    }
+ 
+    private void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+ 
+    @Override
+    public void onInterrupt() {
+        logger("addimage_click", "onInterrupt 服务中断了");
+ 
+    }
+ 
+    @Override
+    protected void onServiceConnected() {
+        logger("addimage_click", "onServiceConnected success");
+        getWeChatSupport();
+        super.onServiceConnected();
+    }
+ 
+ 
+    /**
+     * 加载微信的相关信息
+     */
+    private void getWeChatSupport() {
+        String install_wechat_version_name = Preference.create(this).getPrefString("install_wechat_version_name", "");
+        if (TextUtils.isEmpty(install_wechat_version_name))
+            return;
+        try {
+            WechatSuppertEntity support = App.getDB().findById(WechatSuppertEntity.class, install_wechat_version_name);
+            TARGET_UI = support.getTarget_ui();
+            EDIT_TEXT_ID = support.getWechat_weiget_id();
+        } catch (Exception e) {
+            e.printStackTrace();
+            TARGET_UI = "";
+            EDIT_TEXT_ID = "";
+        }
+    }
+ 
+    private void logger(String tag, String message) {
+        boolean isDebug = x.isDebug();
+        if (isDebug) {
+            LoggerPrinter.saveLogger("自动辅助服务：tag:" + tag + "--->message:" + message);
+        }
+    }
+}
+```
+
+## 棋牌搭建，APP新手搭建教程
+
+```
+https://blog.csdn.net/weixin_43813691/article/details/86525701
+```
+
+## Android recovery图片资源制作
+
+```
+o上已经没有源码了，需要从kk上移植过来
+
+一、文字图片转换
+png 图片生成源码：development/tools/recovery_l10n/
+原生的源代码有个bug，导致读取出来的Locale[]数组值全部为空，无法完成图片的制作。
+
+diff --git a/tools/recovery_l10n/src/com/android/recovery_l10n/Main.java b/tools/recovery_l10n/src/com/android/recovery_l10n/Main.java
+index 3f2bebe..5da5592 100755
+--- a/tools/recovery_l10n/src/com/android/recovery_l10n/Main.java
++++ b/tools/recovery_l10n/src/com/android/recovery_l10n/Main.java
+@@ -150,7 +150,7 @@ public class Main extends Activity {
+         Arrays.sort(localeNames);
+         ArrayList<Locale> locales = new ArrayList<Locale>();
+         for (String ln : localeNames) {
+-            int u = ln.indexOf('_');
++            int u = ln.indexOf('-');
+             if (u >= 0) {
+                 Log.i(TAG, "locale = " + ln);
+                 locales.add(new Locale(ln.substring(0, u), ln.substring(u+1)));
+1、res\values-zh-rCN\strings.xml用于显示中文文字，可以修改里面的中文文字为您所需要的。
+2、res\layout\main.xml用于改变文字格式，如大小、字体等。
+3、然后使用mm编译出out\target\product…\system\app\RecoveryLocalizer.apk。
+4、安装打开后选择需要的文字图片后点击go按钮。
+5、取出图片：adb pull data/data/com.android.recovery_l10n/files/text-out.png
+6、生成的图片还不能直接替换系统图片，需要在Ubuntu环境下作进一步处理
+（如未安装 pngcrush，请先安装 ：sudo apt-get install pngcrush）
+pngcrush -c 0 text-out.png output.png
+
+二、android5.1 logo动画
+android5.1的logo动画是单张多帧PNG图片
+1、安装python、pip、PIL 图形库
+2、python interlace-frames.py .\src1.png .\src2.png .\src3.png .\src4.png .\src5.png .\src6.png .\src7.png .\src8.png .\dst.png
+
+三、android8.1 logo动画
+android8.1的logo动画是多张8位深度png的图片
+用imagemaic 工具convert 转换
+convert src.png -colorspace gray dst.png
+
+bit_depth（8）channels（3）color_type（2）
+```
+
+## PNG图片文件的种类
+
+```
+https://blog.csdn.net/csdn66_2016/article/details/72303400
+
+6.2 PNG支持的种类
+
+    并非所有的PNG图片，在recovery下面都可以显示，这也是很多人会遇到的问题，明明是png图片，怎么还是不能显示呢，recovery原生对png图片的支持如下：
+
+      bit_depth         channels        color_type
+
+         8                 3                2
+
+        <=8                1                0
+
+        <=8                1                3
+
+    其中bit_depth是位深度, channels是指支持的颜色的种类，color_type是值颜色类型。我们需要记住的是：
+
+    bit_depth不能大于8。
+
+    color_type值有 PNG_COLOR_TYPE_GRAY（0）
+
+                   PNG_COLOR_TYPE_RGB（2）
+
+                   PNG_COLOR_TYPE_PALETTE（3）
+
+    channels值，与color_type有关，PNG_COLOR_TYPE_GRAY与PNG_COLOR_TYPE_PALETTE时，只有一种颜色，PNG_COLOR_TYPE_RGB时有三种颜色
+
+6.3 判断PNG属性方法
+
+    我们上节描述了，通过三个属性，来看一个png图片是否能在recovery中显示，当我们拿到一个png图片的时候，怎么分析呢，我们可以写个小的获取png info的程序。
+
+ 
+
+  第一步：编译libpng.a库文件
+
+    我们从官网下载png的源码，http://www.libpng.org/pub/png/libpng.html，然后在服务器解压，然后编译：./configure CC=gcc --prefix=$PWD/_install, make, make install; 然后就可以生成libpng.a以及png.h相关文件了。
+
+
+
+  第二步：写sample
+
+  pnginfo.c
+
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include "png.h"
+ 
+int main(int argc ,char **argv) {
+    unsigned char header[8];
+    size_t bytesRead;
+    int result = 0;
+    FILE* fp = NULL;
+    png_structp png_ptr = NULL;
+    png_infop info_ptr = NULL;
+    int color_type, bit_depth;
+    png_uint_32 width;
+    png_uint_32 height;
+    png_byte channels;
+ 
+    if (argc !=2 ) {
+        printf("eg:./pnginfo png_name\n");
+        return -1;
+    }
+ 
+    fp = fopen(argv[1], "rb");
+    if (fp == NULL) {
+        result = -1;
+        goto exit;
+    }
+ 
+    bytesRead = fread(header, 1, sizeof(header), fp);
+    if (bytesRead != sizeof(header)) {
+        result = -2;
+        goto exit;
+    }
+ 
+    if (png_sig_cmp(header, 0, sizeof(header))) {
+        result = -3;
+        goto exit;
+    }
+ 
+    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+    if (!png_ptr) {
+        result = -4;
+        goto exit;
+    }
+ 
+    info_ptr = png_create_info_struct(png_ptr);
+    if (!info_ptr) {
+        result = -5;
+        goto exit;
+    }
+ 
+    if (setjmp(png_jmpbuf(png_ptr))) {
+        result = -6;
+        goto exit;
+    }
+ 
+    png_init_io(png_ptr, fp);
+    png_set_sig_bytes(png_ptr, sizeof(header));
+    png_read_info(png_ptr, info_ptr);
+ 
+    png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth,
+            &color_type, NULL, NULL, NULL);
+ 
+    channels = png_get_channels(png_ptr, info_ptr);
+ 
+    printf("pnginfo bit_depth:%d, channels:%d, color_type:%d\n", bit_depth, channels, color_type);
+ 
+exit:
+    if (fp != NULL) {
+        fclose(fp);
+        fp = NULL;
+    }
+ 
+    printf("pnginfo result:%d\n", result);
+    return result;
+    
+}
+makefile:
+CC=gcc
+TARGET=pnginfo
+ 
+%.o:%.c
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
+ 
+all:pnginfo.o
+	$(CC) -o $(TARGET) $< -L. -lpng -lz -lm
+ 
+clean:
+	rm -rf *.o $(TARGET)
+
+  执行make即可生成pnginfo
+
+  第三步：获取png属性
+  ./pnginfo icon_error.png
+
+6.4 png转换
+    如果我拿到的png图片，不支持怎么办呢，我们可以使用PS工具，把png图片转换为recovery可支持的格式即可，如果又不太会使用PS工具呢，还有个更简单的方法，采用QQ的截图功能，然后另存为png图片即可，QQ截图保存的png是标准的RGB格式，即bit_depth（8）channels（3）color_type（2）
+
+6.5 总结
+    通过上述了解，现在知道了recovery的图片资源文件png的信息了，怎么去判断png是否能够在recovery中显示，以及如果制作recovery支持的png背景图片了。
+```
+
+## 代码反混淆simplify
+
+```
+https://github.com/CalebFenton/simplify
+```
+
+## 长连接抓包anyproxy
+
+## Android 系统签名实现的三种方式
+
+```
+在项目开发时，如果需要使应用具有系统权限，例如可以支持静默安装和卸载APK，此时就需要使用系统签名。
+常用的系统签名方式包括在ubuntu环境下、手动签名和在AndroidStudio环境配置，三种方式中，实现最简单的是通过AndroidStudo方式，该方式的签名实现与正常的APK签名相同，唯一不同的就是签名文件是通过系统生成的。
+注意，无论采用何种签名方式，如果想实现具有系统权限的应用，在APK生成时，都需要在AndroidManifest.xml中配置android:sharedUserId=“android.uid.system”，如下所示
+
+<manifest  xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.xxxx.xxxx"
+    android:sharedUserId="android.uid.system">
+</manifest>
+
+1. ubuntu环境编译
+该方式需要在安卓源码编译的环境下，在将APK打包至安卓系统升级包时，需要配置Android.mk文件，通过在配置LOCAL_CERTIFICATE 参数时，将其设置为PRESIGNED，如果需要改APK具有系统权限，使用系统签名，则需要设置为platform
+
+LOCAL_CERTIFICATE := platform 或 shared 或 media
+
+在设置好 Android.mk 文件后，在ubuntu环境下执行系统的编译流程。
+如果之前在ubuntu环境下已经执行好了系统的编译流程，则可以直接cd到系统的package/apps目录下，进入到需要编译的APK文件目录下执行mm指令，或在其他目录执行mmm /package/apps/APK所在的文件夹名称。
+
+2.手动签名
+手动系统签名与Android的APK重签名不同，重签名是之前APK已经签名完成，在实际使用时，需要更改签名文件，例如一些特殊的算法处理对于系统的包名和签名都有绑定操作，如更换则无法使用。
+手动系统签名是对于通过AndroidStudio的build生成的无签名的APK文件，进行手动系统签名操作。具体执行过程如下。
+
+2.1 下载SignApk.jar
+首先下载SignApk.jar包，如下图所示
+如果本地有安卓系统的源码，可以直接在本地的build\tools\signapk目录下查找到该jar包。
+
+2.2 查找security文件
+拿到系统定制厂商提供的security文件，不同编译下生成的security文件内容不同，需针对该安卓系统下的编译生成的security文件，因此这也限定了该系统签名后的应用只能在该系统下运行，在其他系统下运行就不具有系统权限。
+在security文件中找到media.pk8和platform.x509.pem两个文件。
+
+2.3 执行系统签名操作
+将2.1中的SignApk.jar和2.2中的media.pk8和platform.x509.pem文件一起复制到包含需要签名的APK文件夹中，然后执行如下语句
+
+java -jar signapk.jar  platform.x509.pem platform.pk8　old.apk new.apk
+
+生成的new.apk文件就是系统签名后APK文件。
+该方式的操作，可参考安卓签名工具SignApk.jar使用教程，其已将签名的流程制作成Window下的.exe工具，只需一次配置，每次点击更换需要签名的文件即可。
+
+3 AndroidStudio方式
+通常对于APK的签名文件是通过AndroidStudio的New Key Store方式自定义实现，但是如果需要使用系统签名文件需要结合security文件中的media.pk8和platform.x509.pem两个文件，通过keytool-importkeypair实现，下载成功后，将media.pk8和platform.x509.pem两个文件放置在包含 keytool-importkeypair目前下，执行以下语句。
+
+./keytool-importkeypair -k ./platform.keystore -p android -pk8 platform.pk8 -cert platform.x509.pem -alias platform
+
+需要注意的是：
+
+该语句的执行是在ubuntu环境下执行的
+platform.keystore为系统签名文件
+android为签名密码
+platform为签名的别名(alias)
+生成系统签名后，在AndroidStudio中配置Signing签名信息，配置成功后在modle的buid.gradle中可以查看如下配置信息。
+
+signingConfigs {
+    releaseConfig {
+        keyAlias 'platform'
+        keyPassword 'android'
+        storeFile file('.........platform.keystore')//签名文件路径
+        storePassword 'android'
+    }
+}
+4.总结
+从以上的分析中可以看出，无论三种那种方式的实现，都离不开系统源码中的security目录下的media.pk8和platform.x509.pem两个文件，该两个文件是保证应用具有系统签名的前提，如果使用其他系统的文件，则在该系统中，无法具有系统权限。
+对比以上方法，分为具有ubuntu和没有两种环境下。
+
+具有ubuntu的编译环境：则使用第一种比较简单，第三种生成的系统签名文件，可用于其他APK的签名使用，在AndroidStudio中配置后，方便调试使用，不必每次都执行命令行来生成签名后的APK文件。
+不具有ubuntu的编译环境：该方式只能通过第二种方式实现，且每次调试使用时都需要替换APK生成新的系统签名后的APK，操作比较繁琐。当然在2.3中也提到，可借助其他同学制作的小工具方便签名文件的使用。
+```
+
+## 设置网络代理
+
+```
+设置代理：
+adb shell settings put global http_proxy ip:port
+adb shell settings put global http_proxy 127.0.0.1:8888
+移除代理：
+adb shell settings delete global http_proxy
+adb shell settings delete global global_http_proxy_host
+adb shell settings delete global global_http_proxy_port
+
+其实还可以安装第三方应用实现代理功能，不过没什么意义，上述两种方法基本可以解决大部分场景
+```
+
+## 在 PhoneWindowManager 中用 WindowState 获取栈顶Activity
+
+```
+public boolean isTopActivityFactoryTool(WindowState win) {
+    if(win != null){
+        String topPackageName = win.getOwningPackage();
+        if (("com.cp.packagename1".equals(topPackageName) || "com.cp.packagename2".equals(topPackageName))) {
+            Log.d(TAG,"top activity is " + topPackageName);
+            return true;
+        }
+    }
+    return false;
+}
+```
+
+## Android 屏蔽Power键 Home键 在InputDispatcher.cpp中处理
+
+```
+frameworks/base/native/services/inputflinger/InputDispatcher.cpp
+
+void InputDispatcher::notifyKey(const NotifyKeyArgs* args) {
+#if DEBUG_INBOUND_EVENT_DETAILS
+    ALOGD("notifyKey - eventTime=%lld, deviceId=%d, source=0x%x, policyFlags=0x%x, 
+    action=0x%x, flags=0x%x, keyCode=0x%x, scanCode=0x%x,
+    metaState=0x%x, downTime=%lld",
+            args->eventTime, args->deviceId, args->source, args->policyFlags,
+            args->action, args->flags, args->keyCode, args->scanCode,
+            args->metaState, args->downTime);
+#endif
+    if (!validateKeyEvent(args->action)) {
+        return;
+    }
+
+    uint32_t policyFlags = args->policyFlags;
+    int32_t flags = args->flags;
+    int32_t metaState = args->metaState;
+    if ((policyFlags & POLICY_FLAG_VIRTUAL) || (flags &
+            AKEY_EVENT_FLAG_VIRTUAL_HARD_KEY)) {
+        policyFlags |= POLICY_FLAG_VIRTUAL;
+        flags |= AKEY_EVENT_FLAG_VIRTUAL_HARD_KEY;
+    }
+    if (policyFlags & POLICY_FLAG_FUNCTION) {
+        metaState |= AMETA_FUNCTION_ON;
+    }
+
+    policyFlags |= POLICY_FLAG_TRUSTED;
+
+    int32_t keyCode = args->keyCode;
+    if (metaState & AMETA_META_ON && args->action == AKEY_EVENT_ACTION_DOWN) {
+        int32_t newKeyCode = AKEYCODE_UNKNOWN;
+        if (keyCode == AKEYCODE_DEL) {
+            newKeyCode = AKEYCODE_BACK;
+        } else if (keyCode == AKEYCODE_ENTER) {
+            newKeyCode = AKEYCODE_HOME;
+        }
+        if (newKeyCode != AKEYCODE_UNKNOWN) {
+            AutoMutex _l(mLock);
+            struct KeyReplacement replacement = {keyCode, args->deviceId};
+            mReplacedKeys.add(replacement, newKeyCode);
+            keyCode = newKeyCode;
+            metaState &= ~AMETA_META_ON;
+        }
+    } else if (args->action == AKEY_EVENT_ACTION_UP) {
+        // In order to maintain a consistent stream of up and down events, check to see if the key
+        // going up is one we've replaced in a down event and haven't yet replaced in an up event,
+        // even if the modifier was released between the down and the up events.
+        AutoMutex _l(mLock);
+        struct KeyReplacement replacement = {keyCode, args->deviceId};
+        ssize_t index = mReplacedKeys.indexOfKey(replacement);
+        if (index >= 0) {
+            keyCode = mReplacedKeys.valueAt(index);
+            mReplacedKeys.removeItemsAt(index);
+            metaState &= ~AMETA_META_ON;
+        }
+    }
+
+    KeyEvent event;
+    event.initialize(args->deviceId, args->source, args->action,
+            flags, keyCode, args->scanCode, metaState, 0,
+            args->downTime, args->eventTime);
+
+    mPolicy->interceptKeyBeforeQueueing(&event, /*byref*/ policyFlags);
+
+    bool needWake;
+    { // acquire lock
+        mLock.lock();
+
+        if (shouldSendKeyToInputFilterLocked(args)) {
+            mLock.unlock();
+
+            policyFlags |= POLICY_FLAG_FILTERED;
+            if (!mPolicy->filterInputEvent(&event, policyFlags)) {
+                return; // event was consumed by the filter
+            }
+
+            mLock.lock();
+        }
+
+        int32_t repeatCount = 0;
+        //add your control code here
+        if(false){
+            //origin source code
+        }else{
+            //your self source code
+        }
+        #ifdef CONTROL_KEY_CODE
+            //your self source code
+        #else
+            //origin source doce
+        #endif
+        KeyEntry* newEntry = new KeyEntry(args->eventTime,
+                args->deviceId, args->source, policyFlags,
+                args->action, flags, keyCode, args->scanCode,
+                metaState, repeatCount, args->downTime);
+
+        needWake = enqueueInboundEventLocked(newEntry);
+        mLock.unlock();
+    } // release lock
+
+    if (needWake) {
+        mLooper->wake();
+    }
+}
+```
+
+## activity 标签中 android:logo和icon的区别
+
+```
+其中android:icon就是你的安卓应用图标，比如在桌面上显示的应用图标。
+而logo是什么时候被使用呢？ActionBar上有一个图标，那个图标就是使用的android:logo对应的那个资源，一般是一个drawble的资源。
+```
+
+## Android捕获监听Home键、最近任务列表键
+
+```
+package zhangphil.home;
+ 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+import android.widget.Toast;
+ 
+public class MainActivity extends Activity {
+ 
+	private MyReceiver receiver;
+ 
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		// setContentView(R.layout.activity_main);
+ 
+		receiver = new MyReceiver();
+		IntentFilter homeFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+ 
+		registerReceiver(receiver, homeFilter);
+	}
+ 
+	@Override
+	public void onDestroy() {
+		unregisterReceiver(receiver);
+		super.onDestroy();
+	}
+ 
+	private class MyReceiver extends BroadcastReceiver {
+ 
+		private final String SYSTEM_DIALOG_REASON_KEY = "reason";
+		private final String SYSTEM_DIALOG_REASON_HOME_KEY = "homekey";
+		private final String SYSTEM_DIALOG_REASON_RECENT_APPS = "recentapps";
+ 
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if (action.equals(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)) {
+				String reason = intent.getStringExtra(SYSTEM_DIALOG_REASON_KEY);
+ 
+				if (reason == null)
+					return;
+ 
+				// Home键
+				if (reason.equals(SYSTEM_DIALOG_REASON_HOME_KEY)) {
+					Toast.makeText(getApplicationContext(), "按了Home键", Toast.LENGTH_SHORT).show();
+				}
+ 
+				// 最近任务列表键
+				if (reason.equals(SYSTEM_DIALOG_REASON_RECENT_APPS)) {
+					Toast.makeText(getApplicationContext(), "按了最近任务列表", Toast.LENGTH_SHORT).show();
+				}
+			}
+		}
+	}
+}
+```
+
+## android 获取versionName和versionCode以及作用
+
+```
+android:versionCode: 
+主要是用于版本升级所用，是INT类型的，第一个版本定义为1，以后递增，这样只要判断该值就能确定是否需要升级，该值不显示给用户。 
+android:versionName: 
+这个是我们常说明的版本号，由三部分组成..,该值是个字符串，可以显示给用户。 
+关于版本号有两个值，如下面的例子
+
+android:versionCode=”2” 
+android:versionName=”1.1”
+
+versionCode是给设备程序识别版本(升级)用的，必须是一个interger值，整数，代表app更新过多少次
+
+versionName是给用户看的，可以写1.1.1 , 1.1.2的形式
+
+延伸出另外一个问题：当app需要校对版本的时候怎样读取这个值？
+
+//eclipse获取versionCode和versionName 这两个参数是写在manifest.xml文件中
+public void getEclipseVersionInfo(){
+    int versioncode;
+    String versionname;
+    PackageManager pm = getPackageManager();
+    try {
+        PackageInfo packageInfo = pm.getPackageInfo(getPackageName(), 0);
+        versioncode = packageInfo.versionCode;
+        versionname = packageInfo.versionName;
+    } catch (PackageManager.NameNotFoundException e) {
+        e.printStackTrace();
+    }
+}
+//在Android Studio中获取到versionname和versionCode 这两个参数是写在${modle_name}.gradle文件中
+
+public void getASVersionName(){
+    int versionCode = BuildConfig.VERSION_CODE;
+    String versionName = BuildConfig.VERSION_NAME;
+}
+这样我们就可以拿到versioncode和versionname了，这里我们看到使用到了BuildConfig类（是从项目包下的配置文件，即 我们的包名.BuildConfig;），可以导入这个类后Ctrl+单击查看这个类,里面还有其他的参数
+
+手机型号: android.os.Build.MODEL 
+SDK版本: android.os.Build.VERSION.SDK
+系统版本: android.os.Build.VERSION.RELEASE
 ```
 
 
