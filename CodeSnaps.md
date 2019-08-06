@@ -34,11 +34,7 @@ https://github.com/luxiaoming   代码GG的github地址
 
 https://github.com/yechaoa/Android-Rapid-Development
 https://github.com/yechaoa/Android-Develop-Tips
-```
-
-## 大神的blog
-
-```
+http://chendongmarch.github.io/
 https://blog.csdn.net/zhangbijun1230/article/details/79745654
 ```
 
@@ -49,13 +45,16 @@ https://blog.csdn.net/zhangbijun1230/article/details/79745654
 《App研发录》
 《HeadFirst设计模式》
 《重构：改善既有代码的设计》
+算法导论
 《Linux内核设计与实现》
 《深入理解Linux内核》
 《深入理解Android ***》系列书籍，邓凡平老师写的系列。
 深入理解Android内核设计思想
+Android系统源代码分析
 《Android源码设计模式》，结合设计模式分析源码
 《Android框架揭秘》，底层架构的一本好书
 《黑客与画家》
+
 Android应用安全防护和逆向分析
 增长黑客
 深入探索Android热修复技术原理7.3Q
@@ -5120,6 +5119,9 @@ AAPT会将xhdpi的资源打包。如果此时找不到xhdpi资源, AAPT会去找
 ``` bash
 $(warning Warning:xxxx)
 eg:$(warning Warning:BUILD_FINGERPRINT=$(BUILD_FINGERPRINT))
+
+1、输出打印信息的方法是：$(warning xxxxx)
+2、输出打印变量值的方法是：$(warning  $(XXX))
 ```
 
 ## 监测设备是否root
@@ -40809,6 +40811,8 @@ early-init -> init -> early-boot -> boot
 
 ```
 https://mp.weixin.qq.com/s/kT0hZaYRlW9X8fIVEQKJLQ
+
+https://blog.csdn.net/kongbaidepao/article/details/83088650
 ```
 
 ## Android系统增加字体库及修改系统默认字体
@@ -43935,13 +43939,398 @@ SDK版本: android.os.Build.VERSION.SDK
 系统版本: android.os.Build.VERSION.RELEASE
 ```
 
+## Android 实现连点两次返回后退出整个App
+
+```
+主要是监听onBackPressed来实现在两秒之内连点两次实现退出App，一般使用在首页。。
+以下是源代码和实现的效果：
+@Override
+public void onBackPressed() {
+    if (drawer.isDrawerOpen(GravityCompat.START)) {
+        drawer.closeDrawer(GravityCompat.START);
+    } else {
+        super.onBackPressed();
+    }
+}
+
+@Override
+public boolean onKeyDown(int keyCode, KeyEvent event) {
+    if (keyCode == KeyEvent.KEYCODE_BACK) {
+        if ((System.currentTimeMillis() - mExitTime) > 2000) {
+            Object mHelperUtils;
+            Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+            mExitTime = System.currentTimeMillis();
+
+        } else {
+            finish();
+        }
+        return true;
+    }
+    return super.onKeyDown(keyCode, event);
+}
+```
+
+## 反射调用 SystemProperties
+
+```
+public static public String getProperty(String key, String defaultValue) {
+    String value = defaultValue;
+    try {
+        Class<?> c = Class.forName("android.os.SystemProperties");
+        Method get = c.getMethod("get", String.class, String.class);
+        value = (String)(get.invoke(c, key, "unknown" ));
+    } catch (Exception e) {
+        e.printStackTrace();
+    }finally {
+        return value;
+    }
+}
+
+public static public String getProperty(String key, String defaultValue) {
+    String value = defaultValue;
+    try {
+        Class<?> c = Class.forName("android.os.SystemProperties");
+        Method get = c.getMethod("get", String.class, String.class);
+        value = (String)(get.invoke(c, key, "unknown" ));
+    } catch (Exception e) {
+        e.printStackTrace();
+    }finally {
+        return value;
+    }
+}
+```
+
+## 截屏的几种方法
+
+```
+// 第一种 ： 5.0 之后开放了截屏的方法
+if (Build.VERSION.SDK_INT >= 21) {
+    startActivityForResult(((MediaProjectionManager) getSystemService("media_projection")).createScreenCaptureIntent(),1);
+} else {
+    Log.e("TAG", "版本过低,无法截屏");
+}
+
+@Override
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    switch (requestCode) {
+        case REQUEST_MEDIA_PROJECTION: {
+            if (resultCode == -1 && data != null) {
+                parseData(data);
+            }
+        }
+    }
+}
+
+private void parseData(Intent data){
+	MediaProjection mMediaProjection = (MediaProjectionManager).getSystemService(
+            Context.MEDIA_PROJECTION_SERVICE).getMediaProjection(Activity.RESULT_OK,data);
+        ImageReader mImageReader = ImageReader.newInstance(
+                getScreenWidth(),
+                getScreenHeight(),
+                PixelFormat.RGBA_8888,1);
+
+	VirtualDisplay mVirtualDisplay = mMediaProjection.createVirtualDisplay("screen-mirror",
+            getScreenWidth(),
+            getScreenHeight(),
+            Resources.getSystem().getDisplayMetrics().densityDpi,
+            DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
+            mImageReader.getSurface(), null, null);
+
+	Handler handler = new Handler();
+    handler.postDelayed(new Runnable() {
+       @Override
+       public void run() {
+           Image image = mImageReader.acquireLatestImage();
+           // TODO 将image保存到本地即可
+       }
+    }, 300);
+
+	mVirtualDisplay.release();
+	mVirtualDisplay = null;
+}
+
+// 第二种 ： 使用 decorView
+public static Bitmap capture(Activity activity) {
+    activity.getWindow().getDecorView().setDrawingCacheEnabled(true);
+    Bitmap bmp = activity.getWindow().getDecorView().getDrawingCache();
+    return bmp;
+}
+
+// 第三种 ： 使用 screencap 命令
+adb shell screencap -p /sdcard/sreenshot1.png
+```
+
+## Android性能指标
+
+```
+https://blog.csdn.net/xiaoru5127/article/details/84862668
+```
+
+## system.transfer.list深度解析
+
+```
+system.transfer.list  system.new.dat
+很明显，通过名字我们就知道这两个文件的作用，system.new.dat为数据部分，system.transfer.list为转换的描述列表，我们可以通过这两个文件完成升级。
+
+我们打开一个升级包的升级脚本META-INF\com\google\android\updater-script
+block_image_update("/dev/block/system", package_extract_file("system.transfer.list"), "system.new.dat", "system.patch.dat");
+调用的是block_image_updater接口，传入system.transfer.list及system.new.dat文件来实现升级。
+
+block_image_updater的代码实现在
+bootable/recovery/updater/blockimg.cpp中：
+void RegisterBlockImageFunctions() {
+  RegisterFunction("block_image_verify", BlockImageVerifyFn);
+  RegisterFunction("block_image_update", BlockImageUpdateFn);
+  RegisterFunction("block_image_recover", BlockImageRecoverFn);
+  RegisterFunction("check_first_block", CheckFirstBlockFn);
+  RegisterFunction("range_sha1", RangeSha1Fn);
+}
+想了解具体实现的过程，可以另行深入研究，本文不再探讨。
+
+我们来看看system.transfer.list：
+3
+133943
+0
+0
+new 48,0,32770,32897,32899,33411,65535,65536,65538,98304,98306,98433,98435,98947,131071,131072,131074,163840,163842,163969,163971,164483,195737,196608,196610,229376,229378,229505,229507,230019,235652,262144,262146,294912,294914,295041,295043,327680,327682,360448,360450,393216,393218,425984,425986,458752,458754,491520,491522
+zero 70,32770,32897,32899,33411,65535,65536,65538,66050,97792,98304,98306,98433,98435,98947,131071,131072,131074,131586,163328,163840,163842,163969,163971,164483,195737,196608,196610,197122,228864,229376,229378,229505,229507,230019,235652,236164,261632,262144,262146,262658,294400,294912,294914,295041,295043,295555,327168,327680,327682,328194,359936,360448,360450,360962,392704,393216,393218,393730,425472,425984,425986,426498,458240,458752,458754,459266,491008,491520,491522,492034
+erase 24,66050,97792,131586,163328,197122,228864,236164,261632,262658,294400,295555,327168,328194,359936,360962,392704,393730,425472,426498,458240,459266,491008,492034,524288
 
 
+其中：
+3 ： 为transfer的版本，目前已经支持从1-4版本
+133943：为总共new的block数量。
+0： stash slots没有使用，所以这里两个都是0
+0：
+new：需要写入的block块范围总数：总共48个范围，【0-32770】 【32897-32899】【33411-65535】......
+zero：需要填充0的block块范围总数：总共70个范围，【32770-32897】 【32899-33411】.......
+erase：需要擦除的block块范围总数：总共24个范围，【66050-97792】 【131586-163328】.......
 
 
+system.transfer.list是由build/tools/releasetools/blockimgdiff.py生成的，我们来验证下前面几个参数：
+    out.insert(0, "%d\n" % (self.version,))   # format version number
+    out.insert(1, "%d\n" % (total,))
+    # v3+: the number of stash slots is unused.
+    out.insert(2, "0\n")
+    out.insert(3, str(max_stashed_blocks) + "\n")
+
+    with open(prefix + ".transfer.list", "wb") as f:
+      for i in out:
+        f.write(i)
+第一行是版本，第二行是total的block数量，由于没有使用stash，第三行四行为0。
 
 
+我们再次验证下总共写入的total是否正确。
+1.我们先确认block的大小，blockimg.cpp中定义为4K
+static constexpr size_t BLOCKSIZE = 4096;
 
+2.确认升级包中system.new.dat的大小，其值为548630528
+$ ls -l system.new.dat
+-rwxr--r-- 1 xxxxxx.xx szsoftware 548630528 Mar 19 16:37 system.new.dat
+
+3.我们再来计算下总共需要写入的total
+total=system.new.dat/block=548630528/4096=133943，刚好即为写入的总的total。
+
+
+我们再来看看这些所有的new zero erase的描述区间
+【0-32770】【32770-32897】【32897-32899】...【66050-97792】...【492034-524288】
+   new                      zero                     new                      erase                      erase
+
+总共524288个block需要处理
+524288*4096=2147483648byte=2048Mb=2G
+正好为我们ext4 system 分区的大小，也就是我们把整个2G的system分区按照4096的大小分割，然后给每个block赋予了new/zero/erase的属性，然后保存到transfer.list文件，把所有需要new的数据，生成了new.dat文件。
+
+在最新的version=4的版本中，我们发现system.new.dat文件不见了，增加了vendor.new.dat.br文件，并且计算的时候，发现了vendor.new.dat.br文件打大小变小了，原来是最新的版本，加入了压缩功能，vendor.new.dat.br为采用压缩后的block数据部分。
+```
+
+## 恢复出厂设置的脚本
+
+```
+#/bin/sh
+
+rm -rf /cache/recovery/command
+echo "--wipe_data" > /cache/recovery/command
+echo "--wipe_cache" >> /cache/recovery/command
+sync
+sync
+sleep 1
+sync
+sync
+reboot recovery
+
+把以上脚本写到一个 reset.sh 文件中
+push reset.sh 到 /data/local/tmp/
+adb shell sh /data/local/tmp/reset.sh
+
+
+恢复出厂设置的流程
+(1)用户在系统设置中选择了“恢复出厂设置”。
+(2)Android 系统在/cache/recovery/command 中写入“--wipe_data”。
+(3)设备重启后发现了 command 命令,于是进入 recovery。
+(4)recovery 将在 BCB(bootloader control block)中写入“boot-recovery”和“--wipe_data”具体是在 get_args()函数中——这样即便设备此时重启,也会再进入 erase 流程。
+(5)通过 erase_volume 来重新格式化/data。
+(6)通过 erase_volume 来重新格式化/cache。
+(7)finish_recovery 将擦除 BCB,这样设备重启后就能进入正常的开机流程了。
+(8)main 函数调用 reboot 来
+
+
+OTA升级的流程
+(1)OTA 包的下载过程参见前一小节的介绍。假设包名是 update.zip,存储在 SDCard 中。
+(2)系统在/cache/recovery/command 中写入"--update_package=[路径名]"。
+(3)系统重启后检测到 command 命令,因而进入 recovery。
+(4)get_args 将在 BCB 中写入"boot-recovery" 和 "--update_package=..." —— 这样即便此时设备重启,也会尝试重新安装 OTA 升级包。
+(5)install_package 开始安装 OTA 升级包。
+(6)finish_recovery 擦除 BCB,这样设备重启后就可以进入正常的开机流程了。
+(7)如果 install 失败的话:prompt_and_wait 显示错误,并等待用户响应;用户重启(比如拔掉电池等方式)。
+(8)main 调用 maybe_install_firmware_update,OTA 包中还可能包含 radio/hboot firmware 的更新,具体过程略。
+(9)main 调用 reboot 重启系统。
+
+
+ps:
+command 支持的几个命令
+--send_intent=anystring             将 text 输出到 recovery.intent 中
+--update_package=path               安装 OTA 包
+--wipe_data                         擦除 user data,然后重启
+--wipe_cache                        擦除 cache(不包括 user data),然后重启
+--set_encrypted_filesystem=on|off   enable/disable 加密文件系统
+--just_exit                         直接退出,然后重启
+```
+
+## android build 编译打印详细过程
+
+```
+我们在make otapackage编译android代码的时候，有时候需要跟踪详细的过程，包括所有的过程，可以修改build/core/Makefile，赋值hide ：= 为空即可
+
+# Put some miscellaneous rules here
+
+# HACK: clear LOCAL_PATH from including last build target before calling
+# intermedites-dir-for
+LOCAL_PATH := $(BUILD_SYSTEM)
+
+# Pick a reasonable string to use to identify files.
+ifneq (,$(filter eng.%,$(BUILD_NUMBER)))
+  # BUILD_NUMBER has a timestamp in it, which means that
+  # it will change every time.  Pick a stable value.
+  FILE_NAME_TAG := eng.$(USER)
+else
+  FILE_NAME_TAG := $(BUILD_NUMBER)
+endif
+
+# modified begin
+hide :=
+# modified end
+```
+
+## Android 恢复出厂设置流程分析
+
+```
+https://blog.csdn.net/kehyuanyu/article/details/47054325
+```
+
+## Fuzz 是什么玩意 ？？？
+
+```
+模糊测试定义为“通过向应用提供非预期的输入并监控输出中的异常来发现软件中的故障(faults)的方法”。典型而言,模糊测试利用自动化或是半自动化的方法重复地向应用提供输入。显然,上述定义相当宽泛,但这个定义阐明了模糊测试的基本概念。 
+用于模糊测试的模糊测试器(fuzzer)分为两类:一类是基于变异(mutation-based)的模糊测试器,这一类测试器通过对已有的数据样本进行变异来创建测试用例;而另一类是基于生成(generation-based)的模糊测试器,该类测试器为被测系统使用的协议或是文件格式建模,基于模型生成输入并据此创建测试用例。这两种模糊测试器各有其优缺点
+```
+
+## Android 关机实现
+
+```
+private void shutDown(){
+    Intent intent = new Intent("android.intent.action.ACTION_REQUEST_SHUTDOWN");
+    intent.putExtra("android.intent.extra.KEY_CONFIRM", false);
+    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    startActivity(intent);
+}
+
+需要在AndroidManifest.xml里添加 
+Android:sharedUserId=”android.uid.system”和”权限。 
+android:sharedUserId=”android.uid.system”是将自己的程序加入到了系统的进程中，同时也将获得系统的权限。需要添加系统签名。 
+
+当然，这些代码在eclipse里会报错（我当时用的是eclipse），把这些错误报告删掉，强行编译就可以了。具体做法是把problems里的把与它相关的错误报告删除掉。Windows-show view-other-搜索problems可以找到错误报告。上机用时需要添加系统签名，不然安装不上。
+
+签名用目标系统的platform密钥来重新给apk文件签名。在我的Android源码目录中的位置是”build\target\product\security”，下面的platform.pk8和platform.x509.pem两个文件。然后用Android提供的Signapk工具来签名，signapk的源代码是在”build\tools\signapk”下，用法为”signapk 
+platform.x509.pem platform.pk8 input.apk 
+output.apk”，文件名最好使用绝对路径防止找不到，也可以修改源代码直接使用。
+
+root过的手机也可以用 Runtime 执行 su reboot -p 命令来关机
+```
+
+## 学习使用 Jekins？？？？
+
+## misc分区即“miscellaneous”
+
+## 解析 ramdisk.img
+
+```
+首先对 ramdisk.img 执行 file 命令,得到如下结果:
+$file ramdisk.img
+ramdisk.img: gzip compressed data, from Unix
+$gzip –d ramdisk.img.gz
+这说明它是一个 gZip 的压缩文件。我们将其改名为 ramdisk.img.gz,再进行解压。具体命令
+如下:
+这时会得到另一个名为 ramdisk.img 的文件,不过文件类型变了:
+$file ramdisk.img
+ramdisk.img: ASCII cpio archive (SVR4 with no CRC)
+由此可知,这时的 ramdisk.img 是 CPIO 文件了。
+再来执行以下操作:
+$cpio -i -F ramdisk.img
+3544 blocks
+```
+
+## dm-verity
+
+```
+从 4.4 版本开始,Android 结合 Kernel 的 dm-verity 驱动能力实现了一个名为“Verified Boot”的
+安全特性,以期更好地保护系统本身免受恶意程序的侵害。我们在本小节将向大家讲解这一特性的基
+本原理,以便读者们在无法成功利用 fastboot 写入 image 时可以清楚地知道隐藏在背后的真正原因。
+dm-verity           Linux kernel 的一个驱动,用于在运行时态验证文件系统分区的完整性(判断依据是Hash Tree 和Signed metadata)
+Boot State          保护等级,分为 GREEN、YELLOW、ORANGE 和 RED 四种
+Device State        表明设备接受软件刷写的程度,通常有 LOCKED 和 UNLOCKED 两种状态
+Keystore            公钥合集
+OEM key Bootloader  用于验证 boot image 的 key
+```
+
+## odex文件
+
+```
+ODEX 是 Optimized Dalvik Executable 的缩写,从字面意思上理解,就是经过优化的 Dalvik可执行文件。
+```
+
+## ABI (Application Binary Interface)
+
+## CM
+
+```
+CyanogenMod
+http://www.cyanogenmod.org/
+```
+
+## jack编译方式和传统编译方式的区别
+
+```
+当然,如果开启了 Jack 编译,那么依赖关系会有所不同。Jack 与传统编译方式一个重要的区别就是,它会直接生成最终的 dex 文件—不过在 Static Java Library 的情况下它还需要生成.jack 文件。
+
+Jack 并不输出中间状态的 jar 文件,而是直接得到最终的 dex 产物—这也是它会导致一些分析工具失效的原因,例如著名的 Jacoco 代码覆盖率工具。
+
+```
+
+## envsetup.sh 相关
+
+```
+envsetup.sh 除了提供很多实用的函数外, envsetup.sh 在文件的最后还会扫描和加载 device 和 vendor 目录下的 vendorsetup.sh 文件
+vendorsetup.sh 会通过 add_lunch_combo 命令来为 lunch 添加一条加载项
+```
+
+## 快速定位android的启动耗时
+
+```
+cat /proc/bootprof
+
+https://mp.weixin.qq.com/s?__biz=MzI1MjMyOTU2Ng==&mid=2247485130&idx=1&sn=8fa8b69d5257f65692b60cbdfbddfbb8&chksm=e9e42dfbde93a4ed1f3d9ed4229893f9ab563035c3a49f690be1c35389d94e3e23c392d046b8#rd
+```
 
 
 
