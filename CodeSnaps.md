@@ -50,6 +50,7 @@ https://blog.csdn.net/zhangbijun1230/article/details/79745654
 《深入理解Linux内核》
 《深入理解Android ***》系列书籍，邓凡平老师写的系列。
 深入理解Android内核设计思想
+Android移动性能实战
 Android系统源代码分析
 《Android源码设计模式》，结合设计模式分析源码
 《Android框架揭秘》，底层架构的一本好书
@@ -6327,7 +6328,7 @@ for (String fileName : file.list()) {
 }
 ```
 
-## 解析 apk 包中的文件列表
+## 解析apk包中的文件列表
 
 ``` Java
 public static void readZipFile2(File file) { 
@@ -6348,6 +6349,83 @@ public static void readZipFile2(File file) {
         System.out.println(file.getName() + "读取文件时出错"); 
     } 
 }
+```
+
+## 解析apk包中的lib库，并打印到终端
+
+```
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
+
+public class ParseApk {
+	public static void main(String[] args) {
+		//System.out.println("args0:"+args[0]);
+		if (args == null || args.length == 0 || args[0] == null || !args[0].endsWith(".apk")) {
+			System.out.println("Please input right apk path!");
+			return;
+		}
+		
+		ArrayList<String> libNames = parseLibFiles(new File(args[0]));
+		System.out.println("# add to Android.mk");
+		for (String libName : libNames) {
+			System.out.println("#################### " + libName + " begin ####################");
+			System.out.println("include $(CLEAR_VARS)");
+			System.out.println("LOCAL_MODULE := " + libName);
+			System.out.println("LOCAL_SRC_FILES := lib/" + libName + ".so");
+			System.out.println("LOCAL_MODULE_CLASS := SHARED_LIBRARIES");
+			System.out.println("LOCAL_MODULE_TAGS := optional");
+			System.out.println("LOCAL_MODULE_SUFFIX := .so");
+			System.out.println("LOCAL_MODULE_PATH := $(PRODUCT_OUT)/system/lib");
+			System.out.println("include $(BUILD_PREBUILT)");
+			System.out.println("#################### " + libName + " end   ####################");
+			System.out.println();
+		}
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println("# add to common.mk");
+		for(String libName:libNames){
+			System.out.println("PRODUCT_PACKAGES += " + libName);
+		}
+	}
+
+	public static ArrayList<String> parseLibFiles(File file) {
+		ArrayList<String> libNames = new ArrayList<String>();
+		try {
+			ZipFile zipfile = new ZipFile(file); // 创建ZipFile对象
+			// System.out.println(zipfile.getName()); // 打印Zip文件路径
+			// System.out.println("ZIP条目数：" + zipfile.size()); // 打印Zip文件条目数
+			Enumeration<? extends ZipEntry> en = zipfile.entries();
+			ZipEntry entry;
+			while (en.hasMoreElements()) {
+				entry = (ZipEntry) en.nextElement();
+				String entryName = entry.getName();
+				if (entryName.contains("lib") && entryName.endsWith(".so")) {
+					String libName = entryName.substring(entryName.lastIndexOf("/") + 1).replaceAll(".so", "");
+					libNames.add(libName);
+				}
+			}
+			zipfile.close();
+		} catch (ZipException e) {
+			System.out.println(file.getName() + "压缩文件错误");
+		} catch (IOException e) {
+			System.out.println(file.getName() + "读取文件时出错");
+		}
+		return libNames;
+	}
+}
+
+已经编译打包成 jar 包 parselib.jar
+使用方法 java -jar parlib.jar xxx.apk
 ```
 
 ## 修改recovery后怎么快速编译
@@ -15424,8 +15502,8 @@ LOCAL_MULTILIB :=32
 
 [FAQ13573]L版本首次开机慢
 [FAQ14102]L版本开机提示“Android正在升级或启动”
-[FAQ13232]L 预置apk
-[FAQ13697]L 版本如何将第三方so库打包到apk
+[FAQ13232]L预置apk
+[FAQ13697]L版本如何将第三方so库打包到apk
 ```
 
 ## [FAQ18076] android 6.0 M userdebug版本执行adb remount失败
@@ -15437,6 +15515,7 @@ adb disable-verity
 adb reboot
 
 重新启动后再执行:
+adb root
 adb remount即可把system分区remount成rw。
 
 贵司向system分区push文件后，请不要再adb enable-verity，否则就会无法开机，因此push文件后，system分区数据就发生了变化。
@@ -20394,6 +20473,242 @@ setTorchOnOff(MINT32 i4SensorOpenIndex, MBOOL en) {
 5、请测试CPU performance mode（全核全频率）下跑分，分别在冰箱、常温下进行测试，统计并对比相关测试数据。方法可以咨询贵司Power同仁。 
 6、请使用Driver Only版本测试，统计并对比相关测试数据。
 7、如果1~6排查下来仍有疑问，请提eservice处理，同时提供下面数据（统计到Excel表格中），格式如下：
+```
+
+## 安兔兔跑分中断[FAQ21495]
+
+```
+是因为 antutu 的应用占用内存太大被lmkd杀死了
+
+/system/core/lmkd/lmkd.c
+(1)
+/* Kill one process specified by procp.  Returns the size of the process killed */
+static int kill_one_process(struct proc* procp, int min_score_adj, bool is_critical) {
+    int pid = procp->pid;
+    uid_t uid = procp->uid;
+    char *taskname;
+    int tasksize;
+    int r;
+
+    taskname = proc_get_name(pid);
+
+    // add 
+    char packageName[30] = {""};
+    strncpy(packageName, taskname, sizeof("com.antutu.ABenchMark:push"));
+    
+    if(!strcmp(packageName,"com.antutu.ABenchMark:push")){
+    return -1000;
+    }
+    strncpy(packageName, taskname, sizeof("com.antutu.ABenchMark"));
+    
+    if(!strcmp(packageName,"com.antutu.ABenchMark")){
+    return -1000;
+    }
+    strncpy(packageName, taskname, sizeof("com.antutu.ABenchMark:refinery"));
+    
+    if(!strcmp(packageName,"com.antutu.ABenchMark:refinery")){
+    return -1000;
+    }
+    
+    // add end
+
+
+(2)
+retry:
+        procp = proc_adj_lru(i);
+
+        if (procp) {
+            killed_size = kill_one_process(procp, min_score_adj, is_critical);
+       /* MTK add */
+       if(killed_size == -1000){
+                ALOGE("MTK_killed_size == -1000 and jump kill_one_process");
+            }
+       /* mtk add end 
+
+
+3.18/drivers/staging/android/lowmemorykiller.c
+(3)
+
+rcu_read_lock();
+for_each_process(tsk) {
+    struct task_struct *p;
+    /* mtk begin */
+    if(tsk->comm){
+    if((strstr(tsk->comm,"tutu.ABenchMark")!=NULL)
+        ||(strstr(tsk->comm,"ABenc  hMark:push")!=NULL)
+        ||(strstr(tsk->comm,"benchmark:full")!=NULL))
+        ||(strstr(tsk->comm,"chMark:refinery")!=NULL)){
+            lowmem_print(1,"mtk_lowmemorykiller_2\ jump kill 'tutu.ABenchMark' 'ABenchMark:push' 'benchmark:full' 'myapplication'\n");
+            continue;
+        }
+    }
+    /* mtk end */
+
+Thanks
+```
+
+## [FAQ21508] framework 内存管理优化
+
+## [FAQ21495] lmk (lowmemorykiller) and lmkd 白名单
+
+```
+lowmemorykiller 可能误杀一些进程，比如 测试测序，特别重要但占用内存比较大的程序等
+ 
+可能使用到添加白名单的方法，避免被误杀
+ 
+[SOLUTION]
+ 
+ 
+（一）首先看是lowmemroy 还是  lmkd
+
+查看方法看: 两种
+
+（1）
+
+▪/sys/module/lowmemorykiller/parameters/adj  里面的值
+
+0,0,0,0,0,0 → lmkd  //o版本是没有这个值的
+
+0,100,200,300,900,906  → lowmemorykiller 
+
+ 
+
+（2）看“lowmemroykiller” 出现的位置
+
+kernel log→ lowmemorykill
+
+main log → lmkd 
+
+ 
+
+(二)
+
+判断好了后根据两种方式加入白名单，也可以都加入：
+
+注意更改方法是 o 版本的更改方法，其他版本稍有变化
+
+LMKD
+
+1.
+
+\system\core\lmkd\lmkd.c
+
+/* Kill one process specified by procp.  Returns the size of the process killed */
+static int kill_one_process(struct proc* procp, int min_score_adj, bool is_critical) {
+    int pid = procp->pid;
+    uid_t uid = procp->uid;
+    char *taskname;
+    int tasksize;
+    int r;
+
+    taskname = proc_get_name(pid);
+    /* MTK begin */
+
+    char packageName[20] = {""};
+    strncpy(packageName, taskname, sizeof("com.antutu"));
+    ALOGE("MTK_packageName=%s,taskname=%s,strcmp=%d",packageName,taskname,strcmp(packageName,"com.antutu"));
+    if(!strcmp(packageName,"com.antutu")){
+        return -1000;
+    }
+    /* MTK end */
+
+2.
+
+o版本
+\system\core\lmkd\lmkd.c
+
+static int find_and_kill_process(bool is_critical) {
+    int i;
+    int killed_size = 0;
+    int min_score_adj = is_critical ? critical_oomadj : medium_oomadj;
+
+    for (i = OOM_SCORE_ADJ_MAX; i >= min_score_adj; i--) {
+        struct proc *procp;
+
+retry:
+        procp = proc_adj_lru(i);
+
+        if (procp) {
+            killed_size = kill_one_process(procp, min_score_adj, is_critical);
+
+            /* MTK begin*/
+    if(killed_size == -1000){
+                ALOGE("MTK_killed_size == -1000 and jump kill_one_process");
+            }else if (killed_size < 0) {
+    /* MTK end */
+                goto retry;
+            } else {
+                return killed_size;
+            }
+        }
+    }
+
+ 
+
+p版本
+
+由于p版本这个地方google进行了更新，可能部分版本可以参照上面的的方法，如果发现有更改则使用下面的更改方法
+
+\system\core\lmkd\lmkd.c
+
+static int find_and_kill_process(bool is_critical) {
+
+..
+
+break;
+
+killed_size = kill_one_process(procp, min_score_adj, level);
+/* MTK begin*/
+if(killed_size == -1000){
+ALOGE("MTK_killed_size == -1000 and jump kill_one_process");
+continue;
+}
+/* MTK end*/
+if (killed_size >= 0) {
+#ifdef LMKD_LOG_STATS
+if (enable_stats_log && !lmk_state_change_start) {
+lmk_state_change_start = true;
+stats_write_lmk_state_changed(log_ctx, LMK_STATE_CHANGED,
+LMK_STATE_CHANGE_START);
+}
+
+ 
+lowmemroykiller
+
+3.18/drivers/staging/android/lowmemorykiller.c
+(3)
+
+rcu_read_lock();
+for_each_process(tsk) {
+struct task_struct *p;
+short oom_score_adj; 
+
+    //lowmem_print(1,"mtk jump lowmemorykiller_1 tsk->comm=%s",tsk->comm);
+/* mtk begin */
+    if(tsk->comm){
+    if((strstr(tsk->comm,"tutu.ABenchMark")!=NULL)
+        ||(strstr(tsk->comm,"ABenchMark:push")!=NULL)
+        ||(strstr(tsk->comm,"benchmark:full")!=NULL))
+        ||(strstr(tsk->comm,"chMark:refinery")!=NULL)){
+         lowmem_print(1,"mtk_lowmemorykiller jump kill 'tutu.ABenchMark' 'ABenchMark:push' 'benchmark:full' \n");
+         continue;
+         }
+    }
+      /* mtk end */
+
+添加白名单的名字是如何确定的？
+
+搜索关键字lowmemorykiller ，  killing 的 apk  name 就添加到上面的代码中就可以了
+
+11-30 11:08:03.668 <6>[10425.252789] (3)[92:kswapd0]lowmemorykiller: Killing 'android.vending' (23456) (tgid 23456), adj 100,
+11-30 11:08:03.839 <6>[10425.423820] (2)[92:kswapd0]lowmemorykiller: Killing 'magazineservice' (9338) (tgid 9338), adj 100,
+11-30 11:08:03.868 <6>[10425.452692] (1)[92:kswapd0]lowmemorykiller: Killing 'dboxed_process0' (16792) (tgid 16792), adj 100,
+11-30 11:08:03.904 <6>[10425.488277] (1)[92:kswapd0]lowmemorykiller: Killing 'hbox:interactor' (9455) (tgid 9455), adj 100,
+11-30 11:08:04.112 <6>[10425.696791] (3)[92:kswapd0]lowmemorykiller: Killing 'ssion.appupdate' (9323) (tgid 9323), adj 100,
+11-30 11:08:04.222 <6>[10425.807027] (3)[92:kswapd0]lowmemorykiller: Killing 'android.smspush' (9561) (tgid 9561), adj 100,
+11-30 11:08:04.370 <6>[10425.955053] (1)[92:kswapd0]lowmemorykiller: Killing 'MainThread-UE4' (18741) (tgid 18741), adj 0,
+
+LMKD 不是这样添加的
 ```
 
 ## [FAQ12284] Benchmark Tool 跑分测试注意事项
@@ -44332,22 +44647,65 @@ cat /proc/bootprof
 https://mp.weixin.qq.com/s?__biz=MzI1MjMyOTU2Ng==&mid=2247485130&idx=1&sn=8fa8b69d5257f65692b60cbdfbddfbb8&chksm=e9e42dfbde93a4ed1f3d9ed4229893f9ab563035c3a49f690be1c35389d94e3e23c392d046b8#rd
 ```
 
+## 一次性关闭所有的Activity
 
+```
+ActivityManager am = (ActivityManager)getSystemService (Context.ACTIVITY_SERVICE);   
+am.restartPackage(getPackageName()); 
+系统会将，该包下的 ，所有进程，服务，全部杀掉，就可以杀干净了，要注意加上
+<uses-permission android:name=\"android.permission.RESTART_PACKAGES\"></uses-permission>
+```
 
+## 自动滚动ListView
 
+```
+<ListView android:id="@android:id/list" 
+    android:layout_width="fill_parent" 
+    android:layout_height="fill_parent" 
+    android:stackFromBottom="true" 
+    android:transcriptMode="alwaysScroll" />
+```
 
+## TODO : Android 上如何使用 FTP ？？？
 
+## 获得手机UA
 
+```
+public String getUserAgent(){
+    String user_agent = ProductProperties.get(ProductProperties.USER_AGENT_KEY, null);
+    return user_agent;
+}
+```
 
+## javac 编译带中文的java文件报错unmappable character for encoding GBK。
 
+```
+问题：进行以上Java编译的时候，出现unmappable character for encoding GBK。
 
+我的解决方法：当我将编译改写为javac -encoding UTF-8 Exerc02.java就可以正常输出。
+我的分析：我的电脑字符集默认的是GBK,有什么办法能改为unicode么？
+ 
+你用javac -encoding UTF-8 Exerc02.java能正常输出, 说明你的java文件的编码是utf8
+你用javac Exerc02.java编译出错, 说明你的系统默认编码不是utf8
+推测你应该是window系统吧
+记事本打开Exerc02.java文件, 文件另存为-->选择编码ANSI保存（采用强大的编辑器UltraEdit）
+然后javac Exerc02.java就可以编译了
+```
 
+## 编译打包java文件生成jar包的流程
 
+```
+方法1：通过eclipse中的export导出来，但这样生成的 jar 包会包含一些其他jar包，导致生成的jar包比较大
 
+方法2：通过命令行打包
+javac -encoding UTF-8 Main.java                 //生成 .class 字节码文件
+jar cvf Main.jar Main.class     //生成 Main.jar 文件
+然后用 rar 等压缩工具打开 Main.jar , 在 META-INF/MANIFEST.MF 文件的最下面添加 Main-Class: Main
+或
+jar cvfe libparser.jar  ParseApk  ParseApk.class    //直接把第二个参数 ParseApk 设置为 Main-Class，写入到 MANIFEST.MF 文件中
+```
 
-
-
-
+## TODO : 学习使用 htmlunit 抓取网页
 
 
 
