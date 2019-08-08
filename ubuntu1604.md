@@ -594,6 +594,13 @@ download the latest version from official website
 去掉 gradle.properties 中的代理
 ```
 
+## android studio 打开不能编辑
+
+```
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+```
+
 ## 安装最新版 Eclipse
 
 ``` bash

@@ -37,7 +37,7 @@
 
 # TODO : 如何通过commitid列表连续编译，并保存编译结果newbuild.txt和刷机包(重命名成commitid)
 
-# TODO : 通过爬虫自动抓取 FAQ 上的内容
+# TODO : 通过爬虫自动抓取 FAQ 上的内容(HtmlUnit) ????
 
 # TODO : push framework/service 之后，只要 kill system_server 就可以生效 ????
 

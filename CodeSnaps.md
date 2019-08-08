@@ -20746,6 +20746,16 @@ AndroBench
 RL Benchmark:SQLite
 ```
 
+## [lmkd][lowmemorykiller]80Go512M项目出现大量apk闪退，报错及CTS/CTSV测试不起来问题
+
+```
+修改 build/target/product/go_defaults_512.mk
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.lmk.medium=700
+
+将这里的700修改为750，再测试看看
+```
+
 ## [FAQ18152] [AudioProfile]第一次开机，来电话没有来电铃声
 
 ```
@@ -44707,7 +44717,11 @@ jar cvfe libparser.jar  ParseApk  ParseApk.class    //直接把第二个参数 P
 
 ## TODO : 学习使用 htmlunit 抓取网页
 
+## 根据包名启动应用
 
+```
+startActivity(getPackageManager().getLaunchIntentForPackage(data));
+```
 
 
 
