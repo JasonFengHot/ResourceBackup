@@ -3,17 +3,16 @@
 把培训做成视频
 整理bug并归类？？？？？？？
 
-## Android学习视频
-
-```
-https://github.com/open-android/Android
-```
-
 ## Android学习网站
 
 ```
+Android学习视频
+https://github.com/open-android/Android
+
+http://gityuan.com/
 https://developer.android.google.cn/docs/       官方 Android 应用开发者文档
 https://flutterchina.club/widgets-intro/        Flutter 中文开发者网站
+https://ebookfoundation.github.io/free-programming-books/free-programming-books-zh.html#android
 
 https://www.androiddevtools.cn/
 
@@ -36,6 +35,26 @@ https://github.com/yechaoa/Android-Rapid-Development
 https://github.com/yechaoa/Android-Develop-Tips
 http://chendongmarch.github.io/
 https://blog.csdn.net/zhangbijun1230/article/details/79745654
+
+https://kymjs.com/
+
+http://blog.zhaiyifan.cn/
+
+https://blankj.com/
+http://zmywly8866.github.io/
+http://www.wxtlife.com/
+http://wuxiaolong.me/
+```
+
+## 工具网站
+
+```
+http://gradleplease.appspot.com/#fonttype           查看gradle依赖
+https://romannurik.github.io/AndroidAssetStudio/    一个可以生成各种类型图标（launcher, notification, generic, app shortcut icons）的工具集合
+https://github.com/amitshekhariitbhu/Android-Debug-Database
+
+https://www.codota.com/         写代码经常会遇到需要从github或者stackoverflow上寻找代码示例的时候，这个插件可以在无需离开IDE就能做这件事情。
+https://www.hex-rays.com/products/ida/      逆向大利器
 ```
 
 ## 进阶学习书籍
@@ -45,21 +64,21 @@ https://blog.csdn.net/zhangbijun1230/article/details/79745654
 《App研发录》
 《HeadFirst设计模式》
 《重构：改善既有代码的设计》
-算法导论
+《算法导论》
 《Linux内核设计与实现》
 《深入理解Linux内核》
 《深入理解Android ***》系列书籍，邓凡平老师写的系列。
-深入理解Android内核设计思想
-Android移动性能实战
-Android系统源代码分析
+《深入理解Android内核设计思想》
+《Android移动性能实战》
+《Android系统源代码分析》
 《Android源码设计模式》，结合设计模式分析源码
 《Android框架揭秘》，底层架构的一本好书
 《黑客与画家》
 
-Android应用安全防护和逆向分析
-增长黑客
-深入探索Android热修复技术原理7.3Q
-神策数据-Android_全埋点技术白皮书
+《Android应用安全防护和逆向分析》
+《增长黑客》
+《深入探索Android热修复技术原理7.3Q》
+《神策数据-Android_全埋点技术白皮书》
 ```
 
 ## 必备软件
@@ -100,6 +119,7 @@ sudo update-alternatives --config javac
 操作json的包
 jsoup
 爬虫的包
+htmlunit
 ```
 
 ## TODO : 整理语言列表
@@ -450,7 +470,7 @@ android:fadeScrollbars="false"
 boolean isMainThread = Looper.myLooper() == Looper.getMainLooper();
 ```
 
-## head | sort
+## [shell]head | sort
 
 ```
 head命令 用来显示档案的开头至标准输出中。
@@ -458,7 +478,7 @@ head命令 用来显示档案的开头至标准输出中。
 sort命令用于将文本文件内容加以排序。sort可针对文本文件的内容，以行为单位来排序。
 
 # 查看前5行内容 -n  num：显示每个文件的前num 行内容
-[root@localhost best]# head -n 5 besthappyday 
+[root@localhost best]# head -n 5 besthappyday
 0315 happy
 0812 happy
 0201 happy
@@ -466,7 +486,7 @@ sort命令用于将文本文件内容加以排序。sort可针对文本文件的
 9046 happy
 
 # 排序一下
-[root@localhost best]# head -n 5 besthappyday | sort 
+[root@localhost best]# head -n 5 besthappyday | sort
 0201 happy
 0315 happy
 0403 happy
@@ -474,7 +494,7 @@ sort命令用于将文本文件内容加以排序。sort可针对文本文件的
 9046 happy
 ```
 
-## zgrep | zcat
+## [shell]zgrep | zcat
 
 ```
 避免解压文件，可以使用zgrep命令查找文件内容信息、zcat查看压缩文件中的信息。
@@ -759,10 +779,27 @@ android:ellipsize="marquee" 　　　//跑马灯跑动的几个条件, selected=
 <item name="android:textColorSecondary">#ffffff</item>
 ```
 
-## [Snippet]修改actionbar的颜色
+## [Snippet]修改actionbar/标题栏的颜色
 
 ``` Java
+第一种方法：这种方法只能在系统app中使用，因为第三方的app无法得到 com.android.internal.R
 getWindow().getDecorView().findViewById(com.android.internal.R.id.action_bar_container).setBackgroundColor(android.graphics.Color.parseColor("#ffffff"));
+
+第二种方法：目前使用 getActionBar() 有可能会报 NPE 的问题，最新的api中使用 getSupportActionBar()代替
+//getActionBar().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.parseColor("#0096ff")));
+getSupportActionBar().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.parseColor("#0096ff")));
+
+第三种方法：通过style去修改，这种方法只能静态设置，无法动态修改actionBar的颜色
+一般可先找到该activity到底是使用了哪种主题或者style到value/theme.xml（或style.xml）文件中找到相应的主题或者style，用android:windowBackground去设置！
+```
+
+## 去掉ActionBar标题栏上的阴影效果
+
+``` xml
+frameworks/base/core/res/res/values/dimens_material.xml
+<dimen name="action_bar_elevation_material">0dp</dimen>
+frameworks/support/v7/appcompat/res/values/dimens_material.xml
+<dimen name="abc_action_bar_elevation_material">0dp</dimen>
 ```
 
 ## [Snippet]发送广播
@@ -901,12 +938,9 @@ getContentResolver().registerContentObserver(android.provider.Settings.System.ge
 ## [Snippet]Toast
 
 ``` Java
-android.widget.Toast.makeText(getContext(), "", 2000).show();
-```
+android.widget.Toast.makeText(getContext(), "", android.widget.Toast.LEGNTH_LONG).show();
 
-## [Snippet]Toast高级版
-
-``` Java
+Toast高级版
 private Toast mToast;
 public void showToast(String msg){
     if (mToast == null) {
@@ -1212,8 +1246,16 @@ getWindow().setFormat(PixelFormat.TRANSLUCENT);
 ## [Snippet]全屏
 
 ``` Java
-//注意在setContentView()之前调用，否则无效。
+// 注意在setContentView()之前调用，否则无效。
 getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+// 切换到全屏
+getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+// 切换到非全屏
+getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 ```
 
 ## Android中在非UI线程里更新View的不同方法
@@ -1226,7 +1268,7 @@ Hanlder
 AsyncTask
 ```
 
-## 通话静音
+## [Snippet]通话静音
 
 ``` Java
 ITelephony telephonyManager = ITelephony.Stub.asInterface(ServiceManager.checkService(Context.TELEPHONY_SERVICE));
@@ -1242,13 +1284,13 @@ if (telephonyManager != null) {
 }
 ```
 
-## 禁止截屏
+## [Snippet]禁止截屏
 
 ``` Java
 getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
 ```
 
-## 判断屏幕旋转方向
+## [Snippet]判断屏幕旋转方向
 
 ``` Java
 // 判断Android当前的屏幕是横屏还是竖屏。横竖屏判断
@@ -1259,13 +1301,13 @@ if (this.getResources().getConfiguration().orientation == Configuration.ORIENTAT
 }
 ```
 
-# 通过代码动态设置屏幕方向
+## [Snippet]通过代码动态设置屏幕方向
 
 ``` Java
 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 ```
 
-# 通过InputFilter禁止输入特殊字符
+## [Snippet]通过InputFilter禁止输入特殊字符
 
 ``` Java
 /** 禁止输入表情以及特殊字符 */
@@ -1382,13 +1424,13 @@ public static Integer evaluate(float fraction, Integer startValue, Integer endVa
 }
 ```
 
-## 解析图片的几种方法
+## TODO ： 解析图片的几种方法？？？
 
 ``` Java
 Bitmap bitmap = BitmapFactory.decodeResource(R.drawable.ic_launcher);
 ```
 
-## HttpClient
+## [Snippet]HttpClient
 
 ``` Java
 DefaultHttpClient httpClient = new DefaultHttpClient(); 
@@ -1421,7 +1463,7 @@ try {
 }
 ```
 
-## Shape的模板
+## [Snippet]Shape的模板
 
 ``` xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -1447,7 +1489,7 @@ try {
 </shape>
 ```
 
-## Shape(圆)
+## [Snippet]Shape(圆)
 
 ``` xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -1462,7 +1504,7 @@ try {
 </shape>
 ```
 
-## 带圆角的矩形
+## [Snippet]带圆角的矩形
 
 ``` xml
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
@@ -1474,7 +1516,7 @@ try {
 </shape>
 ```
 
-##　带圆角的矩形边框
+## [Snippet]带圆角的矩形边框
 
 ``` xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -1489,7 +1531,7 @@ try {
 </shape>
 ```
 
-## 文字根据状态更改颜色的Selector模板
+## [Snippet]文字根据状态更改颜色的Selector模板
 
 ``` Xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -1505,9 +1547,8 @@ try {
     <item android:state_selected="true" android:color="@color/software_textColor_selected"></item>
     <item android:state_selected="false" android:color="@color/software_textColor_unselected"></item>
 </selector>
-```
 
-``` Java
+
 //通过代码调用颜色selector
 ColorStateList mTintColor = getContext().getResources().getColorStateList(com.android.internal.R.color.item_text_color_selector);
 int color = mTintColor.getColorForState(getDrawableState(), 0);
@@ -1517,7 +1558,7 @@ ImageView imageView = new ImageView(mContext);
 imageView.setImageTintList(mTintColor);
 ```
 
-## 背景色根据状态更改颜色的Selector模板
+## [Snippet]背景色根据状态更改颜色的Selector模板
 
 ``` Xml
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
@@ -1542,14 +1583,12 @@ imageView.setImageTintList(mTintColor);
         </shape>
     </item>
 </selector>
-```
 
-``` Java
 //通过代码调用背景色selector
 Drawable selector = getResources().getDrawable(com.android.internal.R.drawable.item_background_selector);
 ```
 
-## 设置Activity透明
+## [Snippet]设置Activity透明
 
 ``` Xml
 <style name="TransparentActivity" parent="AppBaseTheme">
@@ -1579,25 +1618,13 @@ public void toggleComponent(View view){
 }
 ```
 
-## 代码设置activity全屏/非全屏
-
-``` Java
-//切换到全屏
-getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-//切换到非全屏
-getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-```
-
 ## 调用开发者选项中显示触摸位置功能
 
 ``` Java
 android.provider.Settings.System.putInt(getContentResolver(), "show_touches", 1);
 ```
 
-## px-dp转换
+## [Snippet]px-dp转换
 
 ``` Java
 public static int dip2px(Context context, float dpValue) {
@@ -1611,7 +1638,7 @@ public static int px2dip(Context context, float pxValue) {
 }
 ```
 
-## px-sp转换
+## [Snippet]px-sp转换
 
 ``` Java
 public static int px2sp(Context context, float pxValue) {
@@ -1625,7 +1652,7 @@ public static int sp2px(Context context, float spValue) {
 }
 ```
 
-## dip转px
+## [Snippet]dip转px
 
 ``` Java
 public static int dipToPX(final Context ctx, float dip) {
@@ -1633,15 +1660,13 @@ public static int dipToPX(final Context ctx, float dip) {
 }
 ```
 
-## 手机号码正则表达式
+## 正则表达式
 
 ``` Java
+//手机号码正则表达式
 public static final String REG_PHONE_CHINA = "^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$";
-```
 
-## 邮箱正则表达式
-
-``` Java
+//邮箱正则表达式
 public static final String REG_EMAIL = "\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*";
 ```
 
@@ -1685,7 +1710,7 @@ public static String collectDeviceInfoStr(Context context) {
 }
 ```
 
-## 判断是否有SD卡
+## [Snippet]判断是否有SD卡
 
 ``` Java
 public static boolean haveSDCard() {
@@ -1701,7 +1726,7 @@ if(status.equals(Enviroment.MEDIA_MOUNTED)){
 }
 ```
 
-## 动态隐藏软键盘
+## [Snippet]动态隐藏软键盘
 
 ``` Java
 public static void hideSoftInput(Activity activity) {
@@ -1719,7 +1744,7 @@ public static void hideSoftInput(Context context, EditText edit) {
 }
 ```
 
-## 动态显示软键盘
+## [Snippet]动态显示软键盘
 
 ``` Java
 public static void showSoftInput(Context context, EditText edit) {
@@ -1743,7 +1768,7 @@ public static void toggleSoftInput(Context context, EditText edit) {
 }
 ```
 
-## 主动回到home
+## [Snippet]主动回到home
 
 ``` Java
 public static void goHome(Context context) {
@@ -1754,7 +1779,7 @@ public static void goHome(Context context) {
 }
 ```
 
-## 判断是否全屏
+## [Snippet]判断是否全屏
 
 ``` Java
 public boolean isFullScreen(){
@@ -1764,7 +1789,7 @@ public boolean isFullScreen(){
 }
 ```
 
-## 设置状态栏的颜色
+## [Snippet]设置状态栏的颜色
 
 ``` Java
 //需要在Android.mk文件中添加v4包的支持
@@ -1791,9 +1816,12 @@ public void onAttachedToWindow() {
         setStatusBarColor(android.graphics.Color.parseColor("#3A96FE"));
     }
 }
+
+通过style设置状态栏颜色
+<item name="android:windowLightStatusBar">true</item>
 ```
 
-## 设置状态栏透明
+## [Snippet]设置状态栏透明
 
 ``` Java
 //方法1
@@ -1807,13 +1835,6 @@ LayoutParams.flags = (WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | local
 <item name="android:windowTranslucentStatus">true</item>
 ```
 
-# 通过style设置状态栏颜色
-
-``` xml
-<item name="android:windowLightStatusBar">true</item>
-```
-
-
 ## 修改状态栏高度
 
 frameworks/base/core/res/res/values/dimens.xml
@@ -1824,16 +1845,14 @@ frameworks/base/core/res/res/values/dimens.xml
 ## 获取状态栏高度
 
 ``` Java
+//方法1
 public static int getStatusBarHeight(Activity activity) {
     Rect frame = new Rect();
     activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
     return frame.top;
 }
-```
 
-## 获取状态栏高度
-
-``` Java
+//方法2
 public static int getStatusBarHeight(Context context){
     Class<?> c = null;
     Object obj = null;
@@ -2079,6 +2098,9 @@ public static void startApkActivity(final Context ctx, String packageName) {
         Log.e("startActivity", e);
     }
 }
+
+//根据包名启动应用
+startActivity(getPackageManager().getLaunchIntentForPackage(data));
 ```
 
 ## 拨打电话
@@ -3816,12 +3838,6 @@ webSettings.setDisplayZoomControls(false);
 ## system/priv-app 和 system/app 的区别
 
 在system/priv-app目录主要是存放手机厂商定制的系统的系统级应用，比如phone app,settings app，systemui app等，这些应用需要系统及权限，而又不能被用户卸载掉。这个目录是在Android KitKat新增加的分区。在KitKat之前版本在系统分区的所有apks都可以使用系统权限，这个更改使手机厂商能够更好的控制捆绑软件对敏感权限的访问。手机厂商在定制一些系统软件的时候软件也会需要专门给priv-app添加selinux policy。当然应用需要获取系统权限还有其他的办法，在AndroidManifest.xml文件中添加 android:sharedUserId="android.uid.sysytem",同时给该apk添加系统签名，比如小米手机就需要给apk添加小米的系统权限。
-
-## 去掉ActionBar标题栏上的阴影效果
-frameworks/base/core/res/res/values/dimens_material.xml
-<dimen name="action_bar_elevation_material">0dp</dimen>
-frameworks/support/v7/appcompat/res/values/dimens_material.xml
-<dimen name="abc_action_bar_elevation_material">0dp</dimen>
 
 ## 壁纸设置流程
 https://blog.csdn.net/lj527409/article/details/79825015
@@ -5747,12 +5763,6 @@ grep "字符" ./ -r(./代表当前文件夹，-r代表遍trunk历)
 
 ``` bash
 adb shell cat /proc/kmsg > log.txt
-```
-
-## 如何修改actionbar上面的颜色
-
-```
-一般可先找到该activity到底是使用了哪种主题或者style到value/theme.xml（或style.xml）文件中找到相应的主题或者style，用android:windowBackground去设置！
 ```
 
 ## [默认值]camera闪光灯默认情况
@@ -16241,197 +16251,115 @@ adb shell setenforce 0
 
 ```
 1, 如何将带源码的 APK 预置进系统？
-
 2, 如何将无源码的APK预置进系统？
-
 3, 如何预置APK使得用户可以卸载，恢复出厂设置时不能恢复？
-
 4, 如何预置APK使得用户可以卸载，并且恢复出厂设置时能够恢复？
 
  [SOLUTION]
-
 一、如何将带源码的APK预置进系统？
-
 1)     在 packages/apps 下面以需要预置的 APK的 名字创建一个新文件夹，以预置一个名为Test的APK 为例
-
 2)     将 Test APK的Source code 拷贝到 Test 文件夹下，删除 /bin 和 /gen 目录
-
 3)     在 Test 目录下创建一个名为 Android.mk的文件，内容如下：
 
 LOCAL_PATH:= $(call my-dir)
-
 include $(CLEAR_VARS)
-
 LOCAL_MODULE_TAGS := optional
-
 LOCAL_SRC_FILES := $(call all-subdir-java-files)
-
 LOCAL_PACKAGE_NAME := Test
-
 include $(BUILD_PACKAGE) 
 
 4)     打开文件 build/target/product/${Project}.mk （其中 ${Project} 表示工程名）
-
 将 Test 添加到 PRODUCT_PACKAGES 里面。
 
 5)     重新 build 整个工程
 
- 
-
 二、如何将无源码的 APK 预置进系统？
-
 1)     在 packages/apps 下面以需要预置的 APK 名字创建文件夹，以预置一个名为Test的APK为例
-
 2)     将 Test.apk 放到 packages/apps/Test 下面
-
 3)     在  packages/apps/Test 下面创建文件 Android.mk，文件内容如下：
-
 LOCAL_PATH := $(call my-dir)
-
 include $(CLEAR_VARS)
 
 # Module name should match apk name to be installed
-
 LOCAL_MODULE := Test
-
 LOCAL_MODULE_TAGS := optional
-
 LOCAL_SRC_FILES := $(LOCAL_MODULE).apk
-
 LOCAL_MODULE_CLASS := APPS
-
 LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
-
 LOCAL_CERTIFICATE := PRESIGNED
-
 include $(BUILD_PREBUILT)
 
 4)     打开文件 build/target/product/${Project}.mk （其中 ${Project} 表示工程名）
-
 将 Test 添加到 PRODUCT_PACKAGES 里面。
 
 5)     将从Test.apk解压出来的 so库拷贝到alps/vendor/mediatek/${Project}/artifacts/out/target/product/${Project}/system/lib/目录下，若无 so 库，则去掉此步；
-
 6)     重新 build 整个工程
 
 注：Google在KK上修改protection Level为System的permission控管机制
-
 如果App使用System Level的permission，需要預置到/system/priv-app底下 (原在/system/app)。
-
 举例来讲：
-
 关于获取副SD卡的写入权限的案例，App需要在AndroidManifest.xml宣告WRITE_MEDIA_STORAGE permission获取副卡的写入权限
 
-
-
- 
-
 (Ref: KK/alps/frameworks/base/core/res/AndroidManifest.xml)
-
 已知android.permission.WRITE_MEDIA_STORAGE属于SystemOrSignature level的permission，定义如下：
 
-
-
- 
-
 KK上，您需要采用以下方法，获取该permission：
-
 修改Android.mk，增加LOCAL_PRIVILEGED_MODULE := true，以声明app需要放在/system/priv-app下。
 
- 
-
 三、如何预置APK使得用户可以卸载，恢复出厂设置时不能恢复？
-
 1)     在 packages/apps 下面以需要预置的 APK 名字创建文件夹，以预置一个名为Test的APK为例
-
 2)     将 Test.apk 放到 packages/apps/Test 下面；
-
 3)     在  packages/apps/Test 下面创建文件 Android.mk，文件内容如下：
-
 LOCAL_PATH := $(call my-dir)
-
 include $(CLEAR_VARS)
 
 # Module name should match apk name to be installed
-
 LOCAL_MODULE := Test
-
 LOCAL_MODULE_TAGS := optional
-
 LOCAL_SRC_FILES := $(LOCAL_MODULE).apk
-
 LOCAL_MODULE_CLASS := APPS
-
 LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
-
 LOCAL_CERTIFICATE := PRESIGNED
-
 LOCAL_MODULE_PATH := $(TARGET_OUT_DATA_APPS)
-
 include $(BUILD_PREBUILT)
 
 4)     打开文件 build/target/product/${Project}.mk （其中 ${Project} 表示工程名）
-
 将 Test 添加到 PRODUCT_PACKAGES 里面。
 
 5)     重新 build 整个工程
-
 注意：这个比不能卸载的多了一句
-
 LOCAL_MODULE_PATH := $(TARGET_OUT_DATA_APPS)
-
- 
 
 四、如何预置APK使得用户可以卸载，并且恢复出厂设置时能够恢复？
 
 有两种方法：
-
 方法一：预置apk到system/vendor/operator下面
-
 具体做法如下：
-
 在packages/apps下面以需要预置的 APK 名字创建文件夹，以预置一个名为Test的APK为例：
-
 1)     将Test.apk 放到 packages/apps/Test 下面；
-
 2)     在packages/apps/Test下面创建文件 Android.mk，文件内容如下：
-
 LOCAL_PATH := $(call my-dir)
-
 include $(CLEAR_VARS)
 
 # Module name should match apk name to be installed
-
 LOCAL_MODULE := Test
-
 LOCAL_MODULE_TAGS := optional
-
 LOCAL_SRC_FILES := $(LOCAL_MODULE).apk
-
 LOCAL_MODULE_CLASS := APPS
-
 LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
-
 LOCAL_CERTIFICATE := PRESIGNED
-
 LOCAL_MODULE_PATH := $(TARGET_OUT)/vendor/operator/app
-
 include $(BUILD_PREBUILT) 
-
 3)     打开文件 build/target/product/${Project}.mk （其中 ${Project} 表示工程名）， 将 Test 添加到 PRODUCT_PACKAGES 里面
-
 4)     重新 build 整个工程
-
  
-
 方法二：使用MTK_SPECIAL_FACTORY_RESET，再配合.keep_list / .restore_list
-
 为了让用户在将预置的 APK 卸载后，恢复出厂设置时能恢复，敝司做了一个 Feature，但在ALPS.GB.TDFD.MP.V1.7和 ALPS.GB.FDD2.MP.V4.7版本后支持，若贵司版本低于此版本，请申请 Patch ALPS00092543；
 
 大致的做法是：
-  - 在vendor/mediatek/project_name/artifacts/out/target/product/project_name/system目录下新建一个名为appbackup的文件夹，将该应用的apk文件copy到appbackup文件夹下
-  - 在mediatek/config/project_name/ProjectConfig.mk文件中添加定义：MTK_SPECIAL_FACTORY_RESET=yes
-   - 在vendor/mediatek/project_name/artifacts/out/target/product/project_name/data/app下创建一个.restore_list，并且在其中添加语句：
+- 在vendor/mediatek/project_name/artifacts/out/target/product/project_name/system目录下新建一个名为appbackup的文件夹，将该应用的apk文件copy到appbackup文件夹下
+- 在mediatek/config/project_name/ProjectConfig.mk文件中添加定义：MTK_SPECIAL_FACTORY_RESET=yes
+- 在vendor/mediatek/project_name/artifacts/out/target/product/project_name/data/app下创建一个.restore_list，并且在其中添加语句：
 /system/appbackup/xxx.apk（注意，.restore_list中的每一行都要以"/system” 开头）
 
 当卸载了data/app下的apk后，再恢复出厂设置，系统会从 .restore_list 中读取apk的名字，然后从 appbackup 文件中把apk重新拷贝到data/app下，从而恢复data/app下已经卸载了的apk。
@@ -16449,22 +16377,18 @@ include $(BUILD_PREBUILT)
 L版本手机默认加密，那如何关闭默认加密呢?
   
 [SOLUTION]
- 关闭加密功能有两种情况：
+关闭加密功能有两种情况：
 
 1      How to disable default encryption in your own image
 
 (1)    Modify fstab.{ro.hardware} in ‘out’ folder
-
 alps\out\target\product\[project]\root\ fstab.{ro.hardware}
-
 Set the flag back to encryptable for /data
 
 (2)    Re-pack boot.img
-
 make ramdisk-nodeps; make bootimage-nodpes
 
 (3)    Download the new boot.img by flashtool
-
 
 2         How to disable default encryption in your codebase
 
@@ -16478,7 +16402,6 @@ Modify device.mk to use the modified fstab.{ro.hardware} .
 
 Set the flag back to encryptable for /data
 b)        Re-build boot.img
-
 make bootimage
 
 c)        Download the new boot.img by flashtool
@@ -16582,8 +16505,7 @@ Qmax为电池的容量.
  
 [PLATFORM]
 MT6575 MT6515 MT6577 MT6517  MT6589
- 
- 
+
 请结合
 alps\mediatek\platform\mt6589(mt6575/mt6577)\kernel\driver\power\
 mt6320_battery.c
@@ -16688,7 +16610,6 @@ FAQ05745：user版本进行OTA升级时如何抓取升级过程的log
 ```
 M版本开始使用google bluedroid stack原生架构
 L版本用的是MTK blueangel stack 架构
-
 
 [SOLUTION]
 1. common 问题需要log: mtklog, hcilog.
@@ -16981,34 +16902,30 @@ fields{
 ```
 一、 实现单个字体切换
 
-         可以参考DMS文档：Font Install and Runtime Change On ICS guideline.doc
+可以参考DMS文档：Font Install and Runtime Change On ICS guideline.doc
 
 二、多个字体(多个字体一套风格，比如泰语字库、英文字库)
 
 实现这个功能其实是采用了系统在加载字体时会为每个字体指定加载路径的原理，只要把我们要替换的字库文件编译到系统目录下，然后修改要替换的字体的路径就可实现这一功能。
 
-  1、添加字库
+1、添加字库
 
 1)把对应的字库文件拷贝到frameworks/base/data/fonts下
 
 2)修改fonts.mk (frameworks/base/data/fonts)
 
-           a、ICS
-     PRODUCT_COPY_FILES := \
-       ......
-      frameworks/base/data/fonts/NewFontFile.ttf:system/fonts/DroidSansThai-My.ttf \
+a、ICS
+PRODUCT_COPY_FILES := \
+......
+frameworks/base/data/fonts/NewFontFile.ttf:system/fonts/DroidSansThai-My.ttf \
+frameworks/base/data/fonts/NewFontFile.ttf:system/fonts/ Roboto-Regular-My.ttf \
 
-          frameworks/base/data/fonts/NewFontFile.ttf:system/fonts/ Roboto-Regular-My.ttf \
+b、JB
 
-           b、JB
-
-           PRODUCT_PACKAGES:= \
-
-        DroidSansThai-My.ttf \
-
-         Roboto-Regular-My.ttf \
-
-         ......
+PRODUCT_PACKAGES:= \
+DroidSansThai-My.ttf \
+Roboto-Regular-My.ttf \
+......
 
 4)对于JB2，JB3，JB5，kk还需修改android.mk
 
@@ -17126,7 +17043,7 @@ public static ArrayAdapter<LocaleInfo> constructAdapter(Context context, final i
 L:
 L上与KK不同,L上是判断如不在开发者模式就将"ar_XB"和"ar_XA"拿掉(如果有的话),没有使用"zz_ZZ".
  
-有关[Developer ]Accented English其他问题可以参考：FAQ11478
+有关[Developer]Accented English其他问题可以参考：FAQ11478
 ```
 
 ## [FAQ08190] 如何修改Sim卡语言自适应
@@ -32103,7 +32020,17 @@ adb getprop ro.mediatek.version.release
 ## [FAQ04813] update.zip包中各个文件的含义
 
 ```
-将全量升级包update.zip包解压后里面的各个文件的含义如下： boot.img:(boot.img=kernel+ramdisk) system:(升级后会放在系统的system分区。主要用来更新系统的一些应用或则应用会用到的一些库) recovery/recovery-from-boot.p:(是boot.img和recovery.img的补丁) recovery/etc/install-recovery.sh:(install-recovery.sh是更新脚本) META-INF/CERT.RSA:(签名文件相关,保存公匙和加密算法) META-INF/CERT.SF:(签名文件相关,保存私匙,CERT代表签名者) META-INF/MAINFEST.MF:(这个manifest文件定义了与包的组成结构相关的数据) com/google/android/update-binary:(一个脚本解释器，能够识别updater-script中描述的操作) com/google/android/updater-script:(脚本文件，具体描述了更新过程) com/google/android/metadata:(描述设备信息及环境变量的元数据)
+将全量升级包update.zip包解压后里面的各个文件的含义如下： 
+boot.img:(boot.img=kernel+ramdisk) 
+system:(升级后会放在系统的system分区。主要用来更新系统的一些应用或则应用会用到的一些库) 
+recovery/recovery-from-boot.p:(是boot.img和recovery.img的补丁) 
+recovery/etc/install-recovery.sh:(install-recovery.sh是更新脚本) 
+META-INF/CERT.RSA:(签名文件相关,保存公匙和加密算法) 
+META-INF/CERT.SF:(签名文件相关,保存私匙,CERT代表签名者) 
+META-INF/MAINFEST.MF:(这个manifest文件定义了与包的组成结构相关的数据) 
+com/google/android/update-binary:(一个脚本解释器，能够识别updater-script中描述的操作) 
+com/google/android/updater-script:(脚本文件，具体描述了更新过程)
+com/google/android/metadata:(描述设备信息及环境变量的元数据)
 ```
 
 ## [FAQ04879] MTK_LCA_SUPPORT=yes的版本不能开机
@@ -36695,8 +36622,6 @@ public String collectSecureSettings() {
 对apk进行加固处理
 ```
 
-## 如何防止截屏？？？
-
 ## 反编译
 
 ```
@@ -39809,6 +39734,13 @@ https://jeanboy.blog.csdn.net/article/details/72236734
 ```
 
 ## 仿 wechat 和 支付宝 防止截屏？？？
+
+```
+getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+
+设置安全窗口，禁用系统截屏。防止 App 中的一些界面被截屏，并显示在其他设备中造成信息泄漏。（常见手机设备系统截屏操作方式为：同时按下电源键和音量键。）
+比如支付宝 App 的“向商家付款”的包含付款二维码的界面。（补充说明一点，微信付款界面不是这么做的，采用的是在 onResume() 生命周期方法中实时刷新付款二维码，与支付宝在安全方法采取的手段不同。）
+```
 
 ## 搭建Simba 文件共享服务器
 
@@ -44520,6 +44452,10 @@ command 支持的几个命令
 --wipe_cache                        擦除 cache(不包括 user data),然后重启
 --set_encrypted_filesystem=on|off   enable/disable 加密文件系统
 --just_exit                         直接退出,然后重启
+
+
+//恢复出厂设置流程分析
+https://blog.csdn.net/kehyuanyu/article/details/47054325
 ```
 
 ## android build 编译打印详细过程
@@ -44545,12 +44481,6 @@ endif
 # modified begin
 hide :=
 # modified end
-```
-
-## Android 恢复出厂设置流程分析
-
-```
-https://blog.csdn.net/kehyuanyu/article/details/47054325
 ```
 
 ## Fuzz 是什么玩意 ？？？
@@ -44585,7 +44515,7 @@ root过的手机也可以用 Runtime 执行 su reboot -p 命令来关机
 
 ## 学习使用 Jekins？？？？
 
-## misc分区即“miscellaneous”
+## misc分区即"miscellaneous"(杂项)
 
 ## 解析 ramdisk.img
 
@@ -44663,7 +44593,7 @@ https://mp.weixin.qq.com/s?__biz=MzI1MjMyOTU2Ng==&mid=2247485130&idx=1&sn=8fa8b6
 ActivityManager am = (ActivityManager)getSystemService (Context.ACTIVITY_SERVICE);   
 am.restartPackage(getPackageName()); 
 系统会将，该包下的 ，所有进程，服务，全部杀掉，就可以杀干净了，要注意加上
-<uses-permission android:name=\"android.permission.RESTART_PACKAGES\"></uses-permission>
+<uses-permission android:name="android.permission.RESTART_PACKAGES"></uses-permission>
 ```
 
 ## 自动滚动ListView
@@ -44678,7 +44608,7 @@ am.restartPackage(getPackageName());
 
 ## TODO : Android 上如何使用 FTP ？？？
 
-## 获得手机UA
+## [Snippet]获得手机UA
 
 ```
 public String getUserAgent(){
@@ -44715,13 +44645,124 @@ jar cvf Main.jar Main.class     //生成 Main.jar 文件
 jar cvfe libparser.jar  ParseApk  ParseApk.class    //直接把第二个参数 ParseApk 设置为 Main-Class，写入到 MANIFEST.MF 文件中
 ```
 
-## TODO : 学习使用 htmlunit 抓取网页
+## TODO : 学习使用 htmlunit 抓取网页？？？？
 
-## 根据包名启动应用
+## 拦截 Back 键，使 App 进入后台而不是关闭
 
 ```
-startActivity(getPackageManager().getLaunchIntentForPackage(data));
+@Override
+public void onBackPressed() {
+    Intent launcherIntent = new Intent(Intent.ACTION_MAIN);
+    launcherIntent.addCategory(Intent.CATEGORY_HOME);
+    startActivity(launcherIntent);
+}
 ```
+
+## bitmap.extractAlpha()
+
+```
+从源 bitmap 中根据 alpha 获取一个新的 bitmap 对象。比较绕口，通常 App 中的 Icon 多数是纯色透明像素背景组成，利用这个方法可以对该图的非透明区域着色，有多种使用场景，常见如 Button 的 pressed 状态，View 的阴影状态等。举个例子：
+private static Bitmap getDropShadow(ImageView iv, Bitmap src, float radius, int color) {
+
+    final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    paint.setColor(color);
+
+    final int width = src.getWidth(), height = src.getHeight();
+    final Bitmap dest = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+    final Canvas canvas = new Canvas(dest);
+    final Bitmap alpha = src.extractAlpha();
+    canvas.drawBitmap(alpha, 0, 0, paint);
+
+    final BlurMaskFilter filter = new BlurMaskFilter(radius, BlurMaskFilter.Blur.OUTER);
+    paint.setMaskFilter(filter);
+    canvas.drawBitmap(alpha, 0, 0, paint);
+    iv.setImageBitmap(dest);
+
+    return dest;
+}
+```
+
+## 通过反射获取资源
+
+```
+public class ResourceMan {
+    public static int getResId(String variableName, Class<?> c) {
+        try {
+            Field idField = c.getDeclaredField(variableName);
+            return idField.getInt(idField);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+}
+
+int id = ResourceMan.getResId("icon", R.drawable.class);
+
+据说这种方法比用 getIdentifier() 方法快5倍，而且不需要context对象
+```
+
+## TODO : FileProvider
+
+```
+https://www.jianshu.com/p/3c554d3983d8
+```
+
+## 从ota卡刷包recovery-from-boot.p生成recovery.img
+
+```
+如果手机官方没有提供线刷包，和无法通过手机里面提取recovery情况下可以尝试提供卡刷包来生成官方recovery.img，当然你的OTA卡刷包里面必须要有boot.img、recovery-from-boot.p、install-recovery.sh三个文件缺一不可，然后利用android applypatch来生成，system/bin/目录下即可。
+1、applypatch指令帮助： shell@ha3g:/data/local/tmp $ applypatch
+usage: applypatch [-b ] <src-file> <tgt-file> <tgt-sha1> <tgt-size>
+[: …]
+or applypatch -c <file> [ …]
+or applypatch -s <bytes>
+or applypatch -l
+2、将applypatch、boot.img、recovery-from-boot.p推送（adb push ）到/data/local/tmp/目录；给予applypatch 755quan 3、打开nstall-recovery.sh文件： #!/system/bin/sh
+update_recovery –check-sha1 908410f138130a19caf8fbbc2f2d89496f6caa41 \
+–src-sha1 a56291c5b942895ecf64da89e55c5ac444b5a939 \
+–tgt-sha1 f44fd8fdc4bc4382fab01f5eb966ee9956b42120 \
+–tgt-size 11330560 \
+–patch /system/recovery-from-boot.p
+其中：src-sha1表示recovery-from-boot.p的sha1值；tgt-size表示recovery的大小；tgt-sha1表示recovery的sha1值；
+4、生成命令如下： applypatch <boot文件> <recovery.img tgt-sha1值> <tgt-sized大小> <src-sha1值>:recovery-from-boot.p 如：applypatch boot.img recovery.img f44fd8fdc4bc4382fab01f5eb966ee9956b42120 11330560 a56291c5b942895ecf64da89e55c5ac444b5a939:recovery-from-boot.p
+5、生成成功入下图所示：
+
+```
+
+## app增量升级方案
+
+```
+https://www.jianshu.com/p/f70e31755bcd
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
