@@ -6,13 +6,25 @@
 ## Android学习网站
 
 ```
+https://codelabs.developers.google.com/?cat=Android         google Codelabs 代码实验室
+
 Android学习视频
 https://github.com/open-android/Android
+https://caster.io/
+
+
+https://www.reddit.com/r/androiddev/                reddit 上的 Android 开发专区
+https://plus.hencoder.com/                          hencoder
 
 http://gityuan.com/
 https://developer.android.google.cn/docs/       官方 Android 应用开发者文档
 https://flutterchina.club/widgets-intro/        Flutter 中文开发者网站
 https://ebookfoundation.github.io/free-programming-books/free-programming-books-zh.html#android
+
+https://android-developers.googleblog.com/
+
+
+https://pangrongxian.github.io/
 
 https://www.androiddevtools.cn/
 
@@ -44,6 +56,8 @@ https://blankj.com/
 http://zmywly8866.github.io/
 http://www.wxtlife.com/
 http://wuxiaolong.me/
+
+https://www.jb51.net/Special/508.htm
 ```
 
 ## 工具网站
@@ -74,11 +88,229 @@ https://www.hex-rays.com/products/ida/      逆向大利器
 《Android源码设计模式》，结合设计模式分析源码
 《Android框架揭秘》，底层架构的一本好书
 《黑客与画家》
+深入理解Java虚拟机
+高级Android开发强化实战
 
 《Android应用安全防护和逆向分析》
 《增长黑客》
 《深入探索Android热修复技术原理7.3Q》
 《神策数据-Android_全埋点技术白皮书》
+```
+
+## 高级工程师目标
+
+```
+小明成为了梦寐以求的高级工程师，月薪达到了20k，还拿到了一丢丢股票。这个时候小明的Android水平已经不错了，但是小明的目标是资深工程师，小明听说资深工程师月薪可以达到30k+。
+为了成为Android资深工程师，需要学习的东西就更多了，并且有些并不是那么具体了，如下所示：
+- 继续加深理解”稍微深入的知识点“中所定义的内容
+- 了解系统核心机制：
+1. 了解SystemServer的启动过程
+2. 了解主线程的消息循环模型
+3. 了解AMS和PMS的工作原理
+4. 能够回答问题”一个应用存在多少个Window？“
+5. 了解四大组件的大概工作流程
+6. …
+
+- 基本知识点的细节
+1. Activity的启动模式以及异常情况下不同Activity的表现
+2. Service的onBind和onReBind的关联
+3. onServiceDisconnected(ComponentName className)和binderDied()的区别
+4. AsyncTask在不同版本上的表现细节
+5. 线程池的细节和参数配置
+6. …
+
+- 熟悉设计模式，有架构意识
+学习方法
+这个时候已经没有太具体的学习方法了，无非就是看书、看源码和做项目，平时多种总结，尽量将知识融会贯通从而形成一种体系化的感觉。同时这个阶段对架构是有一定要求的，架构是抽象的，但是设计模式是具体的，所以一定要加强下设计模式的学习。关于设计模式的学习，最近一本新书推荐给大家《Android 源码设计模式解析与实战》，既可以学习设计模式，又可能体会到Android源码中的设计思想，我最近也在阅读此书。
+
+技术要求：
+- 稍微深入的知识点
+- 系统核心机制
+- 基本知识点的细节
+- 设计模式和架构
+- 书籍推荐
+《Android开发艺术探索》、《Android 源码设计模式解析与实战》、《Android内核剖析》
+```
+
+## 面试题
+
+```
+某视频app公司面试题：
+
+Activity启动模式。
+Activity生命周期，从A页面打开B页面，两个页面的生命周期。
+onStartCommand的返回值和参数的作用。
+Synchronized关键字。一个线程访问某个类的Synchronized成员方法A，同时另一个线程可以去访问这个类的Synchronized成员方法B吗？
+App的启动优化。
+Handler，Looper，MessageQueue的关系。Handler通过sendMessageDelayed发送延时消息， 消息什么时候入队列？
+主线程的Looper死循环为什么不会导致ANR?
+Android 动画的实现方式。
+项目中有没有用到组件化，如何实现组件化。
+Hybrid开发中Android和H5的交互有哪些方式。
+项目是怎样的架构，为什么这么搭建。
+某物流公司的面试题;
+
+本地广播和全局广播的区别，本地广播的实现原理。
+常见第三方框架及其实现原理。
+SQLite数据库操作。
+Http请求中包含哪些内容，上传文件和发起请求的post请求的区别。
+线程池有哪几种，如何运用。
+设计实现大批量数据上传的方式。
+MVC，MVP，MVVM架构的区别。
+如何解决Handler导致的内存泄漏。
+进程间通信的方式。
+某厂电商及物流岗位的面试题：
+
+View的绘制流程。
+实现延时任务的几种方式，postDelay，AlarmManager，TimerTask的区别。
+做过哪些优化性能的工作？如何考量优化的成果。
+http和http2.0，以及https的不同。
+Art虚拟机和Dalvik虚拟机。
+三级缓存的原理。
+LruCache算法的原理。
+项目中用到了哪些设计模式，Android源码中用到设计模式的场景。
+Java8有什么新特性。
+Java类如何加载，类加载的过程。
+页面卡顿如何解决，viewHolder起什么作用。
+如果有大数据量网络请求，该如何优化
+另某厂电商KL应用岗位面试题;
+
+在浏览器输入网址到打开网页，中间的过程。
+如何统计工程的代码量？如何去掉代码注释的影响？
+模式匹配
+apt ，aop
+标签注解的原理
+热修复的原理。
+线程池的原理，如果核心线程数5，最大线程数10，新来的线程会怎样？
+如何在服务器接口未准备好的情况下调试接口？
+如何抓取Https传输的数据？
+Android 与Js的交互，接口存在的安全隐患及修复
+不同方式创建字符串，通过==和quuals比较的结果
+某Y厂音乐多媒体岗位面试题:
+
+对第三方框架的了解。EventBus可以跨进程通信吗？
+Android P有什么新特性，后台限制策略是通过怎样的API来处理的？
+HashMap的原理，hashCode的作用，重写equals为什么要重写hashCode方法
+Synchronizd修饰静态方法也修饰了非静态方法，可以在两个线程同时被调用吗？
+padding和margin的区别。给固定大小及wrap_content的textView设置padding，它的可点击区域会变化吗？
+如何自定义view， Canvas的作用
+onMesure()方法的参数，MeasureSpec的结构
+动画有哪几种？属性动画怎么用，插值器什么作用
+讲一下include，merge 和viewstub。 viewstub可以被重复加载吗？在view树里是怎样的存在？
+对线程的理解，线程同步有哪几种方式
+final关键字的作用，为什么匿名内部类里用到的变量必须是final类型的？
+handler, Looper, MessageQueue的关系，这三个可以一对多吗？怎么保证message能被其对应的handler处理？
+触摸事件传递过程。有个竖向滑动的ViewGroup里嵌套了横向滑动的view，如何处理滑动冲突？
+onSaveInstanceState触发的时机。
+某母婴平台部分面试题：
+
+自定义view时如何刷新布局，invalidate会改变宽高吗
+Java泛型是伪泛型吗
+new Integer(1) == 1会执行拆箱吗
+Looper无限循环为什么不会造成卡死
+组件之间，activity如何跳转
+HTTPS及其双重检验
+继续补充
+某高校合作研究机构的面试题：
+
+HashSet的原理，如何保证元素不重复的
+项目中登录密码是怎么加密的
+如何保证HTTP通信的安全
+git存储的是快照还是差异
+aop 代理
+了解哪些设计模式，讲解策略模式
+泛型是怎么回事，类型擦除发生在什么时候
+列出常用的Linux操作，如何查看内存占用
+某小电商平台：
+
+如何计算bitmap占用的内存
+内存泄漏都有哪些可能的原因
+数据库优化，异步操作数据库会不会导致内存泄漏，怎么解决
+MVP，MVVM模式。
+某炒股平台面试题：
+
+自己实现StringBuffer类及其append方法
+如何优化ListView的显示
+有多个应用都能接收某个action广播，如何做到广播只被特定的应用接收到
+网络下载图片并保存到SD卡，过程涉及哪些IO类
+实现3秒延时后给TextView设置文字。
+有哪些措施能加强应用的安全性。
+apk加固的原理。
+哪些情境会导致内存不一致
+如何检测应用卡顿的原因
+主线程要等待几个子线程处理完成后才能继续处理，该怎么实现
+某人脸识别平台：
+
+activity启动过程
+BroadcastReceiver的工作原理
+HandlerThread和Thread的区别，HandlerThread在Android中哪些场景用到
+普通线程以及线程池里的线程，如何给线程命名，设置优先级
+某个工具类的方法，传入了activity的回调，怎么解决内存泄漏
+Object类的clone()是深克隆吗？怎么实现深克隆？
+IntentService是怎么新建线程的？
+MVP模式里，V是哪些？startService这样的操作，应该写在V里，还是P里
+补充：
+
+synchronized的实现原理，和lock的区别。
+多进程操作文件，怎么解决同步？
+CAS同步方法。
+binder的实现。
+插件化的原理。如果自己去设计插件化的框架，怎么设计？注意哪些地方？
+第三方框架及其原理。在用第三方框架时有没有做比较，了解项目之外的第三方框架吗？
+如何分析ANR问题？腾讯Bugly这样的框架是什么原理。
+JNI开发，及原理。
+Java反射的原理。
+dex, odex是什么。
+Android系统开机过程。
+面向切面编程。
+AutomicInteger的原理。
+调用System.gc()会怎样，系统什么时候会触发GC。
+线程的sleep和wait的区别。
+Google最新动态，Android最新变化等。
+队列有哪几种。
+从点击桌面图标，到App启动中间发生了什么。
+fragment生命周期，和activity的配合
+gilde加载图片
+HandlerThread
+Java 集合有哪些？哪些是线程安全的
+类的加载及静态变量，成员变量等的初始化顺序。
+线程池里的线程是如何复用的
+HTTP请求头，响应都包含哪些内容
+activity的四种启动模式分别在哪些场景会用到
+弱引用和软引用的区别，使用场景
+线程池里的任务如果发生异常了，会怎样
+手写二分查找算法
+栈内有个singleTask的activity，再次启动它时，生命周期怎样
+设计一个埋点功能模块，应该怎么做？
+Java异常分为哪几类？RuntimeException包含哪些？
+Volley框架存储请求数据时，key是什么？
+请基于数组实现队列。
+如何防止网络请求里的数据被抓包
+fragmentTranstion有哪些操作？fragment如何回退？
+多维数组的长度，及初始化
+surfaceView和View的区别
+线程间如何通讯
+自定义view时，如何在view被销毁时保存数据
+activity,window,view的关系
+使用recyclerView实现三级item可伸缩的列表，如何实现
+上面这些都是技术的问题，还有一些频繁被问到的体现技术能力的问题：
+
+在工作中做过的最有难度的需求是什么，是怎么实现的。
+工作中遇到的最难的Bug是怎样的，及解决过程。
+工作中代码优化、性能优化等，是怎么做的，代码规范性如何保证。
+在团队中担任怎样的角色，团队的开发流程是怎样的。
+有开源项目吗？
+平时怎么获取新知识。
+另外，作为Android开发，只会Android和java的知识是不够的，虽然可以应付一般工作，但是如果想进阶的话，下面这些技能起码要掌握一二：
+
+Java虚拟机。推荐看《深入理解Java虚拟机》
+设计模式。经典书籍很多，比如《大话设计模式》
+数据库操作。
+Http，TCP/IP相关
+Android源码，底层实现。
+跨平台开发技术，比如ReativeNative，flutter，week等。
+Android和其他方向的行业新技术，新动态
+Kotlin，python，Linux等。
 ```
 
 ## 必备软件
@@ -34085,24 +34317,6 @@ JB2需要做如下修改：
 如果是自己分析该文件，那么直接在已经打开了的文件中，查看异常位置处的view的状态和属性是否正确即可，将鼠标移动到view的位置时，view会被红色虚线框highligh出来，右边的属性列表中会显示出该view的各项属性。
 ```
 
-## 【USB名称修改系列】
-
-```
-FAQ09991	【USB名称修改系列】第1项-为什么参考FAQ修改名称后却无效	SW > ALPS > Driver - USB	2014-01-13
-FAQ09986	【USB名称修改系列】第11项-如何修改preloader阶段的vcom口在windows右下角的提示框的字符串显示	SW > ALPS > Driver - USB	2014-01-13
-FAQ09987	【USB名称修改系列】第12项-如何修改MTP在windows弹出的自动播放提示框标题	SW > ALPS > Driver - USB	2014-01-13
-FAQ09985	【USB名称修改系列】第10项-如何修改设备管理器中设备名后的数字	SW > ALPS > Driver - USB	2014-01-13
-FAQ09982	【USB名称修改系列】第9项-如何修改UMS在设备管理器中DiskDrive下的名称	SW > ALPS > Driver - USB	2014-01-13
-FAQ09980	【USB名称修改系列】第8项-如何修改mtp设备在设备管理器中的”Portable Devices”下的名称	SW > ALPS > Driver - USB	2014-01-13
-FAQ06755	[USB]如何同时打开UMS和BICR(CD-ROM)	SW > ALPS > Driver - USB	2014-01-13
-FAQ07081	【USB名称修改系列】第5项-如何修改MTP在PC设备管理器中制造商的名称	SW > ALPS > Driver - USB	2014-01-13
-FAQ09979	【USB名称修改系列】第7项-如何修改PTP设备在PC上弹出的对话框的标题	SW > ALPS > Driver - USB	2014-01-13
-FAQ05691	【USB名称修改系列】第6项-如何修改手机在PC桌面右下角弹出的“MT65xx Android Phone”提示框	SW > ALPS > Driver - USB	2014-01-13
-FAQ05418	【USB名称修改系列】第14项-如何修改pc端設備管理器中"Android Phone"目錄下的設備名	SW > ALPS > Driver - USB	2014-01-13
-FAQ03928	[USB]MTP的介绍？驱动如何安装？	SW > ALPS > Driver - USB	2014-01-13
-FAQ04856	【USB名称修改系列】第4项-如何修改BICR在PC"我的电脑"中显示的label名称	SW > ALPS > Driver - USB	2014-01-13
-```
-
 ## [FAQ10738] Build otapackage后system.img没有打包进去
 
 ```
@@ -34992,8 +35206,6 @@ mt6628_patch_e2_1_hdr.bin
 
 ## [FAQ15040] 如何增加色度，饱和度，对比度，亮度的调节幅度
 
-## [FAQ11559] [USB名称修改系列] 第17项-如何修改"USB tethering" 在PC端的显示
-
 ## [FAQ11062] 如何实现usb驱动自动安装？
 
 ## [FAQ12749] 联系人如何区分*123与123这两个号码
@@ -35174,8 +35386,6 @@ mt6628_patch_e2_1_hdr.bin
 
 ## [FAQ18098] [Graphics]Skia绘图的dump方法
 
-## [FAQ04906] [USB名称修改系列] 第13项-如何修改USB存储在PC"我的电脑"中显示的label名称
-
 ## [FAQ10135] [People]新建/编辑联系人时，检测输入的email/邮件地址格式是否合法
 
 ## [FAQ14415] 如何开启early printk调试kernel？
@@ -35331,6 +35541,109 @@ FlashTool 终端模式的使用方法
 ## [FAQ09895] [SAT]怎么实现没插卡时launcher中不显示STK icon
 
 ## [FAQ11770] [USB] MTK USB问题宝典
+
+```
+USB OTG问题：
+FAQ06610 [USB] USB OTG功能如何打开及实现 
+FAQ03872 [USB] 怎么开启OTG功能
+FAQ04016 [USB] 如何实现OTG U盘自动挂载 
+FAQ06656 [USB] 哪些平台支持OTG，OTG功能支持的设备 
+FAQ11784 [USB] 如何实现USB OTG鼠标的右键为返回键功能？
+
+USB 名称修改系列：
+FAQ09991 【USB名称修改系列】第1项-为什么参考FAQ修改名称后却无效
+FAQ04857 【USB名称修改系列】第2项-如何修改PTP在PC"我的电脑"中显示的label名称 
+FAQ03524 【USB名称修改系列】第3项-如何修改MTP在PC"我的电脑"中显示的label名称 
+FAQ04856 【USB名称修改系列】第4项-如何修改BICR在PC"我的电脑"中显示的label名称
+FAQ07081 【USB名称修改系列】第5项-如何修改MTP在PC设备管理器中制造商的名称 
+FAQ05691 【USB名称修改系列】第6项-如何修改手机在PC桌面右下角弹出的“MT65xx Android Phone”提示框
+FAQ09979 【USB名称修改系列】第7项-如何修改PTP设备在PC上弹出的对话框的标题 
+FAQ09980 【USB名称修改系列】第8项-如何修改mtp设备在设备管理器中的”Portable Devices”下的名称 
+FAQ09982 【USB名称修改系列】第9项-如何修改UMS在设备管理器中DiskDrive下的名称 
+FAQ09985 【USB名称修改系列】第10项-如何修改设备管理器中设备名后的数字 
+FAQ09986 【USB名称修改系列】第11项-如何修改preloader阶段的vcom口在windows右下角的提示框的字符串显示 
+FAQ09987 【USB名称修改系列】第12项-如何修改MTP在windows弹出的自动播放提示框标题
+FAQ04906 [USB名称修改系列] 第13项-如何修改USB存储在PC"我的电脑"中显示的label名称 
+FAQ11803 [USB]修改USB存储在PC"我的电脑"中显示的label名称，如何解决label中的小写字母全部变成大写字母的问题？
+FAQ05418 【USB名称修改系列】第14项-如何修改pc端設備管理器中"Android Phone"目錄下的設備名
+FAQ10612 【USB名称修改系列】第15项-如何修改USB设备在控制面板中显示的名称 
+FAQ11542 [USB名称修改系列] 第16项-如何修改MTP在windows自动播放窗下的设备名称 
+FAQ11559 [USB名称修改系列] 第17项-如何修改"USB tethering" 在PC端的显示
+FAQ11561 [USB名称修改系列] 第18项-如何修改"ACM 虚拟串口" 在PC端设备管理器的显示
+FAQ11984 [USB名称修改系列] 第19项-手机连上PC端，切成MTP mode，sd卡在电脑端的名称怎么修改
+FAQ12212 [USB名称修改系列] 如何修改USB MTP模式下，“设备与打印机”中Model项的显示？
+FAQ04779 [USB]如何修改设备管理器中的磁盘驱动器名
+FAQ09627 修改UMS功能在设备管理器中名称的限制 
+
+USB serial number客制化：
+FAQ10922 [USB serial number客制化][系列1]如何修改adb devices的序列号 
+FAQ10923 [USB serial number客制化][系列2]：如何实现每台手机的序列号唯一？
+FAQ10924 [USB serial number客制化][系列3]：如何修改手机序列号为Barcode？
+FAQ10925 [USB serial number客制化][系列4]：如何修改手机序列号为手机型号？ 
+FAQ10926 [USB serial number客制化][系列5]：如何实现可以通过pc工具来修改serial number？ 
+FAQ10927 [USB serial number客制化][系列6]：能否实现adb devices的序列号，usb serial number, cts device ID，SN一致?
+FAQ12705 [USB serial number客制化][系列7]：MT6752/32 KK2版本定义CONFIG_MTK_USB_UNIQUE_SERIAL宏不起作用
+
+USB 驱动安装问题：
+FAQ11062 如何实现usb驱动自动安装？ 
+FAQ05690 [USB] How to add ISO files into BICR? 
+FAQ11544 [USB]-[CDROM]如何设定打开CDROM后windows弹出自动播放窗口？ 
+FAQ03324 [USB] [在Factory Mode或Recovery Mode开机后，MT65xx Android Phone的驱动如何安装？] 
+FAQ03468 [USB]ADB驱动申请与安装问题 
+FAQ10010 win8 64位 adb usb 驱动安装不成功
+FAQ03928 [USB]MTP的介绍？驱动如何安装？
+
+USB 测试认证相关问题：
+FAQ09341 [USB]monkey测试，CTS认证，mtbfb测试，或自动化测试等，adb掉口(adb offline)问题的解决办法 
+FAQ11050 Google CTS测试的USB VID/PID组合相关问题 
+FAQ11649 [USB]KK修改serialno导致CTS测试失败 
+FAQ08570 Monkey test时跑com.android.settings，ADB会断开
+FAQ07395 [USB] 微软WHQL认证的一些基本问题
+FAQ11017 [USB] 入库测试时，USB注意事项 
+FAQ11451 [USB] 过USB-IF测试注意事项及修改
+
+USB VID修改相关问题：
+FAQ02433 [USB] 如何修改VID?
+FAQ02497 [USB] 如何刪去USB的註冊表 
+
+USB UMS问题：
+FAQ06836 [USB]usb存储模式，拷贝大文件失败
+FAQ08240 [USB]没有外置SD卡，UMS模式下去掉PC端对应的盘符显示
+FAQ06755 [USB]如何同时打开UMS和BICR(CD-ROM)
+FAQ10331 打开UMS功能后，只能看到外置T卡，不能看到内置T卡
+FAQ06926 [USB] 如何设置UMS模式内置SD卡只读
+FAQ09406 插入USB线，没有自动弹出‘打开USB存储设备’的页面
+
+USB MTP/PTP问题：
+FAQ09160 USB PTP功能如何同时显示内置、外置SD卡内容[JB2]
+FAQ09339 [USB]USB MTP模式下，copy mtklog到PC上时，出现拷贝错误，或者拷贝不全等问题
+FAQ09470 MTP模式下，mtklog在PC 与file manager显示不同步，或者copy不完全
+FAQ09665 MTP和PC数据同步时所支持的文件格式
+
+USB ACM问题：
+FAQ04694 [USB] 如何默认打开虚拟串口ACM的功能？
+FAQ08605 GB2上怎么通过USB发AT命令
+FAQ11178 User版本如何开启acm功能来下at command
+
+USB ADB问题：
+FAQ11513 [ADB]linux下的ADB在KK user版上无法使用的问题
+FAQ10396 linux下使用adb出问题
+FAQ11123 当修改VID PID后再连adb不识别的问题
+FAQ03908 [USB]如何开关默认USB调试功能 
+FAQ11787 [USB] KK user版本使用adb会提示error: device offline
+FAQ13506 L版本ADB无法使用的问题
+
+其他USB 相关问题：
+FAQ04464 [USB]如何修改USB连接后的默认功能
+FAQ02436 [USB]如何强制切换为USB 1.1?
+FAQ10295 缓慢插入USB有时无法识别的问题 
+FAQ11035 如何通过USB接口抓UART log 
+FAQ09557 [USB] 使用USB互联网
+FAQ11320 USB tethering以及USB internet的使用说明
+FAQ10261 开启USB调试与打开USB Tethering成功与否的关系
+FAQ10740 [ICUSB] How to enable IC-USB feature?
+FAQ19176 Android N 版本以后，MTK 不再支持 USB_Mass_Storage(UMS)功能.
+```
 
 ## [FAQ20147] how to update wifi firmware?
 
@@ -44081,13 +44394,6 @@ void InputDispatcher::notifyKey(const NotifyKeyArgs* args) {
 }
 ```
 
-## activity 标签中 android:logo和icon的区别
-
-```
-其中android:icon就是你的安卓应用图标，比如在桌面上显示的应用图标。
-而logo是什么时候被使用呢？ActionBar上有一个图标，那个图标就是使用的android:logo对应的那个资源，一般是一个drawble的资源。
-```
-
 ## Android捕获监听Home键、最近任务列表键
 
 ```
@@ -44152,6 +44458,13 @@ public class MainActivity extends Activity {
 }
 ```
 
+## activity 标签中 android:logo和icon的区别
+
+```
+其中android:icon就是你的安卓应用图标，比如在桌面上显示的应用图标。
+而logo是什么时候被使用呢？ActionBar上有一个图标，那个图标就是使用的android:logo对应的那个资源，一般是一个drawble的资源。
+```
+
 ## android 获取versionName和versionCode以及作用
 
 ```
@@ -44161,8 +44474,8 @@ android:versionName:
 这个是我们常说明的版本号，由三部分组成..,该值是个字符串，可以显示给用户。 
 关于版本号有两个值，如下面的例子
 
-android:versionCode=”2” 
-android:versionName=”1.1”
+android:versionCode="2"
+android:versionName="1.1"
 
 versionCode是给设备程序识别版本(升级)用的，必须是一个interger值，整数，代表app更新过多少次
 
@@ -44185,7 +44498,7 @@ public void getEclipseVersionInfo(){
 }
 //在Android Studio中获取到versionname和versionCode 这两个参数是写在${modle_name}.gradle文件中
 
-public void getASVersionName(){
+public void getASVersionName() {
     int versionCode = BuildConfig.VERSION_CODE;
     String versionName = BuildConfig.VERSION_NAME;
 }
@@ -44230,19 +44543,6 @@ public boolean onKeyDown(int keyCode, KeyEvent event) {
 ## 反射调用 SystemProperties
 
 ```
-public static public String getProperty(String key, String defaultValue) {
-    String value = defaultValue;
-    try {
-        Class<?> c = Class.forName("android.os.SystemProperties");
-        Method get = c.getMethod("get", String.class, String.class);
-        value = (String)(get.invoke(c, key, "unknown" ));
-    } catch (Exception e) {
-        e.printStackTrace();
-    }finally {
-        return value;
-    }
-}
-
 public static public String getProperty(String key, String defaultValue) {
     String value = defaultValue;
     try {
@@ -44744,17 +45044,203 @@ https://www.runoob.com/w3cnote/android-tutorial-upload-file.html
 https://topmanopensource.iteye.com/blog/1605238
 ```
 
+## strace
+
+```
+分析发烫的应用进程在干嘛
+需要用到linux下的strace命令，但是android是没有集成这个命令的，android版本的下载地址：
+http://benno.id.au/android/strace
+下载完成后，上传到手机中：
+我们adb push strace /system/bin，在模拟器上是上传到/system/bin会报out of memory错误，我们也可以上传到/data目录下，如果没有执行权限，还需要chmod 777 strace.
+strace命令有很多参数，直接执行strace会显示使用说明:
+
+其中-p参数输入的就是进程号，第一步中我们找到com.tianxia.test的进程ID是644，我们看看这个应用占用这么高的cpu在干嘛？
+
+strace -p 644
+输出如下：
+
+它的系统调用一直是gettimeofday,一直输出这个，显然哪里一定进入死循环了，而且是获取时间的死循环，然后结合logcat和代码，定位这段代码(就是前面我们给出的那段代码了)解决这个bug。
+```
+
+## 采集某个应用的内存数据
+
+```
+# !/system/bin/sh
+#这个脚步比较粗糙，是这么个意思
+file=/sdcard/cpu/mem_info.log
+rm $file
+until [ 1 -gt 10000 ]
+do
+echo -e "\n\n\n\n\n---------------">>$file
+date >> $file
+dumpsys meminfo com.tianxia.test >> $file
+sleep 3
+done
+```
+
+## @ ?
+
+```
+Syntax
+Now let's see what is the actual syntax for referencing different resources.
+
+Referencing resources (@)
+@[package_name:]resource_type/resource_name
+
+package_name - optional name of the package this resource belongs to (by default - your app package). Reserved package - android. Used for resources shipping with platform
+resource_type - the R subclass for the resource type (attr, color, string, dimen, etc)
+resource_name - an actual name of the resource we are trying to reference.
+Let's actually take my first 2 examples and try to break them down:
+
+android:background="@color/colorPrimary"  
+android:background="@com.myapp:color/colorPrimary"  
+As you can see - both of them are equivalent since by default, package name is set to our app's package name, so it is not necessary to mention it:
+
+package(optional) = com.myapp
+resource_type = color
+resource_name = colorPrimary
+As you might think, Android ships with some predefined resources for entire OS. F.i. I could reference some built-in color this way:
+
+android:background="@android:color/holo_orange_dark"  
+Here is what we got in this case:
+
+package = android - referencing built-in resources
+resource_type = color
+resource_name = holo_orange_dark
+PLEASE NOTE
+
+Nowadays, lots of people use AppCompat (and if you don't - you probably should), and AppCompat often defines its own resources. Even though AppCompat is a first-party lib shipped by Google, it is not really a part of operating system. Instead, those resources get merged into your app, so you don't need to use android keyword to reference those.
+
+Example:
+
+android:background="?selectableItemBackground"  
+Here, even though we don't have custom style attribute name selectableItemBackground in our app (notice that we didn't use android: prefix), we can still reference it because it was "added" to our app by AppCompat.
+
+Referencing style attributes (?)
+Guess what. The syntax is pretty similar to resources: 
+?[package_name:][resource_type/]resource_name
+
+There one small difference though.
+
+The only allowed resource_type when referencing style attributes is attr. So given that, Android packaging tool actually allows us to omit resource_type, so it is effectively optional.
+
+So following expressions mean exactly the same thing from Android perspective:
+
+android:background="?com.myapp:attr/colorPrimary" //verbose format  
+android:background="?com.myapp:colorPrimary" //attr is skipped since its optional  
+android:background="?attr/colorPrimary" //package is skipped since its optional  
+android:background="?colorPrimary"  // package & attr is skipped  
+```
+
+## GSI
+
+```
+What is Generic System Image (GSI)?
+Android GSI is a full OS image that matches with AOSP source code. To application developers, GSI is a tool, similar to emulator, to enable developers to perform early application development and validation on future OS versions: if an application works on GSI then it should execute smoothly on future certified OEM platforms that have the same Android API level.
+```
+
+## ClassLoader和DexClassLoader
+
+```
+上面说到JAVA的动态加载的机制就是通过ClassLoader来实现的，ClassLoader也是实现反射的基石。ClassLoader是JAVA提供的一个类，顾名思义，它就是用来加载Class文件到JVM，以供程序使用的。
+
+但是问题来了，ClassLoader加载文件到JVM，但是Android是基于DVM的，用ClassLoader加载文件进DVM肯定是不行的。于是Android提供了另外一套加载机制，分别为 dalvik.system.DexClassLoader 和 dalvik.system.PathClassLoader，区别在于 PathClassLoader 不能直接从 zip 包中得到 dex，因此只支持直接操作 dex 文件或者已经安装过的 apk（因为安装过的 apk 在 cache 中存在缓存的 dex 文件）。而 DexClassLoader 可以加载外部的 apk、jar 或 dex文件，并且会在指定的 outpath 路径存放其 dex 文件。
+
+ClassLoader在JAVA中的应用
+下面利用反射来调用另一个类中的方法
+
+//定义一个测试类，用来被反射调用
+package com.izzy;
+public class Test {
+    private String s;
+    //构造方法
+    public Test(String s) {
+        this.s = s;
+    }
+    //定义一个方法，用来输出，构造方法中传递进来的参数
+    public void display() {
+        System.out.println(s);
+    }
+
+}
+
+package com.izzy;
+import java.lang.reflect.Constructor;
+public class Client {
+    public static void main(String[] s) {
+        try {
+            //首先拿到系统ClassLoader，并加载Class，返回的是一个Class对象clazz 
+            Class clazz = ClassLoader.getSystemClassLoader().loadClass("com.izzy.Test");
+            //通过clazz 拿到构造方法并转换成对象
+            Constructor constructor = clazz.getConstructor(String.class);
+            Object obj = constructor.newInstance("I AM IZZY");
+            //通过clazz 拿到成员方法
+            Method method = clazz.getMethod("display", null);
+            method.invoke(obj, null);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+}
+
+DexClassLoader在Android中的应用
+以一个例子来说明DexClassLoader用法（本例采用两个已安装的Apk），现在有两个Apk：Share和Test，利用Test来调用Share 里面的方法。
+
+首先在Share　apk中定义Share类，其中有一个display()方法提供给远程调用
+
+public class Share {
+    public void display(String s) {
+        Log.e("IZZY", s);
+    }
+}
 
 
 
+public void getFromRemote() {
+    Intent intent = new Intent("com.IZZY");
+    PackageManager pm = getPackageManager();
+    List<ResolveInfo> resolveInfos = pm.queryIntentActivities(intent, 0);
 
+    ResolveInfo resolveInfo = resolveInfos.get(0);
+    ActivityInfo activityInfo = resolveInfo.activityInfo;
+    //拿到目标类的包名
+    String packageName = activityInfo.packageName;
 
+    //拿到目标类所在的apk或者jar存放的路径
+    String dexPath = activityInfo.applicationInfo.sourceDir;
+    //该路径为拿到目标类dex文件存放在调用者里的路径
+    String dexOutputDir = getApplicationInfo().dataDir;
+    //拿到目标类所使用的C/C++库存放路径
+    String nativeLibraryDir = activityInfo.applicationInfo.nativeLibraryDir;
+    //拿到类装载器
+    ClassLoader classLoader = getClassLoader();
 
+    //DexClassLoader参数分别对应以上四个参数
+    DexClassLoader dcl = new DexClassLoader(dexPath,dexOutputDir,nativeLibraryDir,classLoader);
+    try {
+        //装载目标类
+        Class<?> clazz = dcl.loadClass(packageName + ".Share");
+        //拿到构造器并实例化对象
+        Constructor<?> constructor = clazz.getConstructor();
+        Object o = constructor.newInstance();
+        //拿到成员方法
+        Method display = clazz.getMethod("display", String.class);
+        display.invoke(o, "I AM IZZY");
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
 
+DexClassLoader 在 Android 中的使用场景
+上面是是使用的已经安装过的Apk，如果采用未安装过的jar包或者Apk，则实例化DexClassLoader的时候把相应路径改为需要加载的jar包或者Apk路径亦可拿到结果。这就使得DexClassLoaderde可以应用在HotFix（热修复），动态加载框架等等 一些基于插件化的架构中。
+```
 
+## java反射工具库 jOOR(https://github.com/jOOQ/jOOR)
 
-
-
+```
+Reflect.on(UserManager.class).call("get", getApplicationContext());
+```
 
 
 
