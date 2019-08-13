@@ -44736,7 +44736,13 @@ update_recovery –check-sha1 908410f138130a19caf8fbbc2f2d89496f6caa41 \
 https://www.jianshu.com/p/f70e31755bcd
 ```
 
+## 文件上传
 
+```
+https://www.runoob.com/w3cnote/android-tutorial-upload-file.html
+
+https://topmanopensource.iteye.com/blog/1605238
+```
 
 
 
