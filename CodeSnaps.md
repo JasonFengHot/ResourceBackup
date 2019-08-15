@@ -108,12 +108,17 @@ https://www.hex-rays.com/products/ida/      逆向大利器
 《剑指Offer》
 《Android技术内幕：应用卷》
 《Android技术内幕：系统卷》
+高性能Android应用开发
+Android C++高级编程 使用NDK
 《FFmpeg从入门到精通》
 《音视频开发进阶指南：基于Android与IOS平台的实践》
 《Android应用安全防护和逆向分析》
 《增长黑客》
 《深入探索Android热修复技术原理7.3Q》
 《神策数据-Android_全埋点技术白皮书》
+Android进阶之光
+Android开发艺术探索
+Android开发进阶 从小工到专家
 
 《写给大忙人看的Java SE 8》
 ```
@@ -45389,6 +45394,168 @@ https://blog.csdn.net/jiangwei0910410003/article/details/50668549
 ```
 https://www.jianshu.com/p/8c373d5b0464
 ```
+
+## 4种Android获取View宽高的方式
+
+```
+public void onWindowFocusChanged(boolean hasFocus) {
+    super.onWindowFocusChanged(hasFocus);
+    if (hasFocus) {
+        System.out.println("onWindowFocusChanged width=" + tvTest.getWidth() + " height=" + tvTest.getHeight());
+    }
+}
+
+
+private void getSize1() {
+    ViewTreeObserver vto = tvTest.getViewTreeObserver();
+    vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+        @Override
+        public boolean onPreDraw() {
+            int height = tvTest.getMeasuredHeight();
+            int width = tvTest.getMeasuredWidth();
+            System.out.println("height" + height);
+            System.out.println("width" + width);
+            return true;
+        }
+    });
+}
+
+
+private void getSize2() {
+    ViewTreeObserver viewTreeObserver = tvTest.getViewTreeObserver();
+    viewTreeObserver.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+            tvTest.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            System.out.println("onGlobalLayout width=" + tvTest.getWidth() + " height=" + tvTest.getHeight());
+        }
+    });
+}
+
+
+private void getSize3() {
+    tvTest.post(new Runnable() {
+        @Override
+        public void run() {
+            System.out.println("postDelayed width=" + tvTest.getWidth() + " height=" + tvTest.getHeight());
+        }
+    });
+}
+```
+
+## 异步加载布局 AsyncLayoutInflater
+
+```
+https://www.itcodemonkey.com/article/14874.html
+
+public void onCreate() {
+    new AsyncLayoutInflater(MainActivity.this).inflate(R.layout.activity_main, null, new AsyncLayoutInflater.OnInflateFinishedListe() {
+        @Override
+        public void onInflateFinished(@NonNull View view, int i, @Nullable ViewGroup viewGroup) {
+            //view：加载得到 view
+            setContentView(view);
+            //一系列的 findViewById(...)
+        }
+    });
+}
+```
+
+## WebView无法掉用js的方法
+
+```
+webView.getSettings().setJavaScriptEnabled(true);
+webView.setWebChromeClient(new WebChromeClient());
+
+//调用 js 的方法, func 为 js 中写的方法
+webView.loadUrl("javascript:"+func+"()");
+```
+
+## webView加载 url 的时候有可能还是老的网页的缓存，需要清一下apk的缓存 adb shell pm clear com.mo.h5test
+
+## 判断Activity是否存在？？
+
+```
+一、根据包名判断应用是否存在
+public boolean checkApplication(String packageName) {
+    if (packageName == null || "".equals(packageName)){
+        return false;
+    }
+    try {
+        ApplicationInfo info = getPackageManager().getApplicationInfo(packageName, PackageManager.GET_UNINSTALLED_PACKAGES);
+        return true;
+    } catch (NameNotFoundException e) {
+        return false;
+    }
+}
+
+二、判断Activity是否存在
+Intent intent = new Intent();
+intent.setClassName("包名", "类名");
+
+方法一：
+if (getPackageManager().resolveActivity(intent, 0) == null) {
+    // 说明系统中不存在这个activity
+}
+
+方法二：
+if(intent.resolveActivity(getPackageManager()) == null) {
+    // 说明系统中不存在这个activity
+}
+方法三：
+List<ResolveInfo> list = getPackageManager().queryIntentActivities(intent, 0);
+if (list.size() == 0) {
+    // 说明系统中不存在这个activity
+}
+```
+
+## 判断文件是否完整的几种方法？？
+
+```
+1，使用MD5，本地文件下载完后去文件的md5值与服务器的该文件md5进行比对，一致证明下载完全。
+2，比较文件的size，文件长度，下载完成取下File.length，与服务器的文件长度比对，一致则下载完全。
+3，文件命名法，开始下载时，把文件命名为宜别名如xxx.tmp，下载完成后再把文件名称修改过来。只要正式的文件名存在，则是下载完全的。
+```
+
+## 获取文件大小？？
+
+```
+File apkFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath());
+int apkSize = apkFile.length();
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
