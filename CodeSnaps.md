@@ -6,11 +6,17 @@
 ## Android学习网站
 
 ```
+https://www.androiddevtools.cn/                 Android开发工具
+
 http://androidxref.com/                 android在线源码
+
+https://blog.csdn.net/lmj623565791/article/details/44754023     Android 你应该知道的学习资源 进阶之路贵在坚持(国外学习网站)
 
 https://www.wanandroid.com/article/list/0?cid=79        玩android黑科技
 
 https://codelabs.developers.google.com/?cat=Android         google Codelabs 代码实验室
+
+http://hukai.me/android-training-course-in-chinese/index.html?utm_source=androiddevtools&utm_medium=website         Android官方培训课程中文版
 
 Android学习视频
 https://github.com/open-android/Android
@@ -30,8 +36,6 @@ https://android-developers.googleblog.com/
 
 
 https://pangrongxian.github.io/
-
-https://www.androiddevtools.cn/
 
 http://bbs.16rd.com/forum-263-1.html
 http://www.codeceo.com/article/tag/android
@@ -68,8 +72,6 @@ http://www.apkbus.com/blog/
 http://martinhan.site/
 
 https://www.jb51.net/Special/508.htm
-
-http://hukai.me/android-training-course-in-chinese/ux/search/setup.html
 
 https://github.com/XXApple/AndroidLibs      Android开源库整理
 ```
@@ -121,6 +123,9 @@ Android开发艺术探索
 Android开发进阶 从小工到专家
 
 《写给大忙人看的Java SE 8》
+
+数据结构与算法分析：Java语言描述
+啊哈 算法
 ```
 
 ## 高级工程师目标
@@ -1816,12 +1821,6 @@ if (telephonyManager != null) {
         e.printStackTrace();
     }
 }
-```
-
-## [Snippet]禁止截屏
-
-``` Java
-getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
 ```
 
 ## [Snippet]判断屏幕旋转方向
@@ -39099,10 +39098,22 @@ public class App extends Application {
 
 ```
 
-## 串口通信
+## 串口通信 android-serialport-api
 
 ```
+串口通信(Serial Communication)， 是指外设和计算机间，通过数据信号线 、地线、控制线等，按位进行传输数据的一种通讯方式。这种通信方式使用的数据线少，在远距离通信中可以节约通信成本，但其传输速度比并行传输低。
+
+由于 CPU 与接口之间按并行方式传输，接口与外设之间按串行方式传输，因此，在串行接口中，必须要有 " 接收移位寄存器 " （串→并）和 " 发送移位寄存器 " （并→串）. 在数据输入过程中，数据 1 位 1 位地从外设进入接口的 " 接收移位寄存器 ",当 " 接收移位寄存器 " 中已接收完 1 个字符的各位后，数据就从 " 接收移位寄存器 " 进入 " 数据输入寄存器 " . CPU 从 " 数据输入寄存器 " 中读取接收到的字符.（并行读取，即 D7~D0 同时被读至累加器中）. " 接收移位寄存器 " 的移位速度由 " 接收时钟 " 确定.
+
+UART
+通用异步收发传输器（Universal Asynchronous Receiver/Transmitter，通常称为UART）是一种异步收发传输器，是电脑硬件的一部分，将数据通过串行通信和并行通信间作传输转换。UART通常用在与其他通信接口（如EIA RS-232）的连接上。
+
+具体实物表现为独立的模组化芯片，或是微处理器中的内部周边装置(peripheral)。一般和RS-232C规格的，类似Maxim的MAX232之类的标准信号幅度变换芯片进行搭配，作为连接外部设备的接口。在UART上追加同步方式的序列信号变换电路的产品，被称为USART(Universal Synchronous Asynchronous Receiver Transmitter)。
+
 https://juejin.im/post/5d3009375188251b4b32af17
+
+串口工具下载
+https://code.google.com/archive/p/android-serialport-api/downloads
 ```
 
 ## 利用GitHub实现简单的个人App版本更新
@@ -44477,8 +44488,123 @@ public static Bitmap capture(Activity activity) {
     return bmp;
 }
 
+public static Bitmap shotActivity(Activity ctx) {
+    View view = ctx.getWindow().getDecorView();
+    view.setDrawingCacheEnabled(true);
+    view.buildDrawingCache();
+    Bitmap bp = Bitmap.createBitmap(view.getDrawingCache(), 0, 0, view.getMeasuredWidth(),
+    view.getMeasuredHeight());
+    view.setDrawingCacheEnabled(false);
+    view.destroyDrawingCache();
+    return bp;
+}
+
 // 第三种 ： 使用 screencap 命令
 adb shell screencap -p /sdcard/sreenshot1.png
+
+// 长截屏
+// scrollView 截屏
+public static Bitmap shotScrollView(ScrollView scrollView) {
+    int h = 0;
+    Bitmap bitmap = null;
+    for (int i = 0; i < scrollView.getChildCount(); i++) {
+        h += scrollView.getChildAt(i).getHeight();
+        scrollView.getChildAt(i).setBackgroundColor(Color.parseColor("#ffffff"));
+    }
+    bitmap = Bitmap.createBitmap(scrollView.getWidth(), h, Bitmap.Config.RGB_565);
+    final Canvas canvas = new Canvas(bitmap);
+    scrollView.draw(canvas);
+    return bitmap;
+}
+
+// listView 截屏
+public static Bitmap shotListView(ListView listview) {
+    ListAdapter adapter = listview.getAdapter();
+    int itemscount = adapter.getCount();
+    int allitemsheight = 0;
+    List<Bitmap> bmps = new ArrayList<Bitmap>();
+    for (int i = 0; i < itemscount; i++) {
+        View childView = adapter.getView(i, null, listview);
+        childView.measure(
+        View.MeasureSpec.makeMeasureSpec(listview.getWidth(), View.MeasureSpec.EXACTLY),
+        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        childView.layout(0, 0, childView.getMeasuredWidth(), childView.getMeasuredHeight());
+        childView.setDrawingCacheEnabled(true);
+        childView.buildDrawingCache();
+        bmps.add(childView.getDrawingCache());
+        allitemsheight += childView.getMeasuredHeight();
+    }
+
+    Bitmap bigbitmap = Bitmap.createBitmap(listview.getMeasuredWidth(), allitemsheight, Bitmap.Config.ARGB_8888);
+    Canvas bigcanvas = new Canvas(bigbitmap);
+    Paint paint = new Paint();
+    int iHeight = 0;
+
+    for (int i = 0; i < bmps.size(); i++) {
+        Bitmap bmp = bmps.get(i);
+        bigcanvas.drawBitmap(bmp, 0, iHeight, paint);
+        iHeight += bmp.getHeight();
+        bmp.recycle();
+        bmp = null;
+    }
+    return bigbitmap;
+}
+
+// recyclerView 截屏
+  public static Bitmap shotRecyclerView(RecyclerView view) {
+    RecyclerView.Adapter adapter = view.getAdapter();
+    Bitmap bigBitmap = null;
+    if (adapter != null) {
+      int size = adapter.getItemCount();
+      int height = 0;
+      Paint paint = new Paint();
+      int iHeight = 0;
+      final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+
+      // Use 1/8th of the available memory for this memory cache.
+      final int cacheSize = maxMemory / 8;
+      LruCache<String, Bitmap> bitmaCache = new LruCache<>(cacheSize);
+      for (int i = 0; i < size; i++) {
+        RecyclerView.ViewHolder holder = adapter.createViewHolder(view, adapter.getItemViewType(i));
+        adapter.onBindViewHolder(holder, i);
+        holder.itemView.measure(
+            View.MeasureSpec.makeMeasureSpec(view.getWidth(), View.MeasureSpec.EXACTLY),
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        holder.itemView.layout(0, 0, holder.itemView.getMeasuredWidth(),
+            holder.itemView.getMeasuredHeight());
+        holder.itemView.setDrawingCacheEnabled(true);
+        holder.itemView.buildDrawingCache();
+        Bitmap drawingCache = holder.itemView.getDrawingCache();
+        if (drawingCache != null) {
+
+          bitmaCache.put(String.valueOf(i), drawingCache);
+        }
+        height += holder.itemView.getMeasuredHeight();
+      }
+
+      bigBitmap = Bitmap.createBitmap(view.getMeasuredWidth(), height, Bitmap.Config.ARGB_8888);
+      Canvas bigCanvas = new Canvas(bigBitmap);
+      Drawable lBackground = view.getBackground();
+      if (lBackground instanceof ColorDrawable) {
+        ColorDrawable lColorDrawable = (ColorDrawable) lBackground;
+        int lColor = lColorDrawable.getColor();
+        bigCanvas.drawColor(lColor);
+      }
+
+      for (int i = 0; i < size; i++) {
+        Bitmap bitmap = bitmaCache.get(String.valueOf(i));
+        bigCanvas.drawBitmap(bitmap, 0f, iHeight, paint);
+        iHeight += bitmap.getHeight();
+        bitmap.recycle();
+      }
+    }
+    return bigBitmap;
+  }
+
+
+https://android-notes.github.io/2016/12/03/android%E9%95%BF%E6%88%AA%E5%B1%8F%E5%8E%9F%E7%90%86/
+https://juejin.im/post/5a33403b6fb9a045132abdb6
+https://mp.weixin.qq.com/s/JPVZtErFTzJ5PDuTAPk0DA
 ```
 
 ## Android性能指标
@@ -45523,16 +45649,99 @@ File apkFile = new File(Environment.getExternalStorageDirectory().getAbsolutePat
 int apkSize = apkFile.length();
 ```
 
+## TODO : 学习 mtklog 的设计方法？？
+
+## [反编译]apktool 下载编译
+
+```
+https://www.androiddevtools.cn/             里面有反编译工具大全
+
+https://ibotpeaches.github.io/Apktool/
+
+git clone git://github.com/iBotPeaches/Apktool.git
+cd Apktool
+For steps 3-5 use ./gradlew for unix based systems or gradlew.bat for windows.
+需要先把终端设置为如下字符集，否则会编译报错
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+./gradlew build shadowJar - Builds Apktool, including final binary.
+./gradlew build shadowJar proguard       Optional (You may build a Proguard jar) 
+
+编译之后生成的 apktool 的路径
+./brut.apktool/apktool-cli/build/libs/apktool-xxxxx.jar
+
+添加到 ~/.bashrc 和 ~/.zshrc
+alias apktool='java -jar ~/github/Apktool/brut.apktool/apktool-cli/build/libs/apktool-cli-all.jar'
+```
+
+## [反编译]google官方一键反编译 apk 工具 ClassyShark 使用
+
+```
+https://github.com/google/android-classyshark/releases
+
+下载最新的 ClassyShark.jar
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+java -jar ClassyShark.jar       //选择一个apk打开即可
+```
+
+## [反编译]andoguard
+
+```
+https://github.com/androguard/androguard
+
+pip install -U androguard
+```
+
+## [反编译]手机上的反编译工具 APKParser
+
+```
+https://github.com/jaredrummler/APKParser
+```
+
+## [反编译]MAC 上的反编译工具 Android-Crack-Tool
+
+```
+https://github.com/Jermic/Android-Crack-Tool
+```
+
+## PackageManager 卸载包的方法
+
+```
+PackageManager pkgManager = mContext.getPackageManager();
+// 需要system权限
+PackageDeleteObserver observer = new PackageDeleteObserver(currVirus, 1);
+pkgManager.deletePackage(pakName, observer, 0);
 
 
+private class PackageDeleteObserver extends IPackageDeleteObserver.Stub {
+    private int position;
+    private int mFlag;
+    public PackageDeleteObserver(int index, int flag) {
+        position = index;
+        mFlag = flag;// 0卸载1个包，1卸载N个包 N>1
+    }
+  
+    @Override
+    public void packageDeleted(String arg0, int arg1) throws RemoteException {
+        // TODO Auto-generated method stub
+        //arg0是pakname，arg1是具体没了解，卸载成功后这里是1
+        LLog.e("###packageDeleted +++" + arg0 + "---" + arg1);
+        Message msg;
+        msg = mHandle.obtainMessage();
+        msg.what = FLAG_DELETE_VIRUS;
+        msg.arg1 = position;
+        msg.arg2 = mFlag;
+        msg.sendToTarget();
+    }
+}
 
+<uses-permission android:name="android.permission.DELETE_PACKAGES" />
+```
 
+## TODO : gist 是个什么玩意儿？？？
 
-
-
-
-
-
+## TODO : Java字节码框架asm 是什么？？怎么用？？？有什么用？？？
 
 
 
