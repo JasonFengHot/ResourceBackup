@@ -8,7 +8,13 @@
 ```
 https://www.androiddevtools.cn/                 Android开发工具
 
-http://androidxref.com/                 android在线源码
+http://androidxref.com/                         android在线源码
+
+https://github.com/xitu/gold-miner/blob/master/android.md       国外精品文章的翻译
+
+https://www.jianshu.com/p/703794911751          GitHub 上优质项目整理
+
+http://www.ituring.com.cn                       图灵社区下载电子书
 
 https://blog.csdn.net/lmj623565791/article/details/44754023     Android 你应该知道的学习资源 进阶之路贵在坚持(国外学习网站)
 
@@ -22,6 +28,9 @@ Android学习视频
 https://github.com/open-android/Android
 https://caster.io/
 http://www.maiziedu.com/article/28121/
+
+
+https://www.wanandroid.com/blog/show/2561           各大互联网公司对外分享链接汇总
 
 
 https://www.reddit.com/r/androiddev/                reddit 上的 Android 开发专区
@@ -66,11 +75,31 @@ https://blankj.com/
 http://zmywly8866.github.io/
 http://www.wxtlife.com/
 http://wuxiaolong.me/
-
+http://www.lightskystreet.com/
+https://blog.csdn.net/lmj623565791/
+https://blog.csdn.net/xyz_lmn
+https://blog.csdn.net/lzyzsd/
+https://www.trinea.cn/
+http://hukai.me/
+https://www.cnblogs.com/halzhang
+https://www.cnblogs.com/hanyonglu
+https://fookwood.com/
+https://blog.csdn.net/lilu_leo
+https://www.cnblogs.com/qianxudetianxia
+https://blog.csdn.net/xiaominghimi
+https://blog.csdn.net/hellogv
+https://blog.csdn.net/yiyaaixuexi
+https://blog.csdn.net/wangjinyu501
+https://blog.csdn.net/asce1885
+https://blog.csdn.net/qinjuning
+https://blog.csdn.net/tangcheng_ok
+https://blog.csdn.net/singwhatiwanna
+https://over140.cnblogs.com/
+https://www.cnblogs.com/daizhj
+https://www.cnblogs.com/sunzn
+https://jeanboy.blog.csdn.net/
 http://www.apkbus.com/blog/
-
 http://martinhan.site/
-
 https://www.jb51.net/Special/508.htm
 
 https://github.com/XXApple/AndroidLibs      Android开源库整理
@@ -163,9 +192,18 @@ Android开发进阶 从小工到专家
 《Android开发艺术探索》、《Android 源码设计模式解析与实战》、《Android内核剖析》
 ```
 
+## LeetCode(算法题)
+
+```
+https://leetcode.com/
+https://leetcode-cn.com/problemset/all/
+```
+
 ## 面试题
 
 ```
+https://github.com/Moosphan/Android-Daily-Interview
+
 某视频app公司面试题：
 
 Activity启动模式。
@@ -9498,19 +9536,6 @@ MtkCameraParameters::ON同时存在的时候，camera的界面中会出现这个
 3、md5sum fingerprint.default.so   --> 获取唯一值
 5656a7e732354b53d1e3b1b67b12a67a  fingerprint.default.so
 因为步骤2会搜索出好几个结果，那么如何确认是哪个路径拷贝的呢？首先先在out中找到对应的文件，然后用md5sum fingerprint.default.so 获取出唯一值，然后在把步骤2搜索出来的路径每个都用md5sum的命令去获取唯一值，然后相同的就是对应的文件路径
-```
-
-## 反编译.vdex文件
-
-```
-O版本，vdex文件直接通过vdexExtractor 直接生成dex文件
-./vdexExtractor  -i xxxx.vdex  -o . --deps -f
-
-P版本，会生成中间.cdex文件，需要使用compact_dex_converters临时转换成dex文
-件, 生成的boot-framework_classes.cdex.new其实就是.dex文件，重命名成.dex后
-缀，直接jadx解开即可看到java文件
-
-工具同步更新到如下目录：smb://192.168.3.127/02_sw/127文件目录/02_工具dTOOL/02%20智能机/10_Tools/Extra-vdex/
 ```
 
 ## 拍照速度慢、美颜状态下拍照速度慢
@@ -37236,19 +37261,6 @@ public String collectSecureSettings() {
 对apk进行加固处理
 ```
 
-## 反编译
-
-```
-Smali + Baksmali
-Androguard
-jeb
-Radare2
-IDA Pro
-Hex-Rays
-
-dexopt
-```
-
 ## 本地拒绝服务
 
 ```
@@ -39122,12 +39134,6 @@ https://code.google.com/archive/p/android-serialport-api/downloads
 https://juejin.im/post/5d1df865e51d4550a629b2e5
 ```
 
-## Smali Viewer 用户指南(查看 Smali 文件用)
-
-```
-http://blog.avlyun.com/show/%E3%80%8Asv%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97%E3%80%8B/
-```
-
 ## QMUI(简约的ui框架)
 
 ```
@@ -39473,213 +39479,12 @@ Hook 技术
 关于 Android 进阶的学习指南就已经完结了，欢迎大家继续关注，其他方面的技术分享，及个人感悟。
 ```
 
-## Android博主
-
-```
-http://www.lightskystreet.com/
-
-https://blog.csdn.net/lmj623565791/
-
-https://blog.csdn.net/xyz_lmn
-
-https://blog.csdn.net/lzyzsd/
-
-https://www.trinea.cn/
-
-http://hukai.me/
-
-https://www.cnblogs.com/halzhang
-
-https://www.cnblogs.com/hanyonglu
-
-https://fookwood.com/
-
-https://blog.csdn.net/lilu_leo
-
-https://www.cnblogs.com/qianxudetianxia
-
-https://blog.csdn.net/xiaominghimi
-
-https://blog.csdn.net/hellogv
-
-https://blog.csdn.net/yiyaaixuexi
-
-https://blog.csdn.net/wangjinyu501
-
-https://blog.csdn.net/asce1885
-
-https://blog.csdn.net/qinjuning
-
-https://blog.csdn.net/tangcheng_ok
-
-https://blog.csdn.net/singwhatiwanna
-
-https://over140.cnblogs.com/
-
-https://www.cnblogs.com/daizhj
-
-https://www.cnblogs.com/sunzn
-
-https://jeanboy.blog.csdn.net/
-```
-
 ## Android V1,V2,V3签名
 
 ```
 https://jeanboy.blog.csdn.net/article/details/97884257
 
 https://jeanboy.blog.csdn.net/article/details/84849651
-```
-
-## Android 年薪百万的进阶攻略 —— 资深（专家）工程师学习路线
-
-```
-系统启动过程
-这一部分是 Android 系统从按下电源键开始，然后到展示开机界面，再到展示桌面之前的一个过程。了解下面相关进程的工作流程，会对 Android 系统有一个整体的概念，是一个从 0 到 1 的过程，对深入研究 Android 系统内部机制有很大帮助。
-
-init 进程
-
-了解 init 进程创建与启动的流程。
-
-Zygote 进程
-
-了解 Zygote 进程创建的流程，以及 fork 的过程。
-
-system_server 进程
-
-了解 system_server 进程启动流程，工作流程。
-
-ServiceManager
-
-了解 ServiceManager 的启动流程，以及 ServiceManager 在系统中的作用。
-
-内核技术
-这一部分是计算机操作系统相关的原理，也是计算机相关专业的一门必修课程，推荐学习下相关知识。
-
-CPU 调度
-进程管理
-文件系统
-内存管理
-通信方式
-Binder
-
-Binder 是 Android 系统中特有的一种 IPC 通信方式，建议阅读 Binder 相关的源码，与深入越好，理解 Binder 工作的原理，了解服务的注册、获取、死亡通知的流程。
-
-Handler
-
-Handler 是 Android 系统中线程间通信的方式，已经在 Android 高级工程师部分说过了。这里一定要阅读下源码了解内部的运行机制。
-
-Socket
-
-Socket 是系统中常见的一种 IPC 通信方式，Socket 的应用范围很广，在进程间通信、网络通信都会用到，建议深入了解下。
-
-Pipe
-
-Pipe（管道）是 Linux 系统中常见的一种 IPC 通信方式，建议深入了解下工作原理。
-
-signal
-
-signal（信号量）是系统中常见的一种 IPC 通信方式，建议深入了解下工作原理。
-
-核心服务
-Activity、Service、Broadcast、ContentProvider
-
-了解四大组件启动流程，理解生命周期回调过程，了解工作原理。
-
-ActivityManagerService（AMS）
-
-理解 ActivityManagerService 工作流程，以及与 Activity 工作的流程。
-
-WindowManagerService（WMS）
-
-理解 WindowManagerService 工作流程，以及与 ActivityManagerService 和 Activity 工作的过程。
-
-View、Window、Surface
-
-理解 Activity、Window、View 之间的关系，了解 View 渲染机制。
-
-Surface、SurfaceFlinger
-
-理解 View 与 Surface 之间的关系，了解 SurfaceFlinger 工作流程，理解 View 渲染的过程。
-
-PackageManagerService（PKMS）
-
-理解 PackageManagerService 工作流程，了解 Apk 安装与卸载过程。
-
-PowerManagerService（PMS）
-
-理解 PackageManagerService 工作流程，了解屏幕唤醒、灭屏的过程，并理解 WeakLock 机制。
-
-InputManagerService（IMS）
-
-理解 InputManagerService 工作流程，理解事件的创建流程、事件分发机制，ANR 触发原理。
-
-AudioFlinger
-
-理解 AudioFlinger 工作流程。
-
-AssertManager
-
-理解 Apk 安装包中资源管理的过程。
-
-异常处理
-可以从源码的角度分析异常产生的原因，定位异常，以及处理。
-
-Watchdog
-ANR
-Java Crash
-Native Crash
-卡顿
-Java 虚拟机
-内存模型
-
-了解 JVM 内存模型，包括堆、栈、方法区、运行时常量池等。
-
-类加载机制
-
-了解类加载时机，类加载的过程，理解类加载器双亲委派模型。
-
-垃圾回收机制
-
-了解垃圾回收的原因，理解对象生命周期，了解垃圾回收算法。
-
-动态化
-Android Gradle Plugin
-
-通过阅读 Android Gradle Plugin 源码，理解 Gradle 构建项目的过程，了解插件开发过程。
-
-VirtualAPK、Tinker
-
-通过阅读 VirtualAPK 源码，理解热修复、插件化的原理。
-
-Hook 技术
-设计模式与架构
-熟悉六大 OOD 设计原则
-熟悉常见的设计模式，可以熟练的运用在项目中
-理解 MVC、MVP、MVVM 的思想以及区别
-项目架构设计与重构
-项目组件化设计与开发
-软技能
-拓展技术广度，其他领域的技术学习
-团队管理和指导新人
-总结
-以上就是 Android 资深（专家）工程师 的基本知识点，如果在高级工程师部分基础很牢，进阶到资深（专家）是很容易的。这个级别的知识点不仅仅需要对 API 熟练应用，更重要的是对内部的运行机制的深入理解。
-
-我们可以发现很多的知识点都是对 Android 系统源码的阅读来获取的，阅读源码是一个很痛苦的过程，也是必须经历的一个过程。
-
-在阅读源码的时候建议多注重对整体流程的把握，而不是深入细节不能自拔。毕竟我们主要工作还是开发 App，阅读源码是为了更好的理解内部运行机制。
-
-专家除了具有扎实的技术深度以外，还有一定的技术广度，以及不错的架构设计能力。除了技术，软技能也是很重要的部分。比如如何管理团队，带带新人，写写 PPT，吹 NB 啥的。
-
-已经达到了资深（专家）的开发者，以后的学习路线跟自己的职业规划有很大关系。这个级别技术也不再那么重要，毕竟都是专家了，大家都很 NB，怎么还能让人手把手教呢？！
-
-以下方面大家可以参考下：
-
-维护一个公众号，增加业内影响力
-考虑出一本书，增加业内知名度
-开源一个 NB 的项目，为开源贡献一份力量
-转型做产品或者管理
-换一个领域继续深入研究
 ```
 
 ## 如何导入导出外部数据库
@@ -45299,6 +45104,12 @@ startActivity(intent);
 原理详解：http://www.jianshu.com/p/2ad105f54d07
 ```
 
+## 使用黑科技启动未注册的Activity
+
+```
+https://mp.weixin.qq.com/s/gzg0a_afY0459w07WvuXkQ
+```
+
 ## 应用卸载反馈
 
 ```
@@ -45638,18 +45449,33 @@ if (list.size() == 0) {
 
 ```
 1，使用MD5，本地文件下载完后去文件的md5值与服务器的该文件md5进行比对，一致证明下载完全。
-2，比较文件的size，文件长度，下载完成取下File.length，与服务器的文件长度比对，一致则下载完全。
+2，比较文件的size，文件长度，下载完成取下 File.length()，与服务器的文件长度比对，一致则下载完全。
 3，文件命名法，开始下载时，把文件命名为宜别名如xxx.tmp，下载完成后再把文件名称修改过来。只要正式的文件名存在，则是下载完全的。
 ```
 
 ## 获取文件大小？？
 
 ```
-File apkFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath());
+File apkFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/xxx.apk");
 int apkSize = apkFile.length();
 ```
 
 ## TODO : 学习 mtklog 的设计方法？？
+
+## [反编译]反编译工具
+
+```
+Smali + Baksmali
+Androguard
+jeb
+Radare2
+IDA Pro
+Hex-Rays
+
+dexopt
+
+jadx
+```
 
 ## [反编译]apktool 下载编译
 
@@ -45705,6 +45531,25 @@ https://github.com/jaredrummler/APKParser
 https://github.com/Jermic/Android-Crack-Tool
 ```
 
+## [反编译]Smali Viewer 用户指南(查看 Smali 文件用)
+
+```
+http://blog.avlyun.com/show/%E3%80%8Asv%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97%E3%80%8B/
+```
+
+## [反编译]反编译.vdex文件
+
+```
+O版本，vdex文件直接通过vdexExtractor 直接生成dex文件
+./vdexExtractor  -i xxxx.vdex  -o . --deps -f
+
+P版本，会生成中间.cdex文件，需要使用compact_dex_converters临时转换成dex文
+件, 生成的boot-framework_classes.cdex.new其实就是.dex文件，重命名成.dex后
+缀，直接jadx解开即可看到java文件
+
+工具同步更新到如下目录：smb://192.168.3.127/02_sw/127文件目录/02_工具dTOOL/02%20智能机/10_Tools/Extra-vdex/
+```
+
 ## PackageManager 卸载包的方法
 
 ```
@@ -45743,11 +45588,19 @@ private class PackageDeleteObserver extends IPackageDeleteObserver.Stub {
 
 ## TODO : Java字节码框架asm 是什么？？怎么用？？？有什么用？？？
 
+## 查看内存占用前10的进程
 
+```
+ps -aux|sort -k4nr |head -n 10
+```
 
+## [adb]如何测量一个应用的启动时间
 
+```
+adb shell am start -W com.android.settings/.Settings
+```
 
-
+## USER软件查看布局 HierarchyView
 
 
 
