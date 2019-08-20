@@ -1665,3 +1665,11 @@ vscode configuration save to server auto ????
 
 couch cms         https://thelinuxcode.com/how-to-install-couch-cms-on-ubuntu-16-04-17-10/
 ```
+
+## 安装aria2
+
+```
+https://blog.csdn.net/qq_29117915/article/details/81986509
+https://www.5yun.org/15363.html
+https://timelate.com/archives/install-aria2-and-ariang-on-ubuntu.html
+```

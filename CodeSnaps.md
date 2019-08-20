@@ -3,6 +3,8 @@
 把培训做成视频
 整理bug并归类？？？？？？？
 
+faq 爬虫 https://online.mediatek.com/FAQ/api/ui/SW/FAQ19494/detail    需要post
+
 ## Android学习网站
 
 ```
@@ -123,7 +125,6 @@ https://www.hex-rays.com/products/ida/      逆向大利器
 《App研发录》
 《HeadFirst设计模式》
 《重构：改善既有代码的设计》
-《算法导论》
 《Linux内核设计与实现》
 《深入理解Linux内核》
 《深入理解Android ***》系列书籍，邓凡平老师写的系列。
@@ -132,29 +133,44 @@ https://www.hex-rays.com/products/ida/      逆向大利器
 《Android系统源代码分析》
 《Android源码设计模式》，结合设计模式分析源码
 《Android框架揭秘》，底层架构的一本好书
-《黑客与画家》
-深入理解Java虚拟机
-高级Android开发强化实战
-码农翻身
+    《黑客与画家》
+《深入理解Java虚拟机》
+《高级Android开发强化实战》
+《码农翻身》
 《剑指Offer》
 《Android技术内幕：应用卷》
 《Android技术内幕：系统卷》
-高性能Android应用开发
-Android C++高级编程 使用NDK
+《高性能Android应用开发》
+《Android C++高级编程 使用NDK》
 《FFmpeg从入门到精通》
 《音视频开发进阶指南：基于Android与IOS平台的实践》
 《Android应用安全防护和逆向分析》
 《增长黑客》
 《深入探索Android热修复技术原理7.3Q》
 《神策数据-Android_全埋点技术白皮书》
-Android进阶之光
-Android开发艺术探索
-Android开发进阶 从小工到专家
-
+《Android进阶之光》
+《Android开发艺术探索》
+《Android开发进阶 从小工到专家》
+《Android 源码设计模式解析与实战》
+《Android内核剖析》
 《写给大忙人看的Java SE 8》
 
-数据结构与算法分析：Java语言描述
-啊哈 算法
+刘望舒的《Android 进阶揭秘》
+《Android 系统源代码情景分析》
+《深入理解 Android》系列
+《深入理解 Android 热修复技术原理》
+
+《Java 并发编程的艺术》
+《Java 并发编程实战》
+《Java 多线程编程核心技术》
+《深入理解 Java 虚拟机》
+
+《算法导论》
+《数据结构与算法分析：Java语言描述》
+《啊哈 算法》
+LeetCode(算法题)
+https://leetcode.com/
+https://leetcode-cn.com/problemset/all/
 ```
 
 ## 高级工程师目标
@@ -188,15 +204,316 @@ Android开发进阶 从小工到专家
 - 系统核心机制
 - 基本知识点的细节
 - 设计模式和架构
-- 书籍推荐
-《Android开发艺术探索》、《Android 源码设计模式解析与实战》、《Android内核剖析》
 ```
 
-## LeetCode(算法题)
+## android高级学习指南
 
 ```
-https://leetcode.com/
-https://leetcode-cn.com/problemset/all/
+Android 高级学习指南
+思维导图
+Android 基础
+
+相关原理
+常见 IPC 方式
+Binder 机制
+AIDL 的使用
+Handler 机制
+ThreadLocal 原理
+AsyncTask 原理
+ListView 工作原理
+阅读源码
+熟悉常见优化
+RecyclerView 工作原理
+阅读源码
+自定义 LayoutManager
+Animation 工作原理
+Activity 难点
+setResult() 和 finish() 的顺序关系？
+onSaveInstanceState() 和 onRestoreInstanceState()
+onNewIntent() 和 onConfigurationChanged()
+Service 难点
+startService 与 bindService 的区别？
+Service 中 onStartCommand 返回值的作用？
+bindService后，ServiceConnection 里面的回调方法运行在哪个线程？它们的调用时机分别是什么？
+Service 的 onCreate 运行在哪个线程？
+ContentProvider 难点
+ContentProvider 的生命周期
+ContentProvider 的 onCreate 和 CRUD 运行在哪个线程？它们是线程安全的吗？
+ContentProvider 的内部存储只能是 SQLite 吗？
+RemoteViews
+熟悉 RemoteViews 的使用，并了解其运行原理
+Material Design（材料设计）
+熟练使用材料设计的控件及布局
+自定义 View
+View 的绘制流程
+onMeasure
+onLayout
+onDraw
+invalidate() 与 postInvalidate()
+事件分发机制
+onDispatchTouchEvent
+onInterceptTouchEvent
+onTouchEvent
+事件冲突处理
+贝塞尔曲线、粒子效果
+性能优化
+布局优化：ViewStub、include、merge 的使用，它们的区别？
+过度渲染的处理
+ANR 的处理
+监控：埋点、Crash 上报
+内存优化
+OOM 的处理
+
+内存泄露的处理
+
+内存检测
+
+内存分析
+
+Bitmap 的优化：超大图的加载原理
+
+网络优化
+API 优化
+流量优化
+弱网优化
+电量优化
+WakeLock 机制
+JobScheduler 机制
+第三方开源库
+OKHttp 原理
+Retrofit 原理
+RxJava 原理
+Glide 原理：加载原理、三级缓存、LRU 算法
+Dagger2 原理
+ButterKnife 原理
+EventBus 原理
+RxJava 原理
+混合开发
+WebView
+React Native
+Flutter
+NDK 开发
+熟悉调用 JNI 方法的方式，熟悉如何回调 Java 方法。
+
+安全
+熟悉各种发编译，二次打包工具，了解 smali。
+
+动态化
+阅读 VirtualAPK、Tinker 的源码，熟悉常见的热修复和插件化原理。
+
+Gradle
+Groovy 语法
+Gradle 插件开发基础
+设计模式与架构
+熟悉 6 大基本原则
+
+MVC、MVP、MVVM
+
+组件化
+
+Jetpack
+
+其他问题
+Activity、Window，View 之间的关系？
+子线程访问 UI 却不报错的原因？
+主线程的消息循环是一个死循环，为何不会卡死？
+Binder、IBinder、IInterface 的关系？
+Java 知识
+String 常量池
+类型转换原理
+ArrayList 实现原理
+HashMap 实现原理
+常见锁（乐观锁、悲观锁），死锁解决方法
+synchronized 关键字
+volatile 关键字
+常见 IO（AIO，BIO，NIO）
+常见并发框架
+了解类加载机制
+了解垃圾回收机制
+总结
+以上就是 Android 高级工程师 需要掌握的知识点，高级工程师需要掌握的知识点还是比较多的。如果说初级工程师是打捞基础的过程，那么高级工程师就是一个沉淀技术进阶的过程。
+
+高级工程师一般是指 3 - 5 年工作经验，如果学习能力比较强 3 工作经验足够进阶到高级工程师的。应聘高级工程师薪资一般在 15k - 25k 左右，这里的薪资范围一般会根据是否有亮点上下浮动。
+
+高级工程师对 Android 的理解，不应该还停留在对 API 的使用。初级工程师可以说是对 API 熟悉的过程，高级工程师更应该注重的是 API 内部的原理，知其然而知其所以然。
+
+这个阶段阅读源码是最好的进阶方式，当然阅读源码很容易陷入细节无法自拔。这里推荐看一下高质量的博客和一些进阶书籍，根据博客和书的思路有针对性的看源码是比较推荐的方式。
+
+如果想让自己更加有亮点，推荐注重下面几个方面：
+
+创建一个 GitHub 账号，多输出一些高质量的开源项目
+拥有一个持续输出的技术博客
+阅读源码
+```
+
+## Android 资深（专家）学习指南
+
+```
+Android 资深(专家) 思维导图
+
+系统启动过程
+这一部分是 Android 系统从按下电源键开始，然后到展示开机界面，再到展示桌面之前的一个过程。了解下面相关进程的工作流程，会对 Android 系统有一个整体的概念，是一个从 0 到 1 的过程，对深入研究 Android 系统内部机制有很大帮助。
+
+init 进程
+
+了解 init 进程创建与启动的流程。
+
+Zygote 进程
+
+了解 Zygote 进程创建的流程，以及 fork 的过程。
+
+system_server 进程
+
+了解 system_server 进程启动流程，工作流程。
+
+ServiceManager
+
+了解 ServiceManager 的启动流程，以及 ServiceManager 在系统中的作用。
+
+内核技术
+这一部分是计算机操作系统相关的原理，也是计算机相关专业的一门必修课程，推荐学习下相关知识。
+
+CPU 调度
+进程管理
+文件系统
+内存管理
+通信方式
+Binder
+
+Binder 是 Android 系统中特有的一种 IPC 通信方式，建议阅读 Binder 相关的源码，与深入越好，理解 Binder 工作的原理，了解服务的注册、获取、死亡通知的流程。
+
+Handler
+
+Handler 是 Android 系统中线程间通信的方式，已经在 Android 高级工程师部分说过了。这里一定要阅读下源码了解内部的运行机制。
+
+Socket
+
+Socket 是系统中常见的一种 IPC 通信方式，Socket 的应用范围很广，在进程间通信、网络通信都会用到，建议深入了解下。
+
+Pipe
+
+Pipe（管道）是 Linux 系统中常见的一种 IPC 通信方式，建议深入了解下工作原理。
+
+signal
+
+signal（信号量）是系统中常见的一种 IPC 通信方式，建议深入了解下工作原理。
+
+核心服务
+Activity、Service、Broadcast、ContentProvider
+
+了解四大组件启动流程，理解生命周期回调过程，了解工作原理。
+
+ActivityManagerService（AMS）
+
+理解 ActivityManagerService 工作流程，以及与 Activity 工作的流程。
+
+WindowManagerService（WMS）
+
+理解 WindowManagerService 工作流程，以及与 ActivityManagerService 和 Activity 工作的过程。
+
+View、Window、Surface
+
+理解 Activity、Window、View 之间的关系，了解 View 渲染机制。
+
+Surface、SurfaceFlinger
+
+理解 View 与 Surface 之间的关系，了解 SurfaceFlinger 工作流程，理解 View 渲染的过程。
+
+PackageManagerService（PKMS）
+
+理解 PackageManagerService 工作流程，了解 Apk 安装与卸载过程。
+
+PowerManagerService（PMS）
+
+理解 PackageManagerService 工作流程，了解屏幕唤醒、灭屏的过程，并理解 WeakLock 机制。
+
+InputManagerService（IMS）
+
+理解 InputManagerService 工作流程，理解事件的创建流程、事件分发机制，ANR 触发原理。
+
+AudioFlinger
+
+理解 AudioFlinger 工作流程。
+
+AssertManager
+
+理解 Apk 安装包中资源管理的过程。
+
+异常处理
+可以从源码的角度分析异常产生的原因，定位异常，以及处理。
+
+Watchdog
+ANR
+Java Crash
+Native Crash
+卡顿
+Java 虚拟机
+内存模型
+
+了解 JVM 内存模型，包括堆、栈、方法区、运行时常量池等。
+
+类加载机制
+
+了解类加载时机，类加载的过程，理解类加载器双亲委派模型。
+
+垃圾回收机制
+
+了解垃圾回收的原因，理解对象生命周期，了解垃圾回收算法。
+
+动态化
+Android Gradle Plugin
+
+通过阅读 Android Gradle Plugin 源码，理解 Gradle 构建项目的过程，了解插件开发过程。
+
+VirtualAPK、Tinker
+
+通过阅读 VirtualAPK 源码，理解热修复、插件化的原理。
+
+Hook 技术
+设计模式与架构
+熟悉六大 OOD 设计原则
+熟悉常见的设计模式，可以熟练的运用在项目中
+理解 MVC、MVP、MVVM 的思想以及区别
+项目架构设计与重构
+项目组件化设计与开发
+软技能
+拓展技术广度，其他领域的技术学习
+团队管理和指导新人
+总结
+以上就是 Android 资深（专家）工程师 的基本知识点，如果在高级工程师部分基础很牢，进阶到资深（专家）是很容易的。这个级别的知识点不仅仅需要对 API 熟练应用，更重要的是对内部的运行机制的深入理解。
+
+我们可以发现很多的知识点都是对 Android 系统源码的阅读来获取的，阅读源码是一个很痛苦的过程，也是必须经历的一个过程。
+
+在阅读源码的时候建议多注重对整体流程的把握，而不是深入细节不能自拔。毕竟我们主要工作还是开发 App，阅读源码是为了更好的理解内部运行机制。
+
+专家除了具有扎实的技术深度以外，还有一定的技术广度，以及不错的架构设计能力。除了技术，软技能也是很重要的部分。比如如何管理团队，带带新人，写写 PPT，吹 NB 啥的。
+
+已经达到了资深（专家）的开发者，以后的学习路线跟自己的职业规划有很大关系。这个级别技术也不再那么重要，毕竟都是专家了，大家都很 NB，怎么还能让人手把手教呢？！
+
+以下方面大家可以参考下：
+
+维护一个公众号，增加业内影响力
+考虑出一本书，增加业内知名度
+开源一个 NB 的项目，为开源贡献一份力量
+转型做产品或者管理
+换一个领域继续深入研究
+一般达到资深（专家）的开发者需要 3 - 5 年左右，本科毕业的学生年龄一般在 22 周岁左右，那么达到资深（专家）最快也得 25 周岁了。这里我们会遇到一个职业上的危机 —— 30 岁危机。
+
+随着年龄的越来越大是继续做技术？还是转型做管理呢？Android 也没啥可研究的了，还是换其他领域呢？这是一个值得思考的问题，我还没有这个经历（岁数还没到）不敢妄下定论，哈哈。
+
+这里分享下网上的一份关于各大厂 Android 级别的薪资参考图（如有侵权，请联系我删除）。
+
+大厂薪资参考，如有侵权立删！
+
+我看到网上很多消息都说今年互联网寒冬什么什么的，其实每年都会说寒冬。互联网总共也就发展了十几年，从 2000 年初的诺基亚到现在的智能手机时代，也就十几年的时间。谁有会预料的下一个十年之后会是什么样的呢？
+
+由于前几年大量培训出来的开发者（这里只是说下客观事实，没有贬低的意思），整个市场涌入大量的初级、中级开发者，所以对于新人来说的确不好找工作了，因为竞争的人多了。
+
+自己没能力就说没能力，怎么你到哪儿，哪都大环境不好，你是破坏大环境的人啊？—— 赵本山
+
+作为开发者我们最好的准备就是知识的储备，如果我们努力学习达到了高级甚至更高，目前需求量还是很大的。目前我了解到的 Android 领域专家级别的工程师也没有多少，大家可以留意统计一下。
+
+关于 Android 进阶的学习指南就已经完结了，欢迎大家继续关注，其他方面的技术分享，及个人感悟。
 ```
 
 ## 面试题
@@ -39152,331 +39469,6 @@ https://github.com/wkhtmltopdf/wkhtmltopdf
 
 ```
 https://github.com/Avik-Jain/100-Days-of-ML-Code-Chinese-Version
-```
-
-## android高级学习指南
-
-```
-Android 高级学习指南
-思维导图
-Android 基础
-
-相关原理
-常见 IPC 方式
-Binder 机制
-AIDL 的使用
-Handler 机制
-ThreadLocal 原理
-AsyncTask 原理
-ListView 工作原理
-阅读源码
-熟悉常见优化
-RecyclerView 工作原理
-阅读源码
-自定义 LayoutManager
-Animation 工作原理
-Activity 难点
-setResult() 和 finish() 的顺序关系？
-onSaveInstanceState() 和 onRestoreInstanceState()
-onNewIntent() 和 onConfigurationChanged()
-Service 难点
-startService 与 bindService 的区别？
-Service 中 onStartCommand 返回值的作用？
-bindService后，ServiceConnection 里面的回调方法运行在哪个线程？它们的调用时机分别是什么？
-Service 的 onCreate 运行在哪个线程？
-ContentProvider 难点
-ContentProvider 的生命周期
-ContentProvider 的 onCreate 和 CRUD 运行在哪个线程？它们是线程安全的吗？
-ContentProvider 的内部存储只能是 SQLite 吗？
-RemoteViews
-熟悉 RemoteViews 的使用，并了解其运行原理
-Material Design（材料设计）
-熟练使用材料设计的控件及布局
-自定义 View
-View 的绘制流程
-onMeasure
-onLayout
-onDraw
-invalidate() 与 postInvalidate()
-事件分发机制
-onDispatchTouchEvent
-onInterceptTouchEvent
-onTouchEvent
-事件冲突处理
-贝塞尔曲线、粒子效果
-性能优化
-布局优化：ViewStub、include、merge 的使用，它们的区别？
-过度渲染的处理
-ANR 的处理
-监控：埋点、Crash 上报
-内存优化
-OOM 的处理
-
-内存泄露的处理
-
-内存检测
-
-内存分析
-
-Bitmap 的优化：超大图的加载原理
-
-网络优化
-API 优化
-流量优化
-弱网优化
-电量优化
-WakeLock 机制
-JobScheduler 机制
-第三方开源库
-OKHttp 原理
-Retrofit 原理
-RxJava 原理
-Glide 原理：加载原理、三级缓存、LRU 算法
-Dagger2 原理
-ButterKnife 原理
-EventBus 原理
-RxJava 原理
-混合开发
-WebView
-React Native
-Flutter
-NDK 开发
-熟悉调用 JNI 方法的方式，熟悉如何回调 Java 方法。
-
-安全
-熟悉各种发编译，二次打包工具，了解 smali。
-
-动态化
-阅读 VirtualAPK、Tinker 的源码，熟悉常见的热修复和插件化原理。
-
-Gradle
-Groovy 语法
-Gradle 插件开发基础
-设计模式与架构
-熟悉 6 大基本原则
-
-MVC、MVP、MVVM
-
-组件化
-
-Jetpack
-
-其他问题
-Activity、Window，View 之间的关系？
-子线程访问 UI 却不报错的原因？
-主线程的消息循环是一个死循环，为何不会卡死？
-Binder、IBinder、IInterface 的关系？
-Java 知识
-String 常量池
-类型转换原理
-ArrayList 实现原理
-HashMap 实现原理
-常见锁（乐观锁、悲观锁），死锁解决方法
-synchronized 关键字
-volatile 关键字
-常见 IO（AIO，BIO，NIO）
-常见并发框架
-了解类加载机制
-了解垃圾回收机制
-总结
-以上就是 Android 高级工程师 需要掌握的知识点，高级工程师需要掌握的知识点还是比较多的。如果说初级工程师是打捞基础的过程，那么高级工程师就是一个沉淀技术进阶的过程。
-
-高级工程师一般是指 3 - 5 年工作经验，如果学习能力比较强 3 工作经验足够进阶到高级工程师的。应聘高级工程师薪资一般在 15k - 25k 左右，这里的薪资范围一般会根据是否有亮点上下浮动。
-
-高级工程师对 Android 的理解，不应该还停留在对 API 的使用。初级工程师可以说是对 API 熟悉的过程，高级工程师更应该注重的是 API 内部的原理，知其然而知其所以然。
-
-这个阶段阅读源码是最好的进阶方式，当然阅读源码很容易陷入细节无法自拔。这里推荐看一下高质量的博客和一些进阶书籍，根据博客和书的思路有针对性的看源码是比较推荐的方式。
-
-Android 方面推荐看下：
-
-任玉刚的《Android 开发艺术探索》
-刘望舒的《Android 进阶揭秘》
-《Android 系统源代码情景分析》
-《深入理解 Android》系列
-《深入理解 Android 热修复技术原理》
-由于 Android 与 Java 有很大的渊源，所以 Java 知识对高级工程师来说也是很重要的。这个阶段需要对 Java 有更深入的理解，还要对 Java 虚拟机有一定的研究。
-
-Java 方面推荐看下：
-
-《Java 并发编程的艺术》
-《Java 并发编程实战》
-《Java 多线程编程核心技术》
-《深入理解 Java 虚拟机》
-如果想让自己更加有亮点，推荐注重下面几个方面：
-
-创建一个 GitHub 账号，多输出一些高质量的开源项目
-拥有一个持续输出的技术博客
-阅读源码
-```
-
-## Android 资深（专家）学习指南
-
-```
-Android 资深(专家) 思维导图
-
-系统启动过程
-这一部分是 Android 系统从按下电源键开始，然后到展示开机界面，再到展示桌面之前的一个过程。了解下面相关进程的工作流程，会对 Android 系统有一个整体的概念，是一个从 0 到 1 的过程，对深入研究 Android 系统内部机制有很大帮助。
-
-init 进程
-
-了解 init 进程创建与启动的流程。
-
-Zygote 进程
-
-了解 Zygote 进程创建的流程，以及 fork 的过程。
-
-system_server 进程
-
-了解 system_server 进程启动流程，工作流程。
-
-ServiceManager
-
-了解 ServiceManager 的启动流程，以及 ServiceManager 在系统中的作用。
-
-内核技术
-这一部分是计算机操作系统相关的原理，也是计算机相关专业的一门必修课程，推荐学习下相关知识。
-
-CPU 调度
-进程管理
-文件系统
-内存管理
-通信方式
-Binder
-
-Binder 是 Android 系统中特有的一种 IPC 通信方式，建议阅读 Binder 相关的源码，与深入越好，理解 Binder 工作的原理，了解服务的注册、获取、死亡通知的流程。
-
-Handler
-
-Handler 是 Android 系统中线程间通信的方式，已经在 Android 高级工程师部分说过了。这里一定要阅读下源码了解内部的运行机制。
-
-Socket
-
-Socket 是系统中常见的一种 IPC 通信方式，Socket 的应用范围很广，在进程间通信、网络通信都会用到，建议深入了解下。
-
-Pipe
-
-Pipe（管道）是 Linux 系统中常见的一种 IPC 通信方式，建议深入了解下工作原理。
-
-signal
-
-signal（信号量）是系统中常见的一种 IPC 通信方式，建议深入了解下工作原理。
-
-核心服务
-Activity、Service、Broadcast、ContentProvider
-
-了解四大组件启动流程，理解生命周期回调过程，了解工作原理。
-
-ActivityManagerService（AMS）
-
-理解 ActivityManagerService 工作流程，以及与 Activity 工作的流程。
-
-WindowManagerService（WMS）
-
-理解 WindowManagerService 工作流程，以及与 ActivityManagerService 和 Activity 工作的过程。
-
-View、Window、Surface
-
-理解 Activity、Window、View 之间的关系，了解 View 渲染机制。
-
-Surface、SurfaceFlinger
-
-理解 View 与 Surface 之间的关系，了解 SurfaceFlinger 工作流程，理解 View 渲染的过程。
-
-PackageManagerService（PKMS）
-
-理解 PackageManagerService 工作流程，了解 Apk 安装与卸载过程。
-
-PowerManagerService（PMS）
-
-理解 PackageManagerService 工作流程，了解屏幕唤醒、灭屏的过程，并理解 WeakLock 机制。
-
-InputManagerService（IMS）
-
-理解 InputManagerService 工作流程，理解事件的创建流程、事件分发机制，ANR 触发原理。
-
-AudioFlinger
-
-理解 AudioFlinger 工作流程。
-
-AssertManager
-
-理解 Apk 安装包中资源管理的过程。
-
-异常处理
-可以从源码的角度分析异常产生的原因，定位异常，以及处理。
-
-Watchdog
-ANR
-Java Crash
-Native Crash
-卡顿
-Java 虚拟机
-内存模型
-
-了解 JVM 内存模型，包括堆、栈、方法区、运行时常量池等。
-
-类加载机制
-
-了解类加载时机，类加载的过程，理解类加载器双亲委派模型。
-
-垃圾回收机制
-
-了解垃圾回收的原因，理解对象生命周期，了解垃圾回收算法。
-
-动态化
-Android Gradle Plugin
-
-通过阅读 Android Gradle Plugin 源码，理解 Gradle 构建项目的过程，了解插件开发过程。
-
-VirtualAPK、Tinker
-
-通过阅读 VirtualAPK 源码，理解热修复、插件化的原理。
-
-Hook 技术
-设计模式与架构
-熟悉六大 OOD 设计原则
-熟悉常见的设计模式，可以熟练的运用在项目中
-理解 MVC、MVP、MVVM 的思想以及区别
-项目架构设计与重构
-项目组件化设计与开发
-软技能
-拓展技术广度，其他领域的技术学习
-团队管理和指导新人
-总结
-以上就是 Android 资深（专家）工程师 的基本知识点，如果在高级工程师部分基础很牢，进阶到资深（专家）是很容易的。这个级别的知识点不仅仅需要对 API 熟练应用，更重要的是对内部的运行机制的深入理解。
-
-我们可以发现很多的知识点都是对 Android 系统源码的阅读来获取的，阅读源码是一个很痛苦的过程，也是必须经历的一个过程。
-
-在阅读源码的时候建议多注重对整体流程的把握，而不是深入细节不能自拔。毕竟我们主要工作还是开发 App，阅读源码是为了更好的理解内部运行机制。
-
-专家除了具有扎实的技术深度以外，还有一定的技术广度，以及不错的架构设计能力。除了技术，软技能也是很重要的部分。比如如何管理团队，带带新人，写写 PPT，吹 NB 啥的。
-
-已经达到了资深（专家）的开发者，以后的学习路线跟自己的职业规划有很大关系。这个级别技术也不再那么重要，毕竟都是专家了，大家都很 NB，怎么还能让人手把手教呢？！
-
-以下方面大家可以参考下：
-
-维护一个公众号，增加业内影响力
-考虑出一本书，增加业内知名度
-开源一个 NB 的项目，为开源贡献一份力量
-转型做产品或者管理
-换一个领域继续深入研究
-一般达到资深（专家）的开发者需要 3 - 5 年左右，本科毕业的学生年龄一般在 22 周岁左右，那么达到资深（专家）最快也得 25 周岁了。这里我们会遇到一个职业上的危机 —— 30 岁危机。
-
-随着年龄的越来越大是继续做技术？还是转型做管理呢？Android 也没啥可研究的了，还是换其他领域呢？这是一个值得思考的问题，我还没有这个经历（岁数还没到）不敢妄下定论，哈哈。
-
-这里分享下网上的一份关于各大厂 Android 级别的薪资参考图（如有侵权，请联系我删除）。
-
-大厂薪资参考，如有侵权立删！
-
-我看到网上很多消息都说今年互联网寒冬什么什么的，其实每年都会说寒冬。互联网总共也就发展了十几年，从 2000 年初的诺基亚到现在的智能手机时代，也就十几年的时间。谁有会预料的下一个十年之后会是什么样的呢？
-
-由于前几年大量培训出来的开发者（这里只是说下客观事实，没有贬低的意思），整个市场涌入大量的初级、中级开发者，所以对于新人来说的确不好找工作了，因为竞争的人多了。
-
-自己没能力就说没能力，怎么你到哪儿，哪都大环境不好，你是破坏大环境的人啊？—— 赵本山
-
-作为开发者我们最好的准备就是知识的储备，如果我们努力学习达到了高级甚至更高，目前需求量还是很大的。目前我了解到的 Android 领域专家级别的工程师也没有多少，大家可以留意统计一下。
-
-关于 Android 进阶的学习指南就已经完结了，欢迎大家继续关注，其他方面的技术分享，及个人感悟。
 ```
 
 ## Android V1,V2,V3签名
