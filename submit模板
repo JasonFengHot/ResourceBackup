@@ -1,9 +1,9 @@
 [修复情况]
-http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=shortlog;h=refs/heads/dev_MyOS_Doro
+http://192.168.3.79:8084/gitweb?p=O1_MP1/alps-release-o1.mp1-default.git;a=commit;h=620b3b284874089d35e19b912e591d3eee557c92
 [查找问题的思路]
-找到apk的上传路径
+更新facebooklite
 [问题根源]
-kika提供新的apk
+要求更新facebooklite
 [修复方案]
 更新kika
 [自测情况 & 建议]

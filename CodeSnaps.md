@@ -10934,6 +10934,192 @@ ap侧使用时需要定义长度为2的string数组；
 
 ## [FAQ19648] 如何发送AT命令
 
+```
+本FAQ说明三种情况下如何发送AT命令：
+1. 在Phone进程发送AT命令
+2. 在其他Java进程发送AT命令
+3. 在Native进程发送AT命令
+
+[SOLUTION]
+
+1.在Phone进程发送AT命令
+参考 FAQ02918 [AT]如何在java层直接下发at cmd
+
+2.其他Java进程发送AT命令
+> AT命令只需要发送给卡1：
+调用TelephonyManager.invokeOemRilRequestRaw(byte[] oemReq, byte[] oemResp);
+
+> AT命令需要发送给卡1/卡2：
+Step 1:
+/vendor/mediatek/proprietary/frameworks/base/telephony/java/com/mediatek/telephony/TelephonyManagerEx.java
+
+//添加函数：add-start
+public int invokeOemRilRequestRaw(byte[] oemReq, byte[] oemResp, int slotId){
+    try {
+        ITelephonyEx telephony = getITelephonyEx();
+        if (telephony != null) {
+            return telephony.invokeOemRilRequestRaw(oemReq, oemResp, slotId);
+        }
+    } catch (RemoteException ex) {
+    } catch (NullPointerException ex) {
+    }
+    return -1;
+}//add-end
+
+Step 2:
+frameworks/base/telephony/java/com/mediatek/internal/telephony/ITelephonyEx.aidl
+添加接口：  int invokeOemRilRequestRaw(in byte[] oemReq, out byte[] oemResp, int slotId);
+
+Step 3:
+在/packages/services/Telephony/src/com/mediatek/phone/PhoneInterfaceManagerEx.java
+//增加常量定义 add-start
+private static final int CMD_INVOKE_OEM_RIL_REQUEST_RAW = **;
+private static final int EVENT_INVOKE_OEM_RIL_REQUEST_RAW_DONE = **;
+//add-end
+//增加函数 add-start
+public int invokeOemRilRequestRaw(byte[] oemReq, byte[] oemResp, int slotId) {
+    enforceModifyPermission();
+    int returnValue = 0;
+        try {
+            Phone phone=PhoneFactory.getPhone(slotId);
+            AsyncResult result = (AsyncResult)sendRequest(CMD_INVOKE_OEM_RIL_REQUEST_RAW, phone, oemReq);
+            if(result.exception == null) {
+                if (result.result != null) {
+                    byte[] responseData = (byte[])(result.result);
+                    if(responseData.length > oemResp.length) {
+                        Log.w(LOG_TAG, "Buffer to copy response too small: Response length is " +
+                                responseData.length +  "bytes. Buffer Size is " +
+                                oemResp.length + "bytes.");
+                    }
+                    System.arraycopy(responseData, 0, oemResp, 0, responseData.length);
+                    returnValue = responseData.length;
+                }
+            } else {
+                CommandException ex = (CommandException) result.exception;
+                returnValue = ex.getCommandError().ordinal();
+                if(returnValue > 0) returnValue *= -1;
+            }
+        } catch (RuntimeException e) {
+            Log.w(LOG_TAG, "sendOemRilRequestRaw: Runtime Exception");
+            returnValue = (CommandException.Error.GENERIC_FAILURE.ordinal());
+            if(returnValue > 0) returnValue *= -1;
+        }
+        return returnValue;
+    } //add-end
+
+在MainThreadHandler.handleMessage()中添加：
+// add-start
+    case CMD_INVOKE_OEM_RIL_REQUEST_RAW:
+        request = (MainThreadRequest)msg.obj;
+        onCompleted = obtainMessage(EVENT_INVOKE_OEM_RIL_REQUEST_RAW_DONE, request);
+        final Phone phone = (Phone) request.argument;
+        phone.invokeOemRilRequestRaw((byte[])request.argument2, onCompleted);
+        break;
+    case EVENT_INVOKE_OEM_RIL_REQUEST_RAW_DONE:
+        ar = (AsyncResult)msg.obj;
+        request = (MainThreadRequest)ar.userObj;
+        request.result = ar;
+        synchronized (request) {
+            request.notifyAll();
+        }
+        break;
+// add-end
+
+Native进程发送AT命令
+Step 1:
+/vendor/mediatek/proprietary/hardware/ril/gsm/librilmtk/ril.cpp
+static int handleSpecialRequestWithArgs(int argCount, char** args){
+//在函数最后添加 add-start
+else if (strcmp(cmd, "YOUR_CUSTOM_CMD_SEND_TO_RIL") == 0) { //YOUR_CUSTOM_CMD_SEND_TO_RIL修改为自定义名称
+    memset(org_args, 0, sizeof(org_args));
+    sprintf(org_args, "AT_COMMAND_YOU_WANT_TO_SEND"); //这里替换成为想要发送的AT命令
+    int targetSim = 0;// 0发送给卡1,1发送给卡2
+    issueLocalRequestForResponse(RIL_LOCAL_REQUEST_SEND_COMMAND, org_args, strlen(org_args), (RIL_SOCKET_ID)targetSim);
+    close(s_fdOem_command);
+    s_fdOem_command = -1;
+    return 1;
+} else {
+    // invalid request
+    LOGD("invalid request");
+    goto error;
+}
+
+//在函数最后添加 add-end
+Step 2:
+//在需要发送AT命令的文件中添加下面代码，然后调用send_to_ril()
+//add-start
+#define YOUR_CUSTOM_SOCKET_NAME "rild-oem"
+//add-end
+
+//add-start
+static int connect_socket() {
+    int fd = socket_local_client(YOUR_CUSTOM_SOCKET_NAME, ANDROID_SOCKET_NAMESPACE_RESERVED, SOCK_STREAM);
+    if (fd < 0) {
+        //这里表示socket连接不成功，建议在这里处理。比如延迟1s再调用上面的函数连接socket，尝试几次。从log看，rild会比audio晚3s。
+        //KLOG_ERROR(LOG_TAG, "Fail to connect to socket rild-ocm. return code: %d", fd);
+        return -1;
+    }
+    return fd;
+}
+
+//cmd: YOUR_CUSTOM_CMD_SEND_TO_RIL 自定义命令
+static int send_to_ril(char *cmd) {
+    int ret = 0;
+    int command_len = strlen(cmd);
+    char *command = NULL;
+    int fd = connect_socket();
+    if (fd < 0) {
+        ret = -1;
+        goto error;
+    }
+    command_len = command_len + 1;
+    command = (char *)malloc(sizeof(char) * command_len);
+    memset(command, 0, sizeof(char) * command_len);
+    strcpy(command,cmd)
+    ret = send_data(fd, 1, command_len, command);
+
+  error:
+    if (command != NULL) {
+        free(command);
+    }
+    if (fd >= 0) {
+        disconnect_socket(fd);
+    }
+    return ret;
+}
+
+static int send_data(int fd, int arg_count, uint32_t data_length, const void *data) {
+    int ret = 0;
+    //(send-1)send argCount
+    if(send(fd, (const void*)&arg_count, sizeof(int), 0) != sizeof(int)) {
+        ret = -1;
+        goto error;
+    }
+    //(send-2)send data length
+    if(send(fd, (const void*)&data_length, sizeof(int), 0) != sizeof(int)) {
+        ret = -1;
+        goto error;
+    }
+    //KLOG_INFO(LOG_TAG, "(send-3). data: %s", (char *)data);
+    if(send(fd, (const void*)data, data_length, 0) != (int)data_length) {
+        ret = -1;
+        goto error;
+    }
+   error:
+    KLOG_INFO(LOG_TAG, "[send_data] Ret:%d.", ret);
+    return ret;
+  }
+
+int disconnect_socket(int fd) {
+    if(fd < 0) {
+        //KLOG_ERROR(LOG_TAG, "[disconnect_socket] Invalid fd: %d", fd);
+        return -1;
+    }
+    return close(fd);
+}
+//add-end
+```
+
 ## [FAQ20503] 如何查找某个语言在Setting语言列表中是哪项
 
 ```
@@ -31402,7 +31588,7 @@ NOTE:releasekey为您要使用的新签章。
 1、在alps\mediatek\config\project_name\ProjectConfig.mk中找到MTK_SPECIAL_FACTORY_RESET，把它设为yes；
 2、在alps\vendor\mediatek\project_name\artifacts\out\target\product\project_name\下创建data目录，然后在data目录下创建app目录
 3、将Notification1.apk、Notification2.apk、Notification3.apk放入alps\vendor\mediatek\project_name\artifacts\out\target\product\project_name\data\app目录中
-4、在vendor\mediatek\project_name\artifacts\out\target\product\project_name\data\app目录下创建.keep_list文件，.keep_list文件的内容为：
+4、在vendor\mediatek\project_name\artifacts\out\target\product\project_name\data\app目录下创建 .keep_list 文件，.keep_list 文件的内容为：
 /data/app/Notification1.apk
 /data/app/Notification2.apk
 /data/app/Notification3.apk
@@ -32500,15 +32686,13 @@ event log属于system log
 跟APK有关系，请自行分析APK。
  
 2》
-另外，请抓取相应的待机的mobilelog,
-从kernel_log中分析，
-如果log中可以查找到
-wake up by RTC
-请在相应的main_log中查找关键字
-Alarm triggering, 其后面对应的type 0, type 2所对应的APk就是唤醒系统的唤醒源，
+另外，请抓取相应的待机的 mobilelog,
+从 kernel_log 中分析，
+如果 log 中可以查找到 wake up by RTC
+请在相应的 main_log 中查找关键字 Alarm triggering, 其后面对应的type 0, type 2所对应的APk就是唤醒系统的唤醒源，
 同样请去掉以后测试，
-但是com.android.phone例外，
-这个APK是ICS android4.0加上的一个google default的机制，
+但是 com.android.phone 例外，
+这个 APK 是 ICS android4.0 加上的一个 google default 的机制，
 是一个每隔6分钟起来check数据连接是否有问题的机制，
 检查是否只有TX没有RX的行为，
 一旦检查到系统数据连接有问题，就会做相应的recovery动作
@@ -43702,6 +43886,8 @@ convert src.png -colorspace gray dst.png
 bit_depth（8）channels（3）color_type（2）
 ```
 
+## TODO : 如何获取和修改文件的头信息？？
+
 ## PNG图片文件的种类
 
 ```
@@ -43849,13 +44035,13 @@ clean:
     通过上述了解，现在知道了recovery的图片资源文件png的信息了，怎么去判断png是否能够在recovery中显示，以及如果制作recovery支持的png背景图片了。
 ```
 
-## 代码反混淆simplify
+## TODO : 代码反混淆simplify
 
 ```
 https://github.com/CalebFenton/simplify
 ```
 
-## 长连接抓包anyproxy
+## TODO : 长连接抓包 anyproxy
 
 ## Android 系统签名实现的三种方式
 
@@ -43864,7 +44050,7 @@ https://github.com/CalebFenton/simplify
 常用的系统签名方式包括在ubuntu环境下、手动签名和在AndroidStudio环境配置，三种方式中，实现最简单的是通过AndroidStudo方式，该方式的签名实现与正常的APK签名相同，唯一不同的就是签名文件是通过系统生成的。
 注意，无论采用何种签名方式，如果想实现具有系统权限的应用，在APK生成时，都需要在AndroidManifest.xml中配置android:sharedUserId=“android.uid.system”，如下所示
 
-<manifest  xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.xxxx.xxxx"
     android:sharedUserId="android.uid.system">
 </manifest>
@@ -43904,11 +44090,11 @@ java -jar signapk.jar  platform.x509.pem platform.pk8　old.apk new.apk
 
 需要注意的是：
 
-该语句的执行是在ubuntu环境下执行的
-platform.keystore为系统签名文件
-android为签名密码
-platform为签名的别名(alias)
-生成系统签名后，在AndroidStudio中配置Signing签名信息，配置成功后在modle的buid.gradle中可以查看如下配置信息。
+该语句的执行是在 ubuntu 环境下执行的
+platform.keystore 为系统签名文件
+android 为签名密码
+platform 为签名的别名(alias)
+生成系统签名后，在 AndroidStudio 中配置 Signing 签名信息，配置成功后在 module 的 buid.gradle 中可以查看如下配置信息。
 
 signingConfigs {
     releaseConfig {
@@ -44079,28 +44265,23 @@ import android.os.Bundle;
 import android.widget.Toast;
  
 public class MainActivity extends Activity {
- 
 	private MyReceiver receiver;
- 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// setContentView(R.layout.activity_main);
- 
 		receiver = new MyReceiver();
 		IntentFilter homeFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
- 
 		registerReceiver(receiver, homeFilter);
 	}
- 
+
 	@Override
 	public void onDestroy() {
 		unregisterReceiver(receiver);
 		super.onDestroy();
 	}
- 
+
 	private class MyReceiver extends BroadcastReceiver {
- 
 		private final String SYSTEM_DIALOG_REASON_KEY = "reason";
 		private final String SYSTEM_DIALOG_REASON_HOME_KEY = "homekey";
 		private final String SYSTEM_DIALOG_REASON_RECENT_APPS = "recentapps";
@@ -44111,8 +44292,9 @@ public class MainActivity extends Activity {
 			if (action.equals(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)) {
 				String reason = intent.getStringExtra(SYSTEM_DIALOG_REASON_KEY);
  
-				if (reason == null)
+				if (reason == null) {
 					return;
+				}
  
 				// Home键
 				if (reason.equals(SYSTEM_DIALOG_REASON_HOME_KEY)) {
@@ -44129,14 +44311,14 @@ public class MainActivity extends Activity {
 }
 ```
 
-## activity 标签中 android:logo和icon的区别
+## activity 标签中 android:logo 和 android:icon 的区别
 
 ```
 其中android:icon就是你的安卓应用图标，比如在桌面上显示的应用图标。
 而logo是什么时候被使用呢？ActionBar上有一个图标，那个图标就是使用的android:logo对应的那个资源，一般是一个drawble的资源。
 ```
 
-## android 获取versionName和versionCode以及作用
+## android 获取 versionName 和 versionCode 以及作用
 
 ```
 android:versionCode: 
@@ -44186,22 +44368,11 @@ SDK版本: android.os.Build.VERSION.SDK
 主要是监听onBackPressed来实现在两秒之内连点两次实现退出App，一般使用在首页。。
 以下是源代码和实现的效果：
 @Override
-public void onBackPressed() {
-    if (drawer.isDrawerOpen(GravityCompat.START)) {
-        drawer.closeDrawer(GravityCompat.START);
-    } else {
-        super.onBackPressed();
-    }
-}
-
-@Override
 public boolean onKeyDown(int keyCode, KeyEvent event) {
     if (keyCode == KeyEvent.KEYCODE_BACK) {
         if ((System.currentTimeMillis() - mExitTime) > 2000) {
-            Object mHelperUtils;
             Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
             mExitTime = System.currentTimeMillis();
-
         } else {
             finish();
         }
@@ -44227,6 +44398,8 @@ public static public String getProperty(String key, String defaultValue) {
     }
 }
 ```
+
+## TODO : 在O,P系统上使用反射调用hide的方法和变量？？
 
 ## 截屏的几种方法
 
@@ -44348,7 +44521,7 @@ public static Bitmap shotListView(ListView listview) {
 }
 
 // recyclerView 截屏
-  public static Bitmap shotRecyclerView(RecyclerView view) {
+public static Bitmap shotRecyclerView(RecyclerView view) {
     RecyclerView.Adapter adapter = view.getAdapter();
     Bitmap bigBitmap = null;
     if (adapter != null) {
@@ -44599,7 +44772,7 @@ output.apk”，文件名最好使用绝对路径防止找不到，也可以修�
 root过的手机也可以用 Runtime 执行 su reboot -p 命令来关机
 ```
 
-## 学习使用 Jekins？？？？
+## TODO : 学习使用 Jekins 持续化集成方案？？？？
 
 ## misc分区即"miscellaneous"(杂项)
 
@@ -44637,7 +44810,7 @@ OEM key Bootloader  用于验证 boot image 的 key
 ## odex文件
 
 ```
-ODEX 是 Optimized Dalvik Executable 的缩写,从字面意思上理解,就是经过优化的 Dalvik可执行文件。
+ODEX 是 Optimized Dalvik Executable 的缩写,从字面意思上理解,就是经过优化的 Dalvik 可执行文件。
 ```
 
 ## ABI (Application Binary Interface)
@@ -44656,6 +44829,7 @@ http://www.cyanogenmod.org/
 
 Jack 并不输出中间状态的 jar 文件,而是直接得到最终的 dex 产物—这也是它会导致一些分析工具失效的原因,例如著名的 Jacoco 代码覆盖率工具。
 
+android 整体编译失败之后如果log不容易看出问题的话，可以把 -j 设置为 1 之后再编译就比较容易看出问题
 ```
 
 ## envsetup.sh 相关
@@ -44664,6 +44838,8 @@ Jack 并不输出中间状态的 jar 文件,而是直接得到最终的 dex 产�
 envsetup.sh 除了提供很多实用的函数外, envsetup.sh 在文件的最后还会扫描和加载 device 和 vendor 目录下的 vendorsetup.sh 文件
 vendorsetup.sh 会通过 add_lunch_combo 命令来为 lunch 添加一条加载项
 ```
+
+## TODO : 尝试在 envsetup.sh 脚本中添加自己的脚本并且定制自己的命令 ???
 
 ## 快速定位android的启动耗时
 
@@ -44679,7 +44855,7 @@ https://mp.weixin.qq.com/s?__biz=MzI1MjMyOTU2Ng==&mid=2247485130&idx=1&sn=8fa8b6
 ActivityManager am = (ActivityManager)getSystemService (Context.ACTIVITY_SERVICE);   
 am.restartPackage(getPackageName()); 
 系统会将，该包下的 ，所有进程，服务，全部杀掉，就可以杀干净了，要注意加上
-<uses-permission android:name="android.permission.RESTART_PACKAGES"></uses-permission>
+<uses-permission android:name="android.permission.RESTART_PACKAGES" />
 ```
 
 ## 自动滚动ListView
@@ -44732,6 +44908,11 @@ jar cvfe libparser.jar  ParseApk  ParseApk.class    //直接把第二个参数 P
 ```
 
 ## TODO : 学习使用 htmlunit 抓取网页？？？？
+
+```
+如何模拟登录？？
+获取 MTK faq 的解析地址？？？
+```
 
 ## 拦截 Back 键，使 App 进入后台而不是关闭
 
@@ -44816,7 +44997,7 @@ update_recovery –check-sha1 908410f138130a19caf8fbbc2f2d89496f6caa41 \
 
 ```
 
-## app增量升级方案
+## TODO : app增量升级方案
 
 ```
 https://www.jianshu.com/p/f70e31755bcd
@@ -44864,7 +45045,7 @@ sleep 3
 done
 ```
 
-## @ ?
+## @ ? 的用法和解释
 
 ```
 Syntax
@@ -44878,8 +45059,8 @@ resource_type - the R subclass for the resource type (attr, color, string, dimen
 resource_name - an actual name of the resource we are trying to reference.
 Let's actually take my first 2 examples and try to break them down:
 
-android:background="@color/colorPrimary"  
-android:background="@com.myapp:color/colorPrimary"  
+android:background="@color/colorPrimary"
+android:background="@com.myapp:color/colorPrimary"
 As you can see - both of them are equivalent since by default, package name is set to our app's package name, so it is not necessary to mention it:
 
 package(optional) = com.myapp
@@ -44887,7 +45068,7 @@ resource_type = color
 resource_name = colorPrimary
 As you might think, Android ships with some predefined resources for entire OS. F.i. I could reference some built-in color this way:
 
-android:background="@android:color/holo_orange_dark"  
+android:background="@android:color/holo_orange_dark"
 Here is what we got in this case:
 
 package = android - referencing built-in resources
@@ -44899,7 +45080,7 @@ Nowadays, lots of people use AppCompat (and if you don't - you probably should),
 
 Example:
 
-android:background="?selectableItemBackground"  
+android:background="?selectableItemBackground"
 Here, even though we don't have custom style attribute name selectableItemBackground in our app (notice that we didn't use android: prefix), we can still reference it because it was "added" to our app by AppCompat.
 
 Referencing style attributes (?)
@@ -44912,13 +45093,13 @@ The only allowed resource_type when referencing style attributes is attr. So giv
 
 So following expressions mean exactly the same thing from Android perspective:
 
-android:background="?com.myapp:attr/colorPrimary" //verbose format  
-android:background="?com.myapp:colorPrimary" //attr is skipped since its optional  
-android:background="?attr/colorPrimary" //package is skipped since its optional  
-android:background="?colorPrimary"  // package & attr is skipped  
+android:background="?com.myapp:attr/colorPrimary" //verbose format
+android:background="?com.myapp:colorPrimary" //attr is skipped since its optional
+android:background="?attr/colorPrimary" //package is skipped since its optional 
+android:background="?colorPrimary"  // package & attr is skipped
 ```
 
-## GSI
+## [术语]GSI
 
 ```
 What is Generic System Image (GSI)?
@@ -45054,6 +45235,16 @@ https://blog.csdn.net/woshizisezise/article/details/96303750
 
 ## TODO : Toast的显示时长为什么是固定的？？？有什么方法可以修改？？
 
+```
+在 Toast.java 中有 @interface Duration 的注解，规定只能用 LENGTH_SHORT = 4000 和 LENGTH_LONG = 7000
+/** @hide */
+@IntDef({LENGTH_SHORT, LENGTH_LONG})
+@Retention(RetentionPolicy.SOURCE)
+public @interface Duration {}
+
+用反射的方式是否可以修改？？
+```
+
 ## FLAG_ACTIVITY_NEW_TASK
 
 ```
@@ -45075,7 +45266,7 @@ ActivityManager manager = (ActivityManager)getSystemService(Context.ACTIVITY_SER
 int maxMenory = manager.getMemoryClass();
 ```
 
-## APK Inspector
+## TODO : APK Inspector??
 
 ## 实现动态启动未注册的Activity
 
@@ -45094,11 +45285,8 @@ Intent intent = new Intent(MainActivity.this, OtherActivity.class);
 startActivity(intent);
 
 原理详解：http://www.jianshu.com/p/2ad105f54d07
-```
 
-## 使用黑科技启动未注册的Activity
-
-```
+使用黑科技启动未注册的Activity
 https://mp.weixin.qq.com/s/gzg0a_afY0459w07WvuXkQ
 ```
 
@@ -45221,7 +45409,7 @@ shrinkResources 开启这个之后会把一些不用的资源给移除掉，用�
 tools:keep="@drawable/ic_*,@drawable/t_all"     这样达到保护我们的ic_前缀图片不要被清理。
 ```
 
-## TextUtils.join
+## TextUtils.join()
 
 ```
 String[] strs = {"aaa","bbb"};
@@ -45389,7 +45577,7 @@ public void onCreate() {
 }
 ```
 
-## WebView无法掉用js的方法
+## WebView无法调用js的方法
 
 ```
 webView.getSettings().setJavaScriptEnabled(true);
