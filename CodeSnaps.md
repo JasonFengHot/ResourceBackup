@@ -3,11 +3,13 @@
 把培训做成视频
 整理bug并归类？？？？？？？
 
-faq 爬虫 https://online.mediatek.com/FAQ/api/ui/SW/FAQ19494/detail    需要post
+FAQ 爬虫 https://online.mediatek.com/FAQ/api/ui/SW/FAQ19494/detail    需要post
 
 ## Android学习网站
 
 ```
+http://bbs.16rd.com/forum-261-1.html            一牛网mtk
+
 https://www.androiddevtools.cn/                 Android开发工具
 
 http://androidxref.com/                         android在线源码
@@ -133,6 +135,7 @@ https://www.hex-rays.com/products/ida/      逆向大利器
 《Android系统源代码分析》
 《Android源码设计模式》，结合设计模式分析源码
 《Android框架揭秘》，底层架构的一本好书
+    《Android开发精要-范怀宇》
     《黑客与画家》
 《深入理解Java虚拟机》
 《高级Android开发强化实战》
@@ -145,11 +148,11 @@ https://www.hex-rays.com/products/ida/      逆向大利器
 《FFmpeg从入门到精通》
 《音视频开发进阶指南：基于Android与IOS平台的实践》
 《Android应用安全防护和逆向分析》
-《增长黑客》
+    《增长黑客》
 《深入探索Android热修复技术原理7.3Q》
 《神策数据-Android_全埋点技术白皮书》
 《Android进阶之光》
-《Android开发艺术探索》
+    《Android开发艺术探索》
 《Android开发进阶 从小工到专家》
 《Android 源码设计模式解析与实战》
 《Android内核剖析》
@@ -37979,13 +37982,48 @@ https://github.com/linkedin/qark .
 ```
 adb backup -f backup.ab com.whatsapplock
 
-备份出来的是 .ab 格式的压缩包，需要用 adbextractor 工具打开
+备份出来的是 .ab 格式的压缩包，需要用 adbextractor 工具打开 或 https://github.com/nelenkov/android-backup-extractor
 
 http://sourceforge.net/projects/adbextractor/
 
 java -jar abe.jar -debug unpack backup.ab backup.tar
 
 pax -r < backup.tar
+```
+
+## [Android]利用run-as命令在不root情况下读取data下面的数据
+
+```
+over@over-ThinkPad-R52:~$ adb shell
+$ run-as com.package
+$ cd /data/data/com.package
+$ ls
+databases
+lib
+$ cd databases
+$ ls
+preferences.db
+$ cat preferences.db > /mnt/sdcard/preferences1.db
+
+代码说明：
+
+注意com.package换成自己的完整包名，关键是run-as命令，最后使用cat命令把数据库拷贝到sd卡下面。
+二、补充
+
+同事分享/data/data/package/lib这个目录是可以直接访问的，也就是说adb shell后虽然无法读取/data目录，但是可以直接访问这个目录下的文件，可以通过上面的run-as命令看得出其权限与其他目录的权限是不同的，为system权限，这为多apk共享so提供了便利，这也是Vitamio所使用的方式。
+
+如果签名了并且指定设置了android:debuggable="false"将无法使用该命令。 
+
+如何查看应用是否是 debuggable 的？？adb shell cat /data/system/packages.xml | grep "debuggable"
+也可以使用Android中的 dumpsys package 命令来查看指定应用的详细信息：
+
+感谢网友分享（见评论），注意不要把adb shell 和 run-as作为一条命令一起执行，例如：adb shell run-as com.pack
+
+三、参考文件 　　　　android上使用手機跑adb存取data資料夾[blogspot] 　　　　Why do I get access denied to data folder when using adb?
+
+结束
+
+关于共享数据也可以研究一下/data/data/package/files，使用openFileOutput的第二个参数来指定访问权限。事物总有其多面性，本文有鼓励窥视apk之嫌，方法分享给你，至于你用来做什么我可以
 ```
 
 ## adb restore 还原命令 ？？？？
@@ -44852,7 +44890,7 @@ https://mp.weixin.qq.com/s?__biz=MzI1MjMyOTU2Ng==&mid=2247485130&idx=1&sn=8fa8b6
 ## 一次性关闭所有的Activity
 
 ```
-ActivityManager am = (ActivityManager)getSystemService (Context.ACTIVITY_SERVICE);   
+ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);   
 am.restartPackage(getPackageName()); 
 系统会将，该包下的 ，所有进程，服务，全部杀掉，就可以杀干净了，要注意加上
 <uses-permission android:name="android.permission.RESTART_PACKAGES" />
@@ -44907,11 +44945,11 @@ jar cvf Main.jar Main.class     //生成 Main.jar 文件
 jar cvfe libparser.jar  ParseApk  ParseApk.class    //直接把第二个参数 ParseApk 设置为 Main-Class，写入到 MANIFEST.MF 文件中
 ```
 
-## TODO : 学习使用 htmlunit 抓取网页？？？？
+## TODO : [爬虫]学习使用 htmlunit 抓取网页？？？？
 
 ```
 如何模拟登录？？
-获取 MTK faq 的解析地址？？？
+获取 MTK FAQ 的解析地址？？？
 ```
 
 ## 拦截 Back 键，使 App 进入后台而不是关闭
@@ -45715,6 +45753,14 @@ https://github.com/Jermic/Android-Crack-Tool
 
 ```
 http://blog.avlyun.com/show/%E3%80%8Asv%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97%E3%80%8B/
+
+https://blog.csdn.net/jiangwei0910410003/article/details/51456735       Android逆向之旅---动态方式破解apk前奏篇(Eclipse动态调试smail源码)
+```
+
+## 手把手教你逆向分析 Android 程序
+
+```
+https://segmentfault.com/a/1190000005133219
 ```
 
 ## [反编译]反编译.vdex文件
@@ -45729,6 +45775,8 @@ P版本，会生成中间.cdex文件，需要使用compact_dex_converters临时�
 
 工具同步更新到如下目录：smb://192.168.3.127/02_sw/127文件目录/02_工具dTOOL/02%20智能机/10_Tools/Extra-vdex/
 ```
+
+## TODO : 学习 xposed 和 dexposed 的框架开发插件
 
 ## PackageManager 卸载包的方法
 
@@ -45768,7 +45816,7 @@ private class PackageDeleteObserver extends IPackageDeleteObserver.Stub {
 
 ## TODO : Java字节码框架asm 是什么？？怎么用？？？有什么用？？？
 
-## 查看内存占用前10的进程
+## [shell]查看内存占用前10的进程
 
 ```
 ps -aux|sort -k4nr |head -n 10
@@ -45781,6 +45829,1030 @@ adb shell am start -W com.android.settings/.Settings
 ```
 
 ## USER软件查看布局 HierarchyView
+
+## [adb]adb shell 直接执行 sqlite3 查询数据库的命令
+
+```
+adb shell sqlite3 /data/user_de/0/com.android.providers.telephony/databases/telephony.db "'select * from carriers;'" > db1.log
+adb pull /data/user_de/0/com.android.providers.telephony/databases/telephony.db
+```
+
+## [adb]adb uiautomator dump布局
+
+```
+adb shell uiautomator dump
+adb exec-out uiautomator dump /dev/tty
+
+dump 出来的文件怎么看？？
+```
+
+## 单工、半双工、全双工的区别？？？
+
+```
+在网络的领域内，单工、半双工、全双工是经常会遇见的名称，下面简单的讲述一下他们的区别。
+单工：简单的说就是一方只能发信息，另一方则只能收信息，通信是单向的。
+半双工：比单工先进一点，就是双方都能发信息，但同一时间则只能一方发信息。
+全双工：比半双工再先进一点，就是双方不仅都能发信息，而且能够同时发送。
+```
+
+## Android中的run-as命令引出升降权限的安全问题
+
+```
+https://blog.csdn.net/qq_35559358/article/details/79052640
+```
+
+## 第一次开机会走的文件（恢复出厂设置也会走）
+
+```
+packages/apps/Provision/src/com/android/provision/DefaultActivity.java 在这个里面的oncreate方法里面添加需要处理第一次开机配置
+```
+
+## GPIO
+
+## Android系统修改汇总（MTK）
+
+```
+https://blog.csdn.net/jay8824589/article/details/54912404
+
+以下都是基于Android 8.1 的代码去修改的！！！
+
+一、server 运行时，app退出后台，一段时间后，server被杀kill 掉了
+diff --git a/frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java b/frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java
+index f348453..8e1d2ec 100644
+--- a/frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java
++++ b/frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java
+@@ -8596,6 +8596,10 @@ public class ActivityManagerService extends IActivityManager.Stub
+     // some other background operations are not.  If we're doing a check
+     // of service-launch policy, allow those callers to proceed unrestricted.
+     int appServicesRestrictedInBackgroundLocked(int uid, String packageName, int packageTargetSdk) {
++        if ("com.aura.aura_go7".equals(packageName)) {
++            Slog.i(TAG, "App " + uid + "/" + packageName + " is phone app; not restricted in background");
++            return ActivityManager.APP_START_MODE_NORMAL;
++        }
+         // Persistent app?
+         if (mPackageManagerInt.isPackagePersistent(packageName)) {
+             if (DEBUG_BACKGROUND_CHECK) {
+
+
+以下都是基于Android 6.0 的代码去修改的！！！
+usb storage
+
+
+二十三、屏幕亮度跟踪（按power 键唤醒屏幕  较亮会闪一下bug 跟踪）
+\frameworks\base\services\core\java\com\android\server\display\DisplayPowerController.java
+        // Animate the screen brightness when the screen is on or dozing.
+        // Skip the animation when the screen is off or suspended.
+        if (!mPendingScreenOff) {
+            if (state == Display.STATE_ON || state == Display.STATE_DOZE) {
+                animateScreenBrightness(brightness,
+                        slowChange ? BRIGHTNESS_RAMP_RATE_SLOW : mBrightnessRampRateFast);
+            } else {
+                animateScreenBrightness(brightness, 0);
+            }
+        }
+
+   private void animateScreenBrightness(int target, int rate) {
+        if (DEBUG) {
+            Slog.d(TAG, "Animating brightness: target=" + target +", rate=" + rate);
+        }
+        if (mScreenBrightnessRampAnimator.animateTo(target, rate)) {
+            try {
+                mBatteryStats.noteScreenBrightness(target);
+            } catch (RemoteException ex) {
+                // same process
+            }
+        }
+    }
+
+二十二、屏幕横屏反方向
+robin@ubuntu:~/workspace/SP8/SP8-2017-07-27/SP8_mtk8735$ git diff frameworks/base/core/res/res/values/config.xml
+diff --git a/frameworks/base/core/res/res/values/config.xml b/frameworks/base/core/res/res/values/config.xml
+index 5451540..7aa09d2 100755
+--- a/frameworks/base/core/res/res/values/config.xml
++++ b/frameworks/base/core/res/res/values/config.xml
+@@ -637,7 +637,7 @@
+          landscape will cause a clockwise rotation, and on a landscape device an
+          app requesting portrait will cause a counter-clockwise rotation.  Setting
+          true here reverses that logic. -->
+-    <bool name="config_reverseDefaultRotation">false</bool>
++    <bool name="config_reverseDefaultRotation">true</bool>
+ 
+     <!-- Sets the minimum and maximum tilt tolerance for each possible rotation.
+
+二十一、修改浏览器默认地址（Browser）
+diff --git a/res/values/strings.xml b/res/values/strings.xml
+old mode 100644
+new mode 100755
+index bba4dbe..28a3628
+--- a/res/values/strings.xml
++++ b/res/values/strings.xml
+@@ -793,9 +793,9 @@
+     <!-- Do not translate.  Testing only -->
+     <string name="dump_nav" translatable="false">Dump navigation cache</string>
+ 
+-    <!-- The default homepage. -->
+-    <string name="homepage_base" translatable="false">
+-        https://www.google.com/webhp?client={CID}&amp;source=android-home</string>
++
++    <!-- The default homepage./////   之前保存的网址 Google：    https://www.google.com/webhp?client={CID}&amp;source=android-home   -->
++    <string name="homepage_base" translatable="false">http://pldthome.com/</string>
+ 
+     <!-- Bookmarks -->
+     <string-array name="bookmarks" translatable="false">
+
+二十、去掉SystemUI sim 卡显示ICON （Android version：7.1.1）
+
+
+diff --git a/packages/SystemUI/res/values/config.xml b/packages/SystemUI/res/values/config.xml
+old mode 100644
+new mode 100755
+index 03456c9..3873cb9
+--- a/packages/SystemUI/res/values/config.xml
++++ b/packages/SystemUI/res/values/config.xml
+
+-    <!-- The default tiles to display in QuickSettings -->
++       
++    <!-- The default tiles to display in QuickSettings  
+     <string name="quick_settings_tiles_default" translatable="false">
+         wifi,cell,battery,dnd,flashlight,rotation,bt,airplane
+     </string>
+-
+-    <!-- Tiles native to System UI. Order should match "quick_settings_tiles_default" -->
++-->
++    <!-- Tiles native to System UI. Order should match "quick_settings_tiles_default"  
+     <string name="quick_settings_tiles_stock" translatable="false">
+         wifi,cell,battery,dnd,flashlight,rotation,bt,airplane,location,hotspot,inversion,saver,work,cast,night
+     </string>
++-->
++       <!-- The default tiles to display in QuickSettings     R add 2017-7-1 15:35:52-->
++       <string name="quick_settings_tiles_default" translatable="false">
++        wifi,battery,dnd,flashlight,rotation,bt,airplane
++    </string>
+ 
++    <!-- Tiles native to System UI. Order should match "quick_settings_tiles_default"  -->
++    <string name="quick_settings_tiles_stock" translatable="false">
++        wifi,battery,dnd,flashlight,rotation,bt,airplane,location,hotspot,inversion,saver,work,cast,night
++    </string>
+
+十九、修改Settings 默认打开显示开发者选项
+
+diff --git a/src/com/android/settings/SettingsActivity.java b/src/com/android/settings/SettingsActivity.java
+index 62c7b85..faf50d0 100755
+--- a/src/com/android/settings/SettingsActivity.java
++++ b/src/com/android/settings/SettingsActivity.java
+
+@@ -1276,10 +1280,13 @@ public class SettingsActivity extends Activity
+     }
+ 
+     private void updateTilesList(List<DashboardCategory> target) {
+-        final boolean showDev = mDevelopmentPreferences.getBoolean(
++        // final boolean showDev = mDevelopmentPreferences.getBoolean(
++                // DevelopmentSettings.PREF_SHOW,
++                // android.os.Build.TYPE.equals("eng"));
++               /// R add 2017-3-14 09:22:33
++               final boolean showDev = mDevelopmentPreferences.getBoolean(
+                 DevelopmentSettings.PREF_SHOW,
+-                android.os.Build.TYPE.equals("eng"));
+-
++                true);
+         final UserManager um = (UserManager) getSystemService(Context.USER_SERVICE);
+ 
+         final int size = target.size();
+
+
+十八、修改 Launcher3 ICON  字体颜色
+packages/apps/Launcher3$ vim res/values/styles.xml +63
+
+    <style name="Icon.AllApps">
+        <item name="android:background">@null</item>
+        <item name="android:textColor">@color/quantum_panel_bg_color</item>
+        <item name="android:drawablePadding">@dimen/dynamic_grid_icon_drawable_padding</item>
+        <item name="android:shadowRadius">0</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+        <item name="customShadows">false</item>
+    </style>
+
+十七、修改系统屏方向（MTK 8735   代码6.0）
+
+Modify screen direction for horizontal screen and power logo
+diff --git a/device/hiteq/hiteq8735m_6h/ProjectConfig.mk b/device/hiteq/hiteq8735m_6h/ProjectConfig.mk
+index 6f9bc55..2d7e53f 100755
+--- a/device/hiteq/hiteq8735m_6h/ProjectConfig.mk
++++ b/device/hiteq/hiteq8735m_6h/ProjectConfig.mk
+@@ -1,7 +1,7 @@
+-BOOT_LOGO = wxga
++BOOT_LOGO = wxganl
+ BUILD_KERNEL = yes
+ BUILD_LK = yes
+ BUILD_MD32 = no
+@@ -411,7 +411,7 @@ MTK_KERNEL_POWER_OFF_CHARGING = yes
+ MTK_LAUNCHER_UNREAD_SUPPORT = yes
+ MTK_LCEEFT_SUPPORT = yes
+ MTK_LCM_DEVICE_TREE_SUPPORT = no
+-MTK_LCM_PHYSICAL_ROTATION = 0
++MTK_LCM_PHYSICAL_ROTATION = 90
+ MTK_LIVEWALLPAPER_APP = yes
+ MTK_LOCKSCREEN_TYPE = 0
+ MTK_LOG2SERVER_APP = no
+diff --git a/kernel-3.18/arch/arm64/configs/hiteq8735m_6h_debug_defconfig b/kernel-3.18/arch/arm64/configs/hiteq8735m_6h_debug_defconfig
+old mode 100644
+new mode 100755
+index 8b71f3a..0373649
+--- a/kernel-3.18/arch/arm64/configs/hiteq8735m_6h_debug_defconfig
++++ b/kernel-3.18/arch/arm64/configs/hiteq8735m_6h_debug_defconfig
+@@ -214,7 +214,7 @@ CONFIG_MTK_LCM=y
+ CONFIG_CUSTOM_KERNEL_LCM="ek79023_dsi_wsvga_vdo"
+ CONFIG_MTK_FB=y
+ CONFIG_MTK_VIDEOX=y
+-CONFIG_MTK_LCM_PHYSICAL_ROTATION="0"
++CONFIG_MTK_LCM_PHYSICAL_ROTATION="90"
+ CONFIG_LCM_HEIGHT="1280"
+ CONFIG_LCM_WIDTH="800"
+ CONFIG_MTK_DRAMC=y
+diff --git a/kernel-3.18/arch/arm64/configs/hiteq8735m_6h_defconfig b/kernel-3.18/arch/arm64/configs/hiteq8735m_6h_defconfig
+old mode 100644
+new mode 100755
+index 7ca6079..fbbd792
+--- a/kernel-3.18/arch/arm64/configs/hiteq8735m_6h_defconfig
++++ b/kernel-3.18/arch/arm64/configs/hiteq8735m_6h_defconfig
+@@ -205,7 +205,7 @@ CONFIG_MTK_LCM=y
+ CONFIG_CUSTOM_KERNEL_LCM="ek79023_dsi_wsvga_vdo"
+ CONFIG_MTK_FB=y
+ CONFIG_MTK_VIDEOX=y
+-CONFIG_MTK_LCM_PHYSICAL_ROTATION="0"
++CONFIG_MTK_LCM_PHYSICAL_ROTATION="90"
+ CONFIG_LCM_HEIGHT="1280"
+ CONFIG_LCM_WIDTH="800"
+ CONFIG_MTK_DRAMC=y
+diff --git a/kernel-3.18/drivers/input/touchscreen/mediatek/GT9XXTB_hotknot/gt9xx_driver.c b/kernel-3.18/drivers/input/touchscreen/mediatek/GT9XXTB_hotknot/gt9xx_driver.c
+old mode 100644
+new mode 100755
+index 32fceca..42804b3
+--- a/kernel-3.18/drivers/input/touchscreen/mediatek/GT9XXTB_hotknot/gt9xx_driver.c
++++ b/kernel-3.18/drivers/input/touchscreen/mediatek/GT9XXTB_hotknot/gt9xx_driver.c
+@@ -19,7 +19,7 @@
+ #endif
+ #include <linux/proc_fs.h>     /*proc */
+ 
+-#define GTP_CHANGE_X2Y         0
++#define GTP_CHANGE_X2Y         1
+ 
+ int touch_irq;
+ static int tpd_flag;
+diff --git a/kernel-3.18/drivers/input/touchscreen/mediatek/GT9XXTB_hotknot/include/tpd_gt9xx_common.h b/kernel-3.18/drivers/input/touchscreen/mediatek/GT9XXTB_hotknot/include/tpd_gt9xx_common.h
+old mode 100644
+new mode 100755
+index 9a48867..a895259
+--- a/kernel-3.18/drivers/input/touchscreen/mediatek/GT9XXTB_hotknot/include/tpd_gt9xx_common.h
++++ b/kernel-3.18/drivers/input/touchscreen/mediatek/GT9XXTB_hotknot/include/tpd_gt9xx_common.h
+@@ -266,7 +266,7 @@ enum CHIP_TYPE_T {
+ #define TPD_NO_GPIO
+ #define TPD_RESET_ISSUE_WORKAROUND
+ 
+-#define TPD_WARP_X  
++///#define TPD_WARP_X
+ #define TPD_WARP_Y
+ 
+ #ifdef TPD_WARP_X
+diff --git a/kernel-3.18/drivers/misc/mediatek/accelerometer/stk8baxx/stk8baxx.c b/kernel-3.18/drivers/misc/mediatek/accelerometer/stk8baxx/stk8baxx.c
+old mode 100644
+new mode 100755
+index 1990df9..30a7273
+--- a/kernel-3.18/drivers/misc/mediatek/accelerometer/stk8baxx/stk8baxx.c
++++ b/kernel-3.18/drivers/misc/mediatek/accelerometer/stk8baxx/stk8baxx.c
+@@ -1995,9 +1995,14 @@ static int STK8BAXX_ReadSensorData(struct i2c_client *client, char *buf, int buf
+                acc[STK8BAXX_AXIS_X] = acc[STK8BAXX_AXIS_X] * GRAVITY_EARTH_1000 / obj->reso->sensitivity;
+                acc[STK8BAXX_AXIS_Y] = acc[STK8BAXX_AXIS_Y] * GRAVITY_EARTH_1000 / obj->reso->sensitivity;
+                acc[STK8BAXX_AXIS_Z] = acc[STK8BAXX_AXIS_Z] * GRAVITY_EARTH_1000 / obj->reso->sensitivity;              
+-               
++               ///sprintf(buf, "%04x %04x %04x",  -acc[STK8BAXX_AXIS_X], acc[STK8BAXX_AXIS_Y], acc[STK8BAXX_AXIS_Z]);
+ 
+-               sprintf(buf, "%04x %04x %04x",  -acc[STK8BAXX_AXIS_Y], -acc[STK8BAXX_AXIS_X], -acc[STK8BAXX_AXIS_Z]);
++               ///sprintf(buf, "%04x %04x %04x",  -acc[STK8BAXX_AXIS_Y], -acc[STK8BAXX_AXIS_X], -acc[STK8BAXX_AXIS_Z]);
++               ///sprintf(buf, "%04x %04x %04x", -acc[STK8BAXX_AXIS_X] , -acc[STK8BAXX_AXIS_Y], -acc[STK8BAXX_AXIS_Z]);
++               ///sprintf(buf, "%04x %04x %04x", -acc[STK8BAXX_AXIS_X] , acc[STK8BAXX_AXIS_Y], acc[STK8BAXX_AXIS_Z]);
++               
++               sprintf(buf, "%04x %04x %04x", acc[STK8BAXX_AXIS_X] , -acc[STK8BAXX_AXIS_Y], -acc[STK8BAXX_AXIS_Z]);
++               
+                if(atomic_read(&obj->trace) & ADX_TRC_IOCTL)
+                {
+                        GSE_LOG("gsensor data: %s!\n", buf);
+diff --git a/vendor/mediatek/proprietary/bootable/bootloader/lk/dev/logo/wxganl/wxganl_kernel.bmp b/vendor/mediatek/proprietary/bootable/bootloader/lk/dev/logo/wxganl/wxganl_kernel.bmp
+old mode 100644
+new mode 100755
+index fbef98a..764997e
+Binary files a/vendor/mediatek/proprietary/bootable/bootloader/lk/dev/logo/wxganl/wxganl_kernel.bmp and b/vendor/mediatek/proprietary/bootable/bootloader/lk/dev/logo/wxganl/wxganl_kernel.bmp differ
+diff --git a/vendor/mediatek/proprietary/bootable/bootloader/lk/dev/logo/wxganl/wxganl_uboot.bmp b/vendor/mediatek/proprietary/bootable/bootloader/lk/dev/logo/wxganl/wxganl_uboot.bmp
+old mode 100644
+new mode 100755
+index f2470c5..764997e
+Binary files a/vendor/mediatek/proprietary/bootable/bootloader/lk/dev/logo/wxganl/wxganl_uboot.bmp and b/vendor/mediatek/proprietary/bootable/bootloader/lk/dev/logo/wxganl/wxganl_uboot.bmp differ
+diff --git a/vendor/mediatek/proprietary/bootable/bootloader/lk/platform/mt6735/boot_mode_menu.c b/vendor/mediatek/proprietary/bootable/bootloader/lk/platform/mt6735/boot_mode_menu.c
+old mode 100644
+new mode 100755
+index 47f666b..608c928
+--- a/vendor/mediatek/proprietary/bootable/bootloader/lk/platform/mt6735/boot_mode_menu.c
++++ b/vendor/mediatek/proprietary/bootable/bootloader/lk/platform/mt6735/boot_mode_menu.c
+@@ -139,6 +139,8 @@ void boot_mode_menu_select()
+                        mdelay(300);
+                } else if (mtk_detect_key(MT65XX_MENU_OK_KEY)) { //VOL_DOWN,
+                        //use for OK
++                       video_clean_screen();  /// R add 2017-3-15 13:47:29
++
+                        break;
+                } else {
+                        //pass
+diff --git a/vendor/mediatek/proprietary/bootable/bootloader/lk/project/hiteq8735m_6h.mk b/vendor/mediatek/proprietary/bootable/bootloader/lk/project/hiteq8735m_6h.mk
+index 605a41d..01deff5 100755
+--- a/vendor/mediatek/proprietary/bootable/bootloader/lk/project/hiteq8735m_6h.mk
++++ b/vendor/mediatek/proprietary/bootable/bootloader/lk/project/hiteq8735m_6h.mk
+@@ -12,7 +12,7 @@ MTK_KERNEL_POWER_OFF_CHARGING = yes
+ DEFINES += SWCHR_POWER_PATH
+ DEFINES += MTK_BQ24296_SUPPORT
+ DEFINES += MTK_BATLOWV_NO_PANEL_ON_EARLY
+-MTK_LCM_PHYSICAL_ROTATION = 0
++MTK_LCM_PHYSICAL_ROTATION = 90
+ CUSTOM_LK_LCM="ek79023_dsi_wsvga_vdo"
+ #nt35590_hd720_dsi_cmd_auo = yes
+ 
+@@ -22,7 +22,7 @@ MTK_VERIFIED_BOOT_SUPPORT = yes
+ MTK_SEC_FASTBOOT_UNLOCK_SUPPORT = yes
+ 
+ DEBUG := 2
+-BOOT_LOGO := wxga
++BOOT_LOGO := wxganl
+ 
+ #DEFINES += WITH_DEBUG_DCC=1
+ DEFINES += WITH_DEBUG_UART=1
+(END)
+
+十六、连接USB线，隐藏 USB Storage
+diff --git a/packages/apps/Settings/src/com/android/settings/deviceinfo/UsbModeChooserActivity.java b/packages/apps/Settings/src/com/android/settings/deviceinfo/UsbModeChooserActivity.java
+old mode 100644
+new mode 100755
+index 7fad036..3310d1a
+--- a/packages/apps/Settings/src/com/android/settings/deviceinfo/UsbModeChooserActivity.java
++++ b/packages/apps/Settings/src/com/android/settings/deviceinfo/UsbModeChooserActivity.java
+@@ -44,7 +44,7 @@ public class UsbModeChooserActivity extends Activity {
+         UsbBackend.MODE_POWER_SINK | UsbBackend.MODE_DATA_PTP,
+         UsbBackend.MODE_POWER_SINK | UsbBackend.MODE_DATA_MIDI,
+         /// M: Add for Built-in CD-ROM and USB Mass Storage @{
+-        UsbBackend.MODE_POWER_SINK | UsbBackend.MODE_DATA_MASS_STORAGE,
++        /// R: hide ----> UsbBackend.MODE_POWER_SINK | UsbBackend.MODE_DATA_MASS_STORAGE,
+         UsbBackend.MODE_POWER_SINK | UsbBackend.MODE_DATA_BICR
+         /// M: @}
+     };
+
+十五、launcher 切换语言 退回到 all app 界面 ，桌面与all app 界面重叠
+diff --git a/packages/apps/Launcher3/src/com/android/launcher3/LauncherStateTransitionAnimation.java b/packages/apps/Launcher3/src/com/android/launcher3/LauncherStateTransitionAnimation.java
+index cdde8c1..be4b9f7 100755
+--- a/packages/apps/Launcher3/src/com/android/launcher3/LauncherStateTransitionAnimation.java
++++ b/packages/apps/Launcher3/src/com/android/launcher3/LauncherStateTransitionAnimation.java
+@@ -386,6 +386,8 @@ public class LauncherStateTransitionAnimation {
+             toView.setVisibility(View.VISIBLE);
+             toView.bringToFront();
+ 
++            fromView.setVisibility(View.INVISIBLE);
++            
+             // Show the content view
+             contentView.setVisibility(View.VISIBLE);
+
+十四、将桌面workspace、hotseat 大小调整 放大一半 ，
+这个要根据自己的需求来制定
+ workspace.setPadding(padding.left/2, padding.top/2, padding.right/2, padding.bottom);
+ hotseat.setPadding(edgeMarginPx + padding.left/2, 0,
+                    edgeMarginPx + padding.right/2,
+                    2 * edgeMarginPx);
+
+
+十三、隐藏Launcher3 桌面界面 上面的 搜索栏 
+packages\apps\Launcher3\src\com\android\launcher3\Launcher.Java
+ //mSearchDropTargetBar.addView(mQsb); 注释掉这一行 就行
+
+
+十二、修改Launcher3 appall app菜单列表背景透明度
+\packages\apps\Launcher3\src\com\android\launcher3\allapps\AllAppsContainerView.java
+        mContainerView.setBackground(background);
+        //mRevealView.setBackground(background.getConstantState().newDrawable());
+        mAppsRecyclerView.updateBackgroundPadding(bgPadding);
+        mAdapter.updateBackgroundPadding(bgPadding);
+mContainerView.getBackground().setAlpha(20);
+packages\apps\Launcher3\src\com\android\launcher3\op09\AllAppsContainerView.java
+        mContainerView.setBackground(null);
+        //mRevealView.setBackground(background.getConstantState().newDrawable());
+
+十一、长按电源键 只显示 关机 一项
+我们知道长按Power键会弹出选项，如 关机、 重启、飞行模式。现在想只保留一项  关机 ；
+frameworks/base/core/res/res/values/config.xml
+搜索 config_globalActionsList 
+    <string-array translatable="false" name="config_globalActionsList">
+        <item>power</item>
+    </string-array>
+以下是参考 ，需要添加的放在上面这个数组里面就是了  ：
+<item>power</item>关机选项
+<item>bugreport</item>错误报告选项
+<item>airplane</item>飞行模式选项
+<item>silent</item>静音振动铃声选项
+<item>restart</item>重启选项
+<item>reboot</item>//新增重启功能  
+<item>settings</item>设置选项
+<item>lockdown</item>锁屏选项
+<item>screencapture</item>截图、录制选项
+<item>users</item>用户选项
+
+十、无法写入sn号，需要把这个 宏 打开,这个去掉注释,让写的barcode生效,barcode就是SN,不然都是默认的123456789ABCDEF
+vendor/mediatek/proprietary/bootable/bootloader/lk/app/mt_boot/mt_boot.c
+/* #define SERIAL_NUM_FROM_BARCODE */
+
+九、launcher  focus_indicator 桌面 页面 显示表示 （就是桌面上那小白点），在设置系统字体大小后和在app_app界面屏幕旋转 回到all_app 界面会显示出来 ，bug，让它不显示：
+
++++ b/packages/apps/Launcher3/src/com/android/launcher3/Launcher.java
+@@ -138,6 +138,10 @@ import java.util.HashMap;
+ import java.util.HashSet;
+ import java.util.List;
+ import java.util.concurrent.atomic.AtomicInteger;
++import android.hardware.SensorManager;
++
++import android.content.pm.ResolveInfo;
++import android.os.IBinder;
+ 
+ /**
+  * Default launcher application.   onCreate()里面添加
+@@ -656,7 +660,47 @@ public class Launcher extends Activity
+             showFirstRunActivity();
+             showFirstRunClings();
+         }
++
++               IntentFilter mInrentFilter = new IntentFilter() ;
++        mInrentFilter.addAction("android.intent.action.CONFIGURATION_CHANGED");
++        registerReceiver(screenOrientationChangedReceiver,mInrentFilter) ;
++               
++               mOrientationListener = new OrientationEventListener(this,
++                SensorManager.SENSOR_DELAY_NORMAL) {
++                               @Override
++                               public void onOrientationChanged(int orientation) {
++                               }
++                       };
++
++                       if (mOrientationListener.canDetectOrientation()) {
++                               setPageIndicatorVisble();
++                               mOrientationListener.enable();
++                       } else {
++                               setPageIndicatorVisble();
++                               mOrientationListener.disable();
++                       }
+     }
++       
++       /// R add hide Visble ndicator ///#Switching language#Screen rotation/// 2017-3-2 09:34:26
++       private void setPageIndicatorVisble(){
++               if(isAppsViewVisible()){
++                       if (mPageIndicators != null){
++                               mPageIndicators.setAlpha(0f);
++                       }
++               } else {
++                       if (mPageIndicators != null) {
++                               mPageIndicators.setAlpha(1f);
++                       }
++               }
++       }
++       
++       /// R add Monitor#Screen rotation/// 2017-3-2 09:34:32
++       private BroadcastReceiver screenOrientationChangedReceiver=new BroadcastReceiver() {
++                       @Override 
++                       public void onReceive(Context context, Intent intent) {
++                               setPageIndicatorVisble();
++                       }
++    };
+ 
+     @Override
+     public void onSettingsChanged(String settings, boolean value) {
+@@ -2344,6 +2388,7 @@ public class Launcher extends Activity
+         if (mLauncherCallbacks != null) {
+             mLauncherCallbacks.onDestroy();
+         }
++               unregisterReceiver(screenOrientationChangedReceiver);
+     }
+ 
+     public DragController getDragController() {
+@@ -5468,6 +5513,7 @@ public class Launcher extends Activity
+         }
+         return false;
+     }
+ }
+diff --Git a/packages/apps/Launcher3/AndroidManifest.xml b/packages/apps/Launcher3/AndroidManifest.xml
+index a3d5ec0..20e7d4d 100755
+--- a/packages/apps/Launcher3/AndroidManifest.xml
++++ b/packages/apps/Launcher3/AndroidManifest.xml
+@@ -68,6 +68,7 @@
+     <uses-permission android:name="com.android.launcher3.permission.WRITE_SETTINGS" />
+     <uses-permission android:name="com.android.launcher3.permission.RECEIVE_LAUNCH_BROADCASTS" />
+     <uses-permission android:name="com.android.launcher3.permission.RECEIVE_FIRST_LOAD_BROADCAST" />
++       <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+     <!-- M: hide apps activity requires this permission to get package size. -->
+     <uses-permission android:name="android.permission.GET_PACKAGE_SIZE"/>
+     <!-- M: ALSP02141215, android security patch. -->
+
+八、Workspace 界面大小修改；hotseat 界面大小修改
+diff --git a/packages/apps/Launcher3/src/com/android/launcher3/DeviceProfile.java b/packages/apps/Launcher3/src/com/android/launcher3/DeviceProfile.java
+index ebb19cc..0ed0ad0 100755
+--- a/packages/apps/Launcher3/src/com/android/launcher3/DeviceProfile.java
++++ b/packages/apps/Launcher3/src/com/android/launcher3/DeviceProfile.java
+@@ -414,7 +414,7 @@ public class DeviceProfile {
+         lp.gravity = Gravity.CENTER;
+         Rect padding = getWorkspacePadding(isLayoutRtl);
+         workspace.setLayoutParams(lp);
+-        workspace.setPadding(padding.left, padding.top, padding.right, padding.bottom);
++        workspace.setPadding(padding.left/2, padding.top/2, padding.right/2, padding.bottom);
+         workspace.setPageSpacing(getWorkspacePageSpacing(isLayoutRtl));
+ 
+         // Layout the hotseat
+@@ -432,8 +432,8 @@ public class DeviceProfile {
+             lp.gravity = Gravity.BOTTOM;
+             lp.width = LayoutParams.MATCH_PARENT;
+             lp.height = hotseatBarHeightPx;
+-            hotseat.setPadding(edgeMarginPx + padding.left, 0,
+-                    edgeMarginPx + padding.right,
++            hotseat.setPadding(edgeMarginPx + padding.left/2, 0,
++                    edgeMarginPx + padding.right/2,
+                     2 * edgeMarginPx);
+         } else {
+
+七、修改盘符名称信息、型号信息
+index b20ecaa..f92828b 100755
+--- a/device/hiteq/hiteq8783_tb_m/full_hiteq8783_tb_m.mk
++++ b/device/hiteq/hiteq8783_tb_m/full_hiteq8783_tb_m.mk
+@@ -55,7 +55,7 @@ TRUSTY_PROJECT ?= hiteq8783_tb_m
+ #CHIVIN
+ 
+ PRODUCT_BRAND := GP8PRO
+-CHIVIN_PRODUCT := GP8_PRO
++CHIVIN_PRODUCT := Aura_TELPAD_GP8_PRO_tablet
+ CHIVIN_VERSION := GP8_PRO_V01.00.01    #micheal modify version
+ 
+ #CHIVIN
+diff --git a/packages/apps/Settings/src/com/android/settings/DeviceInfoSettings.Javab/packages/apps/Settings/src/com/android/settings/DeviceInfoSettings.java
+index a964aed..bf11928 100755
+--- a/packages/apps/Settings/src/com/android/settings/DeviceInfoSettings.java
++++ b/packages/apps/Settings/src/com/android/settings/DeviceInfoSettings.java
+@@ -134,7 +134,7 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
+         findPreference(KEY_BUILD_NUMBER).setEnabled(true);
+         findPreference(KEY_KERNEL_VERSION).setSummary(getFormattedKernelVersion());
+                
+-               findPreference(KEY_DEVICE_MODEL).setSummary("Aura_TELPAD-GP8-PRO-tablet");
++               findPreference(KEY_DEVICE_MODEL).setSummary(SystemProperties.get("ro.product.model"));
+                
+         if (!SELinux.isSELinuxEnabled()) {
+             String status = getResources().getString(R.string.selinux_status_disabled);
+@@ -155,7 +155,7 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
+         // Remove Equipment id preference if FCC ID is not set by RIL
+         removePreferenceIfPropertyMissing(getPreferenceScreen(), KEY_EQUIPMENT_ID,
+                 PROPERTY_EQUIPMENT_ID);
+diff --git a/frameworks/av/media/mtp/MtpServer.cpp b/frameworks/av/media/mtp/MtpServer.cpp
+index 470d6ca..91eb0c9 100755
+--- a/frameworks/av/media/mtp/MtpServer.cpp
++++ b/frameworks/av/media/mtp/MtpServer.cpp
+@@ -500,7 +500,7 @@ MtpResponseCode MtpServer::doGetDeviceInfo() {
+ 
+     property_get("ro.product.model", prop_value, "MTP Device");
+     //string.set(prop_value);
+-       string.set("Aura_GP8_PRO_tablet"); ///R add 2017-2-27 21:38:22
++       string.set("Aura_SP8_PRO_tablet"); ///R add 2017-2-27 21:38:22   盘符名称
+     mData.putString(string);   // Model
+     string.set("1.0");
+     mData.putString(string);   // Device Version
+
+六、修改距离感应的阈值Update-hiteq8783_tb_m.dts-threshold
+diff --git a/kernel-3.18/arch/arm64/boot/dts/hiteq8783_tb_m.dts b/kernel-3.18/arch/arm64/boot/dts/hiteq8783_tb_m.dts
+index 7ac604a..ea78285 100644
+--- a/kernel-3.18/arch/arm64/boot/dts/hiteq8783_tb_m.dts
++++ b/kernel-3.18/arch/arm64/boot/dts/hiteq8783_tb_m.dts
+@@ -1,4 +1,3 @@
+-
+ /dts-v1/;
+ 
+ #include "mt6753.dtsi"
+@@ -92,8 +91,8 @@ memory@00000000 {
+                power_vol = <0>;
+                als_level = <1 2 5 10 20 30 40 80 200 300 400 600 1000 1600 2000>;
+                als_value = <80 400 800 1200 1800 2000 2300 2300 12000 12000 12000 48000 48000 72000 81920 81920>;
+-               ps_threshold_high =  <90>;
+-               ps_threshold_low =  <70>;
++               ps_threshold_high =  <300>;
++               ps_threshold_low =  <140>;
+                is_batch_supported_ps   = <0>;
+                is_batch_supported_als  = <0>;
+        };
+注：值比ps_threshold_high 高，黑屏，值比ps_threshold_low  低，亮屏
+  通话界面 为避免 脸部贴近屏幕 而 设计 黑屏 ，是最好的列子。
+
+五、闹钟中的倒计时；设置1秒后；当到达设定的时间后；要超过4秒作用才会提示响铃提醒；设2秒倒计时就会3秒提示；设3秒就2秒提示；5秒后；即时提示；
+index c7bf61c..170b536 100755
+--- a/packages/apps/DeskClock/src/com/android/deskclock/timer/TimerFragment.java
++++ b/packages/apps/DeskClock/src/com/android/deskclock/timer/TimerFragment.java
+@@ -123,6 +123,13 @@ public class TimerFragment extends DeskClockFragment implements OnSharedPreferen
+             final boolean visible = Utils.getTimeNow() % TIME_PERIOD_MS < SPLIT;
+             final boolean toggle = mVisible != visible ;
+             mVisible = visible;
++                       
++                       final TimerObj mTimer_up = getCurrentTimer();
++                       /// R: add Prompt
++                       if (mTimer_up.mTimeLeft <= 0 ) {
++                               updateTimerState(mTimer_up, Timers.TIMES_UP);
++            }  
++                       
+             for (int i = 0; i < mAdapter.getCount(); i++) {
+                 final TimerObj t = mAdapter.getTimerAt(i);
+
+
+四、铃声音量调节时；调节到最小后；再调大；还是没有声音
+
+diff --git a/packages/apps/Settings/src/com/mediatek/audioprofile/SeekBarVolumizer.java b/packages/apps/Settings/src/com/mediatek/audioprofile/SeekBarVolumizer.java
+old mode 100644
+new mode 100755
+index 3b52c18..fa24e40
+--- a/packages/apps/Settings/src/com/mediatek/audioprofile/SeekBarVolumizer.java
++++ b/packages/apps/Settings/src/com/mediatek/audioprofile/SeekBarVolumizer.java
+@@ -58,6 +58,7 @@ public class SeekBarVolumizer implements OnSeekBarChangeListener, Handler.Callba
+     private final Receiver mReceiver = new Receiver();
+     private final Observer mVolumeObserver;
+     private String mKey;
++    private String mCurrentKey;//add by steven on 20170215
+     private boolean mProfileIsActive = false;
+ 
+     private int mOriginalStreamVolume;
+@@ -81,6 +82,8 @@ public class SeekBarVolumizer implements OnSeekBarChangeListener, Handler.Callba
+ 
+         mStreamType = streamType;
+         mKey = profileKey;
++        // add by steven on 20170215
++        mCurrentKey = mProfileManager.getActiveProfileKey();
+         //mMaxStreamVolume = mAudioManager.getStreamMaxVolume(mStreamType);
+         mMaxStreamVolume = mProfileManager.getStreamMaxVolume(mStreamType);
+         mSystemVolume = mAudioManager.getStreamVolume(mStreamType);
+@@ -412,6 +415,9 @@ public class SeekBarVolumizer implements OnSeekBarChangeListener, Handler.Callba
+         }
+     }
+ 
++    // add by steven on 20170215
++    private static final String GENERAL_PREF_KEY = "mtk_audioprofile_general";
++    
+     /**
+      * When click the "Ok" button, set the volume to system.
+      */
+@@ -429,6 +435,11 @@ public class SeekBarVolumizer implements OnSeekBarChangeListener, Handler.Callba
+                     + mLastProgress);
+             setVolume(mStreamType, mLastProgress, false);
+         } else {
++               // add by steven on 20170215
++               if (GENERAL_PREF_KEY.equals(mCurrentKey)&&!mProfileManager.isActiveProfile(mCurrentKey)) {
++                       mProfileManager.setActiveProfile(mCurrentKey);
++               }
++               
+             if (!isSilentProfileActive()) {
+                 Log.d("@M_" + TAG, "saveVolume: " + mStreamType
+                         + " not Active, Revert system Volume "
+
+三、修改蓝牙默认名称：
+蓝牙名称未按要求设定；现在为Android BT；  Setting---->Bluetooth---->这里的字：“ANDROID BT ” 修改为：HaHa
+diff --git a/system/bt/btif/src/btif_dm.c b/system/bt/btif/src/btif_dm.c
+old mode 100644
+new mode 100755
+index f7b9ed4..2da5800
+--- a/system/bt/btif/src/btif_dm.c
++++ b/system/bt/btif/src/btif_dm.c
+@@ -195,7 +195,7 @@ static BOOLEAN btif_dm_inquiry_in_progress = FALSE;
+ /************************************************************************************
+ **  Static variables
+ ************************************************************************************/
+-static char btif_default_local_name[DEFAULT_LOCAL_NAME_MAX+1] = {'\0'};
++static char btif_default_local_name[DEFAULT_LOCAL_NAME_MAX+1] = "HaHa";
+ 
+ /******************************************************************************
+
+二、修改默认打开wif、bluetooth
+diff --git a/frameworks/base/packages/SettingsProvider/res/values/defaults.xml b/frameworks/base/packages/SettingsProvider/res/values/defaults.xml
+old mode 100644
+new mode 100755
+index daa22c4..0a7584b
+--- a/frameworks/base/packages/SettingsProvider/res/values/defaults.xml
++++ b/frameworks/base/packages/SettingsProvider/res/values/defaults.xml
+@@ -36,7 +36,7 @@
+     <bool name="def_haptic_feedback">true</bool>
+ 
+     <bool name="def_bluetooth_on">false</bool>    // 默认打开蓝牙 true  false
+-    <bool name="def_wifi_display_on">false</bool>
++    <bool name="def_wifi_display_on">true</bool>
+     <bool name="def_install_non_market_apps">false</bool>
+     <bool name="def_package_verifier_enable">true</bool>
+     <!-- Comma-separated list of location providers.
+@@ -47,7 +47,7 @@
+     <bool name="assisted_gps_enabled">true</bool>
+     <bool name="def_netstats_enabled">true</bool>
+     <bool name="def_usb_mass_storage_enabled">true</bool>
+-    <bool name="def_wifi_on">false</bool>
++    <bool name="def_wifi_on">true</bool>
+     <!-- 0 == never, 1 == only when plugged in, 2 == always -->
+     <integer name="def_wifi_sleep_policy">2</integer>
+     <bool name="def_networks_available_notification_on">true</bool>
+
+一、修改默认字体
+
+diff --git a/frameworks/base/core/java/android/content/res/Configuration.java b/frameworks/base/core/java/android/content/res/Configuration.java
+old mode 100644
+new mode 100755
+index 0d41748..e7b20fa
+--- a/frameworks/base/core/java/android/content/res/Configuration.java
++++ b/frameworks/base/core/java/android/content/res/Configuration.java
+@@ -830,7 +830,7 @@ public final class Configuration implements Parcelable, Comparable<Configuration
+      * Set this object to the system defaults.
+      */
+     public void setToDefaults() {
+-        fontScale = 1;
++        fontScale = 1.15f; //normal value is 1
+         mcc = mnc = 0;
+         locale = null;
+         userSetLocale = false;
+```
+
+## MTK android平台常用的编译调试命令
+
+```
+https://utxz.com/2018/01/10/mtk_android002/
+
+1 配置编译环境
+1) 自用环境配置脚本myenv.sh
+
+# {board} {project} 变量根据不同项目定义
+export USE_CCACHE=1
+export CCACHE_DIR=/opt/.ccache_{board}_{project}
+#export _JAVA_OPTIONS=-Xmx3072m
+
+export JACK_SERVER_VM_ARGUMENTS="-Dfile.encoding=UTF-8 -XX:+TieredCompilation -Xmx4g"
+#./prebuilts/sdk/tools/jack-admin kill-server
+#./prebuilts/sdk/tools/jack-admin start-server
+
+#export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64
+#export JRE_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64/jre
+#export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JAVA_HOME/lib:$JRE_HOME/lib:$CLASSPATH
+#export PATH=$JAVA_HOME/bin:$PATH
+
+prebuilts/misc/linux-x86/ccache/ccache -M 50G
+. build/envsetup.sh
+lunch 22
+2) 导出环境变量
+
+# . myenv.sh
+2 内核配置修改(具体平台可能有差异)
+kernel-3.18/arch/arm64/configs/{board}_debug_defconfig   // eng模式
+kernel-3.18/arch/arm64/configs/{board}_defconfig         // user模式
+cd git/kernel-3.18
+cp arch/arm64/configs/{board}_debug_defconfig .config
+make ARCH=arm64 menuconfig
+make ARCH=arm64 savedefconfig
+cp defconfig arch/arm64/configs/{board}_debug_defconfig
+# 执行后会有一些中间文件产生，可手动删除。
+
+# 另外一种推荐方法:
+menuconfig命令：
+source build/envsetup.sh && lunch (一个shell执行一次即可)
+mmm kernel-3.18:kernel-menuconfig (生成的.cconfig在out\target\product\[project]\obj\KERNEL_OBJ)
+mmm kernel-3.18: kernel-savedefconfig (用out\target\product\[project]\obj\KERNEL_OBJ\.config 替换 kernel-3.18/arch/$(TARGET_ARCH)/configs/[project]_defconfig)
+3 编译指定模块
+make pl -j8             // 编译preloader
+make lk -j8             // 编译bootloader
+make bootimage -j8      // 编译kernel
+make systemimage -j8    // 编译system
+make recoveryimage -j8  // 编译recovery
+
+#其他编译moudles，有nodeps表示不依赖检查，编译较快
+
+make ramdisk-nodeps     // 打包ramdisk
+make bootimage-nodeps   //
+
+平台之间命令有差异，可以自己查看android/build/core/main.mk或其他makefile里的规则
+dont_bother_goals := clean clobber dataclean installclean \
+	help out \
+	snod systemimage-nodeps \
+	stnod systemtarball-nodeps \
+	userdataimage-nodeps userdatatarball-nodeps \
+	cacheimage-nodeps \
+	vendorimage-nodeps \
+	ramdisk-nodeps \
+	bootimage-nodeps \
+	recoveryimage-nodeps \
+	product-graph dump-products
+
+# mmm的编译方式
+# 编译命令：(-B、-j是可选项，-B表示强制编译，-j表示开的线程数，进行快速编译)
+mmm ../kernel-3.18:bootimage          // mmm方式编译内核bootimage
+mmm -B kernel-3.18:kernel -j8         // mmm方式编译内核
+mmm -B vendor/mediatek/proprietary/bootable/bootloader/preloader:pl -j8
+mmm -B vendor/mediatek/proprietary/bootable/bootloader/lk:lk -j8
+
+# clean命令：
+mmm vendor/mediatek/proprietary/bootable/bootloader/preloader:clean-preloder
+mmm vendor/mediatek/proprietary/bootable/bootloader/lk:clean-lk
+mmm kernel-3.18:clean-kernel
+4 git仓库kernel单独编译方式：
+1. 修改android/device/mediatek/common/device.mk文件，注释掉
+#PRODUCT_COPY_FILES += $(LOCAL_KERNEL):kernel
+5 内核烧录
+注意adb的环境变量，有时候使用android env下的adb不能成功，用ubuntu自带的adb又是可以的
+可能是ubutnu环境有问题
+/ # adb path/to/boot.img /dev/block/platform/mtk-msdc.0/11230000.MSDC0/by-name/boot
+或者拷贝到/data分区使用dd
+
+/ # ls /dev/block/platform/mtk-msdc.0/11230000.MSDC0/by-name/boot -l
+/ # /dev/block/platform/mtk-msdc.0/11230000.MSDC0/by-name/boot -> /dev/block/mmcblk0p10
+/ # adb path/to/boot.img /dev/block/mmcblk0p10
+```
+
+## MTK Android常用的命令记录（CPU/GPU频率调整等）
+
+```
+1 查看CPU频率
+/ # cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_cur_freq
+1050000
+1050000
+1050000
+1050000
+2 使用GPU Procfs接口查看设置频率等
+1）查看当前频率
+/ # cat /sys/kernel/debug/ged/hal/current_freqency
+/ # cat /proc/gpufreq/gpufreq_var_dump
+GPU current frequency = 299000KHz
+Current Vcore = 1150mV
+g_cur_gpu_OPPidx = 2
+g_last_gpu_dvs_result = 127 (0:success, 127:not enabled, else:error)
+g_limited_max_id = 0
+mt_gpufreq_power_limited_index_array[0] = 0
+mt_gpufreq_power_limited_index_array[1] = 0
+mt_gpufreq_power_limited_index_array[2] = 0
+mt_gpufreq_power_limited_index_array[3] = 0
+mt_gpufreq_volt_enable_state = 0
+mt_gpufreq_fixed_freq_state = 0
+mt_gpufreq_dvfs_table_type = 2
+mt_gpufreq_dvfs_mmpll_spd_bond = 5
+# GPU可以开启GPU柱状图显示，使用命如下令进入原生设置界面
+# am start -n com.android.settings/.Settings
+# -->开发者选项-->GPU呈现模式分析-->在屏幕上显示为条形图
+2）GPU固定频率等接口
+
+/proc/mali # cat /proc/mali/help
+======================================================================
+A.For Query GPU/CPU related Command:
+  cat /proc/mali/utilization
+  cat /proc/mali/frequency
+  cat /proc/mali/memory_usage
+======================================================================
+B.For Fix GPU Frequency:
+  echo > (450000, 280000) /proc/gpufreq/gpufreq_opp_freq
+  echo 0 > /proc/gpufreq/gpufreq_opp_freq(re-enable GPU DVFS)
+C.For Turn On/Off CPU core number:
+  echo (1, 0) > /sys/devices/system/cpu/cpu1/online
+  echo (1, 0) > /sys/devices/system/cpu/cpu2/online
+  echo (1, 0) > /sys/devices/system/cpu/cpuN/online
+D.For CPU Performance mode(Force CPU to run at highest speed:
+ echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+ echo interactive > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor(re-enable CPU DVFS)
+==============================================================================================
+E.For GPU advanced debugging command:
+ echo [dvfs_freq(ms)] > /proc/mali/dvfs_freq
+ echo [dvfs_thr_max] [dvfs_thr_min] > /proc/mali/dvfs_threshold
+ echo [dvfs_deferred_count] > /proc/mali/dvfs_deferred_count
+==============================================================================================
+#方法1：
+echo 520000 >gpufreq_fixed_freq
+#方法2：
+echo 1 >/proc/gpufreq/gpufreq_state
+cat /proc/gpufreq/gpufreq_state
+GPU DVFS disabled
+echo 520000 >/proc/gpufreq/gpufreq_opp_freq
+3) 查看GPU电压频率控制列表
+
+/ # cat /proc/gpufreq/gpufreq_power_dump                                           <
+mt_gpufreqs_power[0].gpufreq_khz = 520000
+mt_gpufreqs_power[0].gpufreq_volt = 115000
+mt_gpufreqs_power[0].gpufreq_power = 828
+mt_gpufreqs_power[1].gpufreq_khz = 416000
+mt_gpufreqs_power[1].gpufreq_volt = 115000
+mt_gpufreqs_power[1].gpufreq_power = 662
+mt_gpufreqs_power[2].gpufreq_khz = 416000
+mt_gpufreqs_power[2].gpufreq_volt = 115000
+mt_gpufreqs_power[2].gpufreq_power = 662
+mt_gpufreqs_power[3].gpufreq_khz = 299000
+mt_gpufreqs_power[3].gpufreq_volt = 115000
+mt_gpufreqs_power[3].gpufreq_power = 475
+mt_gpufreqs_power[4].gpufreq_khz = 299000
+mt_gpufreqs_power[4].gpufreq_volt = 115000
+mt_gpufreqs_power[4].gpufreq_power = 475
+mt_gpufreqs_power[5].gpufreq_khz = 299000
+mt_gpufreqs_power[5].gpufreq_volt = 115000
+mt_gpufreqs_power[5].gpufreq_power = 475
+4）其他sys目录下的gpu接口
+
+/ # find /sys -name gpu*
+/sys/devices/soc/13040000.gpu/gpuinfo
+/sys/firmware/devicetree/base/soc/gpu@13040000
+/sys/kernel/debug/mali0/gpu_memory
+/sys/kernel/debug/ged/hal/gpu_utilization
+/sys/kernel/debug/ged/logbufs/gpuinfo
+/sys/kernel/debug/tracing/events/mtk_events/gpu_freq
+/sys/module/ged/parameters/gpu_idle
+/sys/module/ged/parameters/gpu_dvfs_enable
+/sys/module/ged/parameters/gpu_block
+/sys/module/ged/parameters/gpu_loading
+/sys/module/ged/parameters/gpu_cust_boost_freq
+/sys/module/ged/parameters/gpu_cust_upbound_freq
+/sys/module/ged/parameters/gpu_debug_enable
+/sys/module/ged/parameters/gpu_bottom_freq
+3 温度监测
+1）查看所有温度传感器的温度
+/ # cat /sys/devices/virtual/thermal/thermal_zone*/temp
+37000
+48300
+47100
+48300
+47700
+47700
+-127000
+54985
+38000
+
+2）对应温度传感器的名称
+/ # cat /sys/devices/virtual/thermal/thermal_zone*/type
+mtktswmt              //wifi温度
+mtktscpu              // CPU
+mtkts1
+mtkts5
+mtkts3
+mtkts4
+mtktsbattery        //电池
+mtktspmic           //电源管理芯片
+mtktsAP
+
+4）其他温度接口
+/ # cat /proc/driver/thermal/tzpmic
+[mtktspmic_read] trip_0_temp=145000,trip_1_temp=110000,trip_2_temp=100000,trip_3_temp=90000,trip_4_temp=80000,
+trip_5_temp=70000,trip_6_temp=65000,trip_7_temp=60000,trip_8_temp=55000,trip_9_temp=50000,
+g_THERMAL_TRIP_0=0,g_THERMAL_TRIP_1=0,g_THERMAL_TRIP_2=0,g_THERMAL_TRIP_3=0,g_THERMAL_TRIP_4=0,
+g_THERMAL_TRIP_5=0,g_THERMAL_TRIP_6=0,g_THERMAL_TRIP_7=0,g_THERMAL_TRIP_8=0,g_THERMAL_TRIP_9=0,
+cooldev0=mtktspmic-sysrst,cooldev1=no-cooler,cooldev2=no-cooler,cooldev3=no-cooler,cooldev4=no-cooler,
+cooldev5=no-cooler,cooldev6=no-cooler,cooldev7=no-cooler,cooldev8=no-cooler,cooldev9=no-cooler,time_ms=1000
+
+/ # cat /proc/driver/thermal/tzcpu
+[tscpu_read]6
+trip_0=117000 0 mtktscpu-sysrst                      //117度CPU会复位
+trip_1=100000 0 mtk-cl-shutdown00               //100度关机
+trip_2=95000 0 cpu02
+trip_3=90000 0 cpu_adaptive_0
+trip_4=76000 0 cpu_adaptive_1
+trip_5=68000 0 cpu_adaptive_2
+trip_6=45000 0 no-cooler
+trip_7=35000 0 no-cooler
+trip_8=25000 0 no-cooler
+trip_9=15000 0 no-cooler
+4 CPU调整性能模式
+echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+echo performance > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+echo performance > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
+echo performance > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
+```
+
+## TODO : thermal 是什么意思？？
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
