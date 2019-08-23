@@ -32,6 +32,8 @@ Android学习视频
 https://github.com/open-android/Android
 https://caster.io/
 http://www.maiziedu.com/article/28121/
+http://yun.itheima.com/map/21.html              黑马
+https://www.youtube.com/watch?v=EOfCEhWq8sg     treehouse
 
 
 https://www.wanandroid.com/blog/show/2561           各大互联网公司对外分享链接汇总
@@ -56,11 +58,13 @@ http://www.iteye.com/
 http://www.v2ex.com/
 http://www.imooc.com/
 http://www.html-js.com/
+https://segmentfault.com/t/android
 
 http://gank.io/history
 
 https://github.com/lizhangqu/CoreLink
 https://github.com/GcsSloop/AndroidNote?utm_source=gold_browser_extension
+https://blog.csdn.net/aqi00/article/details/50012511        Android开发笔记
 
 http://p.codekk.com/            android开源项目集合
 https://github.com/luxiaoming   代码GG的github地址
@@ -112,6 +116,8 @@ https://github.com/XXApple/AndroidLibs      Android开源库整理
 ## 工具网站
 
 ```
+http://www.ofmonkey.com/            程序猿在线工具网站
+
 http://gradleplease.appspot.com/#fonttype           查看gradle依赖
 https://romannurik.github.io/AndroidAssetStudio/    一个可以生成各种类型图标（launcher, notification, generic, app shortcut icons）的工具集合
 https://github.com/amitshekhariitbhu/Android-Debug-Database
@@ -168,6 +174,7 @@ https://www.hex-rays.com/products/ida/      逆向大利器
 《Java 多线程编程核心技术》
 《深入理解 Java 虚拟机》
 
+《大话设计模式》
 《算法导论》
 《数据结构与算法分析：Java语言描述》
 《啊哈 算法》
@@ -692,8 +699,6 @@ activity,window,view的关系
 平时怎么获取新知识。
 另外，作为Android开发，只会Android和java的知识是不够的，虽然可以应付一般工作，但是如果想进阶的话，下面这些技能起码要掌握一二：
 
-Java虚拟机。推荐看《深入理解Java虚拟机》
-设计模式。经典书籍很多，比如《大话设计模式》
 数据库操作。
 Http，TCP/IP相关
 Android源码，底层实现。
@@ -1799,6 +1804,132 @@ include $(call all-makefiles-under,$(LOCAL_PAT))
 
 //全局对话框的权限
 <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
+精准的 (GPS) 位置|ACCESS_FINE_LOCATION
+（基于网络的）粗略位置|ACCESS_COARSE_LOCATION
+完全的互联网访问权限|INTERNET
+修改/删除 USB 存储设备的内容修改/删除 SD 卡的内容|WRITE_EXTERNAL_STORAGE
+阻止设备进入休眠状态|WAKE_LOCK
+查看 Wi-Fi 状态|ACCESS_WIFI_STATE
+查看网络状态|ACCESS_NETWORK_STATE
+设置壁纸|SET_WALLPAPER
+拍摄照片和视频|CAMERA
+读取手机状态和身份|READ_PHONE_STATE
+发现已知帐户|GET_ACCOUNTS
+控制振动器|VIBRATE
+直接拨打电话号码|CALL_PHONE
+发送短信|SEND_SMS
+接收短信|RECEIVE_SMS
+接收彩信|RECEIVE_MMS
+读取短信或彩信|READ_SMS
+编辑短信或彩信|WRITE_SMS
+读取联系人数据|READ_CONTACTS
+写入联系人数据|WRITE_CONTACTS
+更改网络连接|CHANGE_NETWORK_STATE
+修改全局系统设置|WRITE_SETTINGS
+停用键锁|DISABLE_KEYGUARD
+检索正在运行的应用程序|GET_TASKS
+开机时自动启动|RECEIVE_BOOT_COMPLETED
+终止后台进程|KILL_BACKGROUND_PROCESSES
+重启程序|RESTART_PACKAGES
+发送置顶广播消息|BROADCAST_STICKY
+安装 DRM 内容。|INSTALL_DRM
+读取日历活动|READ_CALENDAR
+控制闪光灯|FLASHLIGHT
+使用帐户的身份验证凭据|USE_CREDENTIALS
+管理帐户列表|MANAGE_ACCOUNTS
+录音|RECORD_AUDIO
+更改您的音频设置|MODIFY_AUDIO_SETTINGS
+读取同步设置|READ_SYNC_SETTINGS
+写入同步设置|WRITE_SYNC_SETTINGS
+更改 Wi-Fi 状态|CHANGE_WIFI_STATE
+写入订阅的供稿|SUBSCRIBED_FEEDS_WRITE
+读取订阅的供稿|SUBSCRIBED_FEEDS_READ
+读取同步统计信息|READ_SYNC_STATS
+作为帐户身份验证程序|AUTHENTICATE_ACCOUNTS
+作为 AccountManagerService|ACCOUNT_MANAGER
+创建蓝牙连接|BLUETOOTH
+蓝牙管理|BLUETOOTH_ADMIN
+显示系统级警报|SYSTEM_ALERT_WINDOW
+访问登记属性|ACCESS_CHECKIN_PROPERTIES
+访问额外的位置信息提供程序命令|ACCESS_LOCATION_EXTRA_COMMANDS
+用于测试的模拟位置源|ACCESS_MOCK_LOCATION
+访问 SurfaceFlinger|ACCESS_SURFACE_FLINGER
+修改电池统计信息|BATTERY_STATS
+选择窗口小部件|BIND_APPWIDGET
+与设备管理器交互|BIND_DEVICE_ADMIN
+绑定至输入法|BIND_INPUT_METHOD
+绑定到壁纸|BIND_WALLPAPER
+永久停用手机|BRICK
+发送包删除的广播|BROADCAST_PACKAGE_REMOVED
+发送可通过短信接收的广播消息|BROADCAST_SMS
+发送 WAP 一键接收广播消息|BROADCAST_WAP_PUSH
+直接拨打任何电话号码|CALL_PRIVILEGED
+启用或停用应用程序组件|CHANGE_COMPONENT_ENABLED_STATE
+更改用户界面设置|CHANGE_CONFIGURATION
+允许接收 Wi-Fi 多播消息|CHANGE_WIFI_MULTICAST_STATE
+删除所有应用程序缓存数据|CLEAR_APP_CACHE
+删除其他应用程序的数据|CLEAR_APP_USER_DATA
+控制位置更新通知|CONTROL_LOCATION_UPDATES
+删除其他应用程序的缓存|DELETE_CACHE_FILES
+删除应用程序|DELETE_PACKAGES
+设备开机或关机|DEVICE_POWER
+读取/写入诊断所拥有的资源|DIAGNOSTIC
+检索系统内部状态|DUMP
+展开/收拢状态栏|EXPAND_STATUS_BAR
+在出厂测试模式下运行|FACTORY_TEST
+强制应用程序关闭|FORCE_BACK
+计算应用程序存储空间|GET_PACKAGE_SIZE
+全局搜索|GLOBAL_SEARCH
+测试硬件|HARDWARE_TEST
+按键和控制按钮|INJECT_EVENTS
+允许安装位置信息提供程序|INSTALL_LOCATION_PROVIDER
+直接安装应用程序|INSTALL_PACKAGES
+显示未授权的窗口|INTERNAL_SYSTEM_WINDOW
+管理应用程序令牌|MANAGE_APP_TOKENS
+恢复出厂设置|MASTER_CLEAR
+修改手机状态|MODIFY_PHONE_STATE
+格式化外部存储设备|MOUNT_FORMAT_FILESYSTEMS
+装载和卸载文件系统|MOUNT_UNMOUNT_FILESYSTEMS
+控制近距离通信|NFC
+让应用程序始终运行|PERSISTENT_ACTIVITY
+拦截外拨电话|PROCESS_OUTGOING_CALLS
+读取帧缓冲区|READ_FRAME_BUFFER
+记录您键入的内容和执行的操作|READ_INPUT_STATE
+查阅敏感日志数据|READ_LOGS
+强行重新启动设备|REBOOT
+接收 WAP|RECEIVE_WAP_PUSH
+对正在运行的应用程序重新排序|REORDER_TASKS
+监控所有应用程序的启动|SET_ACTIVITY_WATCHER
+在闹钟中设置警报|SET_ALARM
+关闭所有后台应用程序|SET_ALWAYS_FINISH
+修改全局动画速度|SET_ANIMATION_SCALE
+启用应用程序调试|SET_DEBUG_APP
+更改屏幕显示方向|SET_ORIENTATION
+设置首选应用程序|SET_PREFERRED_APPLICATIONS
+限制运行的进程个数|SET_PROCESS_LIMIT
+设置时间|SET_TIME
+设置时区|SET_TIME_ZONE
+设置有关壁纸大小的提示|SET_WALLPAPER_HINTS
+向应用程序发送 Linux 信号|SIGNAL_PERSISTENT_PROCESSES
+停用或修改状态栏|STATUS_BAR
+更新设备状态|UPDATE_DEVICE_STATS
+拨打/接听互联网通话|USE_SIP
+编写“接入点名称”设置|WRITE_APN_SETTINGS
+添加或修改日历活动以及向邀请对象发送电子邮件|WRITE_CALENDAR
+修改 Google 地图|WRITE_GSERVICES
+修改安全系统设置|WRITE_SECURE_SETTINGS
+修改全局系统设置|WRITE_SETTINGS
+发送下载通知。|SEND_DOWNLOAD_COMPLETED_INTENTS
+部分关闭|SHUTDOWN
+读取浏览器的历史记录和书签|READ_HISTORY_BOOKMARKS
+写入浏览器的历史记录和书签|WRITE_HISTORY_BOOKMARKS
+写入用户定义的词典|WRITE_USER_DICTIONARY
+强行停止其他应用程序|FORCE_STOP_PACKAGES
+更新组件使用情况统计信息|PACKAGE_USAGE_STATS
+移动应用程序资源|MOVE_PACKAGE
+访问下载管理器。|ACCESS_DOWNLOAD_MANAGER
+写入用户定义的词典|READ_USER_DICTIONARY
 ```
 
 ## TODO : Style常用属性
@@ -2318,7 +2449,136 @@ public static Integer evaluate(float fraction, Integer startValue, Integer endVa
 ## TODO ： 解析图片的几种方法？？？
 
 ``` Java
-Bitmap bitmap = BitmapFactory.decodeResource(R.drawable.ic_launcher);
+// 1. 从资源中获取Bitmap
+Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), drawableId);
+
+// 2.Bitmap ---> byte[]
+public byte[] BitmapToBytes(Bitmap bitmap) {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+    return baos.toByteArray();
+}
+
+// 3.byte[] ---->bitmap
+public Bitmap BytesToBitmap(byte[] b) {
+    if (b.length != 0) {
+        return BitmapFactory.decodeByteArray(b, 0, b.length);
+    } else {
+        return null;
+    }
+}
+
+// 4.Bitmap 缩放方法
+public static Bitmap ZoomBitmap(Bitmap bitmap, int width, int heigh) {
+    int w = bitmap.getWidth();
+    int h = bitmap.getHeight();
+    Matrix matrix = new Matrix();
+    float scalewidth = (float) width / w;
+    float scaleheigh = (float) heigh / h;
+    matrix.postScale(scalewidth, scaleheigh);
+    Bitmap newBmp = Bitmap.createBitmap(bitmap, 0, 0, w, h, matrix, true);
+    return newBmp;
+}
+
+// 5. Drawable----> Bitmap
+public static Bitmap DrawableToBitmap(Drawable drawable) {
+
+    // 获取 drawable 长宽
+    int width = drawable.getIntrinsicWidth();
+    int heigh = drawable.getIntrinsicHeight();
+
+    drawable.setBounds(0, 0, width, heigh);
+
+    // 获取drawable的颜色格式
+    Bitmap.Config config = drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
+            : Bitmap.Config.RGB_565;
+    // 创建bitmap
+    Bitmap bitmap = Bitmap.createBitmap(width, heigh, config);
+    // 创建bitmap画布
+    Canvas canvas = new Canvas(bitmap);
+    // 将drawable 内容画到画布中
+    drawable.draw(canvas);
+    return bitmap;
+}
+
+// 6.圆角图片
+public static Bitmap SetRoundCornerBitmap(Bitmap bitmap, float roundPx) {
+    int width = bitmap.getWidth();
+    int heigh = bitmap.getHeight();
+    // 创建输出bitmap对象
+    Bitmap outmap = Bitmap.createBitmap(width, heigh, Bitmap.Config.ARGB_8888);
+    Canvas canvas = new Canvas(outmap);
+    final int color = 0xff424242;
+    final Paint paint = new Paint();
+    final Rect rect = new Rect(0, 0, width, heigh);
+    final RectF rectf = new RectF(rect);
+    paint.setAntiAlias(true);
+    canvas.drawARGB(0, 0, 0, 0);
+    paint.setColor(color);
+    canvas.drawRoundRect(rectf, roundPx, roundPx, paint);
+    paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+    canvas.drawBitmap(bitmap, rect, rect, paint);
+
+    return outmap;
+}
+
+// 7.获取带倒影的图片
+public static Bitmap CreateReflectionImageWithOrigin(Bitmap bitmap) {
+
+    final int reflectionGap = 4;
+    int w = bitmap.getWidth();
+    int h = bitmap.getHeight();
+    Matrix matrix = new Matrix();
+    matrix.preScale(1, -1);
+
+    Bitmap reflectionImage = Bitmap.createBitmap(bitmap, 0, h / 2, w,
+            h / 2, matrix, false);
+
+    Bitmap bitmapWithReflection = Bitmap.createBitmap(w, (h + h / 2),
+            Bitmap.Config.ARGB_8888);
+    Canvas canvas = new Canvas(bitmapWithReflection);
+    canvas.drawBitmap(bitmap, 0, 0, null);
+    Paint deafalutPaint = new Paint();
+    canvas.drawRect(0, h, w, h + reflectionGap, deafalutPaint);
+
+    canvas.drawBitmap(reflectionImage, 0, h + reflectionGap, null);
+
+    Paint paint = new Paint();
+    LinearGradient shader = new LinearGradient(0, bitmap.getHeight(), 0,
+            bitmapWithReflection.getHeight() + reflectionGap, 0x70ffffff,
+            0x00ffffff, Shader.TileMode.CLAMP);
+    paint.setShader(shader);
+    // Set the Transfer mode to be porter duff and destination in
+    paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+    // Draw a rectangle using the paint with our linear gradient
+    canvas.drawRect(0, h, w, bitmapWithReflection.getHeight()
+            + reflectionGap, paint);
+    return bitmapWithReflection;
+}
+
+// 8. bitmap ---Drawable
+public static Drawable BitmapToDrawable(Bitmap bitmap, Context context) {
+    BitmapDrawable drawbale = new BitmapDrawable(context.getResources(), bitmap);
+    return drawbale;
+}
+
+// 9. drawable进行缩放 ---> bitmap 然后比对bitmap进行缩放
+public static Drawable ZoomDrawable(Drawable drawable, int w, int h) {
+    int width = drawable.getIntrinsicWidth();
+    int height = drawable.getIntrinsicHeight();
+    // 调用5 中 drawable转换成bitmap
+    Bitmap oldbmp = DrawableToBitmap(drawable);
+    // 创建操作图片用的Matrix对象
+    Matrix matrix = new Matrix();
+    // 计算缩放比例
+    float sx = ((float) w / width);
+    float sy = ((float) h / height);
+    // 设置缩放比例
+    matrix.postScale(sx, sy);
+    // 建立新的bitmap，其内容是对原bitmap的缩放后的图
+    Bitmap newbmp = Bitmap.createBitmap(oldbmp, 0, 0, width, height, matrix, true);
+    return new BitmapDrawable(newbmp);
+}
 ```
 
 ## [Snippet]HttpClient
@@ -37575,6 +37835,8 @@ https://juejin.im/post/5d072dbc51882540b7104709
 
 ```
 https://juejin.im/post/5d1717996fb9a07eeb13bc95
+
+https://blog.csdn.net/aqi00/article/details/50773578     Android开发笔记（七十三）代码混淆与反破解
 ```
 
 ## Android复习资料——Android知识点汇总（一）
@@ -39939,15 +40201,6 @@ class SerializableObject implements Serializable {
 https://jeanboy.blog.csdn.net/article/details/72236734
 ```
 
-## 仿 wechat 和 支付宝 防止截屏？？？
-
-```
-getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-
-设置安全窗口，禁用系统截屏。防止 App 中的一些界面被截屏，并显示在其他设备中造成信息泄漏。（常见手机设备系统截屏操作方式为：同时按下电源键和音量键。）
-比如支付宝 App 的“向商家付款”的包含付款二维码的界面。（补充说明一点，微信付款界面不是这么做的，采用的是在 onResume() 生命周期方法中实时刷新付款二维码，与支付宝在安全方法采取的手段不同。）
-```
-
 ## 搭建Simba 文件共享服务器
 
 ```
@@ -41711,6 +41964,14 @@ https://blog.csdn.net/zhangbijun1230/article/details/79951310
 
 ```
 https://blog.csdn.net/gjy_it/article/details/90448722
+
+sudo apt-get install ffmpeg
+
+// 制作 gif 动画
+ffmpeg -t 3.6 -ss 00:00:01 -i 01.mp4 01.gif
+
+注释：3.6是秒数，00:00:01是开始时间。 
+这一个命令足够走天下了。
 ```
 
 ## Android 7.0 之后的 ota 升级方式 A/B system
@@ -43874,6 +44135,12 @@ public class AutoCopyService extends AccessibilityService {
 }
 ```
 
+## Android通过辅助功能 AccessibilityService 实现抢微信红包原理简单介绍
+
+```
+https://segmentfault.com/a/1190000019931725?utm_source=tag-newest
+```
+
 ## 棋牌搭建，APP新手搭建教程
 
 ```
@@ -44607,12 +44874,24 @@ public static Bitmap shotRecyclerView(RecyclerView view) {
       }
     }
     return bigBitmap;
-  }
+}
+
+// 第四种：完美截屏(优雅的方案实现屏幕截图，利用android 5.0之后的录屏API实现截屏)
+https://github.com/BruceWind/AndroidScreenShot_SysApi
 
 
 https://android-notes.github.io/2016/12/03/android%E9%95%BF%E6%88%AA%E5%B1%8F%E5%8E%9F%E7%90%86/
 https://juejin.im/post/5a33403b6fb9a045132abdb6
 https://mp.weixin.qq.com/s/JPVZtErFTzJ5PDuTAPk0DA
+```
+
+## 仿 wechat 和 支付宝 防止截屏？？？
+
+```
+getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+
+设置安全窗口，禁用系统截屏。防止 App 中的一些界面被截屏，并显示在其他设备中造成信息泄漏。（常见手机设备系统截屏操作方式为：同时按下电源键和音量键。）
+比如支付宝 App 的“向商家付款”的包含付款二维码的界面。（补充说明一点，微信付款界面不是这么做的，采用的是在 onResume() 生命周期方法中实时刷新付款二维码，与支付宝在安全方法采取的手段不同。）
 ```
 
 ## Android性能指标
@@ -46822,41 +47101,818 @@ echo performance > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
 
 ## TODO : thermal 是什么意思？？
 
+## Android 系统属性SystemProperty分析
+
+```
+https://blog.csdn.net/yangwen123/article/details/8936555
+```
+
+## Android中@Override错误的解决方法
+
+‵‵`
+在使用eclipse开发Android应用时可能会遇到@Override错误，对于@Override的annotation报错。这是由于JRE/JDK的版本问题所致。解决方法很简单，在eclipse的Windows菜单-Preference-Java-Complier中调整Complier compliance level即可。虽然Android是基于1.5设计的，不过由于eclipse的兼容问题，需要在这里修改为1.6才行。
+
+对于已经导入至workspace的项目，可能还需要点击右上角的Configure Project Specifiec Settings对其进行修改才行。
+
+完成了修改之后，之前编译器提示的@Override错误就会消失了。
+```
+
+## Android中获取设备当前时间日期
+
+```
+Calendar c = Calendar.getInstance();
+String month = Integer.toString(c.get(Calendar.MONTH));
+String day = Integer.toString(c.get(Calendar.DAY_OF_MONTH));
+String hour = Integer.toString(c.get(Calendar.HOUR_OF_DAY));
+String min = Integer.toString(c.get(Calendar.MINUTE));
+```
+
+## Android中将字符串文字内容复制到系统剪贴板
+
+```
+ClipboardManager cmb = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+cbm.setText(et.getText().toString());
+```
+
+## TODO : DSL 式编程???
+
+## 帮我生成java类的库GeneratorX
+
+```
+https://blog.csdn.net/weizongwei5/article/details/54312281
+```
+
+## 使用Facebook redex工具优化app
+
+```
+https://blog.csdn.net/weizongwei5/article/details/52146166
+
+在Facebook工程博客的一篇文章中指出，`dex`并不是按照应用启动时候加载的顺序加载的，而是按照编译工具指定的顺序加载的。
+
+ReDex使程序运行时产生的运行数据判定哪些类应该在.DEX文件中被优先载入。“想要最小化从内存中读取数据的次数，最好从启动的时候就载入字节码。”Facebook称，他们使用ReDex对应用优化之后，对存储的读取减少了25%，运行速度提高了30%。
+关于这个速度，Facebook称，在存储较慢的老旧机器上效果非常明显，但是对于新的收集，性能也有明显的提高。
+
+Facebook在一台搭载了安卓4.4的全新的Nexus4上（有35%的安卓设备运行这个版本）测试，启动时间从2秒降至1.6秒。
+
+Runtime分析可以用来删除无关的元数据和接口，但是开发者也可以自定义优化的行为。比如，有些方法即使没有直接被调用，也可以让它们保留下来。
+
+这个优化是在应用编译完成之后进行的。也就是说，理论上你也可以结合其他优化，比如对Java进行虚拟机层的优化和语言的优化，像即将到来的Java 9的语言模块特性等等。
+优化Java的字节码文件并不是一种新技术。还有其他的开源项目，例如ProGuard就可以通过删除运行时没有使用的代码进行优化。但是它并不能像ReDex那样按照执行顺序来重新组织类。
+```
+
+## 4.某个类使用private修饰了带参构造函数,如果你特么的还非要访问这个带参构造函数的话
+
+```
+用Gson里面这个UnsafeAllocator 可以完美实现不开放默认构造函数的类的实例化。这个方案同时可以解决4的问题。
+```
+
+## 将ubuntu安装到u盘上，实现即插即用
+
+## 5.0之前的android系统是webkit内核，5.0之后便是chromium内核，虽然webiew内核改了，或许性能提升了很多，但是终究他还是单线程在操作，你懂得。
+
+## adb shell am kill 包名
+
+## ubuntu下缩小图片的方法
+
+```
+sudo apt-get install imagemagick
+
+第一种方法，这种方法缩小之后会生成一堆的 “small-*”的文件名的文件：
+convert -resize 20%x20% ./*.JPG   small
+
+第二种方法：这个方法是缩小图片并保留原始文件名的命令：
+for img in `ls *.JPG`; do convert -resize 20%x20% $img small-$img; done
+```
+
+## 保持宽高比的自定义View
+
+```
+<declare-styleable name="FixHeiImageView">
+    <attr name="whratio" format="float" />
+</declare-styleable> 
+
+public class FixHeiImageView extends ImageView {
+    private double wh_ratio=0.0;
+    public FixHeiImageView(Context context) {
+        super(context);
+        wh_ratio = 2.0;
+    }
+
+    public FixHeiImageView(Context context, double mWh_ratio) {
+        super(context);
+        this.wh_ratio = mWh_ratio;
+    }
+
+    public FixHeiImageView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.FixHeiImageView);
+        wh_ratio = typedArray.getFloat(R.styleable.FixHeiImageView_whratio, (float) 1.0);
+        typedArray.recycle();
+    }
+
+    public FixHeiImageView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.FixHeiImageView);
+        wh_ratio = typedArray.getFloat(R.styleable.FixHeiImageView_whratio, (float) 1.0);
+        typedArray.recycle();
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        // 父容器传过来的宽度方向上的模式
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        // 父容器传过来的高度方向上的模式
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        // 父容器传过来的宽度的值
+        int width = MeasureSpec.getSize(widthMeasureSpec) - getPaddingLeft() - getPaddingRight();
+        // 父容器传过来的高度的值
+        int height = MeasureSpec.getSize(heightMeasureSpec) - getPaddingBottom() - getPaddingTop();
+        height = (int) (width / wh_ratio + 0.5f);
+        heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+}
+```
+
+## android 已省内存方式把图片加载到内存
+
+```
+package com.commons.utils.image;
+ 
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.graphics.*;
+import android.os.Build;
+import android.util.Log;
+import com.commons.config.GlobalConfig;
+import com.commons.utils.memory.MemoryUtils;
+ 
+import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+ 
+/**
+ * 从DrawableUtil类中分离出来这个类,为了使代码看起来更加简洁明了
+ * 用于Bitmap处理的一些方法
+ */
+public class BitmapUtils {
+    public static final int ARGB8888_MODEL=4;//ARGB8888模式下消耗内存,为像素数乘以4个字节.
+    public static final int RGB565_MODEL=2;//RGB565模式下消耗内存,为像素数乘以4个字节.
+    /**
+     * 获取APP剩余可申请内存,判断是否够大,以手机分辨率为基础,进行计算图片处理所需要消耗的内存.
+     * @return
+     *
+     * !!!这里获取的不是手机的剩余内存而是APP的
+     */
+    public static boolean isBigSurpluseMemory(Context context)
+    {
+        boolean isbig=true;//默认
+        long appsurplusMe= MemoryUtils.getAppSurplusMe();//这里单位是Byte
+        long phonesurplusMe= MemoryUtils.getPhoneSurplusMe(context);//这里单位是Byte
+        long bitmapoptNeedmemory=GlobalConfig.scrwid*GlobalConfig.scrhei*ARGB8888_MODEL;//单位依旧是Byte
+        //在进行图片处理的时候会把图片分辨率缩小到屏幕分辨率大小,所以这里消耗内存的计算是以屏幕分辨率所谓基础的.
+        if(bitmapoptNeedmemory*2 > appsurplusMe)//为了其他考虑,剩余内存应该大于所需要内存的两倍
+        {
+            return false;
+        }
+ 
+ 
+        if(bitmapoptNeedmemory*2>phonesurplusMe)
+        {
+            return  false;
+        }//这里一定要判断手机剩余内存,上面的判断只是app的理论上的内存限制,而如果手机本身就已经没有内存了,
+        // 会有两种情况 1.自动清理一些内存  来给当前app用,2.本身就是内存太小,现在占内存的应用都是系统级别的清理不掉,那就坑了
+        // 举个例子：125M内存的手机上就会发生当手机时，我发现内存不够的时候，android的自动杀进程的机制就没法用了
+        //请看如下的我在410M的手机上运行的结果
+ 
+        return isbig;
+    }
+    /**
+     12-11 16:52:35.260      441-441/com.jsdx.zqysypt D/MemoryUtils.printMemoryInfo()﹕ 常规应用最大内存限制:64M 流氓应用最大内存限制:128M
+     12-11 16:52:35.270      441-441/com.jsdx.zqysypt D/MemoryUtils.printMemoryInfo()﹕ APP当前内存状态: 最大可申请内存:128MB 已申请内存:21MB 空闲内存:4MB
+     12-11 16:52:35.270      441-441/com.jsdx.zqysypt D/MemoryUtils.printMemoryInfo()﹕ 手机剩余内存:70.12109MB 手机总内存:410.54297MB
+     这里可以明显看出app剩余可申请的内存要大于手机的剩余内存的.当申请更多内存的时候android就会自动清理
+     */
+ 
+ 
+ 
+ 
+ 
+    /**
+     * 创建倒影图片
+     * @throws IOException
+     */
+    public static Bitmap createReflectedBitmap(Bitmap srcBitmap) {
+        if (null == srcBitmap) {
+            return null;
+        }
+ 
+        // The gap between the reflection bitmap and original bitmap.
+        final int REFLECTION_GAP = 4;
+ 
+        int srcWidth = srcBitmap.getWidth();
+        int srcHeight = srcBitmap.getHeight();
+        int reflectionWidth = srcBitmap.getWidth();
+        int reflectionHeight = srcBitmap.getHeight() / 2;
+ 
+        if (0 == srcWidth || srcHeight == 0) {
+            return null;
+        }
+ 
+        // The matrix
+        Matrix matrix = new Matrix();
+        matrix.preScale(1, -1);
+ 
+        try {
+            // The reflection bitmap, width is same with original's, height is half of original's.
+            Bitmap reflectionBitmap = Bitmap.createBitmap(
+                    srcBitmap,
+                    0,
+                    srcHeight / 2,
+                    srcWidth,
+                    srcHeight / 2,
+                    matrix,
+                    false);
+ 
+            if (null == reflectionBitmap) {
+                return null;
+            }
+ 
+            // Create the bitmap which contains original and reflection bitmap.
+            Bitmap bitmapWithReflection = Bitmap.createBitmap(
+                    reflectionWidth,
+                    srcHeight + reflectionHeight + REFLECTION_GAP,
+                    Bitmap.Config.ARGB_8888);
+ 
+            if (null == bitmapWithReflection) {
+                return null;
+            }
+ 
+            // Prepare the canvas to draw stuff.
+            Canvas canvas = new Canvas(bitmapWithReflection);
+ 
+            // Draw the original bitmap.
+            canvas.drawBitmap(srcBitmap, 0, 0, null);
+ 
+            // Draw the reflection bitmap.
+            canvas.drawBitmap(reflectionBitmap, 0, srcHeight + REFLECTION_GAP, null);
+ 
+            Paint paint = new Paint();
+            paint.setAntiAlias(true);
+            LinearGradient shader = new LinearGradient(
+                    0,
+                    srcHeight,
+                    0,
+                    bitmapWithReflection.getHeight() + REFLECTION_GAP,
+                    0x70FFFFFF,
+                    0x00FFFFFF,
+                    Shader.TileMode.MIRROR);
+            paint.setShader(shader);
+            paint.setXfermode(new PorterDuffXfermode(android.graphics.PorterDuff.Mode.DST_IN));
+ 
+            // Draw the linear shader.
+            canvas.drawRect(
+                    0,
+                    srcHeight,
+                    srcWidth,
+                    bitmapWithReflection.getHeight() + REFLECTION_GAP,
+                    paint);
+ 
+            return bitmapWithReflection;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+ 
+        return null;
+    }
+ 
+ 
+    public static Bitmap revitionImageSize(String path, int max_w, int max_h) throws IOException {
+        BufferedInputStream in = new BufferedInputStream(new FileInputStream(
+                new File(path)));
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(in, null, options);
+        in.close();
+        int i = 0;
+        Bitmap bitmap = null;
+        while (true) {
+            if ((options.outWidth >> i <= max_w)
+                    && (options.outHeight >> i <= max_h)) {
+                in = new BufferedInputStream(
+                        new FileInputStream(new File(path)));
+                options.inSampleSize = (int) Math.pow(2.0D, i);
+                options.inJustDecodeBounds = false;
+                bitmap = BitmapFactory.decodeStream(in, null, options);
+                break;
+            }
+            i += 1;
+        }
+        return bitmap;
+    }
+ 
+ 
+    /**
+     *将Bitmap保存到本地
+     * @param bitmap
+     * @param imgurl imgurl   不带file了开头的路径,如:  /strange/sdcard/asdasd.jpg
+     */
+    public static void savePictureToLocal(Bitmap bitmap, String imgurl) {
+        FileOutputStream b = null;
+        File file = new File(imgurl);
+        file.getParentFile().mkdirs();// 创建文件夹
+ 
+ 
+        //对图片质量进行压缩,这样保存的图片就变小了
+        int yasuolv = 60;
+        try {
+            b = new FileOutputStream(imgurl);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, yasuolv, b);// 把数据写入文件
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                b.flush();
+                b.close();
+                //bitmap.recycle();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 得到本地或者网络上的bitmap url - 网络或者本地图片的绝对路径,比如:
+     * <p/>
+     * A.网络路径: url="http://blog.foreverlove.us/girl2.png" ;
+     * <p/>
+     * B.本地路径:url="mnt/sdcard/photo/image.png";  不带 file: 头
+     * <p/>
+     * C.支持的图片格式 ,png, jpg,bmp,gif等等
+     *
+     * @param path
+     * @return
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
+    public static Bitmap GetLocalOrNetBitmap(String path) {
+        final String  TAG="GetLocalOrNetBitmap";
+        Bitmap bitmap = null;
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            bitmap = BitmapFactory.decodeFile(path, options); //此时返回 bm 为空
+            options.inJustDecodeBounds = false; //缩放比。由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可
+            int hi = (int) (options.outHeight / (float) GlobalConfig.scrhei);//以屏幕高度作为显示依据
+            int wi = (int) (options.outWidth / (float) GlobalConfig.scrwid);//以屏幕高度作为显示依据
+ 
+            int be = 0;
+            if (wi > hi)
+                be = hi;
+            else
+                be = wi;
+ 
+            Log.d(TAG, "缩放比:"+be); //缩放之后
+            Log.d(TAG, "原图宽高:"+options.outWidth+" "+options.outHeight); //缩放之后
+ 
+            if (be <= 0)
+                be = 1;
+            options.inSampleSize = be; //重新读入图片，注意此时已经把 options.inJustDecodeBounds 设回 false 了
+            options.inPreferredConfig = Bitmap.Config.RGB_565;//使用RGB_565后会是内存降低一半但是,不适合decode带有透明区域的PNG
+            bitmap = BitmapFactory.decodeFile(path, options);
+            int w = bitmap.getWidth();
+            int h = bitmap.getHeight();
+            Log.d(TAG, "缩放后:宽"+w + " 高" + h); //缩放之后
+            Log.d(TAG, "RGB_565格式内存:"+bitmap.getByteCount() / 1024 + "KB");
+        }
+        catch (Exception ex)
+        {
+            if(bitmap!=null&&!bitmap.isRecycled())
+                bitmap.recycle();
+            System.gc();  //提醒系统及时回收
+        }
+        return bitmap;
+    }
+
+    //同上,最后一个参数可选,配置是否返回高色彩的Bitmap
+    //本地路径  不带 file: 头
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
+    public static Bitmap GetLocalOrNetBitmap(String path, boolean isRGb_565) {
+        final String  TAG="GetLocalOrNetBitmap";
+        Bitmap bitmap = null;
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            bitmap = BitmapFactory.decodeFile(path, options); //此时返回 bm 为空
+            options.inJustDecodeBounds = false; //缩放比。由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可
+            int hi = (int) (options.outHeight / (float) GlobalConfig.scrhei);//以屏幕高度作为显示依据
+            int wi = (int) (options.outWidth / (float) GlobalConfig.scrwid);//以屏幕高度作为显示依据
+ 
+            int be = 0;
+            if (wi > hi)
+                be = hi;
+            else
+                be = wi;
+ 
+ 
+            Log.d(TAG, "缩放比:"+be); //缩放之后
+            Log.d(TAG, "原图宽高:"+options.outWidth+" "+options.outHeight); //缩放之后
+ 
+            if (be <= 0)
+                be = 1;
+            options.inSampleSize = be; //重新读入图片，注意此时已经把 options.inJustDecodeBounds 设回 false 了
+            if(isRGb_565)
+                options.inPreferredConfig = Bitmap.Config.RGB_565;//使用RGB_565后会是内存降低一半但是,不适合decode带有透明区域的PNG
+            bitmap = BitmapFactory.decodeFile(path, options);
+            int w = bitmap.getWidth();
+            int h = bitmap.getHeight();
+            Log.d(TAG, "缩放后:宽" + w + " 高" + h); //缩放之后
+            Log.d(TAG, "RGB_565格式内存:"+bitmap.getByteCount() / 1024 + "KB");
+        }
+        catch (Exception ex)
+        {
+            if(bitmap!=null&&!bitmap.isRecycled())
+                bitmap.recycle();
+            System.gc();  //提醒系统及时回收
+        }
+        return bitmap;
+    }
+
+    //同上,最后一个参数可选,配置是否返回高色彩的Bitmap
+    //本地路径  不带 file: 头
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
+    public static Bitmap GetLocalOrNetBitmap(String path, boolean isRGb_565,int maxwidth,int maxheight) {
+        final String  TAG="GetLocalOrNetBitmap";
+        Bitmap bitmap = null;
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            Log.d("GetLocalOrNetBitmap",path);
+ 
+            bitmap = BitmapFactory.decodeFile(path, options); //此时返回 bm 为空
+            options.inJustDecodeBounds = false; //缩放比。由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可
+            int hi = (int) (options.outHeight / (float) maxwidth);//以指定宽度作为显示依据
+            int wi = (int) (options.outWidth / (float) maxheight);//以指定高度作为显示依据
+ 
+            int be = 0;
+            if (wi < hi)
+                be = hi;
+            else
+                be = wi;
+ 
+ 
+            Log.d(TAG, "缩放比:"+be); //缩放之后
+            Log.d(TAG, "原图宽高:"+options.outWidth+" "+options.outHeight); //缩放之后
+ 
+            if (be <= 0)
+                be = 1;
+            options.inSampleSize = be; //重新读入图片，注意此时已经把 options.inJustDecodeBounds 设回 false 了
+            if(isRGb_565)
+                options.inPreferredConfig = Bitmap.Config.RGB_565;//使用RGB_565后会是内存降低一半但是,不适合decode带有透明区域的PNG
+            bitmap = BitmapFactory.decodeFile(path, options);
+            int w = bitmap.getWidth();
+            int h = bitmap.getHeight();
+            Log.d(TAG, "缩放后:宽" + w + " 高" + h); //缩放之后
+            Log.d(TAG, "RGB_565格式内存:"+bitmap.getByteCount() / 1024 + "KB");
+        }
+        catch (Exception ex)
+        {
+            if(bitmap!=null&&!bitmap.isRecycled())
+                bitmap.recycle();
+            System.gc();  //提醒系统及时回收
+        }
+        return bitmap;
+    }
+ 
+    public static void createPath(String path) {
+        File file = new File(path);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+    }
+ 
+    //传递两个参数即可 第一个是bitmap  第二个是目录名称,第二个参数为空时  保存在SD卡上
+    public static void saveMyBitmap(Bitmap bmp, String directory, String filename) {
+        String direc = "";
+        if (directory.length() < 1) {
+            direc = GlobalConfig.sdPath + "/";
+        } else {
+            direc = GlobalConfig.sdPath + "/" + directory + "/";
+            createPath(direc);
+        }
+        File f = null;
+        if (filename.length() < 1) {
+            try {
+                Date date = new Date();
+                DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH_mm_ss_");
+                filename = "www.njoki.com__" + format.format(date);
+            } catch (Exception e) {
+                filename = "未知";
+            }
+            f = new File(direc + filename + ".png");
+        } else {
+            f = new File(direc + filename + ".png");
+        }
+ 
+        FileOutputStream fOut = null;
+        try {
+            f.createNewFile();
+            fOut = new FileOutputStream(f);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //Bitmap bitmap = ((BitmapDrawable)mImageView.getDrawable()).getBitmap();
+        //bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+        try {
+            fOut.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            fOut.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+## 给自己公司的项目写了两个功能 1.将对象 写入本地 缓存 2.去本地的缓存放到对象中
+
+```
+//讲一个对象存储到本地缓存里面
+public static void setObjectToSharedpreferences(Object oc,String name) {
+    if (oc == null)
+        return;
+    if (oc instanceof Integer || oc instanceof String || oc instanceof Double || oc instanceof Float || oc instanceof Boolean)
+        return;
+
+    Field[] fields = oc.getClass().getDeclaredFields();
+    SharedPreferences settings = LYApplication.getInstance().getSharedPreferences(name, 0);
+    SharedPreferences.Editor editor = settings.edit();
+
+    for (Field f : fields) {
+        f.setAccessible(true);
+    }
+    if (fields.length == 0)
+        return;
+    //输出所有属性
+    for (int i = 0; i < fields.length; i++) {
+
+        String field = fields[i].toString().substring(fields[i].toString().lastIndexOf(".") + 1);         //取出属性名称
+        try {
+
+            if (fields[i].get(oc) instanceof String)
+                editor.putString(field, ((String) fields[i].get(oc)));
+            else if (fields[i].get(oc) instanceof Integer)
+                editor.putInt(field, ((Integer) fields[i].get(oc)));
+            else if (fields[i].get(oc) instanceof Double)
+                editor.putFloat(field, ((Float) fields[i].get(oc)));
+            else if (fields[i].get(oc) instanceof Float)
+                editor.putFloat(field, ((Float) fields[i].get(oc)));
+            else if (fields[i].get(oc) instanceof Boolean)
+                editor.putBoolean(field, ((Boolean) fields[i].get(oc)));
+            else if (fields[i].get(oc) instanceof Long)
+                editor.putLong(field, ((Long) fields[i].get(oc)));
+
+        } catch (IllegalArgumentException e) {
+
+        } catch (IllegalAccessException e) {
+
+        }
+    }
+    editor.commit();
+}
 
 
+//取本地缓存  写入到一个对象中
+public static void getObjectToSharedpreferences(Object oc,String name) {
+    if (oc == null)
+        return ;
+    if (oc instanceof Integer || oc instanceof String || oc instanceof Double || oc instanceof Float || oc instanceof Boolean)
+        return ;
+
+    Field[] fields = oc.getClass().getDeclaredFields();
+    SharedPreferences settings = LYApplication.getInstance().getSharedPreferences(name, 0);
 
 
+    for (Field f : fields) {
+        f.setAccessible(true);
+    }
+    if (fields.length == 0)
+        return ;
+    //输出所有属性
+    for (int i = 0; i < fields.length; i++) {
+
+        String field = fields[i].toString().substring(fields[i].toString().lastIndexOf(".") + 1);         //取出属性名称
+        try {
+
+            if (fields[i].get(oc) instanceof String) {
+                String s = settings.getString(field, ((String) fields[i].get(oc)));
+                fields[i].set(oc, s);
+            } else if (fields[i].get(oc) instanceof Integer) {
+                int s = settings.getInt(field, ((Integer) fields[i].get(oc)));
+                fields[i].set(oc, s);
+            } else if (fields[i].get(oc) instanceof Double) {
+                float s = settings.getFloat(field, ((Float) fields[i].get(oc)));
+                fields[i].set(oc, s);
+            } else if (fields[i].get(oc) instanceof Float) {
+                float s = settings.getFloat(field, ((Float) fields[i].get(oc)));
+                fields[i].set(oc, s);
+            } else if (fields[i].get(oc) instanceof Boolean) {
+                boolean s = settings.getBoolean(field, ((Boolean) fields[i].get(oc)));
+                fields[i].set(oc, s);
+            } else if (fields[i].get(oc) instanceof Long) {
+                long s = settings.getLong(field, ((Long) fields[i].get(oc)));
+                fields[i].set(oc, s);
+            }
+
+        } catch (IllegalArgumentException e) {
+            return ;
+        } catch (IllegalAccessException e) {
+            return ;
+        }
+    }
+
+}
+```
+
+## TODO : gRPC 调用 ?? https://doc.oschina.net/grpc?t=58008
+
+## 使用.properties文件读写属性值
+
+```
+https://blog.csdn.net/aqi00/article/details/50846832
+
+Java中的配置文件常为.properties文件，而Properties类便是读写此类文件的工具。属性文件有两种格式，一种是文本格式，其内容是“键=值”的形式，文本注释信息可以用"#"来注释。另一种是XML格式，键值对遵循XML规范，Android的SharedPreferences也是以xml存储的。
 
 
+下面是Properties的常用方法：
+load : 从属性文件中加载属性对象
+store : 把属性对象保存到属性文件
+getProperty : 获取属性值
+setProperty : 设置属性值
+loadFromXML : 从XML格式的属性文件中加载属性对象
+storeToXML : 把属性对象保存到XML格式的属性文件
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Properties;
+ 
+import android.content.Context;
+import android.os.Environment;
+import android.util.Log;
+ 
+public class PropertiesUtil {
+	private final static String TAG = "PropertiesUtil";
+ 
+	private Context mContext;
+	private String mPath;
+	private String mFile;
+	private Properties mProp;
+	private static PropertiesUtil mPropUtil = null;
+	
+	public static PropertiesUtil getInstance(Context context) {
+		if (mPropUtil == null) {
+			mPropUtil = new PropertiesUtil();
+			mPropUtil.mContext = context;
+			mPropUtil.mPath = Environment.getExternalStorageDirectory() + "/ExmKeyValue";
+			mPropUtil.mFile = "properties.ini";
+		}
+		return mPropUtil;
+	}
+	
+	public PropertiesUtil setPath(String path) {
+		mPath = path;
+		return this;
+	}
+ 
+	public PropertiesUtil setFile(String file) {
+		mFile = file;
+		return this;
+	}
+	
+	public PropertiesUtil init() {
+		Log.d(TAG, "path="+mPath+"/"+mFile);
+		try {
+			File dir = new File(mPath);
+			if (!dir.exists()) {
+				dir.mkdirs();
+			}
+			File file = new File(dir, mFile);
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			InputStream is = new FileInputStream(file);
+			mProp = new Properties();
+			mProp.load(is);
+			is.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return this;
+	}
+	
+	public void commit() {
+		try {
+			File file = new File(mPath + "/" + mFile);
+			OutputStream os = new FileOutputStream(file);
+			mProp.store(os, "");
+			os.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		mProp.clear();
+	}
+ 
+	public void clear() {
+		mProp.clear();
+	}
+	
+	public void open() {
+		mProp.clear();
+		try {
+			File file = new File(mPath + "/" + mFile);
+			InputStream is = new FileInputStream(file);
+			mProp = new Properties();
+			mProp.load(is);
+			is.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+    public void writeString(String name, String value) {
+    	mProp.setProperty(name, value);
+    }
+ 
+    public String readString(String name, String defaultValue) {
+        return mProp.getProperty(name, defaultValue);
+    }
+ 
+    public void writeInt(String name, int value) {
+    	mProp.setProperty(name, ""+value);
+    }
+ 
+    public int readInt(String name, int defaultValue) {
+        return Integer.parseInt(mProp.getProperty(name, ""+defaultValue));
+    }
+ 
+    public void writeBoolean(String name, boolean value) {
+    	mProp.setProperty(name, ""+value);
+    }
+ 
+    public boolean readBoolean(String name, boolean defaultValue) {
+        return Boolean.parseBoolean(mProp.getProperty(name, ""+defaultValue));
+    }
+ 
+    public void writeDouble(String name, double value) {
+    	mProp.setProperty(name, ""+value);
+    }
+ 
+    public double readDouble(String name, double defaultValue) {
+        return Double.parseDouble(mProp.getProperty(name, ""+defaultValue));
+    }
+}
 
+// 写 .properties 文件
+PropertiesUtil mProp = PropertiesUtil.getInstance(this).init();
+mProp.writeString("name", "Mr Lee");
+mProp.writeInt("age", (int)(Math.random()*100%100));
+mProp.writeBoolean("married", true);
+mProp.writeDouble("weight", 100f);
+mProp.writeString("time", Utils.getNowDateTime());
+mProp.commit();
 
+// 读 .properties 文件
+PropertiesUtil mProp = PropertiesUtil.getInstance(this).init();
+mProp.open();
+String name = mProp.readString("name", "");
+int age = mProp.readInt("age", 0);
+boolean married = mProp.readBoolean("married", false);
+double weight = mProp.readDouble("weight", 0f);
+String time = mProp.readString("time", "");
+```
 
+## 树梅派
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```
+科学上网，你需要的是 openwrt 路由
+如果需要架设网站，你需要的是vps；
+一个私有git服务器，相信我数据丢失的风险相当大，出门左拐有bitbucket；
+BT下载和NAS，你需要的是一个真正的NAS；
+airplay，小米电视都有，安卓机顶盒都有，方式多到简直不要不要的；
+私有云NAS也会有；上传到百度盘的功能nas也有；
+网站资源下载是什么，如果是爬站那普通人用不到，如果只是想看新闻，大多数都有rss，你需要的是feedly；dnsmasq在openwrt，这都不是事儿；
+远程开机关机——openwrt装个pptpd，你就在家里；
+定时的语音任务——找个旧手机设定闹铃就好了，好多闹铃app支持自己录音的。
+```
 
 
 
