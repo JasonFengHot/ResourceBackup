@@ -124,36 +124,46 @@ https://github.com/amitshekhariitbhu/Android-Debug-Database
 
 https://www.codota.com/         写代码经常会遇到需要从github或者stackoverflow上寻找代码示例的时候，这个插件可以在无需离开IDE就能做这件事情。
 https://www.hex-rays.com/products/ida/      逆向大利器
+
+
 ```
 
 ## 进阶学习书籍
 
 ```
-《Code clean》 代码整洁之道
+https://pan.baiduwp.com/        百度云盘高速下载，需要切换UA，里面有教程
+
+http://www.yunpangou.com/                           搜索百度网盘资源
+
+https://yisharepdf.site/topics/android 下载网站     易分享电子资源网（专注于破解软件、游戏、电子书等资源的分享）
+
+    《Code clean》代码整洁之道
 《App研发录》
-《HeadFirst设计模式》
-《重构：改善既有代码的设计》
-《Linux内核设计与实现》
-《深入理解Linux内核》
+    《HeadFirst设计模式》
+    《重构：改善既有代码的设计》
+    《Linux内核设计与实现》
+    《深入理解Linux内核》
 《深入理解Android ***》系列书籍，邓凡平老师写的系列。
-《深入理解Android内核设计思想》
+    《深入理解Android内核设计思想》
 《Android移动性能实战》
-《Android系统源代码分析》
+    《Android系统源代码情景分析》
 《Android源码设计模式》，结合设计模式分析源码
 《Android框架揭秘》，底层架构的一本好书
     《Android开发精要-范怀宇》
     《黑客与画家》
-《深入理解Java虚拟机》
+    《深入理解Java虚拟机》
 《高级Android开发强化实战》
 《码农翻身》
-《剑指Offer》
+    《剑指Offer》
 《Android技术内幕：应用卷》
-《Android技术内幕：系统卷》
+    《Android技术内幕：系统卷》
 《高性能Android应用开发》
 《Android C++高级编程 使用NDK》
 《FFmpeg从入门到精通》
 《音视频开发进阶指南：基于Android与IOS平台的实践》
 《Android应用安全防护和逆向分析》
+《Android系统安全和反编译实战》
+
     《增长黑客》
 《深入探索Android热修复技术原理7.3Q》
 《神策数据-Android_全埋点技术白皮书》
@@ -164,7 +174,8 @@ https://www.hex-rays.com/products/ida/      逆向大利器
 《Android内核剖析》
 《写给大忙人看的Java SE 8》
 
-刘望舒的《Android 进阶揭秘》
+《腾讯Android自动化测试实战》
+《Android 进阶揭秘》刘望舒
 《Android 系统源代码情景分析》
 《深入理解 Android》系列
 《深入理解 Android 热修复技术原理》
@@ -173,7 +184,11 @@ https://www.hex-rays.com/products/ida/      逆向大利器
 《Java 并发编程实战》
 《Java 多线程编程核心技术》
 《深入理解 Java 虚拟机》
+    《程序员，你伤不起》
+    《鸟哥的Linux私房菜：基础学习篇 第四版》https://wizardforcel.gitbooks.io/vbird-linux-basic-4e/content/
 
+《Android C++高级编程 使用NDK》
+《编程珠玑》
 《大话设计模式》
 《算法导论》
 《数据结构与算法分析：Java语言描述》
@@ -33447,6 +33462,7 @@ public static void updateDefaultDirectory(Activity activity, boolean stillCaptur
 ## [FAQ05088] 如何通过命令行的方式抓取tcpdump
 
 ```
+下载 tcpdump : wget https://www.androidtcpdump.com/download/4.9.2.1.9.0/tcpdump
 如果要抓TCP数据包，我们可以使用TCPdump工具，类似于windows/linux下使用的这个工具一样。先下载tcpdump工具。
 
 你需要root权限，
@@ -37711,53 +37727,53 @@ EVDO是该制式下的一种网络技术，以实现3G的高速数据链接，�
 
 ## [FAQ09296]如何将APN设置为不可编辑 ???
 
-## UIAutomator 的学习和使用？？？？
+## TODO : UIAutomator 的学习和使用？？？？
 
-## AccessibilityService 的学习和使用？？？？？
+## TODO : AccessibilityService 的学习和使用？？？？？
 
-## TextView去掉上下边距？？？？
+## TODO : TextView去掉上下边距？？？？
 
-## AndroidManifest中的模板？？？？
+## TODO : AndroidManifest中的模板？？？？
 
-## Activity模板？？？？
+## TODO : Activity模板？？？？
 
-## Service模板？？？？
+## TODO : Service模板？？？？
 
-## Receiver模板？？？？
+## TODO : Receiver模板？？？？
 
-## ContentProvider模板？？？？
+## TODO : ContentProvider模板？？？？
 
-## Adapter模板(ListView+GridView)？？？
+## TODO : Adapter模板(ListView+GridView)？？？
 
-## Adapter模板(RecyclerView)
+## TODO : Adapter模板(RecyclerView)
 
-## startActivity模板
+## TODO : startActivity模板
 
-## sendBroadcast模板
+## TODO : sendBroadcast模板
 
-## startService模板
+## TODO : startService模板
 
-## SharedPreference模板
+## TODO : SharedPreference模板
 
-## Bitmap解析模板？？？
+## TODO : Bitmap解析模板？？？
 
-## Http请求模板
+## TODO : Http请求模板
 
-## Notification模板
+## TODO : Notification模板
 
-## File操作模板
+## TODO : File操作模板
 
-## SystemProperties的反射模板类？？？
+## TODO : SystemProperties的反射模板类？？？
 
-## 反射模板？？？
+## TODO : 反射模板？？？
 
-## icu如何编译？？？
+## TODO : icu如何编译？？？
 
-## Kotlin，Flutter 写的代码，怎么反编译？？
+## TODO : Kotlin，Flutter 写的代码，怎么反编译？？
 
-## 阿拉伯语相关问题修改？
+## TODO : 阿拉伯语相关问题修改？
 
-## android_id的获取？？？这个东西有什么用？？？
+## TODO : android_id的获取？？？这个东西有什么用？？？
 
 ```
 adb shell settings get secure android_id
@@ -37801,7 +37817,9 @@ adb shell ifconfig | grep Mask
 
 ## [FAQ14252] MT6735/35M/35P/53/53T软件包使用说明(L1.MP3&L1.MP3.TC7SP&M0.MP1适用)
 
+```
 flashtool 报错 STATUS_DA_HASH_MISMATCH : flash不兼容的问题
+```
 
 ## [FAQ10820]Android 8.1移植：针对某个APK做到wifi和gprs分别做到允许和禁止两种策略
 
@@ -37809,7 +37827,7 @@ flashtool 报错 STATUS_DA_HASH_MISMATCH : flash不兼容的问题
 https://blog.csdn.net/zengrunxiu/article/details/81027275
 ```
 
-如何把 FAQ 的标题和链接都保存下来？？？
+## TODO : 如何把 FAQ 的标题和链接都保存下来？？？
 
 =========================================== TODO end ================================================
 
@@ -37829,14 +37847,6 @@ https://juejin.im/post/5d27495fe51d4556dc2936c3
 
 ```
 https://juejin.im/post/5d072dbc51882540b7104709
-```
-
-## 混淆
-
-```
-https://juejin.im/post/5d1717996fb9a07eeb13bc95
-
-https://blog.csdn.net/aqi00/article/details/50773578     Android开发笔记（七十三）代码混淆与反破解
 ```
 
 ## Android复习资料——Android知识点汇总（一）
@@ -38005,14 +38015,6 @@ public String collectSecureSettings() {
 保存渠道号
 保存crash发生的时间
 保存应用的包名
-```
-
-## 资源文件混淆
-
-```
-美团：修改aapt在处理资源文件相关的源码达到资源文件名的替换
-
-微信：通过直接修改resources.arsc文件达到资源文件名的混淆    AndResGuard
 ```
 
 ## 隐藏敏感信息
@@ -44150,10 +44152,9 @@ https://blog.csdn.net/weixin_43813691/article/details/86525701
 ## Android recovery图片资源制作
 
 ```
-o上已经没有源码了，需要从kk上移植过来
-
 一、文字图片转换
 png 图片生成源码：development/tools/recovery_l10n/
+recovery_l10n 在 o上已经没有源码了，需要从kk上移植过来
 原生的源代码有个bug，导致读取出来的Locale[]数组值全部为空，无法完成图片的制作。
 
 diff --git a/tools/recovery_l10n/src/com/android/recovery_l10n/Main.java b/tools/recovery_l10n/src/com/android/recovery_l10n/Main.java
@@ -44185,13 +44186,65 @@ android5.1的logo动画是单张多帧PNG图片
 
 三、android8.1 logo动画
 android8.1的logo动画是多张8位深度png的图片
-用imagemaic 工具convert 转换
-convert src.png -colorspace gray dst.png
+用 imagemagick 工具的 convert 命令转换     sudo apt-get install imagemagick
+//convert src.png -colorspace gray dst.png
+convert image.png -define png:color-type=2 result.png
 
 bit_depth（8）channels（3）color_type（2）
-```
 
-## TODO : 如何获取和修改文件的头信息？？
+
+
+// 转换图片的脚本
+#!/bin/bash
+# get all filename in specified path
+
+path=$1
+files=$(ls $path)
+for filename in `find . -name "*.png"`;
+do
+    echo "convert"$filename
+    convert $filename -define png:color-type=2 $filename
+done
+
+
+
+查看png图片信息
+sudo apt-get install pngtools
+pnginfo bootable/recovery/res-mdpi/images/error_text.png
+
+显示结果如下:
+error_text.png...
+  Image Width: 163 Image Length: 2582
+  Bitdepth (Bits/Sample): 8
+  Channels (Samples/Pixel): 1
+  Pixel depth (Pixel Depth): 8
+  Colour Type (Photometric Interpretation): GRAYSCALE 
+  Image filter: Single row per byte filter 
+  Interlacing: No interlacing 
+  Compression Scheme: Deflate method 8, 32k window
+  Resolution: 0, 0 (unit unknown)
+  FillOrder: msb-to-lsb
+  Byte Order: Network (Big Endian)
+  Number of text strings: 0
+
+使用 convert 命令转换之后查看图片信息显示结果如下：
+error_text.png...
+  Image Width: 163 Image Length: 2582
+  Bitdepth (Bits/Sample): 8
+  Channels (Samples/Pixel): 3
+  Pixel depth (Pixel Depth): 24
+  Colour Type (Photometric Interpretation): RGB 
+  Image filter: Single row per byte filter 
+  Interlacing: No interlacing 
+  Compression Scheme: Deflate method 8, 32k window
+  Resolution: 0, 0 (unit unknown)
+  FillOrder: msb-to-lsb
+  Byte Order: Network (Big Endian)
+  Number of text strings: 0
+
+
+转换之后的 channels 和 pixel depth 和 Colour Type 都已经发生了变化
+```
 
 ## PNG图片文件的种类
 
@@ -44220,23 +44273,19 @@ https://blog.csdn.net/csdn66_2016/article/details/72303400
 
                    PNG_COLOR_TYPE_PALETTE（3）
 
-    channels值，与color_type有关，PNG_COLOR_TYPE_GRAY与PNG_COLOR_TYPE_PALETTE时，只有一种颜色，PNG_COLOR_TYPE_RGB时有三种颜色
+channels值，与color_type有关，PNG_COLOR_TYPE_GRAY 与 PNG_COLOR_TYPE_PALETTE 时，只有一种颜色，PNG_COLOR_TYPE_RGB 时有三种颜色
 
 6.3 判断PNG属性方法
 
-    我们上节描述了，通过三个属性，来看一个png图片是否能在recovery中显示，当我们拿到一个png图片的时候，怎么分析呢，我们可以写个小的获取png info的程序。
+我们上节描述了，通过三个属性，来看一个png图片是否能在recovery中显示，当我们拿到一个png图片的时候，怎么分析呢，我们可以写个小的获取png info的程序。
 
- 
+第一步：编译 libpng.a 库文件
 
-  第一步：编译libpng.a库文件
+我们从官网下载png的源码，http://www.libpng.org/pub/png/libpng.html，注意 linux/ubuntu 系统下需要下载 libpng-1.6.37.tar.gz 的压缩包(否则编译的时候会出现 /bin/sh^M:bad interpreter: No such file or directory 的错误)，然后解压，然后编译：./configure CC=gcc --prefix=$PWD/_install, make, make install; 然后就可以生成 libpng.a 以及 png.h 相关文件了。
 
-    我们从官网下载png的源码，http://www.libpng.org/pub/png/libpng.html，然后在服务器解压，然后编译：./configure CC=gcc --prefix=$PWD/_install, make, make install; 然后就可以生成libpng.a以及png.h相关文件了。
+第二步：写 sample
 
-
-
-  第二步：写sample
-
-  pnginfo.c
+pnginfo.c
 
 #include <stdlib.h>
 #include <string.h>
@@ -44313,8 +44362,11 @@ exit:
  
     printf("pnginfo result:%d\n", result);
     return result;
-    
 }
+
+
+
+
 makefile:
 CC=gcc
 TARGET=pnginfo
@@ -44328,23 +44380,32 @@ all:pnginfo.o
 clean:
 	rm -rf *.o $(TARGET)
 
-  执行make即可生成pnginfo
+执行make即可生成pnginfo
+TODO : 这一步 make 的时候失败了，不知道如何解决？？？？
 
-  第三步：获取png属性
-  ./pnginfo icon_error.png
+第三步：获取png属性
+./pnginfo icon_error.png
 
 6.4 png转换
-    如果我拿到的png图片，不支持怎么办呢，我们可以使用PS工具，把png图片转换为recovery可支持的格式即可，如果又不太会使用PS工具呢，还有个更简单的方法，采用QQ的截图功能，然后另存为png图片即可，QQ截图保存的png是标准的RGB格式，即bit_depth（8）channels（3）color_type（2）
+使用如下命令转换 convert image.png -define png:color-type=2 result.png
+如果我拿到的png图片，不支持怎么办呢，我们可以使用PS工具，把png图片转换为recovery可支持的格式即可，如果又不太会使用PS工具呢，还有个更简单的方法，采用QQ的截图功能，然后另存为png图片即可，QQ截图保存的png是标准的RGB格式，即 bit_depth（8）channels（3）color_type（2）
+    
 
 6.5 总结
-    通过上述了解，现在知道了recovery的图片资源文件png的信息了，怎么去判断png是否能够在recovery中显示，以及如果制作recovery支持的png背景图片了。
+通过上述了解，现在知道了recovery的图片资源文件png的信息了，怎么去判断png是否能够在recovery中显示，以及如果制作recovery支持的png背景图片了。
 ```
 
-## TODO : 代码反混淆simplify
+## dos 系统文件转换成 unix 系统文件
 
 ```
-https://github.com/CalebFenton/simplify
+如何确认是 dos 系统文件
+用 vi 打开文件可以看到文件每一行的末尾都有 ^M 的字符
+方法1：用 dos2unix 命令可以转换
+
+方法2：在 windows 上用 EditPlus 打开文件，双击右下角状态栏文件格式相关的那一栏，会弹出一个对话框让你选择转换成什么系统的文件格式 PC / UNIX/Mac / MacOS9
 ```
+
+## TODO : 如何获取和修改文件的头信息？？
 
 ## TODO : 长连接抓包 anyproxy
 
@@ -46091,6 +46152,28 @@ private class PackageDeleteObserver extends IPackageDeleteObserver.Stub {
 <uses-permission android:name="android.permission.DELETE_PACKAGES" />
 ```
 
+## [混淆]混淆
+
+```
+https://juejin.im/post/5d1717996fb9a07eeb13bc95
+
+https://blog.csdn.net/aqi00/article/details/50773578     Android开发笔记（七十三）代码混淆与反破解
+```
+
+## [混淆]资源文件混淆
+
+```
+美团：修改aapt在处理资源文件相关的源码达到资源文件名的替换
+
+微信：通过直接修改resources.arsc文件达到资源文件名的混淆    AndResGuard
+```
+
+## TODO : 代码反混淆simplify
+
+```
+https://github.com/CalebFenton/simplify
+```
+
 ## TODO : gist 是个什么玩意儿？？？
 
 ## TODO : Java字节码框架asm 是什么？？怎么用？？？有什么用？？？
@@ -46098,7 +46181,9 @@ private class PackageDeleteObserver extends IPackageDeleteObserver.Stub {
 ## [shell]查看内存占用前10的进程
 
 ```
-ps -aux|sort -k4nr |head -n 10
+ps -aux | sort -k4nr | head -n 10
+
+adb shell ps -A | sort -k4nr | head -n 10
 ```
 
 ## [adb]如何测量一个应用的启动时间
@@ -46146,7 +46231,11 @@ https://blog.csdn.net/qq_35559358/article/details/79052640
 packages/apps/Provision/src/com/android/provision/DefaultActivity.java 在这个里面的oncreate方法里面添加需要处理第一次开机配置
 ```
 
-## GPIO
+## TODO : GPIO
+
+```
+General-purpose input/output，通用型之输入输出的简称，功能类似8051的P0—P3，其接脚可以供使用者由程控自由使用，PIN脚依现实考量可作为通用输入（GPI）或通用输出（GPO）或通用输入与输出（GPIO），如当clk generator, chip select等。
+```
 
 ## Android系统修改汇总（MTK）
 
@@ -46216,7 +46305,6 @@ index 5451540..7aa09d2 100755
 -    <bool name="config_reverseDefaultRotation">false</bool>
 +    <bool name="config_reverseDefaultRotation">true</bool>
  
-     <!-- Sets the minimum and maximum tilt tolerance for each possible rotation.
 
 二十一、修改浏览器默认地址（Browser）
 diff --git a/res/values/strings.xml b/res/values/strings.xml
@@ -46240,7 +46328,6 @@ index bba4dbe..28a3628
      <string-array name="bookmarks" translatable="false">
 
 二十、去掉SystemUI sim 卡显示ICON （Android version：7.1.1）
-
 
 diff --git a/packages/SystemUI/res/values/config.xml b/packages/SystemUI/res/values/config.xml
 old mode 100644
@@ -46497,29 +46584,26 @@ index cdde8c1..be4b9f7 100755
              // Show the content view
              contentView.setVisibility(View.VISIBLE);
 
-十四、将桌面workspace、hotseat 大小调整 放大一半 ，
-这个要根据自己的需求来制定
- workspace.setPadding(padding.left/2, padding.top/2, padding.right/2, padding.bottom);
- hotseat.setPadding(edgeMarginPx + padding.left/2, 0,
-                    edgeMarginPx + padding.right/2,
-                    2 * edgeMarginPx);
+十四、将桌面workspace、hotseat 大小调整 放大一半 ，这个要根据自己的需求来制定
+workspace.setPadding(padding.left/2, padding.top/2, padding.right/2, padding.bottom);
+hotseat.setPadding(edgeMarginPx + padding.left/2, 0, edgeMarginPx + padding.right/2, 2 * edgeMarginPx);
 
 
 十三、隐藏Launcher3 桌面界面 上面的 搜索栏 
 packages\apps\Launcher3\src\com\android\launcher3\Launcher.Java
- //mSearchDropTargetBar.addView(mQsb); 注释掉这一行 就行
+//mSearchDropTargetBar.addView(mQsb); 注释掉这一行 就行
 
 
 十二、修改Launcher3 appall app菜单列表背景透明度
 \packages\apps\Launcher3\src\com\android\launcher3\allapps\AllAppsContainerView.java
-        mContainerView.setBackground(background);
-        //mRevealView.setBackground(background.getConstantState().newDrawable());
-        mAppsRecyclerView.updateBackgroundPadding(bgPadding);
-        mAdapter.updateBackgroundPadding(bgPadding);
+mContainerView.setBackground(background);
+//mRevealView.setBackground(background.getConstantState().newDrawable());
+mAppsRecyclerView.updateBackgroundPadding(bgPadding);
+mAdapter.updateBackgroundPadding(bgPadding);
 mContainerView.getBackground().setAlpha(20);
 packages\apps\Launcher3\src\com\android\launcher3\op09\AllAppsContainerView.java
-        mContainerView.setBackground(null);
-        //mRevealView.setBackground(background.getConstantState().newDrawable());
+mContainerView.setBackground(null);
+//mRevealView.setBackground(background.getConstantState().newDrawable());
 
 十一、长按电源键 只显示 关机 一项
 我们知道长按Power键会弹出选项，如 关机、 重启、飞行模式。现在想只保留一项  关机 ；
@@ -46809,7 +46893,7 @@ index f7b9ed4..2da5800
  
  /******************************************************************************
 
-二、修改默认打开wif、bluetooth
+二、修改默认打开wifi、bluetooth
 diff --git a/frameworks/base/packages/SettingsProvider/res/values/defaults.xml b/frameworks/base/packages/SettingsProvider/res/values/defaults.xml
 old mode 100644
 new mode 100755
@@ -46824,8 +46908,7 @@ index daa22c4..0a7584b
 +    <bool name="def_wifi_display_on">true</bool>
      <bool name="def_install_non_market_apps">false</bool>
      <bool name="def_package_verifier_enable">true</bool>
-     <!-- Comma-separated list of location providers.
-@@ -47,7 +47,7 @@
+
      <bool name="assisted_gps_enabled">true</bool>
      <bool name="def_netstats_enabled">true</bool>
      <bool name="def_usb_mass_storage_enabled">true</bool>
@@ -46834,24 +46917,6 @@ index daa22c4..0a7584b
      <!-- 0 == never, 1 == only when plugged in, 2 == always -->
      <integer name="def_wifi_sleep_policy">2</integer>
      <bool name="def_networks_available_notification_on">true</bool>
-
-一、修改默认字体
-
-diff --git a/frameworks/base/core/java/android/content/res/Configuration.java b/frameworks/base/core/java/android/content/res/Configuration.java
-old mode 100644
-new mode 100755
-index 0d41748..e7b20fa
---- a/frameworks/base/core/java/android/content/res/Configuration.java
-+++ b/frameworks/base/core/java/android/content/res/Configuration.java
-@@ -830,7 +830,7 @@ public final class Configuration implements Parcelable, Comparable<Configuration
-      * Set this object to the system defaults.
-      */
-     public void setToDefaults() {
--        fontScale = 1;
-+        fontScale = 1.15f; //normal value is 1
-         mcc = mnc = 0;
-         locale = null;
-         userSetLocale = false;
 ```
 
 ## MTK android平台常用的编译调试命令
@@ -46877,7 +46942,7 @@ export JACK_SERVER_VM_ARGUMENTS="-Dfile.encoding=UTF-8 -XX:+TieredCompilation -X
 #export PATH=$JAVA_HOME/bin:$PATH
 
 prebuilts/misc/linux-x86/ccache/ccache -M 50G
-. build/envsetup.sh
+source build/envsetup.sh
 lunch 22
 2) 导出环境变量
 
@@ -46939,19 +47004,19 @@ mmm kernel-3.18:clean-kernel
 5 内核烧录
 注意adb的环境变量，有时候使用android env下的adb不能成功，用ubuntu自带的adb又是可以的
 可能是ubutnu环境有问题
-/ # adb path/to/boot.img /dev/block/platform/mtk-msdc.0/11230000.MSDC0/by-name/boot
+adb path/to/boot.img /dev/block/platform/mtk-msdc.0/11230000.MSDC0/by-name/boot
 或者拷贝到/data分区使用dd
 
-/ # ls /dev/block/platform/mtk-msdc.0/11230000.MSDC0/by-name/boot -l
-/ # /dev/block/platform/mtk-msdc.0/11230000.MSDC0/by-name/boot -> /dev/block/mmcblk0p10
-/ # adb path/to/boot.img /dev/block/mmcblk0p10
+ls /dev/block/platform/mtk-msdc.0/11230000.MSDC0/by-name/boot -l
+/dev/block/platform/mtk-msdc.0/11230000.MSDC0/by-name/boot -> /dev/block/mmcblk0p10
+adb path/to/boot.img /dev/block/mmcblk0p10
 ```
 
 ## MTK Android常用的命令记录（CPU/GPU频率调整等）
 
 ```
 1 查看CPU频率
-/ # cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_cur_freq
+cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_cur_freq
 1050000
 1050000
 1050000
@@ -47101,6 +47166,10 @@ echo performance > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor
 
 ## TODO : thermal 是什么意思？？
 
+```
+Linux Thermal 是 Linux 系统下温度控制相关的模块，主要用来控制系统运行过程中芯片产生的热量，使芯片温度和设备外壳温度维持在一个安全、舒适的范围。
+```
+
 ## Android 系统属性SystemProperty分析
 
 ```
@@ -47141,6 +47210,8 @@ cbm.setText(et.getText().toString());
 ```
 https://blog.csdn.net/weizongwei5/article/details/54312281
 ```
+
+## TODO : JavaPoet
 
 ## 使用Facebook redex工具优化app
 
@@ -47900,7 +47971,7 @@ double weight = mProp.readDouble("weight", 0f);
 String time = mProp.readString("time", "");
 ```
 
-## 树梅派
+## 树莓派
 
 ```
 科学上网，你需要的是 openwrt 路由
@@ -47913,6 +47984,81 @@ airplay，小米电视都有，安卓机顶盒都有，方式多到简直不要�
 远程开机关机——openwrt装个pptpd，你就在家里；
 定时的语音任务——找个旧手机设定闹铃就好了，好多闹铃app支持自己录音的。
 ```
+
+## 配置 node.js 的脚本
+
+```
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.26.1/install.sh | bash
+source ~/.nvm/nvm.sh
+export NVM_IOJS_ORG_MIRROR="http://npm.taobao.org/mirrors/iojs"
+nvm i 4
+nvm alias default v4.0.0
+npm install -g cnpm --registry=https://registry.npm.taobao.org
+cnpm install pm2 -g
+```
+
+## TODO : APKAnalyser ???
+
+## TODO : AspectJ ????
+
+## 简洁好看实用的logger库
+
+```
+https://github.com/orhanobut/logger
+
+implementation 'com.orhanobut:logger:2.2.0'
+```
+
+## Android Fragment 的妙用 - 优雅地申请权限和处理 onActivityResult
+
+```
+https://juejin.im/post/5cdcbb0ee51d453ce606dbd7
+```
+
+## 媲美微信的二维码识别库
+
+```
+https://mp.weixin.qq.com/s/f8rmlWR1ZHtAv-TvTGFy7Q
+```
+
+## [算法] 寻找一个数组中是否有重复的数字
+
+```
+public int duplicate(int arr[],int length) {
+    int i = 0;
+    while(i < length){
+        if(arr[arr[i]] == arr[i]){
+            if(arr[i] == i){
+                i++;
+            }else{
+                return arr[i];
+            }
+        }else{
+            int tmp = arr[arr[i]];
+            arr[arr[i]] = arr[i];
+            arr[i] =  tmp;
+        }
+    }
+    return false;
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
