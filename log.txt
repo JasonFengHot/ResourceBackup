@@ -1,0 +1,1157 @@
+--------- beginning of crash
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: FATAL EXCEPTION: main
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: Process: com.mobile.panorama, PID: 6915
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: java.lang.RuntimeException: Unable to start activity ComponentInfo{com.mobile.panorama/com.mobile.panorama.MainActivity}: android.view.InflateException: Binary XML file line #9: Binary XML file line #9: Error inflating class <unknown>
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:2819)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:2897)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.app.ActivityThread.handleRelaunchActivity(ActivityThread.java:4740)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.app.ActivityThread.-wrap18(Unknown Source:0)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1629)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.os.Handler.dispatchMessage(Handler.java:106)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.os.Looper.loop(Looper.java:164)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.app.ActivityThread.main(ActivityThread.java:6548)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at java.lang.reflect.Method.invoke(Native Method)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:438)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:857)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: Caused by: android.view.InflateException: Binary XML file line #9: Binary XML file line #9: Error inflating class <unknown>
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: Caused by: android.view.InflateException: Binary XML file line #9: Error inflating class <unknown>
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: Caused by: java.lang.reflect.InvocationTargetException
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at java.lang.reflect.Constructor.newInstance0(Native Method)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at java.lang.reflect.Constructor.newInstance(Constructor.java:334)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.view.LayoutInflater.createView(LayoutInflater.java:647)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:790)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:730)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.view.LayoutInflater.rInflate(LayoutInflater.java:863)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:824)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:515)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:423)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.view.LayoutInflater.inflate(LayoutInflater.java:374)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.support.v7.app.AppCompatDelegateImpl.setContentView(AppCompatDelegateImpl.java:469)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.support.v7.app.AppCompatActivity.setContentView(AppCompatActivity.java:140)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at com.mobile.panorama.MainActivity.onCreate(MainActivity.java:68)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.app.Activity.performCreate(Activity.java:7023)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.app.Activity.performCreate(Activity.java:7014)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1214)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:2772)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:2897)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.app.ActivityThread.handleRelaunchActivity(ActivityThread.java:4740)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.app.ActivityThread.-wrap18(Unknown Source:0)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1629)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.os.Handler.dispatchMessage(Handler.java:106)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.os.Looper.loop(Looper.java:164)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at android.app.ActivityThread.main(ActivityThread.java:6548)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at java.lang.reflect.Method.invoke(Native Method)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:438)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:857)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: Caused by: java.lang.UnsatisfiedLinkError: dalvik.system.PathClassLoader[DexPathList[[zip file "/data/app/com.mobile.panorama-bDEM08Z_-onspipMNwVerg==/base.apk"],nativeLibraryDirectories=[/data/app/com.mobile.panorama-bDEM08Z_-onspipMNwVerg==/lib/arm, /data/app/com.mobile.panorama-bDEM08Z_-onspipMNwVerg==/base.apk!/lib/armeabi-v7a, /system/lib, /vendor/lib]]] couldn't find "libpanorenderer.so"
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at java.lang.Runtime.loadLibrary0(Runtime.java:1011)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at java.lang.System.loadLibrary(System.java:1657)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at com.google.vr.sdk.widgets.pano.VrPanoramaRenderer.<init>(VrPanoramaRenderer.java:28)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at com.google.vr.sdk.widgets.pano.VrPanoramaView.createRenderer(VrPanoramaView.java:101)
+08-27 08:59:50.185  6915  6915 E AndroidRuntime: 	at com.google.vr.sdk.widgets.pano.VrPanoramaView.createRenderer(VrPanoramaView.java:14)
+08-27 08:59:50.186  6915  6915 E AndroidRuntime: 	at com.google.vr.sdk.widgets.common.VrWidgetView.initializeRenderingView(VrWidgetView.java:327)
+08-27 08:59:50.186  6915  6915 E AndroidRuntime: 	at com.google.vr.sdk.widgets.common.VrWidgetView.init(VrWidgetView.java:234)
+08-27 08:59:50.186  6915  6915 E AndroidRuntime: 	at com.google.vr.sdk.widgets.common.VrWidgetView.<init>(VrWidgetView.java:176)
+08-27 08:59:50.186  6915  6915 E AndroidRuntime: 	at com.google.vr.sdk.widgets.pano.VrPanoramaView.<init>(VrPanoramaView.java:86)
+08-27 08:59:50.186  6915  6915 E AndroidRuntime: 	... 27 more
+--------- beginning of system
+08-27 10:57:05.224   324   324 I wificond: Pno scan stopped
+08-27 10:57:10.231   324   324 I wificond: Pno scan started
+08-27 10:57:11.555   324   324 I wificond: Pno scan result ready event
+08-27 10:57:11.559   324   324 I wificond: Pno scan stopped
+08-27 10:57:16.567   324   324 I wificond: Pno scan started
+08-27 10:57:17.911   324   324 I wificond: Pno scan result ready event
+08-27 10:57:17.914   324   324 I wificond: Pno scan stopped
+08-27 10:57:22.924   324   324 I wificond: Pno scan started
+08-27 10:57:24.207   324   324 I wificond: Pno scan result ready event
+08-27 10:57:24.211   324   324 I wificond: Pno scan stopped
+08-27 10:57:29.217   324   324 I wificond: Pno scan started
+08-27 10:57:30.481   324   324 I wificond: Pno scan result ready event
+08-27 10:57:30.485   324   324 I wificond: Pno scan stopped
+08-27 10:57:35.494   324   324 I wificond: Pno scan started
+08-27 10:57:36.748   324   324 I wificond: Pno scan result ready event
+08-27 10:57:36.752   324   324 I wificond: Pno scan stopped
+08-27 10:57:41.757   324   324 I wificond: Pno scan started
+08-27 10:57:43.063   324   324 I wificond: Pno scan result ready event
+08-27 10:57:43.067   324   324 I wificond: Pno scan stopped
+08-27 10:57:48.074   324   324 I wificond: Pno scan started
+08-27 10:57:49.278   324   324 I wificond: Pno scan result ready event
+08-27 10:57:49.281   324   324 I wificond: Pno scan stopped
+08-27 10:57:54.287   324   324 I wificond: Pno scan started
+08-27 10:57:55.592   324   324 I wificond: Pno scan result ready event
+08-27 10:57:55.596   324   324 I wificond: Pno scan stopped
+08-27 10:58:00.604   324   324 I wificond: Pno scan started
+08-27 10:58:01.895   324   324 I wificond: Pno scan result ready event
+08-27 10:58:01.900   324   324 I wificond: Pno scan stopped
+08-27 10:58:06.904   324   324 I wificond: Pno scan started
+08-27 10:58:08.231   324   324 I wificond: Pno scan result ready event
+08-27 10:58:08.235   324   324 I wificond: Pno scan stopped
+08-27 10:58:13.244   324   324 I wificond: Pno scan started
+08-27 10:58:14.506   324   324 I wificond: Pno scan result ready event
+08-27 10:58:14.510   324   324 I wificond: Pno scan stopped
+08-27 10:58:19.517   324   324 I wificond: Pno scan started
+08-27 10:58:20.821   324   324 I wificond: Pno scan result ready event
+08-27 10:58:20.825   324   324 I wificond: Pno scan stopped
+08-27 10:58:25.830   324   324 I wificond: Pno scan started
+08-27 10:58:27.177   324   324 I wificond: Pno scan result ready event
+08-27 10:58:27.181   324   324 I wificond: Pno scan stopped
+08-27 10:58:32.190   324   324 I wificond: Pno scan started
+08-27 10:58:33.473   324   324 I wificond: Pno scan result ready event
+08-27 10:58:33.478   324   324 I wificond: Pno scan stopped
+08-27 10:58:33.764   590   609 E BatteryExternalStatsWorker: no controller energy info supplied for wifi
+08-27 10:58:33.764   590   609 E BatteryExternalStatsWorker: no controller energy info supplied for bluetooth
+08-27 10:58:38.484   324   324 I wificond: Pno scan started
+08-27 10:58:39.788   324   324 I wificond: Pno scan result ready event
+08-27 10:58:39.792   324   324 I wificond: Pno scan stopped
+08-27 10:58:44.800   324   324 I wificond: Pno scan started
+08-27 10:58:46.104   324   324 I wificond: Pno scan result ready event
+08-27 10:58:46.108   324   324 I wificond: Pno scan stopped
+08-27 10:58:51.114   324   324 I wificond: Pno scan started
+08-27 10:58:52.419   324   324 I wificond: Pno scan result ready event
+08-27 10:58:52.423   324   324 I wificond: Pno scan stopped
+08-27 10:58:57.431   324   324 I wificond: Pno scan started
+08-27 10:58:58.734   324   324 I wificond: Pno scan result ready event
+08-27 10:58:58.739   324   324 I wificond: Pno scan stopped
+08-27 10:59:03.747   324   324 I wificond: Pno scan started
+08-27 10:59:04.979   324   324 I wificond: Pno scan result ready event
+08-27 10:59:04.983   324   324 I wificond: Pno scan stopped
+08-27 10:59:09.990   324   324 I wificond: Pno scan started
+08-27 10:59:11.315   324   324 I wificond: Pno scan result ready event
+08-27 10:59:11.319   324   324 I wificond: Pno scan stopped
+08-27 10:59:16.327   324   324 I wificond: Pno scan started
+08-27 10:59:17.590   324   324 I wificond: Pno scan result ready event
+08-27 10:59:17.594   324   324 I wificond: Pno scan stopped
+08-27 10:59:22.600   324   324 I wificond: Pno scan started
+08-27 10:59:23.905   324   324 I wificond: Pno scan result ready event
+08-27 10:59:23.910   324   324 I wificond: Pno scan stopped
+08-27 10:59:28.917   324   324 I wificond: Pno scan started
+08-27 10:59:30.261   324   324 I wificond: Pno scan result ready event
+08-27 10:59:30.265   324   324 I wificond: Pno scan stopped
+08-27 10:59:35.270   324   324 I wificond: Pno scan started
+08-27 10:59:36.556   324   324 I wificond: Pno scan result ready event
+08-27 10:59:36.560   324   324 I wificond: Pno scan stopped
+08-27 10:59:41.567   324   324 I wificond: Pno scan started
+08-27 10:59:42.912   324   324 I wificond: Pno scan result ready event
+08-27 10:59:42.916   324   324 I wificond: Pno scan stopped
+08-27 10:59:47.924   324   324 I wificond: Pno scan started
+08-27 10:59:49.187   324   324 I wificond: Pno scan result ready event
+08-27 10:59:49.191   324   324 I wificond: Pno scan stopped
+08-27 10:59:54.197   324   324 I wificond: Pno scan started
+08-27 10:59:55.502   324   324 I wificond: Pno scan result ready event
+08-27 10:59:55.506   324   324 I wificond: Pno scan stopped
+08-27 11:00:00.514   324   324 I wificond: Pno scan started
+08-27 11:00:01.846   324   324 I wificond: Pno scan result ready event
+08-27 11:00:01.850   324   324 I wificond: Pno scan stopped
+08-27 11:00:06.857   324   324 I wificond: Pno scan started
+08-27 11:00:08.101   324   324 I wificond: Pno scan result ready event
+08-27 11:00:08.106   324   324 I wificond: Pno scan stopped
+08-27 11:00:13.114   324   324 I wificond: Pno scan started
+08-27 11:00:14.378   324   324 I wificond: Pno scan result ready event
+08-27 11:00:14.382   324   324 I wificond: Pno scan stopped
+08-27 11:00:19.387   324   324 I wificond: Pno scan started
+08-27 11:00:20.652   324   324 I wificond: Pno scan result ready event
+08-27 11:00:20.656   324   324 I wificond: Pno scan stopped
+08-27 11:00:20.672   324   324 W wificond: Scan is not started. Ignore abort request
+08-27 11:00:20.779   590   738 D MtkConnectivityService: registerNetworkAgent NetworkAgentInfo{ ni{[type: WIFI[], state: CONNECTING/CONNECTING, reason: (unspecified), extra: "Internet", failover: false, available: true, roaming: false]}  network{208}  nethandle{893369633502}  lp{{InterfaceName: wlan0 LinkAddresses: []  Routes: [] DnsAddresses: [] Domains: null MTU: 0}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps]}  Score{20}  everValidated{false}  lastValidated{false}  created{false} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} clat{null} }
+08-27 11:00:20.780   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 208] EVENT_NETWORK_INFO_CHANGED, going from null to CONNECTING
+08-27 11:00:20.825   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 208] EVENT_NETWORK_INFO_CHANGED, going from CONNECTING to DISCONNECTED
+08-27 11:00:20.825   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 208] got DISCONNECTED, was satisfying 0
+08-27 11:00:20.826   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:00:20.841   590   747 D MtkConnectivityService: Removing agent NetworkAgentInfo{ ni{[type: WIFI[], state: DISCONNECTED/DISCONNECTED, reason: (unspecified), extra: <unknown ssid>, failover: false, available: true, roaming: false]}  network{208}  nethandle{893369633502}  lp{{InterfaceName: wlan0 LinkAddresses: []  Routes: [] DnsAddresses: [] Domains: null MTU: 0}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps]}  Score{20}  everValidated{false}  lastValidated{false}  created{false} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} clat{null} } wasDefault=false
+08-27 11:00:20.882   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:00:25.662   324   324 I wificond: Pno scan started
+08-27 11:00:26.893   324   324 I wificond: Pno scan result ready event
+08-27 11:00:26.897   324   324 I wificond: Pno scan stopped
+08-27 11:00:26.912   324   324 W wificond: Scan is not started. Ignore abort request
+08-27 11:00:27.018   590   738 D MtkConnectivityService: registerNetworkAgent NetworkAgentInfo{ ni{[type: WIFI[], state: CONNECTING/CONNECTING, reason: (unspecified), extra: "Internet", failover: false, available: true, roaming: false]}  network{209}  nethandle{897664600798}  lp{{InterfaceName: wlan0 LinkAddresses: []  Routes: [] DnsAddresses: [] Domains: null MTU: 0}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps]}  Score{20}  everValidated{false}  lastValidated{false}  created{false} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} clat{null} }
+08-27 11:00:27.018   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 209] EVENT_NETWORK_INFO_CHANGED, going from null to CONNECTING
+08-27 11:00:27.046   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:00:27.054   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 209] EVENT_NETWORK_INFO_CHANGED, going from CONNECTING to DISCONNECTED
+08-27 11:00:27.054   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 209] got DISCONNECTED, was satisfying 0
+08-27 11:00:27.070   590   747 D MtkConnectivityService: Removing agent NetworkAgentInfo{ ni{[type: WIFI[], state: DISCONNECTED/DISCONNECTED, reason: (unspecified), extra: <unknown ssid>, failover: false, available: true, roaming: false]}  network{209}  nethandle{897664600798}  lp{{InterfaceName: wlan0 LinkAddresses: []  Routes: [] DnsAddresses: [] Domains: null MTU: 0}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps]}  Score{20}  everValidated{false}  lastValidated{false}  created{false} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} clat{null} } wasDefault=false
+08-27 11:00:27.120   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:00:31.901   324   324 I wificond: Pno scan started
+08-27 11:00:33.212   324   324 I wificond: Pno scan result ready event
+08-27 11:00:33.216   324   324 I wificond: Pno scan stopped
+08-27 11:00:38.220   324   324 I wificond: Pno scan started
+08-27 11:00:39.546   324   324 I wificond: Pno scan result ready event
+08-27 11:00:39.551   324   324 I wificond: Pno scan stopped
+08-27 11:00:39.566   324   324 W wificond: Scan is not started. Ignore abort request
+08-27 11:00:39.672   590   738 D MtkConnectivityService: registerNetworkAgent NetworkAgentInfo{ ni{[type: WIFI[], state: CONNECTING/CONNECTING, reason: (unspecified), extra: "Internet", failover: false, available: true, roaming: false]}  network{210}  nethandle{901959568094}  lp{{InterfaceName: wlan0 LinkAddresses: []  Routes: [] DnsAddresses: [] Domains: null MTU: 0}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps]}  Score{20}  everValidated{false}  lastValidated{false}  created{false} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} clat{null} }
+08-27 11:00:39.673   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 210] EVENT_NETWORK_INFO_CHANGED, going from null to CONNECTING
+08-27 11:00:39.737   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:00:39.741   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 210] EVENT_NETWORK_INFO_CHANGED, going from CONNECTING to DISCONNECTED
+08-27 11:00:39.743   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 210] got DISCONNECTED, was satisfying 0
+08-27 11:00:39.774   590   747 D MtkConnectivityService: Removing agent NetworkAgentInfo{ ni{[type: WIFI[], state: DISCONNECTED/DISCONNECTED, reason: (unspecified), extra: <unknown ssid>, failover: false, available: true, roaming: false]}  network{210}  nethandle{901959568094}  lp{{InterfaceName: wlan0 LinkAddresses: []  Routes: [] DnsAddresses: [] Domains: null MTU: 0}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps]}  Score{20}  everValidated{false}  lastValidated{false}  created{false} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} clat{null} } wasDefault=false
+08-27 11:00:39.834   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:00:44.561   324   324 I wificond: Pno scan started
+08-27 11:00:45.863   324   324 I wificond: Pno scan result ready event
+08-27 11:00:45.869   324   324 I wificond: Pno scan stopped
+08-27 11:00:45.880   324   324 W wificond: Scan is not started. Ignore abort request
+08-27 11:00:45.988   590   738 D MtkConnectivityService: registerNetworkAgent NetworkAgentInfo{ ni{[type: WIFI[], state: CONNECTING/CONNECTING, reason: (unspecified), extra: "Internet", failover: false, available: true, roaming: false]}  network{211}  nethandle{906254535390}  lp{{InterfaceName: wlan0 LinkAddresses: []  Routes: [] DnsAddresses: [] Domains: null MTU: 0}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps]}  Score{20}  everValidated{false}  lastValidated{false}  created{false} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} clat{null} }
+08-27 11:00:45.989   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 211] EVENT_NETWORK_INFO_CHANGED, going from null to CONNECTING
+08-27 11:00:46.048   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:00:46.062   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 211] EVENT_NETWORK_INFO_CHANGED, going from CONNECTING to DISCONNECTED
+08-27 11:00:46.062   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 211] got DISCONNECTED, was satisfying 0
+08-27 11:00:46.080   590   747 D MtkConnectivityService: Removing agent NetworkAgentInfo{ ni{[type: WIFI[], state: DISCONNECTED/DISCONNECTED, reason: (unspecified), extra: <unknown ssid>, failover: false, available: true, roaming: false]}  network{211}  nethandle{906254535390}  lp{{InterfaceName: wlan0 LinkAddresses: []  Routes: [] DnsAddresses: [] Domains: null MTU: 0}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps]}  Score{20}  everValidated{false}  lastValidated{false}  created{false} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} clat{null} } wasDefault=false
+08-27 11:00:46.121   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:00:50.874   324   324 I wificond: Pno scan started
+08-27 11:00:52.225   324   324 I wificond: Pno scan result ready event
+08-27 11:00:52.229   324   324 I wificond: Pno scan stopped
+08-27 11:00:52.236   324   324 W wificond: Scan is not started. Ignore abort request
+08-27 11:00:52.348   590   738 D MtkConnectivityService: registerNetworkAgent NetworkAgentInfo{ ni{[type: WIFI[], state: CONNECTING/CONNECTING, reason: (unspecified), extra: "Internet", failover: false, available: true, roaming: false]}  network{212}  nethandle{910549502686}  lp{{InterfaceName: wlan0 LinkAddresses: []  Routes: [] DnsAddresses: [] Domains: null MTU: 0}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps]}  Score{20}  everValidated{false}  lastValidated{false}  created{false} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} clat{null} }
+08-27 11:00:52.348   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 212] EVENT_NETWORK_INFO_CHANGED, going from null to CONNECTING
+08-27 11:00:52.373   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:00:52.385   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 212] EVENT_NETWORK_INFO_CHANGED, going from CONNECTING to DISCONNECTED
+08-27 11:00:52.386   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 212] got DISCONNECTED, was satisfying 0
+08-27 11:00:52.401   590   747 D MtkConnectivityService: Removing agent NetworkAgentInfo{ ni{[type: WIFI[], state: DISCONNECTED/DISCONNECTED, reason: (unspecified), extra: <unknown ssid>, failover: false, available: true, roaming: false]}  network{212}  nethandle{910549502686}  lp{{InterfaceName: wlan0 LinkAddresses: []  Routes: [] DnsAddresses: [] Domains: null MTU: 0}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps]}  Score{20}  everValidated{false}  lastValidated{false}  created{false} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} clat{null} } wasDefault=false
+08-27 11:00:52.437   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:00:57.233   324   324 I wificond: Pno scan started
+08-27 11:00:58.605   324   324 I wificond: Pno scan result ready event
+08-27 11:00:58.609   324   324 I wificond: Pno scan stopped
+08-27 11:00:58.624   324   324 W wificond: Scan is not started. Ignore abort request
+08-27 11:00:58.729   590   738 D MtkConnectivityService: registerNetworkAgent NetworkAgentInfo{ ni{[type: WIFI[], state: CONNECTING/CONNECTING, reason: (unspecified), extra: "Internet", failover: false, available: true, roaming: false]}  network{213}  nethandle{914844469982}  lp{{InterfaceName: wlan0 LinkAddresses: []  Routes: [] DnsAddresses: [] Domains: null MTU: 0}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps]}  Score{20}  everValidated{false}  lastValidated{false}  created{false} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} clat{null} }
+08-27 11:00:58.730   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 213] EVENT_NETWORK_INFO_CHANGED, going from null to CONNECTING
+08-27 11:00:58.772   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:00:58.779   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 213] EVENT_NETWORK_INFO_CHANGED, going from CONNECTING to DISCONNECTED
+08-27 11:00:58.780   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 213] got DISCONNECTED, was satisfying 0
+08-27 11:00:58.795   590   747 D MtkConnectivityService: Removing agent NetworkAgentInfo{ ni{[type: WIFI[], state: DISCONNECTED/DISCONNECTED, reason: (unspecified), extra: <unknown ssid>, failover: false, available: true, roaming: false]}  network{213}  nethandle{914844469982}  lp{{InterfaceName: wlan0 LinkAddresses: []  Routes: [] DnsAddresses: [] Domains: null MTU: 0}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps]}  Score{20}  everValidated{false}  lastValidated{false}  created{false} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} clat{null} } wasDefault=false
+08-27 11:00:58.858   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:01:03.617   324   324 I wificond: Pno scan started
+08-27 11:01:04.982   324   324 I wificond: Pno scan result ready event
+08-27 11:01:04.986   324   324 I wificond: Pno scan stopped
+08-27 11:01:09.994   324   324 I wificond: Pno scan started
+08-27 11:01:11.359   324   324 I wificond: Pno scan result ready event
+08-27 11:01:11.363   324   324 I wificond: Pno scan stopped
+08-27 11:01:16.370   324   324 I wificond: Pno scan started
+08-27 11:01:17.675   324   324 I wificond: Pno scan result ready event
+08-27 11:01:17.679   324   324 I wificond: Pno scan stopped
+08-27 11:01:18.365   590   590 I ActivityManager: Start proc 8476:android.process.media/u0a31 for service com.android.providers.downloads/.DownloadIdleService
+08-27 11:01:18.366   590   590 D ActivityManager: AMS: *** Launch app com.android.providers.downloads/10031 for service Intent { cmp=com.android.providers.downloads/.DownloadIdleService }, from android/1000.
+08-27 11:01:18.568  8476  8493 D DownloadManager: Removed 0 stale downloads
+08-27 11:01:18.576  8476  8493 D DownloadManager: Found 0 files in database
+08-27 11:01:18.577  8476  8493 D DownloadManager: Found 0 files on disk
+08-27 11:01:18.606   590   590 I ActivityManager: Start proc 8496:com.google.android.ims/u0a8 for service com.google.android.ims/.services.LogFileCleanupService
+08-27 11:01:18.607   590   590 D ActivityManager: AMS: *** Launch app com.google.android.ims/10008 for service Intent { cmp=com.google.android.ims/.services.LogFileCleanupService }, from android/1000.
+08-27 11:01:18.969   590  1261 D MtkConnectivityService: requestNetwork for uid/pid:10008/8496 NetworkRequest [ TRACK_DEFAULT id=19, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+08-27 11:01:19.554   590  1218 I ActivityManager: Start proc 8534:com.google.android.apps.messaging/u0a73 for service com.google.android.apps.messaging/.rcsmigration.RcsMigrationService
+08-27 11:01:19.554   590  1218 D ActivityManager: AMS: *** Launch app com.google.android.apps.messaging/10073 for service Intent { cmp=com.google.android.apps.messaging/.rcsmigration.RcsMigrationService }, from com.google.android.ims/10008.
+08-27 11:01:19.654   590   609 E BatteryExternalStatsWorker: no controller energy info supplied for wifi
+08-27 11:01:19.654   590   609 E BatteryExternalStatsWorker: no controller energy info supplied for bluetooth
+08-27 11:01:20.656   590   600 W ActivityManager: Background start not allowed: service Intent { cmp=com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionExecutorImpl$EmptyService } to com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionExecutorImpl$EmptyService from pid=8534 uid=10073 pkg=com.google.android.apps.messaging
+08-27 11:01:20.773   590  1261 W ActivityManager: Background start not allowed: service Intent { cmp=com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionExecutorImpl$EmptyService } to com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionExecutorImpl$EmptyService from pid=8534 uid=10073 pkg=com.google.android.apps.messaging
+08-27 11:01:20.895   590   984 W ActivityManager: Unable to start service Intent { act=com.google.android.gms.icing.INDEX_SERVICE pkg=com.google.android.gms } U=0: not found
+08-27 11:01:20.898   590   984 W ActivityManager: Unbind failed: could not find connection for android.os.BinderProxy@1d8f77b
+08-27 11:01:20.982  8534  8599 E ActivityThread: Failed to find provider info for com.google.android.googlequicksearchbox.GsaPublicContentProvider
+08-27 11:01:20.992   590   600 V SettingsProvider: packageValueForCallResult, name = sms_default_application, value : Bundle[{_track_generation=android.util.MemoryIntArray@58, value=com.google.android.apps.messaging, _generation_index=1, _generation=26}]
+08-27 11:01:22.691   324   324 I wificond: Pno scan started
+08-27 11:01:24.013   324   324 I wificond: Pno scan result ready event
+08-27 11:01:24.017   324   324 I wificond: Pno scan stopped
+08-27 11:01:26.431   590   600 W ActivityManager: Background start not allowed: service Intent { cmp=com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionExecutorImpl$EmptyService } to com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionExecutorImpl$EmptyService from pid=8534 uid=10073 pkg=com.google.android.apps.messaging
+08-27 11:01:27.338   590   600 I chatty  : uid=1000(system) Binder:590_1 identical 2 lines
+08-27 11:01:27.406   590   600 W ActivityManager: Background start not allowed: service Intent { cmp=com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionExecutorImpl$EmptyService } to com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionExecutorImpl$EmptyService from pid=8534 uid=10073 pkg=com.google.android.apps.messaging
+08-27 11:01:29.024   324   324 I wificond: Pno scan started
+08-27 11:01:30.270   324   324 I wificond: Pno scan result ready event
+08-27 11:01:30.275   324   324 I wificond: Pno scan stopped
+08-27 11:01:35.281   324   324 I wificond: Pno scan started
+08-27 11:01:36.586   324   324 I wificond: Pno scan result ready event
+08-27 11:01:36.591   324   324 I wificond: Pno scan stopped
+08-27 11:01:41.600   324   324 I wificond: Pno scan started
+08-27 11:01:42.864   324   324 I wificond: Pno scan result ready event
+08-27 11:01:42.868   324   324 I wificond: Pno scan stopped
+08-27 11:01:47.878   324   324 I wificond: Pno scan started
+08-27 11:01:49.225   324   324 I wificond: Pno scan result ready event
+08-27 11:01:49.229   324   324 I wificond: Pno scan stopped
+08-27 11:01:54.232   324   324 I wificond: Pno scan started
+08-27 11:01:55.510   324   324 I wificond: Pno scan result ready event
+08-27 11:01:55.515   324   324 I wificond: Pno scan stopped
+08-27 11:02:00.520   324   324 I wificond: Pno scan started
+08-27 11:02:01.871   324   324 I wificond: Pno scan result ready event
+08-27 11:02:01.875   324   324 I wificond: Pno scan stopped
+08-27 11:02:06.884   324   324 I wificond: Pno scan started
+08-27 11:02:08.087   324   324 I wificond: Pno scan result ready event
+08-27 11:02:08.091   324   324 I wificond: Pno scan stopped
+08-27 11:02:13.101   324   324 I wificond: Pno scan started
+08-27 11:02:14.444   324   324 I wificond: Pno scan result ready event
+08-27 11:02:14.447   324   324 I wificond: Pno scan stopped
+08-27 11:02:19.457   324   324 I wificond: Pno scan started
+08-27 11:02:20.721   324   324 I wificond: Pno scan result ready event
+08-27 11:02:20.726   324   324 I wificond: Pno scan stopped
+08-27 11:02:25.730   324   324 I wificond: Pno scan started
+08-27 11:02:27.017   324   324 I wificond: Pno scan result ready event
+08-27 11:02:27.022   324   324 I wificond: Pno scan stopped
+08-27 11:02:32.031   324   324 I wificond: Pno scan started
+08-27 11:02:33.294   324   324 I wificond: Pno scan result ready event
+08-27 11:02:33.299   324   324 I wificond: Pno scan stopped
+08-27 11:02:38.307   324   324 I wificond: Pno scan started
+08-27 11:02:39.572   324   324 I wificond: Pno scan result ready event
+08-27 11:02:39.578   324   324 I wificond: Pno scan stopped
+08-27 11:02:44.584   324   324 I wificond: Pno scan started
+08-27 11:02:45.869   324   324 I wificond: Pno scan result ready event
+08-27 11:02:45.873   324   324 I wificond: Pno scan stopped
+08-27 11:02:50.880   324   324 I wificond: Pno scan started
+08-27 11:02:52.124   324   324 I wificond: Pno scan result ready event
+08-27 11:02:52.129   324   324 I wificond: Pno scan stopped
+08-27 11:02:57.131   324   324 I wificond: Pno scan started
+08-27 11:02:58.419   324   324 I wificond: Pno scan result ready event
+08-27 11:02:58.422   324   324 I wificond: Pno scan stopped
+08-27 11:03:03.435   324   324 I wificond: Pno scan started
+08-27 11:03:04.665   324   324 I wificond: Pno scan result ready event
+08-27 11:03:04.669   324   324 I wificond: Pno scan stopped
+08-27 11:03:09.681   324   324 I wificond: Pno scan started
+08-27 11:03:10.942   324   324 I wificond: Pno scan result ready event
+08-27 11:03:10.946   324   324 I wificond: Pno scan stopped
+08-27 11:03:15.954   324   324 I wificond: Pno scan started
+08-27 11:03:17.218   324   324 I wificond: Pno scan result ready event
+08-27 11:03:17.222   324   324 I wificond: Pno scan stopped
+08-27 11:03:20.853   590   600 W ActivityManager: Background start not allowed: service Intent { cmp=com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionExecutorImpl$EmptyService } to com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionExecutorImpl$EmptyService from pid=8534 uid=10073 pkg=com.google.android.apps.messaging
+08-27 11:03:21.650   590   600 I ActivityManager: Start proc 8753:android.process.acore/u0a6 for content provider com.android.providers.contacts/.ContactsProvider2
+08-27 11:03:21.689   590  1261 I ActivityManager: Killing 7363:com.transsion.plat.appupdate.ui/u0a14 (adj 906): empty for 4384s
+08-27 11:03:21.839   590  5890 V SettingsProvider: packageValueForCallResult, name = null, value : Bundle[{_track_generation=android.util.MemoryIntArray@58, value=null, _generation_index=0, _generation=12}]
+08-27 11:03:22.234   324   324 I wificond: Pno scan started
+08-27 11:03:23.542   324   324 I wificond: Pno scan result ready event
+08-27 11:03:23.546   324   324 I wificond: Pno scan stopped
+08-27 11:03:28.409   590   661 I DisplayPowerController: Blocking screen on until initial contents have been drawn.
+08-27 11:03:28.440   590   617 I DisplayManagerService: Display device changed state: "Built-in Screen", ON
+08-27 11:03:28.583   590   600 I ActivityManager: Start proc 8775:com.transsion.plat.appupdate.ui/u0a14 for service com.transsion.plat.appupdate/com.android.remindmessage.service.KeepAliveService
+08-27 11:03:28.584   590   600 D ActivityManager: AMS: *** Launch app com.transsion.plat.appupdate/10014 for service Intent { act=android.intent.action.SCREEN_ON cmp=com.transsion.plat.appupdate/com.android.remindmessage.service.KeepAliveService }, from com.transsion.plat.appupdate/10014.
+08-27 11:03:28.886   590   661 I DisplayPowerController: Unblocked screen on after 477 ms
+08-27 11:03:29.564   590   600 D ProcessManager: After resumed : com.transsion.hilauncher
+08-27 11:03:29.567   590   658 D DuraSpeed/DSPolicyBase: [setCurrentLauncher] = com.transsion.hilauncher
+08-27 11:03:29.581   590   658 D DuraSpeed/AWSManager: [setCurrentLauncher] = com.transsion.hilauncher
+08-27 11:03:29.582   590   658 D DuraSpeed/DuraSpeedInternalManager: switchState currentPackage = com.transsion.hilauncher, event =1003
+08-27 11:03:29.632   590   600 I WindowManager: Relayout Window{759b882 u0 com.transsion.hilauncher/com.android.launcher3.Launcher}: oldVis=4 newVis=0 focusMayChange = true
+08-27 11:03:29.718   590   600 D IdleScreen: activityIdleScreen: android.app.ContextImpl@ae58927 mNotifyNeeded: false idleIntent: Intent { act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10800100 cmp=com.transsion.hilauncher/com.android.launcher3.Launcher }
+08-27 11:03:29.819   590  5567 I WindowManager: Relayout Window{12693d u0 NavigationBar}: oldVis=8 newVis=0 focusMayChange = true
+08-27 11:03:29.934   324   324 W wificond: Scan is not started. Ignore abort request
+08-27 11:03:30.065   590   658 D DuraSpeed/DSPolicyFactory: Application = com.transsion.hilauncher (50MB), FreeMemory = 539MB
+08-27 11:03:30.089   590   658 V DuraSpeed/AWSManager: kill end[]
+08-27 11:03:30.089   590   658 V DuraSpeed/AWSManager: suppress start []
+08-27 11:03:30.089   590   658 D DuraSpeed/DuraSpeedInternalManager: switchState end
+08-27 11:03:30.577   590  1259 V SettingsProvider: name : screen_brightness appId : 10035
+08-27 11:03:32.091   324   324 I wificond: Received external scan result notification from kernel.
+08-27 11:03:34.061   324   324 I wificond: Received external scan result notification from kernel.
+08-27 11:03:35.659   324   324 W wificond: Scan is not started. Ignore abort request
+08-27 11:03:35.680   324   324 I wificond: Received external scan result notification from kernel.
+08-27 11:03:35.757   590   738 D MtkConnectivityService: registerNetworkAgent NetworkAgentInfo{ ni{[type: WIFI[], state: CONNECTING/CONNECTING, reason: (unspecified), extra: "Internet", failover: false, available: true, roaming: false]}  network{214}  nethandle{919139437278}  lp{{InterfaceName: wlan0 LinkAddresses: []  Routes: [] DnsAddresses: [] Domains: null MTU: 0}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps]}  Score{20}  everValidated{false}  lastValidated{false}  created{false} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} clat{null} }
+08-27 11:03:35.757   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 214] EVENT_NETWORK_INFO_CHANGED, going from null to CONNECTING
+08-27 11:03:35.777   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:03:35.781   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 214] EVENT_NETWORK_INFO_CHANGED, going from CONNECTING to DISCONNECTED
+08-27 11:03:35.782   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 214] got DISCONNECTED, was satisfying 0
+08-27 11:03:35.798   590   747 D MtkConnectivityService: Removing agent NetworkAgentInfo{ ni{[type: WIFI[], state: DISCONNECTED/DISCONNECTED, reason: (unspecified), extra: <unknown ssid>, failover: false, available: true, roaming: false]}  network{214}  nethandle{919139437278}  lp{{InterfaceName: wlan0 LinkAddresses: []  Routes: [] DnsAddresses: [] Domains: null MTU: 0}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps]}  Score{20}  everValidated{false}  lastValidated{false}  created{false} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} clat{null} } wasDefault=false
+08-27 11:03:35.867   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:03:36.689   590  1259 V SettingsProvider: packageValueForCallResult, name = android_id, value : Bundle[{_track_generation=android.util.MemoryIntArray@58, value=fb77633860fb6660, _generation_index=1, _generation=26}]
+08-27 11:03:37.039   324   324 W wificond: Scan is not started. Ignore abort request
+08-27 11:03:38.506   324   324 I wificond: Received external scan result notification from kernel.
+08-27 11:03:53.776   590   609 E BatteryExternalStatsWorker: no controller energy info supplied for wifi
+08-27 11:03:53.777   590   609 E BatteryExternalStatsWorker: no controller energy info supplied for bluetooth
+08-27 11:03:59.949   590  1259 I ActivityManager: Killing 7974:com.google.android.apps.searchlite/u0a23 (adj 906): empty for 2643s
+08-27 11:04:42.892   590  3016 V MediaRouterService: restoreBluetoothA2dp(false)
+08-27 11:04:44.745   324   324 W wificond: Scan is not started. Ignore abort request
+08-27 11:04:46.835   590   738 D MtkConnectivityService: registerNetworkAgent NetworkAgentInfo{ ni{[type: WIFI[], state: CONNECTING/CONNECTING, reason: (unspecified), extra: "S42", failover: false, available: true, roaming: false]}  network{215}  nethandle{923434404574}  lp{{InterfaceName: wlan0 LinkAddresses: []  Routes: [] DnsAddresses: [] Domains: null MTU: 0}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps]}  Score{20}  everValidated{false}  lastValidated{false}  created{false} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} clat{null} }
+08-27 11:04:46.836   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 215] EVENT_NETWORK_INFO_CHANGED, going from null to CONNECTING
+08-27 11:04:46.863   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:04:47.730   590  3016 I ActivityManager: START u0 {act=android.settings.WIFI_SETTINGS flg=0x14000000 cmp=com.android.settings/.Settings$WifiSettingsActivity} from uid 10035
+08-27 11:04:47.797   590  5567 E ActivityManager: applyOptionsLocked: Unknown animationType=0
+08-27 11:04:47.801   590   658 D DuraSpeed/DSPolicyBase: [setCurrentLauncher] = com.transsion.hilauncher
+08-27 11:04:47.807   590   658 D DuraSpeed/AWSManager: [setCurrentLauncher] = com.transsion.hilauncher
+08-27 11:04:47.815   590   658 D DuraSpeed/DuraSpeedInternalManager: switchState currentPackage = com.android.settings, event =1004
+08-27 11:04:47.817   590   658 D DuraSpeed/DuraSpeedInternalManager: skip doSuppression
+08-27 11:04:47.818   590   658 D DuraSpeed/DuraSpeedInternalManager: switchState end
+08-27 11:04:47.832   590  5567 I ActivityManager: Start proc 8854:com.android.settings/1000 for activity com.android.settings/.Settings$WifiSettingsActivity
+08-27 11:04:47.877   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:04:47.901   590   615 I chatty  : uid=1000(system) android.fg identical 1 line
+08-27 11:04:47.915   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:04:47.935   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 215] EVENT_NETWORK_INFO_CHANGED, going from CONNECTING to CONNECTED
+08-27 11:04:47.938   590   747 D MtkConnectivityService: Adding iface wlan0 to network 215
+08-27 11:04:47.940   590  5567 D MitePluginJupiterImpl: MID_SERVICE_AM_START_ACTIVITY_JUPITERActivityRecord{4313195 u0 com.android.settings/.Settings$WifiSettingsActivity t22}
+08-27 11:04:47.941   590  5567 W ActivityManager: 2001realStartActivityLocked: Skipping start of r=ActivityRecord{4313195 u0 com.android.settings/.Settings$WifiSettingsActivity t22}
+08-27 11:04:47.942   590   622 D JupiterDelegatorImpl: appLockCheckInner: ComponentInfo{com.android.settings/com.android.settings.Settings$WifiSettingsActivity}
+08-27 11:04:47.942   590   622 D JupiterDelegatorImpl: app lock service check:
+08-27 11:04:47.963   590  5567 D ProcessManager: After resumed : com.android.settings
+08-27 11:04:47.964   590  5567 W ActivityManager: Slow operation: 54ms so far, now at attachApplicationLocked: after mServices.attachApplicationLocked
+08-27 11:04:47.975   590   747 D MtkConnectivityService: Setting DNS servers for network 215 to [/2408:84ed:46:e8b4::cf, /8.8.8.8]
+08-27 11:04:47.996   590   747 I Nat464Xlat: Starting clatd on wlan0
+08-27 11:04:48.074   590   747 I NetworkStats: NetworkIdentity: {type=WIFI, subType=COMBINED, networkId="S42", metered=false}
+08-27 11:04:48.074   590   747 I NetworkStats: state.networkCapabilities: [ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&FOREGROUND LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps SignalStrength: -57]
+08-27 11:04:48.074   590   747 I NetworkStats: iface:wlan0
+08-27 11:04:48.074   590   747 I NetworkStats: ident:{type=WIFI, subType=COMBINED, networkId="S42", metered=false}
+08-27 11:04:48.101   590  3016 V SettingsProvider: packageValueForCallResult, name = null, value : Bundle[{_track_generation=android.util.MemoryIntArray@58, value=null, _generation_index=0, _generation=12}]
+08-27 11:04:48.110   590   609 E BatteryExternalStatsWorker: no controller energy info supplied for wifi
+08-27 11:04:48.126   590   747 I NetworkStats: NetworkIdentity: {type=WIFI, subType=COMBINED, networkId="S42", metered=false}
+08-27 11:04:48.126   590   747 I NetworkStats: state.networkCapabilities: [ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&FOREGROUND LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps SignalStrength: -57]
+08-27 11:04:48.126   590   747 I NetworkStats: iface:wlan0
+08-27 11:04:48.126   590   747 I NetworkStats: ident:{type=WIFI, subType=COMBINED, networkId="S42", metered=false}
+08-27 11:04:48.169   590   747 D MtkConnectivityService: Switching to new default network: NetworkAgentInfo{ ni{[type: WIFI[], state: CONNECTED/CONNECTED, reason: (unspecified), extra: "S42", failover: false, available: true, roaming: false]}  network{215}  nethandle{923434404574}  lp{{InterfaceName: wlan0 LinkAddresses: [fe80::465f:11b7:f363:4b2b/64,2408:84ed:46:e8b4:cb93:1c81:ee45:b8f7/64,2408:84ed:46:e8b4:2df9:4be5:57cb:8fe4/64,]  Routes: [fe80::/64 -> :: wlan0,::/0 -> fe80::8:22ff:fed6:14fc wlan0,2408:84ed:46:e8b4::/64 -> :: wlan0,] DnsAddresses: [2408:84ed:46:e8b4::cf,] Domains: null MTU: 0 TcpBufferSizes: 524288,1048576,2097152,262144,524288,1048576}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&FOREGROUND LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps SignalStrength: -57]}  Score{20}  everValidated{false}  lastValidated{false}  created{true} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} clat{mBaseIface: wlan0, mIface: v4-wlan0, mState: STARTING} }
+08-27 11:04:48.217   590   747 D MtkConnectivityService: Adding agent NetworkAgentInfo{ ni{[type: WIFI[], state: CONNECTED/CONNECTED, reason: (unspecified), extra: "S42", failover: false, available: true, roaming: false]}  network{215}  nethandle{923434404574}  lp{{InterfaceName: wlan0 LinkAddresses: [fe80::465f:11b7:f363:4b2b/64,2408:84ed:46:e8b4:cb93:1c81:ee45:b8f7/64,2408:84ed:46:e8b4:2df9:4be5:57cb:8fe4/64,]  Routes: [fe80::/64 -> :: wlan0,::/0 -> fe80::8:22ff:fed6:14fc wlan0,2408:84ed:46:e8b4::/64 -> :: wlan0,] DnsAddresses: [2408:84ed:46:e8b4::cf,] Domains: null MTU: 0 TcpBufferSizes: 524288,1048576,2097152,262144,524288,1048576}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&FOREGROUND LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps SignalStrength: -57]}  Score{20}  everValidated{false}  lastValidated{false}  created{true} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} clat{mBaseIface: wlan0, mIface: v4-wlan0, mState: STARTING} } for legacy network type 1
+08-27 11:04:48.218   590   747 D MtkConnectivityService: Sending CONNECTED broadcast for type 1 NetworkAgentInfo [WIFI () - 215] isDefaultNetwork=true
+08-27 11:04:48.271   590  3016 W ActivityManager: Background start not allowed: service Intent { cmp=com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionExecutorImpl$EmptyService } to com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionExecutorImpl$EmptyService from pid=8534 uid=10073 pkg=com.google.android.apps.messaging
+08-27 11:04:48.408   590  4073 W ActivityManager: Background start not allowed: service Intent { cmp=com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionExecutorImpl$EmptyService } to com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionExecutorImpl$EmptyService from pid=8534 uid=10073 pkg=com.google.android.apps.messaging
+08-27 11:04:48.885   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:04:48.886   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:04:49.030   590  5567 I WindowManager: Relayout Window{ca24a6c u0 com.android.settings/com.android.settings.Settings$WifiSettingsActivity}: oldVis=4 newVis=0 focusMayChange = true
+08-27 11:04:49.080   590  4073 I ActivityManager: Start proc 8903:com.google.android.gms.unstable/u0a17 for service com.google.android.gms/.droidguard.DroidGuardService
+08-27 11:04:49.080   590  4073 D ActivityManager: AMS: *** Launch app com.google.android.gms/10017 for service Intent { act=com.google.android.gms.droidguard.service.PING cmp=com.google.android.gms/.droidguard.DroidGuardService }, from com.google.android.gms/10017.
+08-27 11:04:49.197   590  5567 I ActivityManager: Start proc 8919:com.google.android.apps.searchlite/u0a23 for service com.google.android.apps.searchlite/com.firebase.jobdispatcher.GooglePlayReceiver
+08-27 11:04:49.197   590  5567 D ActivityManager: AMS: *** Launch app com.google.android.apps.searchlite/10023 for service Intent { act=com.google.android.gms.gcm.ACTION_TASK_READY cmp=com.google.android.apps.searchlite/com.firebase.jobdispatcher.GooglePlayReceiver }, from com.google.android.gms/10017.
+08-27 11:04:49.377   590  5567 D IdleScreen: activityIdleScreen: android.app.ContextImpl@ae58927 mNotifyNeeded: false idleIntent: Intent { act=android.settings.WIFI_SETTINGS flg=0x14000000 cmp=com.android.settings/.Settings$WifiSettingsActivity }
+08-27 11:04:49.500   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 215] validation failed
+08-27 11:04:50.855   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 215] validation failed
+08-27 11:04:51.113   590  3016 I ActivityManager: Start proc 8985:com.google.android.apps.youtube.mango/u0a89 for service com.google.android.apps.youtube.mango/com.firebase.jobdispatcher.GooglePlayReceiver
+08-27 11:04:51.113   590  3016 D ActivityManager: AMS: *** Launch app com.google.android.apps.youtube.mango/10089 for service Intent { act=com.google.android.gms.gcm.ACTION_TASK_READY cmp=com.google.android.apps.youtube.mango/com.firebase.jobdispatcher.GooglePlayReceiver }, from com.google.android.gms/10017.
+08-27 11:04:52.188   590  3016 I ActivityManager: Start proc 9057:com.google.android.calendar/u0a51 for service com.google.android.calendar/com.firebase.jobdispatcher.GooglePlayReceiver
+08-27 11:04:52.188   590  3016 D ActivityManager: AMS: *** Launch app com.google.android.calendar/10051 for service Intent { act=com.google.android.gms.gcm.ACTION_TASK_READY cmp=com.google.android.calendar/com.firebase.jobdispatcher.GooglePlayReceiver }, from com.google.android.gms/10017.
+08-27 11:04:52.780   590  3016 I ActivityManager: Start proc 9086:com.android.providers.calendar/u0a28 for content provider com.android.providers.calendar/.CalendarProvider2
+08-27 11:04:52.970   590  5567 I ActivityManager: Killing 8037:com.google.android.partnersetup/u0a22 (adj 906): empty for 2600s
+08-27 11:04:53.612   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 215] validation failed
+08-27 11:04:53.938   590  1261 V SettingsProvider: packageValueForCallResult, name = null, value : Bundle[{_track_generation=android.util.MemoryIntArray@58, value=null, _generation_index=2, _generation=8}]
+08-27 11:04:54.025   590   737 D WifiService: New client listening to asynchronous messages
+08-27 11:04:54.027   590   737 D WifiService: CONNECT  nid=-1 uid=1000 name=android.uid.system:1000
+08-27 11:04:54.027   590   737 D WifiService: Connect with config ID: 0 SSID: "helloworld" PROVIDER-NAME: null BSSID: null FQDN: null PRIO: 0 HIDDEN: false
+08-27 11:04:54.027   590   737 D WifiService:  NetworkSelectionStatus NETWORK_SELECTION_ENABLED
+08-27 11:04:54.027   590   737 D WifiService:  hasEverConnected: true
+08-27 11:04:54.027   590   737 D WifiService:  numAssociation 4
+08-27 11:04:54.027   590   737 D WifiService:  validatedInternetAccess
+08-27 11:04:54.027   590   737 D WifiService:  KeyMgmt: WPA_PSK Protocols: WPA RSN
+08-27 11:04:54.027   590   737 D WifiService:  AuthAlgorithms: OPEN
+08-27 11:04:54.027   590   737 D WifiService:  PairwiseCiphers: TKIP CCMP
+08-27 11:04:54.027   590   737 D WifiService:  GroupCiphers: WEP40 WEP104 TKIP CCMP
+08-27 11:04:54.027   590   737 D WifiService:  PSK: *
+08-27 11:04:54.027   590   737 D WifiService: Enterprise config:
+08-27 11:04:54.027   590   737 D WifiService: IP config:
+08-27 11:04:54.027   590   737 D WifiService: IP assignment: DHCP
+08-27 11:04:54.027   590   737 D WifiService: Proxy settings: NONE
+08-27 11:04:54.027   590   737 D WifiService:  cuid=1000 cname=android.uid.system:1000 luid=1000 lname=android.uid.system:1000 lcuid=1000 userApproved=USER_UNSPECIFIED noInternetAccessExpected=false roamingFailureBlackListTimeMilli: 1000
+08-27 11:04:54.027   590   737 D WifiService: recentFailure: Association Rejection code: 65522
+08-27 11:04:54.027   590   737 D WifiService:  simSlot: null
+08-27 11:04:54.151   324   324 W wificond: Scan is not started. Ignore abort request
+08-27 11:04:54.230   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 215] EVENT_NETWORK_INFO_CHANGED, going from CONNECTED to DISCONNECTED
+08-27 11:04:54.231   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 215] got DISCONNECTED, was satisfying 9
+08-27 11:04:54.273   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:04:54.277   590   615 I chatty  : uid=1000(system) android.fg identical 1 line
+08-27 11:04:54.292   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:04:54.307   590   747 I Nat464Xlat: Stopping clatd on wlan0
+08-27 11:04:54.336   590   609 E BatteryExternalStatsWorker: no controller energy info supplied for wifi
+08-27 11:04:54.360   590   738 D MtkConnectivityService: registerNetworkAgent NetworkAgentInfo{ ni{[type: WIFI[], state: CONNECTING/CONNECTING, reason: (unspecified), extra: "helloworld", failover: false, available: true, roaming: false]}  network{216}  nethandle{927729371870}  lp{{InterfaceName: wlan0 LinkAddresses: []  Routes: [] DnsAddresses: [] Domains: null MTU: 0}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps]}  Score{20}  everValidated{false}  lastValidated{false}  created{false} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} clat{null} }
+08-27 11:04:54.406   590   747 D MtkConnectivityService: Removing agent NetworkAgentInfo{ ni{[type: WIFI[], state: DISCONNECTED/DISCONNECTED, reason: (unspecified), extra: <unknown ssid>, failover: false, available: true, roaming: false]}  network{215}  nethandle{923434404574}  lp{{InterfaceName: wlan0 LinkAddresses: [fe80::465f:11b7:f363:4b2b/64,2408:84ed:46:e8b4:cb93:1c81:ee45:b8f7/64,2408:84ed:46:e8b4:2df9:4be5:57cb:8fe4/64,]  Routes: [fe80::/64 -> :: wlan0,::/0 -> fe80::8:22ff:fed6:14fc wlan0,2408:84ed:46:e8b4::/64 -> :: wlan0,] DnsAddresses: [2408:84ed:46:e8b4::cf,] Domains: null MTU: 0 TcpBufferSizes: 524288,1048576,2097152,262144,524288,1048576}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&FOREGROUND LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps SignalStrength: -61]}  Score{20}  everValidated{false}  lastValidated{false}  created{true} lingering{false} explicitlySelected{false} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} clat{null} } wasDefault=true
+08-27 11:04:54.406   590   747 D MtkConnectivityService: Sending DISCONNECTED broadcast for type 1 NetworkAgentInfo [WIFI () - 215] isDefaultNetwork=true
+08-27 11:04:54.430   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 216] EVENT_NETWORK_INFO_CHANGED, going from null to CONNECTING
+08-27 11:04:54.436   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:04:55.447   590   615 I chatty  : uid=1000(system) android.fg identical 2 lines
+08-27 11:04:55.448   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:04:55.458   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 216] EVENT_NETWORK_INFO_CHANGED, going from CONNECTING to CONNECTED
+08-27 11:04:55.460   590   747 D MtkConnectivityService: Adding iface wlan0 to network 216
+08-27 11:04:55.506   590   747 D MtkConnectivityService: Setting DNS servers for network 216 to [/2409:8928:2a78:7742::e7, /8.8.8.8]
+08-27 11:04:55.512   590   747 I Nat464Xlat: Starting clatd on wlan0
+08-27 11:04:55.515   590   609 E BatteryExternalStatsWorker: no controller energy info supplied for wifi
+08-27 11:04:55.558   590   747 I NetworkStats: NetworkIdentity: {type=WIFI, subType=COMBINED, networkId="helloworld", metered=false}
+08-27 11:04:55.559   590   747 I NetworkStats: state.networkCapabilities: [ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&FOREGROUND LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps SignalStrength: -31]
+08-27 11:04:55.559   590   747 I NetworkStats: iface:wlan0
+08-27 11:04:55.559   590   747 I NetworkStats: ident:{type=WIFI, subType=COMBINED, networkId="helloworld", metered=false}
+08-27 11:04:55.581   590   747 I NetworkStats: NetworkIdentity: {type=WIFI, subType=COMBINED, networkId="helloworld", metered=false}
+08-27 11:04:55.581   590   747 I NetworkStats: state.networkCapabilities: [ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&FOREGROUND LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps SignalStrength: -31]
+08-27 11:04:55.581   590   747 I NetworkStats: iface:wlan0
+08-27 11:04:55.581   590   747 I NetworkStats: ident:{type=WIFI, subType=COMBINED, networkId="helloworld", metered=false}
+08-27 11:04:55.596   590   747 D MtkConnectivityService: Switching to new default network: NetworkAgentInfo{ ni{[type: WIFI[], state: CONNECTED/CONNECTED, reason: (unspecified), extra: "helloworld", failover: false, available: true, roaming: false]}  network{216}  nethandle{927729371870}  lp{{InterfaceName: wlan0 LinkAddresses: [fe80::465f:11b7:f363:4b2b/64,2409:8928:2a78:7742:c6c:d4c1:436d:12f2/64,2409:8928:2a78:7742:2df9:4be5:57cb:8fe4/64,]  Routes: [fe80::/64 -> :: wlan0,::/0 -> fe80::9687:e0ff:fe61:fb04 wlan0,2409:8928:2a78:7742::/64 -> :: wlan0,] DnsAddresses: [2409:8928:2a78:7742::e7,] Domains: null MTU: 0 TcpBufferSizes: 524288,1048576,2097152,262144,524288,1048576}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&FOREGROUND LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps SignalStrength: -31]}  Score{20}  everValidated{false}  lastValidated{false}  created{true} lingering{false} explicitlySelected{true} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} clat{mBaseIface: wlan0, mIface: v4-wlan0, mState: STARTING} }
+08-27 11:04:55.618   590   747 D MtkConnectivityService: Adding agent NetworkAgentInfo{ ni{[type: WIFI[], state: CONNECTED/CONNECTED, reason: (unspecified), extra: "helloworld", failover: false, available: true, roaming: false]}  network{216}  nethandle{927729371870}  lp{{InterfaceName: wlan0 LinkAddresses: [fe80::465f:11b7:f363:4b2b/64,2409:8928:2a78:7742:c6c:d4c1:436d:12f2/64,2409:8928:2a78:7742:2df9:4be5:57cb:8fe4/64,]  Routes: [fe80::/64 -> :: wlan0,::/0 -> fe80::9687:e0ff:fe61:fb04 wlan0,2409:8928:2a78:7742::/64 -> :: wlan0,] DnsAddresses: [2409:8928:2a78:7742::e7,] Domains: null MTU: 0 TcpBufferSizes: 524288,1048576,2097152,262144,524288,1048576}}  nc{[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&FOREGROUND LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps SignalStrength: -31]}  Score{20}  everValidated{false}  lastValidated{false}  created{true} lingering{false} explicitlySelected{true} acceptUnvalidated{false} everCaptivePortalDetected{false} lastCaptivePortalDetected{false} clat{mBaseIface: wlan0, mIface: v4-wlan0, mState: STARTING} } for legacy network type 1
+08-27 11:04:55.619   590   747 D MtkConnectivityService: Sending CONNECTED broadcast for type 1 NetworkAgentInfo [WIFI () - 216] isDefaultNetwork=true
+08-27 11:04:56.103   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 216] validation passed
+08-27 11:04:56.146   590   590 V BackupManagerService: Scheduling immediate backup pass
+08-27 11:04:56.154   590   590 W BackupManagerService: Backup pass but e=false p=true
+08-27 11:04:56.449   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:04:56.450   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:04:57.495   590   739 D NetworkManagement: Enter setInterfaceConfig, iface=wlan0
+08-27 11:04:57.505   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:04:57.554   590   747 I NetworkStats: NetworkIdentity: {type=WIFI, subType=COMBINED, networkId="helloworld", metered=true}
+08-27 11:04:57.555   590   747 I NetworkStats: state.networkCapabilities: [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&VALIDATED&FOREGROUND LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps SignalStrength: -31]
+08-27 11:04:57.555   590   747 I NetworkStats: iface:wlan0
+08-27 11:04:57.555   590   747 I NetworkStats: ident:{type=WIFI, subType=COMBINED, networkId="helloworld", metered=true}
+08-27 11:04:57.561   590   747 D MtkConnectivityService: Setting DNS servers for network 216 to [/2409:8928:2a78:7742::e7, /192.168.43.1, /8.8.8.8]
+08-27 11:04:57.579   590   747 I Nat464Xlat: Stopping clatd on wlan0
+08-27 11:04:57.694   590  3427 W ActivityManager: Unable to start service Intent { act=com.google.android.gms.analytics.service.START cmp=com.google.android.gms/.analytics.service.AnalyticsService (has extras) } U=0: not found
+08-27 11:04:57.707   590   747 I NetworkStats: NetworkIdentity: {type=WIFI, subType=COMBINED, networkId="helloworld", metered=true}
+08-27 11:04:57.713   590   747 I NetworkStats: state.networkCapabilities: [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&VALIDATED&FOREGROUND LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps SignalStrength: -31]
+08-27 11:04:57.720   590   747 I NetworkStats: iface:wlan0
+08-27 11:04:57.721   590   747 I NetworkStats: ident:{type=WIFI, subType=COMBINED, networkId="helloworld", metered=true}
+08-27 11:04:58.372   590  5567 V SettingsProvider: packageValueForCallResult, name = adb_enabled, value : Bundle[{_track_generation=android.util.MemoryIntArray@58, value=1, _generation_index=0, _generation=12}]
+08-27 11:05:02.715   590   601 W ActivityManager: Unable to start service Intent { act=com.google.android.gms.analytics.service.START cmp=com.google.android.gms/.analytics.service.AnalyticsService (has extras) } U=0: not found
+08-27 11:05:17.288   590   747 D MtkConnectivityService: reportNetworkConnectivity(216, false) by 10017
+08-27 11:05:17.696   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 216] validation passed
+08-27 11:06:00.622   590   747 D MtkConnectivityService: reportNetworkConnectivity(216, false) by 10017
+08-27 11:06:01.219   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 216] validation passed
+08-27 11:06:52.711   590   747 D MtkConnectivityService: reportNetworkConnectivity(216, false) by 10017
+08-27 11:06:53.213   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 216] validation passed
+08-27 11:07:00.038   590  3427 W ActivityManager: Background start not allowed: service Intent { cmp=com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionExecutorImpl$EmptyService } to com.google.android.apps.messaging/.shared.datamodel.action.execution.ActionExecutorImpl$EmptyService from pid=8534 uid=10073 pkg=com.google.android.apps.messaging
+08-27 11:07:57.026   590   747 D MtkConnectivityService: reportNetworkConnectivity(216, false) by 10017
+08-27 11:07:57.397   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 216] validation passed
+08-27 11:10:18.087   590   747 D MtkConnectivityService: reportNetworkConnectivity(216, false) by 10017
+08-27 11:10:18.816   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 216] validation passed
+08-27 11:11:57.628   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:11:57.628   590   615 D NetworkManagement: InterfaceAddressChange no valid field
+08-27 11:12:19.659   590   747 D MtkConnectivityService: reportNetworkConnectivity(216, false) by 10017
+08-27 11:12:20.230   590   747 D MtkConnectivityService: NetworkAgentInfo [WIFI () - 216] validation passed
+08-27 11:14:38.930   590   668 I ActivityManager: Start proc 9356:com.android.defcontainer/u0a10 for service com.android.defcontainer/.DefaultContainerService
+08-27 11:14:38.931   590   668 D ActivityManager: AMS: *** Launch app com.android.defcontainer/10010 for service Intent { cmp=com.android.defcontainer/.DefaultContainerService }, from android/1000.
+08-27 11:14:39.029   590   606 I ActivityManager: Start proc 9372:com.android.vending/u0a37 for broadcast com.android.vending/com.google.android.finsky.verifier.impl.PackageVerificationReceiver
+08-27 11:14:39.029   590   606 D BroadcastQueue: AMS: *** Launch app com.android.vending/10037 for broadcast Intent { act=android.intent.action.PACKAGE_NEEDS_VERIFICATION dat=file:///data/app/vmdl1077227604.tmp typ=application/vnd.android.package-archive flg=0x10000011 cmp=com.android.vending/com.google.android.finsky.verifier.impl.PackageVerificationReceiver (has extras) } from android/1000
+08-27 11:14:39.598   590  1261 V SettingsProvider: packageValueForCallResult, name = android_id, value : Bundle[{_track_generation=android.util.MemoryIntArray@58, value=a0651b8d438df56a, _generation_index=1, _generation=27}]
+08-27 11:14:40.007   590  1261 V SettingsProvider: packageValueForCallResult, name = null, value : Bundle[{_track_generation=android.util.MemoryIntArray@58, value=null, _generation_index=0, _generation=12}]
+08-27 11:14:40.017   590  1233 V KeyValueBackupJob: Scheduling k/v pass in 246 minutes
+08-27 11:14:40.608   590  3016 I ActivityManager: Start proc 9436:com.google.process.gapps/u0a17 for content provider com.google.android.gsf/.settings.GoogleSettingsProvider
+08-27 11:14:50.287   590   668 I PackageManager: Verification timed out for file:///data/app/vmdl1077227604.tmp
+08-27 11:14:50.289   590   668 I PackageManager: Continuing with installation of file:///data/app/vmdl1077227604.tmp
+08-27 11:14:50.342   590   606 I ActivityManager: Force stopping com.mobile.panorama appid=10099 user=-1: installPackageLI
+08-27 11:14:50.342   590   668 W PackageManagerwanghaohao: currentCountry---->NONE
+08-27 11:14:50.486   590   668 I PackageManager: Package com.mobile.panorama codePath changed from /data/app/com.mobile.panorama-WGrw1syClebXnaIVA-ljIQ== to /data/app/com.mobile.panorama-k0Ngfh4LfzxpLmtwS7JznQ==; Retaining data and using new
+08-27 11:14:50.487   590   668 W PackageManager: Code path for com.mobile.panorama changing from /data/app/com.mobile.panorama-WGrw1syClebXnaIVA-ljIQ== to /data/app/com.mobile.panorama-k0Ngfh4LfzxpLmtwS7JznQ==
+08-27 11:14:50.487   590   668 W PackageManager: Resource path for com.mobile.panorama changing from /data/app/com.mobile.panorama-WGrw1syClebXnaIVA-ljIQ== to /data/app/com.mobile.panorama-k0Ngfh4LfzxpLmtwS7JznQ==
+08-27 11:14:53.177   590   668 I ActivityManager: Force stopping com.mobile.panorama appid=10099 user=0: pkg removed
+08-27 11:14:53.268   590   590 W ActivityManager: Slow operation: 58ms so far, now at startProcess: returned from zygote!
+08-27 11:14:53.268   590   590 W ActivityManager: Slow operation: 59ms so far, now at startProcess: done updating battery stats
+08-27 11:14:53.269   590   590 W ActivityManager: Slow operation: 59ms so far, now at startProcess: building log message
+08-27 11:14:53.269   590   590 I ActivityManager: Start proc 9478:com.android.keychain/1000 for service com.android.keychain/.KeyChainService
+08-27 11:14:53.269   590   590 W ActivityManager: Slow operation: 60ms so far, now at startProcess: starting to update pids map
+08-27 11:14:53.269   590   590 W ActivityManager: Slow operation: 60ms so far, now at startProcess: done updating pids map
+08-27 11:14:53.269   590   590 W ActivityManager: Slow operation: 60ms so far, now at startProcess: done starting proc!
+08-27 11:14:53.270   590   590 D ActivityManager: AMS: *** Launch app com.android.keychain/1000 for service Intent { act=android.intent.action.PACKAGE_REMOVED cmp=com.android.keychain/.KeyChainService }, from android/1000.
+08-27 11:14:53.274   590   590 D DuraSpeed/DSBroadcastReceiver: received broadcast, action is: android.intent.action.PACKAGE_REMOVED
+08-27 11:14:53.275   590   658 D DuraSpeed/DuraSpeedInternalManager: [handlePackageChanged]
+08-27 11:14:53.311   590   607 W Looper  : Dispatch took 104ms on android.ui, h=Handler (com.android.server.am.ActivityManagerService$UiHandler) {8d858b0} cb=null msg=53
+08-27 11:14:53.356   590   605 W TextServicesManagerService: no available spell checker services found
+08-27 11:14:53.381   590   606 W ActivityManager: Slow operation: 64ms so far, now at startProcess: returned from zygote!
+08-27 11:14:53.381   590   606 W ActivityManager: Slow operation: 64ms so far, now at startProcess: done updating battery stats
+08-27 11:14:53.382   590   606 W ActivityManager: Slow operation: 65ms so far, now at startProcess: building log message
+08-27 11:14:53.382   590   606 I ActivityManager: Start proc 9495:com.mediatek.duraspeed/1000 for broadcast com.mediatek.duraspeed/.view.RunningBoosterAppReceiver
+08-27 11:14:53.382   590   606 W ActivityManager: Slow operation: 65ms so far, now at startProcess: starting to update pids map
+08-27 11:14:53.382   590   606 W ActivityManager: Slow operation: 65ms so far, now at startProcess: done updating pids map
+08-27 11:14:53.382   590   606 W ActivityManager: Slow operation: 65ms so far, now at startProcess: done starting proc!
+08-27 11:14:53.382   590   606 D BroadcastQueue: AMS: *** Launch app com.mediatek.duraspeed/1000 for broadcast Intent { act=android.intent.action.PACKAGE_REMOVED dat=package:com.mobile.panorama flg=0x4000010 (has extras) } from null/1000
+08-27 11:14:53.427   590  1260 I ActivityManager: START u0 {act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.mobile.panorama/.MainActivity} from uid 2000
+08-27 11:14:53.544   590   601 I ActivityManager: Start proc 9513:com.mobile.panorama/u0a99 for activity com.mobile.panorama/.MainActivity
+08-27 11:14:53.560   590   601 I WindowManager: Failed to capture screenshot of Token{44bb2aa ActivityRecord{4313195 u0 com.android.settings/.Settings$WifiSettingsActivity t22}} appWin=Window{ca24a6c u0 com.android.settings/com.android.settings.Settings$WifiSettingsActivity} drawState=4
+08-27 11:14:53.561   590   601 W ActivityManager: Slow operation: 66ms so far, now at attachApplicationLocked: after mServices.attachApplicationLocked
+08-27 11:14:53.563   590   601 W ActivityManager: Slow operation: 68ms so far, now at attachApplicationLocked: after sendPendingBroadcastsLocked
+08-27 11:14:53.570   590   711 I ActivityManager: Config changes=480 {1.0 ?mcc?mnc [en_US] ldltr sw320dp w592dp h296dp 240dpi nrml long land finger -keyb/v/h -nav/h appBounds=Rect(0, 0 - 888, 480) s.29}
+08-27 11:14:53.605   590   711 I ActivityManager: Override config changes=480 {1.0 ?mcc?mnc [en_US] ldltr sw320dp w592dp h296dp 240dpi nrml long land finger -keyb/v/h -nav/h appBounds=Rect(0, 0 - 888, 480) s.29} for displayId=0
+08-27 11:14:53.727   590   607 W Looper  : Dispatch took 164ms on android.ui, h=Handler (com.android.server.am.ActivityManagerService$UiHandler) {8d858b0} cb=null msg=53
+08-27 11:14:53.740   590   590 D DuraSpeed/DSBroadcastReceiver: received broadcast, action is: android.intent.action.PACKAGE_ADDED
+08-27 11:14:53.827  9495  9495 W ContextImpl: Calling a method in the system process without a qualified user: android.app.ContextImpl.startService:1477 android.content.ContextWrapper.startService:650 android.content.ContextWrapper.startService:650 com.mediatek.duraspeed.view.RunningBoosterAppReceiver.startRunningBoosterAppService:62 com.mediatek.duraspeed.view.RunningBoosterAppReceiver.onReceive:52 
+08-27 11:14:53.852   590  1218 D MitePluginJupiterImpl: MID_SERVICE_AM_START_ACTIVITY_JUPITERActivityRecord{5c02541 u0 com.mobile.panorama/.MainActivity t23}
+08-27 11:14:53.853   590  1218 W ActivityManager: 2001realStartActivityLocked: Skipping start of r=ActivityRecord{5c02541 u0 com.mobile.panorama/.MainActivity t23}
+08-27 11:14:53.870   590   622 D JupiterDelegatorImpl: appLockCheckInner: ComponentInfo{com.mobile.panorama/com.mobile.panorama.MainActivity}
+08-27 11:14:53.874   590   622 D JupiterDelegatorImpl: app lock service check:
+08-27 11:14:53.889   590  1218 D ProcessManager: After resumed : com.mobile.panorama
+08-27 11:14:53.889   590  1218 W ActivityManager: Slow operation: 60ms so far, now at attachApplicationLocked: after mServices.attachApplicationLocked
+08-27 11:14:54.179   590   590 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@ANk
+08-27 11:14:54.226   590   590 D DuraSpeed/DSBroadcastReceiver: received broadcast, action is: android.intent.action.PACKAGE_REPLACED
+08-27 11:14:54.235  9495  9548 W ContextImpl: Calling a method in the system process without a qualified user: android.app.ContextImpl.sendBroadcast:967 android.content.ContextWrapper.sendBroadcast:437 com.mediatek.duraspeed.view.RunningBoosterAppService.notifyPackageUpdated:146 com.mediatek.duraspeed.view.RunningBoosterAppService.onHandleIntent:133 android.app.IntentService$ServiceHandler.handleMessage:76 
+08-27 11:14:54.276   590  1218 V SettingsProvider: packageValueForCallResult, name = null, value : Bundle[{_track_generation=android.util.MemoryIntArray@58, value=null, _generation_index=0, _generation=12}]
+08-27 11:14:54.290  9495  9495 W ContextImpl: Calling a method in the system process without a qualified user: android.app.ContextImpl.startService:1477 android.content.ContextWrapper.startService:650 android.content.ContextWrapper.startService:650 com.mediatek.duraspeed.view.RunningBoosterAppReceiver.startRunningBoosterAppService:62 com.mediatek.duraspeed.view.RunningBoosterAppReceiver.onReceive:52 
+08-27 11:14:54.393   590   658 D DuraSpeed/DuraSpeedInternalManager: [handlePackageChanged]
+08-27 11:14:55.040   590  5890 I WindowManager: Relayout Window{30632a9 u0 com.mobile.panorama/com.mobile.panorama.MainActivity}: oldVis=4 newVis=0 focusMayChange = true
+08-27 11:14:55.117   590   658 D DuraSpeed/DSPolicyBase: [setCurrentLauncher] = com.transsion.hilauncher
+08-27 11:14:55.119   590   658 D DuraSpeed/AWSManager: [setCurrentLauncher] = com.transsion.hilauncher
+08-27 11:14:55.122   590   658 D DuraSpeed/DuraSpeedInternalManager: switchState currentPackage = com.mobile.panorama, event =1004
+08-27 11:14:55.132   590   658 D DuraSpeed/DuraSpeedInternalManager: skip doSuppression
+08-27 11:14:55.132   590   658 D DuraSpeed/DuraSpeedInternalManager: switchState end
+08-27 11:14:55.132   590   658 D DuraSpeed/DuraSpeedInternalManager: [handlePackageChanged]
+08-27 11:14:55.218  9495  9555 D DuraSpeedManager: Get DuraSpeedService
+08-27 11:14:55.220  9495  9555 D DuraSpeedManager: applyUserConfig packageName=com.mediatek.duraspeed config=com.mediatek.duraspeed.manager.DuraSpeedConfiguration@6e425df
+08-27 11:14:55.222   590  5890 D DuraSpeed/DuraSpeedService: [applyUserConfig] Enter
+08-27 11:14:55.222  9495  9555 W ContextImpl: Calling a method in the system process without a qualified user: android.app.ContextImpl.sendBroadcast:967 android.content.ContextWrapper.sendBroadcast:437 com.mediatek.duraspeed.view.RunningBoosterAppService.notifyPackageUpdated:146 com.mediatek.duraspeed.view.RunningBoosterAppService.onHandleIntent:120 android.app.IntentService$ServiceHandler.handleMessage:76 
+08-27 11:14:55.302   590  3016 D IdleScreen: activityIdleScreen: android.app.ContextImpl@ae58927 mNotifyNeeded: false idleIntent: Intent { act=android.settings.WIFI_SETTINGS flg=0x14000000 cmp=com.android.settings/.Settings$WifiSettingsActivity }
+08-27 11:14:55.481   590   658 D DuraSpeed/DuraSpeedInternalManager: [updateUserConfiguration] SDK version = 27, newConfig.enableDuraSpeed = true
+08-27 11:14:55.481   590   658 D DuraSpeed/DuraSpeedInternalManager: [applyUserConfig] new UserPolicy
+08-27 11:15:03.733   590   606 I ActivityManager: Killing 8496:com.google.android.ims/u0a8 (adj 906): empty #13
+08-27 11:15:03.796   590  3016 D MtkConnectivityService: ConnectivityService NetworkRequestInfo binderDied(NetworkRequest [ TRACK_DEFAULT id=19, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ], android.os.BinderProxy@8f51b60)
+08-27 11:15:03.797   590   747 D MtkConnectivityService: releasing NetworkRequest [ TRACK_DEFAULT id=19, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ] (release request)
+08-27 11:15:03.967   590  3016 V SettingsProvider: packageValueForCallResult, name = null, value : Bundle[{_track_generation=android.util.MemoryIntArray@58, value=null, _generation_index=2, _generation=8}]
+08-27 11:15:04.071  9513  9513 E AndroidRuntime: FATAL EXCEPTION: main
+08-27 11:15:04.071  9513  9513 E AndroidRuntime: Process: com.mobile.panorama, PID: 9513
+08-27 11:15:04.071  9513  9513 E AndroidRuntime: java.lang.NullPointerException: Attempt to invoke virtual method 'java.lang.CharSequence android.widget.TextView.getText()' on a null object reference
+08-27 11:15:04.071  9513  9513 E AndroidRuntime: 	at com.mobile.panorama.MainActivity$1.handleMessage(MainActivity.java:53)
+08-27 11:15:04.071  9513  9513 E AndroidRuntime: 	at android.os.Handler.dispatchMessage(Handler.java:106)
+08-27 11:15:04.071  9513  9513 E AndroidRuntime: 	at android.os.Looper.loop(Looper.java:164)
+08-27 11:15:04.071  9513  9513 E AndroidRuntime: 	at android.app.ActivityThread.main(ActivityThread.java:6548)
+08-27 11:15:04.071  9513  9513 E AndroidRuntime: 	at java.lang.reflect.Method.invoke(Native Method)
+08-27 11:15:04.071  9513  9513 E AndroidRuntime: 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:438)
+08-27 11:15:04.071  9513  9513 E AndroidRuntime: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:857)
+08-27 11:15:04.084   590  3016 W ActivityManager:   Force finishing activity com.mobile.panorama/.MainActivity
+08-27 11:15:04.100   590   607 I ActivityManager: Showing crash dialog for package com.mobile.panorama u0
+08-27 11:15:04.218   590   607 I ActivityManager: Config changes=480 {1.0 ?mcc?mnc [en_US] ldltr sw320dp w320dp h568dp 240dpi nrml long port finger -keyb/v/h -nav/h appBounds=Rect(0, 0 - 480, 888) s.30}
+08-27 11:15:04.235   590   607 I ActivityManager: Override config changes=480 {1.0 ?mcc?mnc [en_US] ldltr sw320dp w320dp h568dp 240dpi nrml long port finger -keyb/v/h -nav/h appBounds=Rect(0, 0 - 480, 888) s.30} for displayId=0
+08-27 11:15:04.259   590   607 I WindowManager: Failed to capture screenshot of Token{f6fdae6 ActivityRecord{5c02541 u0 com.mobile.panorama/.MainActivity t23 f}} appWin=Window{30632a9 u0 com.mobile.panorama/com.mobile.panorama.MainActivity} drawState=4
+08-27 11:15:04.275   590   607 W Looper  : Dispatch took 185ms on android.ui, h=Handler (com.android.server.am.ActivityManagerService$UiHandler) {8d858b0} cb=null msg=1
+08-27 11:15:04.588   590   606 W ActivityManager: Activity pause timeout for ActivityRecord{5c02541 u0 com.mobile.panorama/.MainActivity t23 f}
+08-27 11:15:04.592   590   658 D DuraSpeed/DSPolicyBase: [setCurrentLauncher] = com.transsion.hilauncher
+08-27 11:15:04.594   590   606 D ProcessManager: After resumed : com.android.settings
+08-27 11:15:04.599   590   658 D DuraSpeed/AWSManager: [setCurrentLauncher] = com.transsion.hilauncher
+08-27 11:15:04.601   590   658 D DuraSpeed/DuraSpeedInternalManager: switchState currentPackage = com.android.settings, event =1004
+08-27 11:15:04.608   590   658 D DuraSpeed/DuraSpeedInternalManager: skip doSuppression
+08-27 11:15:04.608   590   658 D DuraSpeed/DuraSpeedInternalManager: switchState end
+08-27 11:15:04.740   590   600 I WindowManager: Relayout Window{ca24a6c u0 com.android.settings/com.android.settings.Settings$WifiSettingsActivity}: oldVis=4 newVis=0 focusMayChange = true
+08-27 11:15:05.119   590  1259 I ActivityManager: Killing 8753:android.process.acore/u0a6 (adj 906): empty #13
+08-27 11:15:05.129   590  1259 D IdleScreen: activityIdleScreen: android.app.ContextImpl@ae58927 mNotifyNeeded: false idleIntent: Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.mobile.panorama/.MainActivity }
+--------- beginning of main
+08-27 11:15:05.589  9513  9596 E zhangqi8888: execute(3)
+08-27 11:15:05.591  9513  9596 I System.out: [OkHttp] sendRequest>>
+08-27 11:15:05.592   274   274 I BufferQueueConsumer: [DimLayerController/Stack=0#0](this:0xaac8c000,id:10,api:0,p:-1,c:274) setDefaultBufferSize: width=1440 height=720
+08-27 11:15:05.594   590   729 I InputReader: Reconfiguring input devices.  changes=0x00000004
+08-27 11:15:05.594   590   729 I InputReader: Device reconfigured: id=3, name='mtk-tpd', size 480x960, orientation 1, mode 1, display id 0
+08-27 11:15:05.597   590   617 I ActivityManager: Config changes=480 {1.0 ?mcc?mnc [en_US] ldltr sw320dp w592dp h296dp 240dpi nrml long land finger -keyb/v/h -nav/h appBounds=Rect(0, 0 - 888, 480) s.31}
+08-27 11:15:05.602  9513  9596 I System.out: [OkHttp] sendRequest<<
+08-27 11:15:05.608   309   355 D AAL     : 08-27 11:15:05.507 BL= 750,ESS= 256, 08-27 11:15:05.542 BL= 749,ESS= 256, 08-27 11:15:05.557 BL= 748,ESS= 256, 08-27 11:15:05.574 BL= 747,ESS= 256, 08-27 11:15:05.608 BL= 746,ESS= 256, 
+08-27 11:15:05.617   590   617 I ActivityManager: Override config changes=480 {1.0 ?mcc?mnc [en_US] ldltr sw320dp w592dp h296dp 240dpi nrml long land finger -keyb/v/h -nav/h appBounds=Rect(0, 0 - 888, 480) s.31} for displayId=0
+08-27 11:15:05.638  8985  8985 E YTGo    : No locale configuration available.
+08-27 11:15:05.676   274   274 I BufferQueueConsumer: [NavigationBar#0](this:0xab6c6000,id:3,api:1,p:781,c:274) setDefaultBufferSize: width=72 height=480
+08-27 11:15:05.709   309   355 D AAL     : 08-27 11:15:05.625 BL= 745,ESS= 256, 08-27 11:15:05.641 BL= 744,ESS= 256, 08-27 11:15:05.675 BL= 743,ESS= 256, 08-27 11:15:05.692 BL= 742,ESS= 256, 08-27 11:15:05.709 BL= 741,ESS= 256, 
+08-27 11:15:05.710   274   274 I BufferQueueConsumer: [Application Error: com.mobile.panorama#0](this:0xab6ea000,id:222,api:2,p:590,c:274) setDefaultBufferSize: width=673 height=319
+08-27 11:15:05.725   781   985 E [EGL-ERROR]: __egl_platform_cancel_buffers:644: surface->num_buffers(4)
+08-27 11:15:05.726   781   985 D Surface : Surface::disconnect(this=0x9833e800,api=1)
+08-27 11:15:05.726   781   985 D GraphicBuffer: unregister, handle(0xa65c8780) (w:480 h:72 s:480 f:0x1 u:f02)
+08-27 11:15:05.726   781   985 D GraphicBuffer: unregister, handle(0xa65ca640) (w:480 h:72 s:480 f:0x1 u:f02)
+08-27 11:15:05.726   274   416 I BufferQueueProducer: [NavigationBar#0](this:0xab6c6000,id:3,api:1,p:781,c:274) disconnect(P): api 1
+08-27 11:15:05.726   274   416 I BufferQueueConsumer: [NavigationBar#0](this:0xab6c6000,id:3,api:1,p:-1,c:274) getReleasedBuffers: returning mask 0xffffffffffffffff
+08-27 11:15:05.730   270  4161 I [Gralloc]: usage1: 0x933, format: 1 stride: 688 vertical_stride: 319 size: 877888
+08-27 11:15:05.734   270  4161 D vndksupport: Loading /vendor/lib/hw/gralloc.mt6580.so from current namespace instead of sphal namespace.
+08-27 11:15:05.735   781   985 E libPowerStretch: com.android.systemui in hard-coded bl
+08-27 11:15:05.735   781   985 D Surface : Surface::connect(this=0x9833e800,api=1)
+08-27 11:15:05.735   274   624 I BufferQueueProducer: [NavigationBar#0](this:0xab6c6000,id:3,api:1,p:781,c:274) connect(P): api=1 producer=(781:com.android.systemui) producerControlledByApp=true
+08-27 11:15:05.737   590   607 D GraphicBuffer: unregister, handle(0x95f53200) (w:576 h:319 s:576 f:0x1 u:933)
+08-27 11:15:05.737   781   985 D Surface : Surface::setBufferCount(this=0x9833e800,bufferCount=4)
+08-27 11:15:05.737   590   607 D GraphicBuffer: register, handle(0x95f535c0) (w:673 h:319 s:688 f:0x1 u:933)
+08-27 11:15:05.737   274   623 I BufferQueueProducer: [NavigationBar#0](this:0xab6c6000,id:3,api:1,p:781,c:274) setMaxDequeuedBufferCount: maxDequeuedBuffers = 3
+08-27 11:15:05.739   274   623 W GrallocMapperPassthrough: buffer descriptor with invalid usage bits 0x400
+08-27 11:15:05.740   270  4161 I [Gralloc]: usage1: 0xf02, format: 1 stride: 480 vertical_stride: 72 size: 138240
+08-27 11:15:05.741   781   985 D GraphicBuffer: register, handle(0xa65c8780) (w:480 h:72 s:480 f:0x1 u:f02)
+08-27 11:15:05.741   274   623 I BufferQueueProducer: [Application Error: com.mobile.panorama#0](this:0xab6ea000,id:222,api:2,p:590,c:274) queueBuffer: fps=1.45 dur=1381.34 max=1350.89 min=30.45
+08-27 11:15:05.743   274   274 I BufferQueueConsumer: [com.android.settings/com.android.settings.Settings$WifiSettingsActivity#0](this:0xaac9d000,id:223,api:1,p:8854,c:274) setDefaultBufferSize: width=960 height=480
+08-27 11:15:05.744   274   623 I BufferQueueProducer: [NavigationBar#0](this:0xab6c6000,id:3,api:1,p:781,c:274) queueBuffer: fps=2.34 dur=1284.24 max=627.99 min=105.85
+08-27 11:15:05.764  8854  8900 E [EGL-ERROR]: __egl_platform_cancel_buffers:644: surface->num_buffers(4)
+08-27 11:15:05.765  8854  8900 D Surface : Surface::disconnect(this=0x9a529000,api=1)
+08-27 11:15:05.765  8854  8900 D GraphicBuffer: unregister, handle(0x9a7dd300) (w:480 h:960 s:480 f:0x1 u:f02)
+08-27 11:15:05.765  8854  8900 D GraphicBuffer: unregister, handle(0x9a7dd600) (w:480 h:960 s:480 f:0x1 u:f02)
+08-27 11:15:05.766   274   416 I BufferQueueProducer: [com.android.settings/com.android.settings.Settings$WifiSettingsActivity#0](this:0xaac9d000,id:223,api:1,p:8854,c:274) disconnect(P): api 1
+08-27 11:15:05.766   274   416 I BufferQueueConsumer: [com.android.settings/com.android.settings.Settings$WifiSettingsActivity#0](this:0xaac9d000,id:223,api:1,p:-1,c:274) getReleasedBuffers: returning mask 0xffffffffffffffff
+08-27 11:15:05.767  8854  8900 E libPowerStretch: TimeStamps from Cache: lucid = 20081231160000, customer = 20081231160000
+08-27 11:15:05.767  8854  8900 E libPowerStretch: Cache valid RC: lucid = 2, customer = 2
+08-27 11:15:05.769  8854  8900 E libPowerStretch: Priority black list: 0
+08-27 11:15:05.769  8854  8900 E libPowerStretch: Mode = WVS
+08-27 11:15:05.770   270  4161 I [Gralloc]: usage1: 0x933, format: 1 stride: 688 vertical_stride: 319 size: 877888
+08-27 11:15:05.770   270  4161 D vndksupport: Loading /vendor/lib/hw/gralloc.mt6580.so from current namespace instead of sphal namespace.
+08-27 11:15:05.771  8854  8900 E libPowerStretch: Ice is working with black list method
+08-27 11:15:05.773   590   607 D GraphicBuffer: unregister, handle(0x95f53500) (w:576 h:319 s:576 f:0x1 u:933)
+08-27 11:15:05.774   590   607 D GraphicBuffer: register, handle(0x95f53500) (w:673 h:319 s:688 f:0x1 u:933)
+08-27 11:15:05.774  8854  8900 E libPowerStretch: EglCreateWindowSurfaceImp pid 8854 != tid 8900  mResized = 1 [960 480] 1.000000 mIsIceDelayed_wl 1  mIsIceMainThread 0 m_HardCodedBlackListed 1 _X_
+08-27 11:15:05.774  8854  8900 D Surface : Surface::connect(this=0x9a529000,api=1)
+08-27 11:15:05.774   274  1479 I BufferQueueProducer: [com.android.settings/com.android.settings.Settings$WifiSettingsActivity#0](this:0xaac9d000,id:223,api:1,p:8854,c:274) connect(P): api=1 producer=(8854:com.android.settings) producerControlledByApp=true
+08-27 11:15:05.777  8854  8900 D Surface : Surface::setBufferCount(this=0x9a529000,bufferCount=4)
+08-27 11:15:05.777   274   624 I BufferQueueProducer: [com.android.settings/com.android.settings.Settings$WifiSettingsActivity#0](this:0xaac9d000,id:223,api:1,p:8854,c:274) setMaxDequeuedBufferCount: maxDequeuedBuffers = 3
+08-27 11:15:05.784   274   624 W GrallocMapperPassthrough: buffer descriptor with invalid usage bits 0x400
+08-27 11:15:05.785   270   396 I [Gralloc]: usage1: 0xf02, format: 1 stride: 480 vertical_stride: 960 size: 1843200
+08-27 11:15:05.786  8854  8900 D GraphicBuffer: register, handle(0x9a7dd240) (w:480 h:960 s:480 f:0x1 u:f02)
+08-27 11:15:05.805   274   624 W GrallocMapperPassthrough: buffer descriptor with invalid usage bits 0x400
+08-27 11:15:05.805   270  4161 I [Gralloc]: usage1: 0xf02, format: 1 stride: 480 vertical_stride: 960 size: 1843200
+08-27 11:15:05.808  8854  8900 D GraphicBuffer: register, handle(0x9a7dd3c0) (w:480 h:960 s:480 f:0x1 u:f02)
+08-27 11:15:05.809   781   781 D View    : [Warning] assignParent to null: this = com.android.systemui.assist.AssistOrbContainer{fe65059 G.E...... ......ID 0,0-480,375}
+08-27 11:15:05.815   781   781 D WindowClient: Add to mViews: com.android.systemui.assist.AssistOrbContainer{a67ddd0 G.E...... ......I. 0,0-0,0}, this = android.view.WindowManagerGlobal@195145
+08-27 11:15:05.817   781   781 D ViewRootImpl[AssistPreviewPanel]: hardware acceleration = true , fakeHwAccelerated = false, sRendererDisabled = false, forceHwAccelerated = false, sSystemRendererDisabled = false
+08-27 11:15:05.827   309   355 D AAL     : 08-27 11:15:05.742 BL= 740,ESS= 256, 08-27 11:15:05.759 BL= 739,ESS= 256, 08-27 11:15:05.776 BL= 738,ESS= 256, 08-27 11:15:05.793 BL= 737,ESS= 256, 08-27 11:15:05.827 BL= 736,ESS= 256, 
+08-27 11:15:05.858   781   781 D View    : [Warning] assignParent to null: this = com.android.systemui.stackdivider.DividerView{91dc42a I.E...... ......ID 0,0-0,72}
+08-27 11:15:05.867   781   781 D WindowClient: Add to mViews: com.android.systemui.stackdivider.DividerView{e9cf185 I.E...... ......I. 0,0-0,0}, this = android.view.WindowManagerGlobal@195145
+08-27 11:15:05.869   781   781 D ViewRootImpl[DockedStackDivider]: hardware acceleration = true , fakeHwAccelerated = false, sRendererDisabled = false, forceHwAccelerated = false, sSystemRendererDisabled = false
+08-27 11:15:05.897   781   781 W Settings: Setting airplane_mode_on has moved from android.provider.Settings.System to android.provider.Settings.Global, returning read-only value.
+08-27 11:15:05.906   274   624 W GrallocMapperPassthrough: buffer descriptor with invalid usage bits 0x400
+08-27 11:15:05.906   270  4161 I [Gralloc]: usage1: 0xf02, format: 1 stride: 480 vertical_stride: 72 size: 138240
+08-27 11:15:05.908   781   985 D GraphicBuffer: register, handle(0x99396300) (w:480 h:72 s:480 f:0x1 u:f02)
+08-27 11:15:05.911   309   355 D AAL     : 08-27 11:15:05.843 BL= 735,ESS= 256, 08-27 11:15:05.860 BL= 734,ESS= 256, 08-27 11:15:05.877 BL= 733,ESS= 256, 08-27 11:15:05.894 BL= 732,ESS= 256, 08-27 11:15:05.911 BL= 731,ESS= 256, 
+08-27 11:15:05.945   274   274 I BufferQueueConsumer: [StatusBar#0](this:0xab6c9000,id:4,api:1,p:781,c:274) setDefaultBufferSize: width=960 height=36
+08-27 11:15:05.967   781   985 E [EGL-ERROR]: __egl_platform_cancel_buffers:644: surface->num_buffers(4)
+08-27 11:15:05.969   781   985 D Surface : Surface::disconnect(this=0x9915c800,api=1)
+08-27 11:15:05.969   781   985 D GraphicBuffer: unregister, handle(0xa65c86c0) (w:480 h:36 s:480 f:0x1 u:f02)
+08-27 11:15:05.969   781   985 D GraphicBuffer: unregister, handle(0xa65ca100) (w:480 h:36 s:480 f:0x1 u:f02)
+08-27 11:15:05.970   274  1479 I BufferQueueProducer: [StatusBar#0](this:0xab6c9000,id:4,api:1,p:781,c:274) disconnect(P): api 1
+08-27 11:15:05.971   274  1479 I BufferQueueConsumer: [StatusBar#0](this:0xab6c9000,id:4,api:1,p:-1,c:274) getReleasedBuffers: returning mask 0xffffffffffffffff
+08-27 11:15:05.971   781   985 E libPowerStretch: com.android.systemui in hard-coded bl
+08-27 11:15:05.971   781   985 D Surface : Surface::connect(this=0x9915c800,api=1)
+08-27 11:15:05.972   274   624 I BufferQueueProducer: [StatusBar#0](this:0xab6c9000,id:4,api:1,p:781,c:274) connect(P): api=1 producer=(781:com.android.systemui) producerControlledByApp=true
+08-27 11:15:05.973   781   985 D Surface : Surface::setBufferCount(this=0x9915c800,bufferCount=4)
+08-27 11:15:05.973   274   624 I BufferQueueProducer: [StatusBar#0](this:0xab6c9000,id:4,api:1,p:781,c:274) setMaxDequeuedBufferCount: maxDequeuedBuffers = 3
+08-27 11:15:05.995   309   355 D AAL     : 08-27 11:15:05.928 BL= 730,ESS= 256, 08-27 11:15:05.945 BL= 729,ESS= 256, 08-27 11:15:05.961 BL= 728,ESS= 256, 08-27 11:15:05.978 BL= 727,ESS= 256, 08-27 11:15:05.995 BL= 726,ESS= 256, 
+08-27 11:15:06.000   274   624 W GrallocMapperPassthrough: buffer descriptor with invalid usage bits 0x400
+08-27 11:15:06.000   270  4161 I [Gralloc]: usage1: 0xf02, format: 1 stride: 48 vertical_stride: 960 size: 184320
+08-27 11:15:06.001   781   985 D GraphicBuffer: register, handle(0xa65c86c0) (w:36 h:960 s:48 f:0x1 u:f02)
+08-27 11:15:06.004   274   624 I BufferQueueProducer: [StatusBar#0](this:0xab6c9000,id:4,api:1,p:781,c:274) queueBuffer: fps=2.38 dur=1259.69 max=874.70 min=79.74
+08-27 11:15:06.051   274   274 I DisplayDevice: [Built-in Screen (type:0)] fps:52.506809,dur:1009.39,max:37.90,min:11.65
+08-27 11:15:06.053   274   274 I BufferQueue: [unnamed-274-229](this:0xaacb7000,id:229,api:0,p:-1,c:-1) BufferQueue core=(274:/system/bin/surfaceflinger)
+08-27 11:15:06.053   274   274 E DumpTunnel: finding regDump() failed
+08-27 11:15:06.054   274   274 I BufferQueueConsumer: [unnamed-274-229](this:0xaacb7000,id:229,api:0,p:-1,c:274) connect(C): consumer=(274:/system/bin/surfaceflinger) controlledByApp=false
+08-27 11:15:06.054   274   274 I BufferQueueConsumer: [unnamed-274-229](this:0xaacb7000,id:229,api:0,p:-1,c:274) setConsumerName: unnamed-274-229
+08-27 11:15:06.054   274   274 I BufferQueueConsumer: [BlackSurface#0](this:0xaacb7000,id:229,api:0,p:-1,c:274) setConsumerName: BlackSurface#0
+08-27 11:15:06.054   274   274 I BufferQueueProducer: [](this:0xaacb7000,id:229,api:0,p:-1,c:274) setMaxDequeuedBufferCount: maxDequeuedBuffers = 2
+08-27 11:15:06.055   274   274 I BufferQueue: [unnamed-274-230](this:0xaacc7000,id:230,api:0,p:-1,c:-1) BufferQueue core=(274:/system/bin/surfaceflinger)
+08-27 11:15:06.056   274   274 E DumpTunnel: finding regDump() failed
+08-27 11:15:06.056   274   274 I BufferQueueConsumer: [unnamed-274-230](this:0xaacc7000,id:230,api:0,p:-1,c:274) connect(C): consumer=(274:/system/bin/surfaceflinger) controlledByApp=false
+08-27 11:15:06.056   274   274 I BufferQueueConsumer: [unnamed-274-230](this:0xaacc7000,id:230,api:0,p:-1,c:274) setConsumerName: unnamed-274-230
+08-27 11:15:06.056   274   274 I BufferQueueConsumer: [BlackSurface#0](this:0xaacc7000,id:230,api:0,p:-1,c:274) setConsumerName: BlackSurface#0
+08-27 11:15:06.056   274   274 I BufferQueueProducer: [](this:0xaacc7000,id:230,api:0,p:-1,c:274) setMaxDequeuedBufferCount: maxDequeuedBuffers = 2
+08-27 11:15:06.057   590   601 D WificondControl: Scan result ready event
+08-27 11:15:06.058   334   334 D agps    : [WIFI2AGPS] wifi2agps_scanned
+08-27 11:15:06.058   334   334 E agps    :  ERR: [WIFI2AGPS] sendto dest=[/data/agps_supl/wifi_2_agps] len=7952 reason=[No such file or directory]
+08-27 11:15:06.058   334   334 E agps    :  ERR: [WIFI2AGPS] external_snd_cmd safe_sendto failed
+08-27 11:15:06.061   274   274 I BufferQueue: [unnamed-274-231](this:0xaacca000,id:231,api:0,p:-1,c:-1) BufferQueue core=(274:/system/bin/surfaceflinger)
+08-27 11:15:06.061   274   274 E DumpTunnel: finding regDump() failed
+08-27 11:15:06.061   274   274 I BufferQueueConsumer: [unnamed-274-231](this:0xaacca000,id:231,api:0,p:-1,c:274) connect(C): consumer=(274:/system/bin/surfaceflinger) controlledByApp=false
+08-27 11:15:06.061   274   274 I BufferQueueConsumer: [unnamed-274-231](this:0xaacca000,id:231,api:0,p:-1,c:274) setConsumerName: unnamed-274-231
+08-27 11:15:06.061   274   274 I BufferQueueConsumer: [BlackSurface#0](this:0xaacca000,id:231,api:0,p:-1,c:274) setConsumerName: BlackSurface#0
+08-27 11:15:06.061   274   274 I BufferQueueProducer: [](this:0xaacca000,id:231,api:0,p:-1,c:274) setMaxDequeuedBufferCount: maxDequeuedBuffers = 2
+08-27 11:15:06.070   274   274 D SurfaceFlinger: duplicate layer name: changing BlackSurface to BlackSurface#1
+08-27 11:15:06.071   274   274 I BufferQueue: [unnamed-274-232](this:0xaacc1000,id:232,api:0,p:-1,c:-1) BufferQueue core=(274:/system/bin/surfaceflinger)
+08-27 11:15:06.072   274   274 E DumpTunnel: finding regDump() failed
+08-27 11:15:06.072   274   274 I BufferQueueConsumer: [unnamed-274-232](this:0xaacc1000,id:232,api:0,p:-1,c:274) connect(C): consumer=(274:/system/bin/surfaceflinger) controlledByApp=false
+08-27 11:15:06.072   274   274 I BufferQueueConsumer: [unnamed-274-232](this:0xaacc1000,id:232,api:0,p:-1,c:274) setConsumerName: unnamed-274-232
+08-27 11:15:06.072   274   274 I BufferQueueConsumer: [BlackSurface#1](this:0xaacc1000,id:232,api:0,p:-1,c:274) setConsumerName: BlackSurface#1
+08-27 11:15:06.072   274   274 I BufferQueueProducer: [](this:0xaacc1000,id:232,api:0,p:-1,c:274) setMaxDequeuedBufferCount: maxDequeuedBuffers = 2
+08-27 11:15:06.073   590   601 I WifiService: getConfiguredNetworks uid=1000
+08-27 11:15:06.076  9513  9596 E zhangqi8888: execute(4)200
+08-27 11:15:06.077  9513  9596 E zhangqi8888: execute(5)
+08-27 11:15:06.080   309   355 D AAL     : 08-27 11:15:06.012 BL= 725,ESS= 256, 08-27 11:15:06.029 BL= 724,ESS= 256, 08-27 11:15:06.046 BL= 723,ESS= 256, 08-27 11:15:06.062 BL= 722,ESS= 256, 08-27 11:15:06.080 BL= 720,ESS= 256, 
+08-27 11:15:06.084   590   983 I WifiService: getConfiguredNetworks uid=1000
+08-27 11:15:06.089  9513  9596 E zhangqi8888: execute(6){"FAQID":"FAQ07270","Title":"[Camera Drv]72上Video不能录像","UniqueId":"97bcc11d-e680-49cf-ad78-dbe4310b6c5e","ParentId":"00000000-0000-0000-0000-000000000000","List":"SW","Type":10,"Created":"2013-05-23T10:46:02","Modified":"2013-08-14T09:42:25","TotalCount":0,"Category":"SW > ALPS > Camera Driver-related","Level":0,"Seq":0,"Content":"<div class=\"ExternalClassAA853604BB534093B842D93C57BA6C71\">\n<div><span><span><span><span><span lang=\"EN-US\">\n<div class=\"ExternalClass7E65E52FEEC64654AF72057FCEF95F1A\">\n<div><font size=\"4\">[DESCRIPTION]</font></div>\n<div><font size=\"2\">72上直接使用之前75/77上的driver文件后进如Video发生错误</font></div>\n<div>&#160;</div>\n<div><font size=\"4\">[SOLUTION]</font></div>\n<div><font size=\"2\">&#160;&#160;1，请检查driver文件（××××Sensor.c）中的××××GetResolution函数中是否给Video的宽高赋值，如果没有，上层会要不到buffer，从而发生错误</font></div>\n<div><font size=\"2\">&#160;&#160;pSensorResolution-&gt;SensorVideoWidth=××××_IMAGE_SENSOR_VIDEO_WIDTH;<br>&#160;&#160;pSensorResolution-&gt;SensorVideoHeight=××××_IMAGE_SENSOR_VIDEO_HEIGHT;</font></div>\n<div><font size=\"2\">&#160; 2，请检查Feature Table（config.ftbl.****.h）中是否有配置Vide的size，如果没有，上层要buffer的时候也会发生错误</font></div>\n<div><font size=\"2\">&#160;&#160;#if 1<br>&#160;&#160;&#160; //&#160; Video Size<br>&#160;&#160;&#160; FTABLE_CONFIG_AS_TYPE_OF_DEFAULT_VALUES(<br>&#160;&#160;&#160;&#160;&#160;&#160;&#160; KEY_AS_(MtkCameraParameters&#58;&#58;KEY_VIDEO_SIZE), <br>&#160;&#160;&#160;&#160;&#160;&#160;&#160; SCENE_AS_DEFAULT_SCENE(<br>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; ITEM_AS_DEFAULT_(&quot;640x480&quot;), <br>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; ITEM_AS_VALUES_(<br>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &quot;176x144&quot;,&#160;&#160;&#160;&#160;&#160; &quot;480x320&quot;,&#160;&#160;&#160;&#160;&#160; &quot;640x480&quot;, <br>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &quot;864x480&quot;,&#160;&#160;&#160;&#160;&#160; &quot;1280x720&quot;,&#160;&#160;&#160;&#160; &quot;1920x1080&quot;, <br>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; )<br>&#160;&#160;&#160;&#160;&#160;&#160;&#160; ), <br>&#160;&#160;&#160; )<br>#endif</div></div></span></span></span></span></span></div></div></font>","Clicks":0,"Platforms":[{"Id":113,"Name":"MT6589"},{"Id":133,"Name":"MT6572"},{"Id":144,"Name":"MT6582"}],"Branches":[{"Id":135,"Name":"JB2"},{"Id":146,"Name":"JB3"}],"Children":[],"FAQsUnderThis":[],"Id":null,"ObjectType":"FAQExtTreeModel"}
+08-27 11:15:06.091  9513  9596 E zhangqi8888: execute(7) stringBuffer:{"FAQID":"FAQ07270","Title":"[Camera Drv]72上Video不能录像","UniqueId":"97bcc11d-e680-49cf-ad78-dbe4310b6c5e","ParentId":"00000000-0000-0000-0000-000000000000","List":"SW","Type":10,"Created":"2013-05-23T10:46:02","Modified":"2013-08-14T09:42:25","TotalCount":0,"Category":"SW > ALPS > Camera Driver-related","Level":0,"Seq":0,"Content":"<div class=\"ExternalClassAA853604BB534093B842D93C57BA6C71\">\n<div><span><span><span><span><span lang=\"EN-US\">\n<div class=\"ExternalClass7E65E52FEEC64654AF72057FCEF95F1A\">\n<div><font size=\"4\">[DESCRIPTION]</font></div>\n<div><font size=\"2\">72上直接使用之前75/77上的driver文件后进如Video发生错误</font></div>\n<div>&#160;</div>\n<div><font size=\"4\">[SOLUTION]</font></div>\n<div><font size=\"2\">&#160;&#160;1，请检查driver文件（××××Sensor.c）中的××××GetResolution函数中是否给Video的宽高赋值，如果没有，上层会要不到buffer，从而发生错误</font></div>\n<div><font size=\"2\">&#160;&#160;pSensorResolution-&gt;SensorVideoWidth=××××_IMAGE_SENSOR_VIDEO_WIDTH;<br>&#160;&#160;pSensorResolution-&gt;SensorVideoHeight=××××_IMAGE_SENSOR_VIDEO_HEIGHT;</font></div>\n<div><font size=\"2\">&#160; 2，请检查Feature Table（config.ftbl.****.h）中是否有配置Vide的size，如果没有，上层要buffer的时候也会发生错误</font></div>\n<div><font size=\"2\">&#160;&#160;#if 1<br>&#160;&#160;&#160; //&#160; Video Size<br>&#160;&#160;&#160; FTABLE_CONFIG_AS_TYPE_OF_DEFAULT_VALUES(<br>&#160;&#160;&#160;&#160;&#160;&#160;&#160; KEY_AS_(MtkCameraParameters&#58;&#58;KEY_VIDEO_SIZE), <br>&#160;&#160;&#160;&#160;&#160;&#160;&#160; SCENE_AS_DEFAULT_SCENE(<br>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; ITEM_AS_DEFAULT_(&quot;640x480&quot;), <br>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; ITEM_AS_VALUES_(<br>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &quot;176x144&quot;,&#160;&#160;&#160;&#160;&#160; &quot;480x320&quot;,&#160;&#160;&#160;&#160;&#160; &quot;640x480&quot;, <br>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &quot;864x480&quot;,&#160;&#160;&#160;&#160;&#160; &quot;1280x720&quot;,&#160;&#160;&#160;&#160; &quot;1920x1080&quot;, <br>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; )<br>&#160;&#160;&#160;&#160;&#160;&#160;&#160; ), <br>&#160;&#160;&#160; )<br>#endif</div></div></span></span></span></span></span></div></div></font>","Clicks":0,"Platforms":[{"Id":113,"Name":"MT6589"},{"Id":133,"Name":"MT6572"},{"Id":144,"Name":"MT6582"}],"Branches":[{"Id":135,"Name":"JB2"},{"Id":146,"Name":"JB3"}],"Children":[],"FAQsUnderThis":[],"Id":null,"ObjectType":"FAQExtTreeModel"}
+08-27 11:15:06.107  8854  8854 D WifiSettings: onAccessPointChanged (singular) callback initiated
+08-27 11:15:06.108  8854  8854 I chatty  : uid=1000(system) com.android.settings identical 7 lines
+08-27 11:15:06.108  8854  8854 D WifiSettings: onAccessPointChanged (singular) callback initiated
+08-27 11:15:06.108  8854  8854 D WifiSettings: onAccessPointsChanged (WifiTracker) callback initiated
+08-27 11:15:06.108   590  4073 I WifiService: getWifiEnabledState uid=1000
+08-27 11:15:06.110   590   983 I WifiService: getCurrentNetwork uid=1000
+08-27 11:15:06.124  9513  9596 E zhangqi8888: execute(7) title:[Camera Drv]72上Video不能录像
+08-27 11:15:06.124  9513  9596 E zhangqi8888: execute(8) faqId:FAQ07270
+08-27 11:15:06.125   274   624 I BufferQueueProducer: [com.android.settings/com.android.settings.Settings$WifiSettingsActivity#0](this:0xaac9d000,id:223,api:1,p:8854,c:274) queueBuffer: fps=5.38 dur=1302.29 max=742.10 min=18.39
+08-27 11:15:06.134   274   416 W GrallocMapperPassthrough: buffer descriptor with invalid usage bits 0x400
+08-27 11:15:06.135   270  4161 I [Gralloc]: usage1: 0xf02, format: 1 stride: 480 vertical_stride: 960 size: 1843200
+08-27 11:15:06.137  8854  8900 D GraphicBuffer: register, handle(0x9a7dd6c0) (w:480 h:960 s:480 f:0x1 u:f02)
+08-27 11:15:06.136   781   781 D WindowClient: Remove from mViews: com.android.systemui.assist.AssistOrbContainer{fe65059 G.E...... ......ID 0,0-480,375}, this = android.view.WindowManagerGlobal@195145
+08-27 11:15:06.137   274   274 E libPowerStretch: LucidStats currentFPS = 10.10 [2972591268]
+08-27 11:15:06.143  9513  9596 E zhangqi8888: download result 200
+08-27 11:15:06.164   309   355 D AAL     : 08-27 11:15:06.096 BL= 719,ESS= 256, 08-27 11:15:06.113 BL= 718,ESS= 256, 08-27 11:15:06.130 BL= 717,ESS= 256, 08-27 11:15:06.147 BL= 716,ESS= 256, 08-27 11:15:06.164 BL= 715,ESS= 256, 
+08-27 11:15:06.168   781   781 D WindowClient: Remove from mViews: com.android.systemui.stackdivider.DividerView{91dc42a I.E...... ......ID 0,0-0,72}, this = android.view.WindowManagerGlobal@195145
+08-27 11:15:06.173   274   623 W GrallocMapperPassthrough: buffer descriptor with invalid usage bits 0x400
+08-27 11:15:06.174   270  4161 I [Gralloc]: usage1: 0xf02, format: 1 stride: 48 vertical_stride: 960 size: 184320
+08-27 11:15:06.174  1160  1723 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+08-27 11:15:06.175   781   985 D GraphicBuffer: register, handle(0xa65ca100) (w:36 h:960 s:48 f:0x1 u:f02)
+08-27 11:15:06.237   274   274 I BufferQueueProducer: [FrameBufferSurface_0](this:0xad058000,id:0,api:1,p:274,c:274) queueBuffer: fps=52.45 dur=1010.41 max=38.01 min=11.68
+08-27 11:15:06.248   309   355 D AAL     : 08-27 11:15:06.180 BL= 714,ESS= 256, 08-27 11:15:06.197 BL= 713,ESS= 256, 08-27 11:15:06.214 BL= 711,ESS= 256, 08-27 11:15:06.231 BL= 710,ESS= 256, 08-27 11:15:06.248 BL= 709,ESS= 256, 
+08-27 11:15:06.315   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:06.316   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:06.332   309   355 D AAL     : 08-27 11:15:06.265 BL= 708,ESS= 256, 08-27 11:15:06.282 BL= 707,ESS= 256, 08-27 11:15:06.299 BL= 706,ESS= 256, 08-27 11:15:06.315 BL= 705,ESS= 256, 08-27 11:15:06.332 BL= 704,ESS= 256, 
+08-27 11:15:06.417   309   355 D AAL     : 08-27 11:15:06.350 BL= 703,ESS= 256, 08-27 11:15:06.366 BL= 702,ESS= 256, 08-27 11:15:06.383 BL= 701,ESS= 256, 08-27 11:15:06.400 BL= 699,ESS= 256, 08-27 11:15:06.417 BL= 698,ESS= 256, 
+08-27 11:15:06.419   590   983 I WifiService: getWifiEnabledState uid=1000
+08-27 11:15:06.422   590   983 I WifiService: getCurrentNetwork uid=1000
+08-27 11:15:06.440   590   983 I WifiService: getConfiguredNetworks uid=1000
+08-27 11:15:06.444   590   983 I WifiService: getPasspointConfigurations uid=1000
+08-27 11:15:06.489   590   711 E PowerHalWrapper: <setRotation> do boost with 0ms
+08-27 11:15:06.490   270  4161 I vendor.mediatek.hardware.power@1.1-impl: mtkPowerHint hint:14, data:0
+08-27 11:15:06.501   309   355 D AAL     : 08-27 11:15:06.439 BL= 697,ESS= 256, 08-27 11:15:06.453 BL= 696,ESS= 256, 08-27 11:15:06.467 BL= 695,ESS= 256, 08-27 11:15:06.484 BL= 694,ESS= 256, 08-27 11:15:06.501 BL= 693,ESS= 256, 
+08-27 11:15:06.502   274   274 I BufferQueueConsumer: [BlackSurface#0](this:0xaacb7000,id:229,api:0,p:-1,c:-1) disconnect(C)
+08-27 11:15:06.502   274   274 I BufferQueueConsumer: [BlackSurface#1](this:0xaacc1000,id:232,api:0,p:-1,c:-1) disconnect(C)
+08-27 11:15:06.502   274   274 I BufferQueueConsumer: [BlackSurface#0](this:0xaacc7000,id:230,api:0,p:-1,c:-1) disconnect(C)
+08-27 11:15:06.502   274   274 I BufferQueueConsumer: [BlackSurface#0](this:0xaacca000,id:231,api:0,p:-1,c:-1) disconnect(C)
+08-27 11:15:06.502   274   274 I BufferQueueConsumer: [ScreenshotSurface#0](this:0xab6e5000,id:228,api:1,p:-1,c:-1) disconnect(C)
+08-27 11:15:06.502   274   274 I BufferQueue: [ScreenshotSurface#0](this:0xab6e5000,id:228,api:1,p:-1,c:-1) ~BufferQueueCore
+08-27 11:15:06.503   274   274 I BufferQueue: [BlackSurface#0](this:0xaacb7000,id:229,api:0,p:-1,c:-1) ~BufferQueueCore
+08-27 11:15:06.503   274   274 I BufferQueue: [BlackSurface#0](this:0xaacc7000,id:230,api:0,p:-1,c:-1) ~BufferQueueCore
+08-27 11:15:06.503   274   274 I BufferQueue: [BlackSurface#0](this:0xaacca000,id:231,api:0,p:-1,c:-1) ~BufferQueueCore
+08-27 11:15:06.504   274   274 I BufferQueue: [BlackSurface#1](this:0xaacc1000,id:232,api:0,p:-1,c:-1) ~BufferQueueCore
+08-27 11:15:06.585   309   355 D AAL     : 08-27 11:15:06.518 BL= 692,ESS= 256, 08-27 11:15:06.534 BL= 691,ESS= 256, 08-27 11:15:06.551 BL= 690,ESS= 256, 08-27 11:15:06.568 BL= 689,ESS= 256, 08-27 11:15:06.585 BL= 687,ESS= 256, 
+08-27 11:15:06.670   309   355 D AAL     : 08-27 11:15:06.602 BL= 686,ESS= 256, 08-27 11:15:06.619 BL= 685,ESS= 256, 08-27 11:15:06.636 BL= 684,ESS= 256, 08-27 11:15:06.652 BL= 683,ESS= 256, 08-27 11:15:06.670 BL= 682,ESS= 256, 
+08-27 11:15:06.754   309   355 D AAL     : 08-27 11:15:06.686 BL= 681,ESS= 256, 08-27 11:15:06.703 BL= 680,ESS= 256, 08-27 11:15:06.720 BL= 679,ESS= 256, 08-27 11:15:06.737 BL= 678,ESS= 256, 08-27 11:15:06.753 BL= 676,ESS= 256, 
+08-27 11:15:06.838   309   355 D AAL     : 08-27 11:15:06.770 BL= 675,ESS= 256, 08-27 11:15:06.787 BL= 674,ESS= 256, 08-27 11:15:06.804 BL= 673,ESS= 256, 08-27 11:15:06.821 BL= 672,ESS= 256, 08-27 11:15:06.838 BL= 671,ESS= 256, 
+08-27 11:15:06.906  9372  9410 I System.out: port:443
+08-27 11:15:06.922   309   355 D AAL     : 08-27 11:15:06.854 BL= 670,ESS= 256, 08-27 11:15:06.871 BL= 669,ESS= 256, 08-27 11:15:06.889 BL= 668,ESS= 256, 08-27 11:15:06.905 BL= 667,ESS= 256, 08-27 11:15:06.922 BL= 666,ESS= 256, 
+08-27 11:15:07.025   309   355 D AAL     : 08-27 11:15:06.939 BL= 665,ESS= 256, 08-27 11:15:06.955 BL= 664,ESS= 256, 08-27 11:15:06.973 BL= 662,ESS= 256, 08-27 11:15:07.006 BL= 660,ESS= 256, 08-27 11:15:07.024 BL= 659,ESS= 256, 
+08-27 11:15:07.063   274   274 I DisplayDevice: [Built-in Screen (type:0)] fps:59.252777,dur:1012.61,max:21.62,min:12.57
+08-27 11:15:07.110   309   355 D AAL     : 08-27 11:15:07.041 BL= 658,ESS= 256, 08-27 11:15:07.057 BL= 657,ESS= 256, 08-27 11:15:07.074 BL= 656,ESS= 256, 08-27 11:15:07.092 BL= 655,ESS= 256, 08-27 11:15:07.109 BL= 654,ESS= 256, 
+08-27 11:15:07.133   274   623 I BufferQueueProducer: [com.android.settings/com.android.settings.Settings$WifiSettingsActivity#0](this:0xaac9d000,id:223,api:1,p:8854,c:274) queueBuffer: fps=58.56 dur=1007.50 max=32.36 min=12.43
+08-27 11:15:07.194   309   355 D AAL     : 08-27 11:15:07.124 BL= 653,ESS= 256, 08-27 11:15:07.141 BL= 652,ESS= 256, 08-27 11:15:07.158 BL= 651,ESS= 256, 08-27 11:15:07.175 BL= 650,ESS= 256, 08-27 11:15:07.194 BL= 649,ESS= 256, 
+08-27 11:15:07.215   261  3922 D AudioALSAStreamOut: standby()
+08-27 11:15:07.215   261  3922 D AudioALSAStreamOut: standbyStreamOut()
+08-27 11:15:07.215   261  3922 D AudioALSAStreamOut: close(), flags 6, mMixerOutInUse 0
+08-27 11:15:07.215   261  3922 D AudioALSAPlaybackHandlerNormal: +close()
+08-27 11:15:07.215   261  3922 D AudioVoiceUIDL: [SetInputStandBy] ReadRefFromRing to exit? (0) 
+08-27 11:15:07.215   261  3922 D AudioALSADeviceConfigManager: ApplyDeviceTurnoffSequenceByName(), DeviceName = ext_speaker_output descriptor->DeviceStatusCounter = 1
+08-27 11:15:07.216   261  3922 D AudioALSADeviceConfigManager: ApplyDeviceTurnoffSequenceByName(), DeviceName = headphone_output descriptor->DeviceStatusCounter = 1
+08-27 11:15:07.216   261  3922 D AudioALSADriverUtility: GetPropertyValue key = af.resouce.extdac_support value = 0
+08-27 11:15:07.216   261  3922 D AudioALSAPlaybackHandlerBase: +closePcmDriver(), mPcm = 0xb58a8c40
+08-27 11:15:07.217   261  3922 D AudioALSAPlaybackHandlerBase: -closePcmDriver(), mPcm = 0x0
+08-27 11:15:07.218   261  3922 D AudioALSADriverUtility: GetPropertyValue key = af.resouce.extdac_support value = 0
+08-27 11:15:07.218   261  3922 D AudioMTKFilter: AudioMTKFilter::stop() type 0 mode 8
+08-27 11:15:07.218   261  3922 D MtkAudioLoud: +close()
+08-27 11:15:07.218   261  3922 D MtkAudioLoud: -close()
+08-27 11:15:07.218   261  3922 D AudioALSAPlaybackHandlerBase: DeinitDataPending
+08-27 11:15:07.218   261  3922 D AudioALSAPlaybackHandlerNormal: -close()
+08-27 11:15:07.218   261  3922 D AudioALSAStreamManager: +destroyPlaybackHandler(), mode = 0, pPlaybackHandler = 0xb428b280
+08-27 11:15:07.219   261  3922 D AudioALSAPlaybackHandlerNormal: ~AudioALSAPlaybackHandlerNormal()
+08-27 11:15:07.219   261  3922 D AudioALSAStreamManager: -destroyPlaybackHandler(), mPlaybackHandlerVector.size() = 0
+08-27 11:15:07.219   261  3922 D AudioALSAStreamOut: setMuteForRouting(), mute 0, flags 6
+08-27 11:15:07.219   261  3922 D AudioUtility: power_hal_hint - custPowerHint 0, data 0
+08-27 11:15:07.219   270   396 I vendor.mediatek.hardware.power@1.1-impl: mtkCusPowerHint hint:0, data:0
+08-27 11:15:07.220   270   302 I powerd  : [powerd_req] POWER_MSG_MTK_CUS_HINT: hint:0, hdl:36, data:0
+08-27 11:15:07.248   274   274 I BufferQueueProducer: [FrameBufferSurface_0](this:0xad058000,id:0,api:1,p:274,c:274) queueBuffer: fps=59.37 dur=1010.58 max=21.82 min=12.61
+08-27 11:15:07.294   309   355 D AAL     : 08-27 11:15:07.209 BL= 647,ESS= 256, 08-27 11:15:07.242 BL= 645,ESS= 256, 08-27 11:15:07.259 BL= 644,ESS= 256, 08-27 11:15:07.276 BL= 643,ESS= 256, 08-27 11:15:07.294 BL= 642,ESS= 256, 
+08-27 11:15:07.316   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:07.317   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:07.377   309   355 D AAL     : 08-27 11:15:07.309 BL= 641,ESS= 256, 08-27 11:15:07.327 BL= 640,ESS= 256, 08-27 11:15:07.343 BL= 639,ESS= 256, 08-27 11:15:07.360 BL= 638,ESS= 256, 08-27 11:15:07.377 BL= 637,ESS= 256, 
+08-27 11:15:07.461   309   355 D AAL     : 08-27 11:15:07.395 BL= 636,ESS= 256, 08-27 11:15:07.410 BL= 635,ESS= 256, 08-27 11:15:07.427 BL= 634,ESS= 256, 08-27 11:15:07.444 BL= 633,ESS= 256, 08-27 11:15:07.461 BL= 632,ESS= 256, 
+08-27 11:15:07.546   309   355 D AAL     : 08-27 11:15:07.478 BL= 631,ESS= 256, 08-27 11:15:07.495 BL= 630,ESS= 256, 08-27 11:15:07.512 BL= 629,ESS= 256, 08-27 11:15:07.528 BL= 628,ESS= 256, 08-27 11:15:07.546 BL= 626,ESS= 256, 
+08-27 11:15:07.620  8854  8900 E libPowerStretch: LucidStats currentFPS = 8.04 [2585758064]
+08-27 11:15:07.632   309   355 D AAL     : 08-27 11:15:07.562 BL= 625,ESS= 256, 08-27 11:15:07.579 BL= 624,ESS= 256, 08-27 11:15:07.598 BL= 623,ESS= 256, 08-27 11:15:07.612 BL= 622,ESS= 256, 08-27 11:15:07.630 BL= 621,ESS= 256, 
+08-27 11:15:07.714   309   355 D AAL     : 08-27 11:15:07.646 BL= 620,ESS= 256, 08-27 11:15:07.663 BL= 619,ESS= 256, 08-27 11:15:07.680 BL= 618,ESS= 256, 08-27 11:15:07.697 BL= 617,ESS= 256, 08-27 11:15:07.714 BL= 616,ESS= 256, 
+08-27 11:15:07.798   309   355 D AAL     : 08-27 11:15:07.731 BL= 615,ESS= 256, 08-27 11:15:07.749 BL= 614,ESS= 256, 08-27 11:15:07.764 BL= 613,ESS= 256, 08-27 11:15:07.781 BL= 612,ESS= 256, 08-27 11:15:07.798 BL= 611,ESS= 256, 
+08-27 11:15:07.882   309   355 D AAL     : 08-27 11:15:07.815 BL= 610,ESS= 256, 08-27 11:15:07.831 BL= 609,ESS= 256, 08-27 11:15:07.848 BL= 608,ESS= 256, 08-27 11:15:07.865 BL= 607,ESS= 256, 08-27 11:15:07.882 BL= 606,ESS= 256, 
+08-27 11:15:07.966   309   355 D AAL     : 08-27 11:15:07.899 BL= 605,ESS= 256, 08-27 11:15:07.916 BL= 604,ESS= 256, 08-27 11:15:07.933 BL= 603,ESS= 256, 08-27 11:15:07.949 BL= 602,ESS= 256, 08-27 11:15:07.966 BL= 601,ESS= 256, 
+08-27 11:15:08.023   274   415 I BufferQueueProducer: [StatusBar#0](this:0xab6c9000,id:4,api:1,p:781,c:274) queueBuffer: fps=0.99 dur=2018.50 max=1843.78 min=174.72
+08-27 11:15:08.050   309   355 D AAL     : 08-27 11:15:07.983 BL= 599,ESS= 256, 08-27 11:15:08.000 BL= 598,ESS= 256, 08-27 11:15:08.017 BL= 597,ESS= 256, 08-27 11:15:08.034 BL= 596,ESS= 256, 08-27 11:15:08.050 BL= 595,ESS= 256, 
+08-27 11:15:08.090   274   274 I DisplayDevice: [Built-in Screen (type:0)] fps:57.474941,dur:1026.53,max:33.78,min:16.18
+08-27 11:15:08.135   309   355 D AAL     : 08-27 11:15:08.067 BL= 594,ESS= 256, 08-27 11:15:08.086 BL= 593,ESS= 256, 08-27 11:15:08.101 BL= 592,ESS= 256, 08-27 11:15:08.118 BL= 591,ESS= 256, 08-27 11:15:08.135 BL= 590,ESS= 256, 
+08-27 11:15:08.144   274   415 I BufferQueueProducer: [com.android.settings/com.android.settings.Settings$WifiSettingsActivity#0](this:0xaac9d000,id:223,api:1,p:8854,c:274) queueBuffer: fps=57.36 dur=1011.14 max=34.39 min=13.37
+08-27 11:15:08.189   274   274 E libPowerStretch: LucidStats currentFPS = 58.49 [2972591268]
+08-27 11:15:08.219   309   355 D AAL     : 08-27 11:15:08.151 BL= 589,ESS= 256, 08-27 11:15:08.168 BL= 588,ESS= 256, 08-27 11:15:08.185 BL= 587,ESS= 256, 08-27 11:15:08.202 BL= 586,ESS= 256, 08-27 11:15:08.219 BL= 585,ESS= 256, 
+08-27 11:15:08.256   274   274 I BufferQueueProducer: [FrameBufferSurface_0](this:0xad058000,id:0,api:1,p:274,c:274) queueBuffer: fps=57.53 dur=1008.20 max=33.92 min=15.99
+08-27 11:15:08.303   309   355 D AAL     : 08-27 11:15:08.236 BL= 584,ESS= 256, 08-27 11:15:08.252 BL= 583,ESS= 256, 08-27 11:15:08.269 BL= 582,ESS= 256, 08-27 11:15:08.286 BL= 581,ESS= 256, 08-27 11:15:08.303 BL= 580,ESS= 256, 
+08-27 11:15:08.319   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:08.319   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:08.404   309   355 D AAL     : 08-27 11:15:08.320 BL= 579,ESS= 256, 08-27 11:15:08.337 BL= 578,ESS= 256, 08-27 11:15:08.354 BL= 576,ESS= 256, 08-27 11:15:08.388 BL= 574,ESS= 256, 08-27 11:15:08.404 BL= 573,ESS= 256, 
+08-27 11:15:08.459   590   617 I zygote  : Explicit concurrent copying GC freed 23991(1605KB) AllocSpace objects, 4(144KB) LOS objects, 35% free, 10MB/16MB, paused 414us total 382.721ms
+08-27 11:15:08.488   309   355 D AAL     : 08-27 11:15:08.421 BL= 572,ESS= 256, 08-27 11:15:08.438 BL= 571,ESS= 256, 08-27 11:15:08.455 BL= 570,ESS= 256, 08-27 11:15:08.471 BL= 569,ESS= 256, 08-27 11:15:08.488 BL= 568,ESS= 256, 
+08-27 11:15:08.573   309   355 D AAL     : 08-27 11:15:08.505 BL= 567,ESS= 256, 08-27 11:15:08.522 BL= 566,ESS= 256, 08-27 11:15:08.539 BL= 565,ESS= 256, 08-27 11:15:08.556 BL= 564,ESS= 256, 08-27 11:15:08.573 BL= 563,ESS= 256, 
+08-27 11:15:08.657   309   355 D AAL     : 08-27 11:15:08.589 BL= 562,ESS= 256, 08-27 11:15:08.606 BL= 561,ESS= 256, 08-27 11:15:08.623 BL= 560,ESS= 256, 08-27 11:15:08.640 BL= 559,ESS= 256, 08-27 11:15:08.657 BL= 558,ESS= 256, 
+08-27 11:15:08.741   309   355 D AAL     : 08-27 11:15:08.674 BL= 557,ESS= 256, 08-27 11:15:08.691 BL= 556,ESS= 256, 08-27 11:15:08.707 BL= 555,ESS= 256, 08-27 11:15:08.724 BL= 554,ESS= 256, 08-27 11:15:08.741 BL= 553,ESS= 256, 
+08-27 11:15:08.768  2004  2394 I MTKLogger/Utils: <--getDefalueInternalSdPath() = /storage/emulated/0
+08-27 11:15:08.825   309   355 D AAL     : 08-27 11:15:08.758 BL= 552,ESS= 256, 08-27 11:15:08.775 BL= 551,ESS= 256, 08-27 11:15:08.792 BL= 550,ESS= 256, 08-27 11:15:08.808 BL= 548,ESS= 256, 08-27 11:15:08.825 BL= 547,ESS= 256, 
+08-27 11:15:08.914   590   851 D AES     : AEEIOCTL_GET/SET_SF_STATE IOCTL,cmd= 1074294797, lParam=0. 
+08-27 11:15:08.914   590   851 D AES     : AEEIOCTL_RT_MON_Kick IOCTL,cmd= 2147774474, lParam=300. 
+08-27 11:15:08.927   309   355 D AAL     : 08-27 11:15:08.859 BL= 545,ESS= 256, 08-27 11:15:08.876 BL= 544,ESS= 256, 08-27 11:15:08.893 BL= 543,ESS= 256, 08-27 11:15:08.909 BL= 542,ESS= 256, 08-27 11:15:08.927 BL= 541,ESS= 256, 
+08-27 11:15:08.984   439   482 D MDLOGGER_CLEAR_LOG: mdlogger clearLog V4.W1743.3
+08-27 11:15:09.011   309   355 D AAL     : 08-27 11:15:08.943 BL= 540,ESS= 256, 08-27 11:15:08.960 BL= 539,ESS= 256, 08-27 11:15:08.977 BL= 538,ESS= 256, 08-27 11:15:08.994 BL= 537,ESS= 256, 08-27 11:15:09.011 BL= 536,ESS= 256, 
+08-27 11:15:09.095   309   355 D AAL     : 08-27 11:15:09.027 BL= 535,ESS= 256, 08-27 11:15:09.044 BL= 534,ESS= 256, 08-27 11:15:09.061 BL= 533,ESS= 256, 08-27 11:15:09.078 BL= 532,ESS= 256, 08-27 11:15:09.095 BL= 531,ESS= 256, 
+08-27 11:15:09.179   309   355 D AAL     : 08-27 11:15:09.112 BL= 530,ESS= 256, 08-27 11:15:09.128 BL= 529,ESS= 256, 08-27 11:15:09.145 BL= 528,ESS= 256, 08-27 11:15:09.162 BL= 527,ESS= 256, 08-27 11:15:09.179 BL= 526,ESS= 256, 
+08-27 11:15:09.263   309   355 D AAL     : 08-27 11:15:09.196 BL= 525,ESS= 256, 08-27 11:15:09.213 BL= 524,ESS= 256, 08-27 11:15:09.230 BL= 523,ESS= 256, 08-27 11:15:09.246 BL= 522,ESS= 256, 08-27 11:15:09.263 BL= 521,ESS= 256, 
+08-27 11:15:09.319   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:09.319   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:09.348   309   355 D AAL     : 08-27 11:15:09.280 BL= 520,ESS= 256, 08-27 11:15:09.297 BL= 519,ESS= 256, 08-27 11:15:09.314 BL= 518,ESS= 256, 08-27 11:15:09.331 BL= 517,ESS= 256, 08-27 11:15:09.348 BL= 516,ESS= 256, 
+08-27 11:15:09.432   309   355 D AAL     : 08-27 11:15:09.364 BL= 515,ESS= 256, 08-27 11:15:09.381 BL= 514,ESS= 256, 08-27 11:15:09.398 BL= 513,ESS= 256, 08-27 11:15:09.415 BL= 512,ESS= 256, 08-27 11:15:09.432 BL= 511,ESS= 256, 
+08-27 11:15:09.634   309   355 D AAL     : 08-27 11:15:09.449 BL= 510,ESS= 256, 08-27 11:15:09.487 BL= 509,ESS= 256, 08-27 11:15:09.533 BL= 508,ESS= 256, 08-27 11:15:09.583 BL= 507,ESS= 256, 08-27 11:15:09.634 BL= 506,ESS= 256, 
+08-27 11:15:09.887   309   355 D AAL     : 08-27 11:15:09.684 BL= 505,ESS= 256, 08-27 11:15:09.735 BL= 504,ESS= 256, 08-27 11:15:09.804 BL= 503,ESS= 256, 08-27 11:15:09.836 BL= 502,ESS= 256, 08-27 11:15:09.887 BL= 501,ESS= 256, 
+08-27 11:15:10.156   309   355 D AAL     : 08-27 11:15:09.954 BL= 500,ESS= 256, 08-27 11:15:10.005 BL= 499,ESS= 256, 08-27 11:15:10.038 BL= 498,ESS= 256, 08-27 11:15:10.106 BL= 497,ESS= 256, 08-27 11:15:10.156 BL= 496,ESS= 256, 
+08-27 11:15:10.320   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:10.320   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:10.443   309   355 D AAL     : 08-27 11:15:10.206 BL= 495,ESS= 256, 08-27 11:15:10.274 BL= 494,ESS= 256, 08-27 11:15:10.325 BL= 493,ESS= 256, 08-27 11:15:10.375 BL= 492,ESS= 256, 08-27 11:15:10.442 BL= 491,ESS= 256, 
+08-27 11:15:10.729   309   355 D AAL     : 08-27 11:15:10.493 BL= 490,ESS= 256, 08-27 11:15:10.544 BL= 489,ESS= 256, 08-27 11:15:10.611 BL= 488,ESS= 256, 08-27 11:15:10.662 BL= 487,ESS= 256, 08-27 11:15:10.729 BL= 486,ESS= 256, 
+08-27 11:15:10.782  9372  9412 I zygote  : Deoptimizing java.lang.String com.google.android.flib.log.a.a(java.lang.String, java.lang.Object[]) due to JIT inline cache
+08-27 11:15:10.787  9372  9412 E Finsky  : [598] com.google.android.finsky.ai.d.a(6): Unexpected android-id = 0
+08-27 11:15:10.838  9372  9412 I System.out: port:443
+08-27 11:15:10.998   309   355 D AAL     : 08-27 11:15:10.779 BL= 485,ESS= 256, 08-27 11:15:10.830 BL= 484,ESS= 256, 08-27 11:15:10.880 BL= 483,ESS= 256, 08-27 11:15:10.948 BL= 482,ESS= 256, 08-27 11:15:10.998 BL= 481,ESS= 256, 
+08-27 11:15:11.153  9513  9596 E zhangqi8888: downloading FAQ07271
+08-27 11:15:11.155  9513  9596 E zhangqi8888: execute(1)
+08-27 11:15:11.179  9513  9596 I System.out: isEmailSend:POST
+08-27 11:15:11.185  9513  9596 E zhangqi8888: execute(2)
+08-27 11:15:11.185  9513  9596 E zhangqi8888: execute(3)
+08-27 11:15:11.186  9513  9596 I System.out: [OkHttp] sendRequest>>
+08-27 11:15:11.192  9513  9596 I System.out: [OkHttp] sendRequest<<
+08-27 11:15:11.286   309   355 D AAL     : 08-27 11:15:11.049 BL= 480,ESS= 256, 08-27 11:15:11.116 BL= 479,ESS= 256, 08-27 11:15:11.167 BL= 478,ESS= 256, 08-27 11:15:11.219 BL= 477,ESS= 256, 08-27 11:15:11.286 BL= 476,ESS= 256, 
+08-27 11:15:11.320   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:11.320   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:11.554   309   355 D AAL     : 08-27 11:15:11.335 BL= 475,ESS= 256, 08-27 11:15:11.386 BL= 474,ESS= 256, 08-27 11:15:11.453 BL= 473,ESS= 256, 08-27 11:15:11.504 BL= 472,ESS= 256, 08-27 11:15:11.554 BL= 471,ESS= 256, 
+08-27 11:15:11.625  9513  9596 E zhangqi8888: execute(4)200
+08-27 11:15:11.625  9513  9596 E zhangqi8888: execute(5)
+08-27 11:15:11.630  9513  9596 E zhangqi8888: execute(6)null
+08-27 11:15:11.631  9513  9596 E zhangqi8888: execute(7) stringBuffer:null
+08-27 11:15:11.633  9513  9596 E zhangqi8888: execute(7)
+08-27 11:15:11.633  9513  9596 E zhangqi8888: org.json.JSONException: Value null of type org.json.JSONObject$1 cannot be converted to JSONObject
+08-27 11:15:11.633  9513  9596 E zhangqi8888: 	at org.json.JSON.typeMismatch(JSON.java:111)
+08-27 11:15:11.633  9513  9596 E zhangqi8888: 	at org.json.JSONObject.<init>(JSONObject.java:163)
+08-27 11:15:11.633  9513  9596 E zhangqi8888: 	at org.json.JSONObject.<init>(JSONObject.java:176)
+08-27 11:15:11.633  9513  9596 E zhangqi8888: 	at com.mobile.panorama.PostUtils.execute(PostUtils.java:62)
+08-27 11:15:11.633  9513  9596 E zhangqi8888: 	at com.mobile.panorama.MainActivity$6$1.run(MainActivity.java:150)
+08-27 11:15:11.633  9513  9596 E zhangqi8888: 	at java.lang.Thread.run(Thread.java:764)
+08-27 11:15:11.634  9513  9596 W System.err: org.json.JSONException: Value null of type org.json.JSONObject$1 cannot be converted to JSONObject
+08-27 11:15:11.635  9513  9596 W System.err: 	at org.json.JSON.typeMismatch(JSON.java:111)
+08-27 11:15:11.637  9513  9596 W System.err: 	at org.json.JSONObject.<init>(JSONObject.java:163)
+08-27 11:15:11.638  9513  9596 W System.err: 	at org.json.JSONObject.<init>(JSONObject.java:176)
+08-27 11:15:11.639  9513  9596 W System.err: 	at com.mobile.panorama.PostUtils.execute(PostUtils.java:62)
+08-27 11:15:11.639  9513  9596 W System.err: 	at com.mobile.panorama.MainActivity$6$1.run(MainActivity.java:150)
+08-27 11:15:11.640  9513  9596 W System.err: 	at java.lang.Thread.run(Thread.java:764)
+08-27 11:15:11.640  9513  9596 E zhangqi8888: execute(8)
+08-27 11:15:11.647  9513  9596 E zhangqi8888: download result -1
+08-27 11:15:11.841   309   355 D AAL     : 08-27 11:15:11.622 BL= 470,ESS= 256, 08-27 11:15:11.672 BL= 469,ESS= 256, 08-27 11:15:11.722 BL= 468,ESS= 256, 08-27 11:15:11.790 BL= 467,ESS= 256, 08-27 11:15:11.841 BL= 466,ESS= 256, 
+08-27 11:15:12.017   274  1479 I BufferQueueProducer: [StatusBar#0](this:0xab6c9000,id:4,api:1,p:781,c:274) queueBuffer: fps=0.25 dur=3994.14 max=3994.14 min=3994.14
+08-27 11:15:12.030   274   274 I BufferQueueProducer: [FrameBufferSurface_0](this:0xad058000,id:0,api:1,p:274,c:274) queueBuffer: fps=1.59 dur=3773.46 max=3689.41 min=16.71
+08-27 11:15:12.030   274   274 I DisplayDevice: [Built-in Screen (type:0)] fps:4.060808,dur:3940.10,max:3689.46,min:16.13
+08-27 11:15:12.075  9372  9410 I System.out: port:443
+08-27 11:15:12.127   309   355 D AAL     : 08-27 11:15:11.891 BL= 465,ESS= 256, 08-27 11:15:11.959 BL= 464,ESS= 256, 08-27 11:15:12.009 BL= 463,ESS= 256, 08-27 11:15:12.060 BL= 462,ESS= 256, 08-27 11:15:12.127 BL= 461,ESS= 256, 
+08-27 11:15:12.321   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:12.321   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:12.874   439   480 I MDLOGGER: Select CCCI port no trigger: timeout for 5 times
+08-27 11:15:13.320   274  1479 I BufferQueueProducer: [StatusBar#0](this:0xab6c9000,id:4,api:1,p:781,c:274) queueBuffer: fps=0.77 dur=1303.06 max=1303.06 min=1303.06
+08-27 11:15:13.321   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:13.321   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:13.326   274   274 I BufferQueueProducer: [FrameBufferSurface_0](this:0xad058000,id:0,api:1,p:274,c:274) queueBuffer: fps=0.77 dur=1296.91 max=1296.91 min=1296.91
+08-27 11:15:13.327   274   274 I DisplayDevice: [Built-in Screen (type:0)] fps:0.771068,dur:1296.90,max:1296.90,min:1296.90
+08-27 11:15:14.322   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:14.322   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:14.791   590   983 I WifiService: startScan uid=1000
+08-27 11:15:15.029   274  1479 I BufferQueueProducer: [StatusBar#0](this:0xab6c9000,id:4,api:1,p:781,c:274) queueBuffer: fps=1.17 dur=1709.51 max=1004.61 min=704.90
+08-27 11:15:15.047   274   274 I BufferQueueProducer: [FrameBufferSurface_0](this:0xad058000,id:0,api:1,p:274,c:274) queueBuffer: fps=1.16 dur=1720.28 max=1010.73 min=709.55
+08-27 11:15:15.047   274   274 I DisplayDevice: [Built-in Screen (type:0)] fps:1.162430,dur:1720.53,max:1011.05,min:709.48
+08-27 11:15:15.126   590   606 W ActivityManager: Activity destroy timeout for ActivityRecord{5c02541 u0 com.mobile.panorama/.MainActivity t23 f}
+08-27 11:15:15.144   274   274 I BufferQueueConsumer: [com.mobile.panorama/com.mobile.panorama.MainActivity#0](this:0xaac88000,id:216,api:1,p:9513,c:-1) disconnect(C)
+08-27 11:15:15.322   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:15.322   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:15.460   329   329 I thermal_repeater: [recvMdThermalInfo] ret=15, strLen=127,  2, 32767, -127
+08-27 11:15:15.878  9372  9412 I System.out: port:443
+08-27 11:15:16.031   274   415 I BufferQueueProducer: [StatusBar#0](this:0xab6c9000,id:4,api:1,p:781,c:274) queueBuffer: fps=1.00 dur=1001.62 max=1001.62 min=1001.62
+08-27 11:15:16.067   334   334 D agps    : [WIFI2AGPS] wifi2agps_scanned
+08-27 11:15:16.068   334   334 E agps    :  ERR: [WIFI2AGPS] sendto dest=[/data/agps_supl/wifi_2_agps] len=7952 reason=[No such file or directory]
+08-27 11:15:16.068   334   334 E agps    :  ERR: [WIFI2AGPS] external_snd_cmd safe_sendto failed
+08-27 11:15:16.077   590   983 D WificondControl: Scan result ready event
+08-27 11:15:16.109   590   983 I WifiService: getConfiguredNetworks uid=1000
+08-27 11:15:16.117   590   983 I WifiService: getConfiguredNetworks uid=1000
+08-27 11:15:16.159  1160  1723 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+08-27 11:15:16.162  8854  8854 D WifiSettings: onAccessPointChanged (singular) callback initiated
+08-27 11:15:16.162  8854  8854 I chatty  : uid=1000(system) com.android.settings identical 8 lines
+08-27 11:15:16.162  8854  8854 D WifiSettings: onAccessPointChanged (singular) callback initiated
+08-27 11:15:16.162  8854  8854 D WifiSettings: onAccessPointsChanged (WifiTracker) callback initiated
+08-27 11:15:16.163   590  4073 I WifiService: getWifiEnabledState uid=1000
+08-27 11:15:16.165   590   983 I WifiService: getCurrentNetwork uid=1000
+08-27 11:15:16.184   274   415 I BufferQueueProducer: [com.android.settings/com.android.settings.Settings$WifiSettingsActivity#0](this:0xaac9d000,id:223,api:1,p:8854,c:274) queueBuffer: fps=1.49 dur=8039.72 max=7858.31 min=15.42
+08-27 11:15:16.191   274   274 I BufferQueueProducer: [FrameBufferSurface_0](this:0xad058000,id:0,api:1,p:274,c:274) queueBuffer: fps=3.50 dur=1144.47 max=843.02 min=46.70
+08-27 11:15:16.192   274   274 I DisplayDevice: [Built-in Screen (type:0)] fps:3.495571,dur:1144.31,max:843.04,min:46.68
+08-27 11:15:16.323   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:16.324   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:16.466   590  4073 I WifiService: getWifiEnabledState uid=1000
+08-27 11:15:16.468   590  4073 I WifiService: getCurrentNetwork uid=1000
+08-27 11:15:16.472   590  4073 I WifiService: getConfiguredNetworks uid=1000
+08-27 11:15:16.476   590  4073 I WifiService: getPasspointConfigurations uid=1000
+08-27 11:15:16.658  9513  9596 E zhangqi8888: downloading FAQ07272
+08-27 11:15:16.659  9513  9596 E zhangqi8888: execute(1)
+08-27 11:15:16.681  9513  9596 I System.out: isEmailSend:POST
+08-27 11:15:16.690  9513  9596 E zhangqi8888: execute(2)
+08-27 11:15:16.690  9513  9596 E zhangqi8888: execute(3)
+08-27 11:15:16.691  9513  9596 I System.out: [OkHttp] sendRequest>>
+08-27 11:15:16.696  9513  9596 I System.out: [OkHttp] sendRequest<<
+08-27 11:15:17.035   274   623 I BufferQueueProducer: [StatusBar#0](this:0xab6c9000,id:4,api:1,p:781,c:274) queueBuffer: fps=1.00 dur=1003.50 max=1003.50 min=1003.50
+08-27 11:15:17.077  9513  9596 E zhangqi8888: execute(4)200
+08-27 11:15:17.078  9513  9596 E zhangqi8888: execute(5)
+08-27 11:15:17.084  9513  9596 E zhangqi8888: execute(6)null
+08-27 11:15:17.090  9513  9596 E zhangqi8888: execute(7) stringBuffer:null
+08-27 11:15:17.095  9513  9596 E zhangqi8888: execute(7)
+08-27 11:15:17.095  9513  9596 E zhangqi8888: org.json.JSONException: Value null of type org.json.JSONObject$1 cannot be converted to JSONObject
+08-27 11:15:17.095  9513  9596 E zhangqi8888: 	at org.json.JSON.typeMismatch(JSON.java:111)
+08-27 11:15:17.095  9513  9596 E zhangqi8888: 	at org.json.JSONObject.<init>(JSONObject.java:163)
+08-27 11:15:17.095  9513  9596 E zhangqi8888: 	at org.json.JSONObject.<init>(JSONObject.java:176)
+08-27 11:15:17.095  9513  9596 E zhangqi8888: 	at com.mobile.panorama.PostUtils.execute(PostUtils.java:62)
+08-27 11:15:17.095  9513  9596 E zhangqi8888: 	at com.mobile.panorama.MainActivity$6$1.run(MainActivity.java:150)
+08-27 11:15:17.095  9513  9596 E zhangqi8888: 	at java.lang.Thread.run(Thread.java:764)
+08-27 11:15:17.095  9513  9596 W System.err: org.json.JSONException: Value null of type org.json.JSONObject$1 cannot be converted to JSONObject
+08-27 11:15:17.096  9513  9596 W System.err: 	at org.json.JSON.typeMismatch(JSON.java:111)
+08-27 11:15:17.097  9513  9596 W System.err: 	at org.json.JSONObject.<init>(JSONObject.java:163)
+08-27 11:15:17.097  9513  9596 W System.err: 	at org.json.JSONObject.<init>(JSONObject.java:176)
+08-27 11:15:17.098  9513  9596 W System.err: 	at com.mobile.panorama.PostUtils.execute(PostUtils.java:62)
+08-27 11:15:17.099  9513  9596 W System.err: 	at com.mobile.panorama.MainActivity$6$1.run(MainActivity.java:150)
+08-27 11:15:17.099  9513  9596 W System.err: 	at java.lang.Thread.run(Thread.java:764)
+08-27 11:15:17.099  9513  9596 E zhangqi8888: execute(8)
+08-27 11:15:17.100  9513  9596 E zhangqi8888: download result -1
+08-27 11:15:17.125  9372  9410 I System.out: port:443
+08-27 11:15:17.191   274  1479 I BufferQueueProducer: [com.android.settings/com.android.settings.Settings$WifiSettingsActivity#0](this:0xaac9d000,id:223,api:1,p:8854,c:274) queueBuffer: fps=59.54 dur=1007.65 max=19.19 min=12.39
+08-27 11:15:17.203   274   274 I BufferQueueProducer: [FrameBufferSurface_0](this:0xad058000,id:0,api:1,p:274,c:274) queueBuffer: fps=59.28 dur=1012.07 max=18.35 min=15.78
+08-27 11:15:17.204   274   274 I DisplayDevice: [Built-in Screen (type:0)] fps:59.272915,dur:1012.27,max:18.31,min:15.57
+08-27 11:15:17.324   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:17.325   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:17.508  8854  8900 E libPowerStretch: LucidStats currentFPS = 12.14 [2585758064]
+08-27 11:15:17.927   274   274 E libPowerStretch: LucidStats currentFPS = 12.32 [2972591268]
+08-27 11:15:18.205   274  1479 I BufferQueueProducer: [com.android.settings/com.android.settings.Settings$WifiSettingsActivity#0](this:0xaac9d000,id:223,api:1,p:8854,c:274) queueBuffer: fps=58.19 dur=1014.01 max=35.00 min=13.85
+08-27 11:15:18.214   274   274 I BufferQueueProducer: [FrameBufferSurface_0](this:0xad058000,id:0,api:1,p:274,c:274) queueBuffer: fps=58.37 dur=1010.81 max=34.10 min=16.27
+08-27 11:15:18.215   274   274 I DisplayDevice: [Built-in Screen (type:0)] fps:58.374451,dur:1010.72,max:33.96,min:16.08
+08-27 11:15:18.324   590   726 D MtkDataShapingUtils: openLteGateByDataShaping datashaping instance is null
+08-27 11:15:18.325   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:18.326   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:18.330   590   606 I ActivityManager: Killing 9086:com.android.providers.calendar/u0a28 (adj 906): empty #13
+08-27 11:15:18.336   590   606 I ActivityManager: Killing 8919:com.google.android.apps.searchlite/u0a23 (adj 906): empty #14
+08-27 11:15:18.342   590   608 W zygote  : kill(-9086, 9) failed: No such process
+08-27 11:15:18.342   270   396 E memtrack_graphic: graphic_memtrack_get_memory error to open /sys/kernel/debug/ion/clients/8854: Permission denied
+08-27 11:15:18.339   270   270 W HwBinder:270_1: type=1400 audit(0.0:549): avc: denied { read } for name="8854-0" dev="debugfs" ino=127026 scontext=u:r:merged_hal_service:s0 tcontext=u:object_r:debugfs:s0 tclass=file permissive=0
+08-27 11:15:18.364   274   623 W GrallocMapperPassthrough: buffer descriptor with invalid usage bits 0x400
+08-27 11:15:18.364   270   396 I [Gralloc]: usage1: 0xf02, format: 1 stride: 480 vertical_stride: 960 size: 1843200
+08-27 11:15:18.369  8854  8900 D GraphicBuffer: register, handle(0x9a7dd780) (w:480 h:960 s:480 f:0x1 u:f02)
+08-27 11:15:18.389   590   608 W zygote  : kill(-9086, 9) failed: No such process
+08-27 11:15:18.434   590   608 W zygote  : kill(-9086, 9) failed: No such process
+08-27 11:15:18.434   590   608 I zygote  : Successfully killed process cgroup uid 10028 pid 9086 in 97ms
+08-27 11:15:18.435   590   608 W zygote  : kill(-8919, 9) failed: No such process
+08-27 11:15:18.435   590   608 I zygote  : Successfully killed process cgroup uid 10023 pid 8919 in 0ms
+08-27 11:15:19.038   274  1479 I BufferQueueProducer: [StatusBar#0](this:0xab6c9000,id:4,api:1,p:781,c:274) queueBuffer: fps=0.50 dur=2003.52 max=2003.52 min=2003.52
+08-27 11:15:19.327   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:19.327   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:19.720  1160  9593 I System.out: port:5228
+08-27 11:15:20.327   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:20.328   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:20.921  9372  9412 I System.out: port:443
+08-27 11:15:21.056   274  1479 I BufferQueueProducer: [StatusBar#0](this:0xab6c9000,id:4,api:1,p:781,c:274) queueBuffer: fps=0.50 dur=2017.92 max=2017.92 min=2017.92
+08-27 11:15:21.078   274   274 I BufferQueueProducer: [FrameBufferSurface_0](this:0xad058000,id:0,api:1,p:274,c:274) queueBuffer: fps=5.94 dur=2863.54 max=2021.88 min=15.35
+08-27 11:15:21.078   274   274 I DisplayDevice: [Built-in Screen (type:0)] fps:5.936841,dur:2863.48,max:2021.92,min:15.39
+08-27 11:15:21.313  1160  9593 E GCM     : Missing checkin config file
+08-27 11:15:21.314  1160  9593 W GCM     : GCM FAILED TO INITIALIZE - missing checkin
+08-27 11:15:21.319  1160  9593 E GCM     : Missing checkin config file
+08-27 11:15:21.321  1160  9593 W GCM     : GCM FAILED TO INITIALIZE - missing checkin
+08-27 11:15:21.326   590  3261 I WifiService: getConnectionInfo uid=10017
+08-27 11:15:21.328   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:21.328   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:21.334  1160  9593 E WakeLock: GCM_HB_ALARM release without a matched acquire!
+08-27 11:15:21.334  1160  9593 W WakeLock: GCM_HB_ALARM counter does not exist
+08-27 11:15:21.368  9372  9421 I System.out: port:443
+08-27 11:15:21.438  1160  9613 I System.out: port:443
+08-27 11:15:21.808  8985  9013 I YTGo    : FJD Prepare Un-registering callback LiteLogScheduleListener
+08-27 11:15:21.810  8985  9013 I YTGo    : FJD Un-registering callback LiteLogScheduleListener
+08-27 11:15:22.108  9513  9596 E zhangqi8888: downloading FAQ07273
+08-27 11:15:22.109  9513  9596 E zhangqi8888: execute(1)
+08-27 11:15:22.131  9513  9596 I System.out: isEmailSend:POST
+08-27 11:15:22.135  9513  9596 E zhangqi8888: execute(2)
+08-27 11:15:22.136  9513  9596 E zhangqi8888: execute(3)
+08-27 11:15:22.137  9513  9596 I System.out: [OkHttp] sendRequest>>
+08-27 11:15:22.140  9513  9596 I System.out: [OkHttp] sendRequest<<
+08-27 11:15:22.328   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:22.328   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:22.491  9513  9596 E zhangqi8888: execute(4)200
+08-27 11:15:22.491  9513  9596 E zhangqi8888: execute(5)
+08-27 11:15:22.495  9513  9596 E zhangqi8888: execute(6)null
+08-27 11:15:22.496  9513  9596 E zhangqi8888: execute(7) stringBuffer:null
+08-27 11:15:22.498  9513  9596 E zhangqi8888: execute(7)
+08-27 11:15:22.498  9513  9596 E zhangqi8888: org.json.JSONException: Value null of type org.json.JSONObject$1 cannot be converted to JSONObject
+08-27 11:15:22.498  9513  9596 E zhangqi8888: 	at org.json.JSON.typeMismatch(JSON.java:111)
+08-27 11:15:22.498  9513  9596 E zhangqi8888: 	at org.json.JSONObject.<init>(JSONObject.java:163)
+08-27 11:15:22.498  9513  9596 E zhangqi8888: 	at org.json.JSONObject.<init>(JSONObject.java:176)
+08-27 11:15:22.498  9513  9596 E zhangqi8888: 	at com.mobile.panorama.PostUtils.execute(PostUtils.java:62)
+08-27 11:15:22.498  9513  9596 E zhangqi8888: 	at com.mobile.panorama.MainActivity$6$1.run(MainActivity.java:150)
+08-27 11:15:22.498  9513  9596 E zhangqi8888: 	at java.lang.Thread.run(Thread.java:764)
+08-27 11:15:22.499  9513  9596 W System.err: org.json.JSONException: Value null of type org.json.JSONObject$1 cannot be converted to JSONObject
+08-27 11:15:22.499  9513  9596 W System.err: 	at org.json.JSON.typeMismatch(JSON.java:111)
+08-27 11:15:22.500  9513  9596 W System.err: 	at org.json.JSONObject.<init>(JSONObject.java:163)
+08-27 11:15:22.500  9513  9596 W System.err: 	at org.json.JSONObject.<init>(JSONObject.java:176)
+08-27 11:15:22.501  9513  9596 W System.err: 	at com.mobile.panorama.PostUtils.execute(PostUtils.java:62)
+08-27 11:15:22.501  9513  9596 W System.err: 	at com.mobile.panorama.MainActivity$6$1.run(MainActivity.java:150)
+08-27 11:15:22.501  9513  9596 W System.err: 	at java.lang.Thread.run(Thread.java:764)
+08-27 11:15:22.502  9513  9596 E zhangqi8888: execute(8)
+08-27 11:15:22.502  9513  9596 E zhangqi8888: download result -1
+08-27 11:15:22.890   439   480 I MDLOGGER: Select CCCI port no trigger: timeout for 5 times
+08-27 11:15:23.329   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:23.329   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:24.329   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:24.329   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:24.797   590  3427 I WifiService: startScan uid=1000
+08-27 11:15:25.330   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:25.330   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:25.477   329   329 I thermal_repeater: [recvMdThermalInfo] ret=15, strLen=127,  2, 32767, -127
+08-27 11:15:25.948  9372  9412 I System.out: port:443
+08-27 11:15:26.063   274  1479 I BufferQueueProducer: [StatusBar#0](this:0xab6c9000,id:4,api:1,p:781,c:274) queueBuffer: fps=0.20 dur=5006.87 max=5006.87 min=5006.87
+08-27 11:15:26.079   274   274 I BufferQueueProducer: [FrameBufferSurface_0](this:0xad058000,id:0,api:1,p:274,c:274) queueBuffer: fps=0.20 dur=5001.00 max=5001.00 min=5001.00
+08-27 11:15:26.079   274   274 I DisplayDevice: [Built-in Screen (type:0)] fps:0.199960,dur:5001.00,max:5001.00,min:5001.00
+08-27 11:15:26.085   334   334 D agps    : [WIFI2AGPS] wifi2agps_scanned
+08-27 11:15:26.086   334   334 E agps    :  ERR: [WIFI2AGPS] sendto dest=[/data/agps_supl/wifi_2_agps] len=7952 reason=[No such file or directory]
+08-27 11:15:26.086   334   334 E agps    :  ERR: [WIFI2AGPS] external_snd_cmd safe_sendto failed
+08-27 11:15:26.093   590  3261 D WificondControl: Scan result ready event
+08-27 11:15:26.114   590  3427 I WifiService: getConfiguredNetworks uid=1000
+08-27 11:15:26.122   590  3427 I WifiService: getConfiguredNetworks uid=1000
+08-27 11:15:26.151  8854  8854 D WifiSettings: onAccessPointChanged (singular) callback initiated
+08-27 11:15:26.151  8854  8854 I chatty  : uid=1000(system) com.android.settings identical 11 lines
+08-27 11:15:26.151  8854  8854 D WifiSettings: onAccessPointChanged (singular) callback initiated
+08-27 11:15:26.151  8854  8854 D WifiSettings: onAccessPointsChanged (WifiTracker) callback initiated
+08-27 11:15:26.152   590  3427 I WifiService: getWifiEnabledState uid=1000
+08-27 11:15:26.155   590  3261 I WifiService: getCurrentNetwork uid=1000
+08-27 11:15:26.171   274  1479 I BufferQueueProducer: [com.android.settings/com.android.settings.Settings$WifiSettingsActivity#0](this:0xaac9d000,id:223,api:1,p:8854,c:274) queueBuffer: fps=1.38 dur=7965.54 max=7797.92 min=7.82
+08-27 11:15:26.204  1160  1723 I ChimeraSrvcProxy: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl
+08-27 11:15:26.330   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:26.330   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:26.455   590  3427 I WifiService: getWifiEnabledState uid=1000
+08-27 11:15:26.458   590  3427 I WifiService: getCurrentNetwork uid=1000
+08-27 11:15:26.461   590  3427 I WifiService: getConfiguredNetworks uid=1000
+08-27 11:15:26.464   590  3427 I WifiService: getPasspointConfigurations uid=1000
+08-27 11:15:27.092   274   274 I BufferQueueProducer: [FrameBufferSurface_0](this:0xad058000,id:0,api:1,p:274,c:274) queueBuffer: fps=54.31 dur=1012.75 max=101.03 min=16.34
+08-27 11:15:27.092   274   274 I DisplayDevice: [Built-in Screen (type:0)] fps:54.292072,dur:1013.04,max:100.77,min:16.32
+08-27 11:15:27.180   274  1479 I BufferQueueProducer: [com.android.settings/com.android.settings.Settings$WifiSettingsActivity#0](this:0xaac9d000,id:223,api:1,p:8854,c:274) queueBuffer: fps=59.48 dur=1008.74 max=20.63 min=9.21
+08-27 11:15:27.330  8854  8900 E libPowerStretch: LucidStats currentFPS = 12.22 [2585758064]
+08-27 11:15:27.331   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:27.331   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:27.511  9513  9596 E zhangqi8888: downloading FAQ07274
+08-27 11:15:27.514  9513  9596 E zhangqi8888: execute(1)
+08-27 11:15:27.542  9513  9596 I System.out: isEmailSend:POST
+08-27 11:15:27.554  9513  9596 E zhangqi8888: execute(2)
+08-27 11:15:27.555  9513  9596 E zhangqi8888: execute(3)
+08-27 11:15:27.556  9513  9596 I System.out: [OkHttp] sendRequest>>
+08-27 11:15:27.561  9513  9596 I System.out: [OkHttp] sendRequest<<
+08-27 11:15:27.613   274   274 E libPowerStretch: LucidStats currentFPS = 12.39 [2972591268]
+08-27 11:15:27.981  9513  9596 E zhangqi8888: execute(4)200
+08-27 11:15:27.981  9513  9596 E zhangqi8888: execute(5)
+08-27 11:15:27.988  9513  9596 E zhangqi8888: execute(6)null
+08-27 11:15:27.988  9513  9596 E zhangqi8888: execute(7) stringBuffer:null
+08-27 11:15:27.990  9513  9596 E zhangqi8888: execute(7)
+08-27 11:15:27.990  9513  9596 E zhangqi8888: org.json.JSONException: Value null of type org.json.JSONObject$1 cannot be converted to JSONObject
+08-27 11:15:27.990  9513  9596 E zhangqi8888: 	at org.json.JSON.typeMismatch(JSON.java:111)
+08-27 11:15:27.990  9513  9596 E zhangqi8888: 	at org.json.JSONObject.<init>(JSONObject.java:163)
+08-27 11:15:27.990  9513  9596 E zhangqi8888: 	at org.json.JSONObject.<init>(JSONObject.java:176)
+08-27 11:15:27.990  9513  9596 E zhangqi8888: 	at com.mobile.panorama.PostUtils.execute(PostUtils.java:62)
+08-27 11:15:27.990  9513  9596 E zhangqi8888: 	at com.mobile.panorama.MainActivity$6$1.run(MainActivity.java:150)
+08-27 11:15:27.990  9513  9596 E zhangqi8888: 	at java.lang.Thread.run(Thread.java:764)
+08-27 11:15:27.991  9513  9596 W System.err: org.json.JSONException: Value null of type org.json.JSONObject$1 cannot be converted to JSONObject
+08-27 11:15:27.991  9513  9596 W System.err: 	at org.json.JSON.typeMismatch(JSON.java:111)
+08-27 11:15:27.991  9513  9596 W System.err: 	at org.json.JSONObject.<init>(JSONObject.java:163)
+08-27 11:15:27.991  9513  9596 W System.err: 	at org.json.JSONObject.<init>(JSONObject.java:176)
+08-27 11:15:27.992  9513  9596 W System.err: 	at com.mobile.panorama.PostUtils.execute(PostUtils.java:62)
+08-27 11:15:27.992  9513  9596 W System.err: 	at com.mobile.panorama.MainActivity$6$1.run(MainActivity.java:150)
+08-27 11:15:27.992  9513  9596 W System.err: 	at java.lang.Thread.run(Thread.java:764)
+08-27 11:15:27.992  9513  9596 E zhangqi8888: execute(8)
+08-27 11:15:27.992  9513  9596 E zhangqi8888: download result -1
+08-27 11:15:28.119   274   274 I BufferQueueProducer: [FrameBufferSurface_0](this:0xad058000,id:0,api:1,p:274,c:274) queueBuffer: fps=57.41 dur=1027.73 max=33.90 min=14.93
+08-27 11:15:28.120   274   274 I DisplayDevice: [Built-in Screen (type:0)] fps:57.413097,dur:1027.64,max:34.27,min:14.90
+08-27 11:15:28.195   274   623 I BufferQueueProducer: [com.android.settings/com.android.settings.Settings$WifiSettingsActivity#0](this:0xaac9d000,id:223,api:1,p:8854,c:274) queueBuffer: fps=57.14 dur=1015.14 max=36.37 min=14.90
+08-27 11:15:28.331   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:28.332   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:29.061   274   623 I BufferQueueProducer: [StatusBar#0](this:0xab6c9000,id:4,api:1,p:781,c:274) queueBuffer: fps=0.67 dur=2998.41 max=2003.89 min=994.52
+08-27 11:15:29.332   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:29.332   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:30.332   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:30.333   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:30.961  9372  9412 I System.out: port:443
+08-27 11:15:31.333   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:31.333   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:32.334   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:32.334   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:32.800  2004  2587 I MTKLogger/TagLog/LogFilesManager: -->checkDoFileManager
+08-27 11:15:32.907   439   480 I MDLOGGER: Select CCCI port no trigger: timeout for 5 times
+08-27 11:15:33.007  9513  9596 E zhangqi8888: downloading FAQ07275
+08-27 11:15:33.008  9513  9596 E zhangqi8888: execute(1)
+08-27 11:15:33.021  9513  9596 I System.out: isEmailSend:POST
+08-27 11:15:33.026  9513  9596 E zhangqi8888: execute(2)
+08-27 11:15:33.026  9513  9596 E zhangqi8888: execute(3)
+08-27 11:15:33.027  9513  9596 I System.out: [OkHttp] sendRequest>>
+08-27 11:15:33.030  9513  9596 I System.out: [OkHttp] sendRequest<<
+08-27 11:15:33.334   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:33.334   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:33.521  9513  9596 E zhangqi8888: execute(4)200
+08-27 11:15:33.522  9513  9596 E zhangqi8888: execute(5)
+08-27 11:15:33.556  9513  9596 E zhangqi8888: execute(6){"FAQID":"FAQ07275","Title":"如何在linux中添加新的kernel module","UniqueId":"07ce8c4a-5a3d-47e3-b3b2-03ec7c9d9845","ParentId":"00000000-0000-0000-0000-000000000000","List":"SW","Type":10,"Created":"2013-05-24T14:21:33","Modified":"2015-08-26T13:16:02","TotalCount":0,"Category":"SW > ALPS > Build&Make","Level":0,"Seq":0,"Content":"<div class=\"ExternalClassAA853604BB534093B842D93C57BA6C71\">\n<div>\n<div class=\"ExternalClass7E65E52FEEC64654AF72057FCEF95F1A\">\n<div><span style=\"font-size&#58;12pt;\">【DESCRIPTION】</span></div>\n<div><span style=\"font-size&#58;12pt;\">该SOP针对客户如何添加一个kernel module，并把生成的.ko打包进system.img的过程。</span></div>\n<div><span style=\"font-size&#58;12pt;\">&#160;</span></div>\n<div><span style=\"font-size&#58;12pt;\">【KEY WORDS】</span></div>\n<div><span style=\"font-size&#58;12pt;\">Kernel module build</span></div>\n<div><span style=\"font-size&#58;12pt;\">&#160;</span></div>\n<div><span style=\"font-size&#58;12pt;\">【SOLUTION】</span></div>\n<div><span style=\"font-size&#58;12pt;\">特别提醒：</span></div>\n<div><span style=\"font-size&#58;12pt;\">L版本（version&gt;=5.0）支持编译为内核moudle(.ko文件)的config选项默认是关闭的。</span></div>\n<div><span style=\"font-size&#58;12pt;\">因此，如在L版本上编译.ko文件，需先在项目defconfig文件中打开内核配置选项CONFIG_MODULES。</span></div>\n<div><span style=\"font-size&#58;12pt;\">&#160;</span></div>\n<div><span style=\"font-size&#58;12pt;\">（一）准备module的C文件，如下为一个示例：</span></div>\n<div><span style=\"font-size&#58;medium;\"><img src=\"/FAQ%20PDF%20Picture%20Library/2015/0826//63504727868781360310785335791-1.bmp\" alt=\"\" /></span></div>\n<div>&#160;</div>\n<div><span style=\"font-size&#58;medium;\">（二）把准备好的C 文件放置到alps/kernel的适当路径下，如下的路径为一个示例：</span></div>\n<div><span style=\"font-size&#58;medium;\"><img src=\"/FAQ%20PDF%20Picture%20Library/2015/0826//6350472835420953995141700301-2.bmp\" alt=\"\" /></span></div>\n<div>&#160;</div>\n<div>&#160;</div>\n<div><span style=\"font-size&#58;medium;\">（三）修改源码所在的上一级目录中的Makefile文件，如下示例为./kernel/drivers/ 路径下的Makefile&#58;</span></div>\n<div>&#160;</div>\n<div><span style=\"font-size&#58;medium;\"><img src=\"/FAQ%20PDF%20Picture%20Library/2015/0826//6350472953719116195483005681-3-0.bmp\" alt=\"\" /></span></div>\n<div>&#160;</div>\n<div>&#160;</div>\n<div><span style=\"font-size&#58;medium;\"><img src=\"/FAQ%20PDF%20Picture%20Library/2015/0826//63504729385005609913206654561-3.bmp\" alt=\"\" /></span></div>\n<div>&#160;</div>\n<div>&#160;</div>\n<div><span style=\"font-size&#58;medium;\">（四）在源码所在路径下，创建新的Makefile文件，如下为一个示例：</span></div>\n<div><span style=\"font-size&#58;medium;\"><img src=\"/FAQ%20PDF%20Picture%20Library/2015/0826//6350472981829080409803155491-4.bmp\" alt=\"\" /></span></div>\n<div><span style=\"font-family&#58;Cambria;\"><span style=\"font-family&#58;Verdana;font-size&#58;medium;\">obj-m 目标中的-m参数表明所添加模块为动态加载模块，即.ko类型。</span></span></div>\n<div>&#160;</div>\n<div><span style=\"font-family&#58;Cambria;\"><span style=\"font-family&#58;Verdana;font-size&#58;medium;\">（五）快速编译所添加的模块</span></span></div>\n<div><span style=\"font-size&#58;medium;\">L之前版本参考命令如下：</span></div>\n<div><span style=\"font-size&#58;medium;\"><img src=\"/FAQ%20PDF%20Picture%20Library/2015/0826//6351708892900611481694220743module.bmp\" alt=\"\" /></span></div>\n<div>&#160;<br><span style=\"font-family&#58;Cambria;\"><span style=\"font-family&#58;Verdana;font-size&#58;medium;\">编译完成后，会在./kernel/drivers/testmod/路径下，生成helloworld.ko文件：</span></span></div>\n<div><span style=\"font-family&#58;Cambria;font-size&#58;medium;\"><img src=\"/FAQ%20PDF%
+08-27 11:15:33.562  9513  9596 E zhangqi8888: execute(7) stringBuffer:{"FAQID":"FAQ07275","Title":"如何在linux中添加新的kernel module","UniqueId":"07ce8c4a-5a3d-47e3-b3b2-03ec7c9d9845","ParentId":"00000000-0000-0000-0000-000000000000","List":"SW","Type":10,"Created":"2013-05-24T14:21:33","Modified":"2015-08-26T13:16:02","TotalCount":0,"Category":"SW > ALPS > Build&Make","Level":0,"Seq":0,"Content":"<div class=\"ExternalClassAA853604BB534093B842D93C57BA6C71\">\n<div>\n<div class=\"ExternalClass7E65E52FEEC64654AF72057FCEF95F1A\">\n<div><span style=\"font-size&#58;12pt;\">【DESCRIPTION】</span></div>\n<div><span style=\"font-size&#58;12pt;\">该SOP针对客户如何添加一个kernel module，并把生成的.ko打包进system.img的过程。</span></div>\n<div><span style=\"font-size&#58;12pt;\">&#160;</span></div>\n<div><span style=\"font-size&#58;12pt;\">【KEY WORDS】</span></div>\n<div><span style=\"font-size&#58;12pt;\">Kernel module build</span></div>\n<div><span style=\"font-size&#58;12pt;\">&#160;</span></div>\n<div><span style=\"font-size&#58;12pt;\">【SOLUTION】</span></div>\n<div><span style=\"font-size&#58;12pt;\">特别提醒：</span></div>\n<div><span style=\"font-size&#58;12pt;\">L版本（version&gt;=5.0）支持编译为内核moudle(.ko文件)的config选项默认是关闭的。</span></div>\n<div><span style=\"font-size&#58;12pt;\">因此，如在L版本上编译.ko文件，需先在项目defconfig文件中打开内核配置选项CONFIG_MODULES。</span></div>\n<div><span style=\"font-size&#58;12pt;\">&#160;</span></div>\n<div><span style=\"font-size&#58;12pt;\">（一）准备module的C文件，如下为一个示例：</span></div>\n<div><span style=\"font-size&#58;medium;\"><img src=\"/FAQ%20PDF%20Picture%20Library/2015/0826//63504727868781360310785335791-1.bmp\" alt=\"\" /></span></div>\n<div>&#160;</div>\n<div><span style=\"font-size&#58;medium;\">（二）把准备好的C 文件放置到alps/kernel的适当路径下，如下的路径为一个示例：</span></div>\n<div><span style=\"font-size&#58;medium;\"><img src=\"/FAQ%20PDF%20Picture%20Library/2015/0826//6350472835420953995141700301-2.bmp\" alt=\"\" /></span></div>\n<div>&#160;</div>\n<div>&#160;</div>\n<div><span style=\"font-size&#58;medium;\">（三）修改源码所在的上一级目录中的Makefile文件，如下示例为./kernel/drivers/ 路径下的Makefile&#58;</span></div>\n<div>&#160;</div>\n<div><span style=\"font-size&#58;medium;\"><img src=\"/FAQ%20PDF%20Picture%20Library/2015/0826//6350472953719116195483005681-3-0.bmp\" alt=\"\" /></span></div>\n<div>&#160;</div>\n<div>&#160;</div>\n<div><span style=\"font-size&#58;medium;\"><img src=\"/FAQ%20PDF%20Picture%20Library/2015/0826//63504729385005609913206654561-3.bmp\" alt=\"\" /></span></div>\n<div>&#160;</div>\n<div>&#160;</div>\n<div><span style=\"font-size&#58;medium;\">（四）在源码所在路径下，创建新的Makefile文件，如下为一个示例：</span></div>\n<div><span style=\"font-size&#58;medium;\"><img src=\"/FAQ%20PDF%20Picture%20Library/2015/0826//6350472981829080409803155491-4.bmp\" alt=\"\" /></span></div>\n<div><span style=\"font-family&#58;Cambria;\"><span style=\"font-family&#58;Verdana;font-size&#58;medium;\">obj-m 目标中的-m参数表明所添加模块为动态加载模块，即.ko类型。</span></span></div>\n<div>&#160;</div>\n<div><span style=\"font-family&#58;Cambria;\"><span style=\"font-family&#58;Verdana;font-size&#58;medium;\">（五）快速编译所添加的模块</span></span></div>\n<div><span style=\"font-size&#58;medium;\">L之前版本参考命令如下：</span></div>\n<div><span style=\"font-size&#58;medium;\"><img src=\"/FAQ%20PDF%20Picture%20Library/2015/0826//6351708892900611481694220743module.bmp\" alt=\"\" /></span></div>\n<div>&#160;<br><span style=\"font-family&#58;Cambria;\"><span style=\"font-family&#58;Verdana;font-size&#58;medium;\">编译完成后，会在./kernel/drivers/testmod/路径下，生成helloworld.ko文件：</span></span></div>\n<div><span style=\"font-family&#58;Cambria;font-size&#58;medium;\"><img src
+08-27 11:15:33.632  9513  9596 E zhangqi8888: execute(7) title:如何在linux中添加新的kernel module
+08-27 11:15:33.632  9513  9596 E zhangqi8888: execute(8) faqId:FAQ07275
+08-27 11:15:33.638  9513  9596 E zhangqi8888: download result 200
+08-27 11:15:34.068   274   623 I BufferQueueProducer: [StatusBar#0](this:0xab6c9000,id:4,api:1,p:781,c:274) queueBuffer: fps=0.20 dur=5006.57 max=5006.57 min=5006.57
+08-27 11:15:34.086   274   274 I BufferQueueProducer: [FrameBufferSurface_0](this:0xad058000,id:0,api:1,p:274,c:274) queueBuffer: fps=2.85 dur=5966.51 max=5006.76 min=16.55
+08-27 11:15:34.086   274   274 I DisplayDevice: [Built-in Screen (type:0)] fps:2.849250,dur:5966.48,max:5007.12,min:16.51
+08-27 11:15:34.335   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:34.335   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:34.808   590  3427 I WifiService: startScan uid=1000
+08-27 11:15:35.075   274   623 I BufferQueueProducer: [StatusBar#0](this:0xab6c9000,id:4,api:1,p:781,c:274) queueBuffer: fps=0.99 dur=1007.18 max=1007.18 min=1007.18
+08-27 11:15:35.093   274   274 I BufferQueueProducer: [FrameBufferSurface_0](this:0xad058000,id:0,api:1,p:274,c:274) queueBuffer: fps=0.99 dur=1007.23 max=1007.23 min=1007.23
+08-27 11:15:35.093   274   274 I DisplayDevice: [Built-in Screen (type:0)] fps:0.992806,dur:1007.25,max:1007.25,min:1007.25
+08-27 11:15:35.335   439   481 D MDLOGGER: thrDetectFilter: Detecting catcher_filter.bin exist or not every 5 seconds!
+08-27 11:15:35.335   439   481 D MDLOGGER: pMDEngine->m_bTerminate is false.  busy for modem = 0,m_nM2ABufCnt = 8
+08-27 11:15:35.494   329   329 I thermal_repeater: [recvMdThermalInfo] ret=15, strLen=127,  2, 32767, -127

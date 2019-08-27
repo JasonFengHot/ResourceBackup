@@ -4,6 +4,17 @@
 整理bug并归类？？？？？？？
 
 FAQ 爬虫 https://online.mediatek.com/FAQ/api/ui/SW/FAQ19494/detail    需要post
+Accept: application/json, text/plain, */*
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh-TW;q=0.7,zh;q=0.6
+Connection: keep-alive
+Content-Length: 14
+Content-Type: application/x-www-form-urlencoded
+Cookie: WSS_FullScreenMode=false; username=KH5ztksOLRQD+ffTecQAVhCaw5vObe954ljER26Ea2M=; usersystem=MOL; zhangzhefeng@sagereal.com.lang=zh-CN; __utmc=153516580; __utmc=246731354; __utmz=246731354.1565666097.26.10.utmcsr=search.mediatek.com|utmccn=(referral)|utmcmd=referral|utmcct=/searchresultframe.aspx; Hm_lvt_fac1ca85886ec6ae51442958d23d7be2=1565666097,1565666131,1565666179,1565666326; __utma=153516580.1425507218.1555902994.1565666069.1566450257.18; __utmz=153516580.1566450257.18.18.utmcsr=online.mediatek.com|utmccn=(referral)|utmcmd=referral|utmcct=/_layouts/15/mol/ui/ext/home.aspx; srh_shcn=%5B%22modemlog%20stopped%22%2C%22%E8%AF%AD%E8%A8%80%22%2C%22icu%22%2C%22%E9%BB%98%E8%AE%A4%E6%95%B0%E6%8D%AE%E8%BF%9E%E6%8E%A5%22%2C%22mtk_default_data_off%22%2C%22FAQ04794%22%2C%22%E5%A6%82%E4%BD%95%E4%BF%AE%E6%94%B9%E9%BB%98%E8%AE%A4%E6%95%B0%E6%8D%AE%E8%BF%9E%E6%8E%A5%E5%BC%80%E5%85%B3%22%2C%22%E5%A3%81%E7%BA%B8%22%2C%22%E9%94%81%E5%B1%8F%20%E6%8C%89%E9%94%AE%E7%81%AF%22%2C%22%E9%94%81%E5%B1%8F%20%E9%94%AE%E7%9B%98%E7%81%AF%22%2C%22%E9%94%81%E5%B1%8F%22%2C%22ERFIDX%22%2C%22recovery%22%2C%22FAQ13817%22%2C%22%E6%89%93%E5%BC%80root%E6%9D%83%E9%99%90%22%2C%22%E5%88%86%E5%8C%BA%E8%A1%A8%22%2C%22proguard%22%2C%22%E7%98%A6%E8%BA%AB%22%2C%22aapt%22%2C%22hal3%22%2C%22lint%22%2C%22reserve%20memory%22%2C%22mtkfusionrild%22%2C%22mblock-8-ccci%22%2C%22FAQ09296%22%2C%22AUTO_ADD_GLOBAL_DEFINE_BY_NAME%22%2C%22FAQ10474%22%2C%22FAQ10435%22%2C%22FAQ03065%22%2C%22FAQ11012%22%2C%22FAQ12292%22%2C%22FAQ14338%22%2C%22FAQ17868%22%2C%22wifi%20%E5%88%97%E8%A1%A8%20%E6%BB%91%E4%B8%8D%E5%8A%A8%22%2C%22RecyclerView%22%2C%22wifi%20%E6%BB%91%E4%B8%8D%E5%8A%A8%22%2C%22%E5%88%97%E8%A1%A8%E6%BB%91%E5%8A%A8%22%2C%22MTK_WAPI_SUPPORT%22%2C%22%E6%97%A0%203G%20%E4%BF%A1%E5%8F%B7%22%2C%22radio%20is%20locked%20by%20other%20modul%22%2C%22radioTurnedOff%22%2C%22radio%20is%20locked%22%2C%22%E6%BB%91%E5%8A%A8%E4%B8%8D%E4%BA%86%22%2C%22consyslog%22%2C%22CTS%20Customize%20Guideline.docx%22%2C%22FAQ10820%22%2C%22android.os.strictmode.LeakedClosableViolation%3A%20A%20resource%20was%20acquired%20at%20attached%20stack%20trace%20but%20never%20released%22%2C%22How_to_Write_an_Android.mk%22%2C%22Android_Build_System_for_customer_4.1.pptx%22%2C%2210820%22%2C%22%E4%B9%A6%E7%AD%BE%20%E6%96%87%E4%BB%B6%E5%A4%B9%22%2C%22partnerbookmark%22%2C%22RTC%2032K%20mode%20setting%20wrong%22%2C%22%E5%AE%89%E5%85%94%E5%85%94%22%2C%22ALPS04040853%22%2C%22mtk%20meta%20software%20version%22%2C%22lmkd%22%2C%22Fota%20system%22%2C%22USB%E5%90%8D%E7%A7%B0%E4%BF%AE%E6%94%B9%E7%B3%BB%E5%88%97%22%2C%22GENERIC_FAILURE%22%2C%22MTK_SPECIAL_FACTORY_RESET%22%2C%22omadm%22%2C%22MTK_WAPPUSH_SUPPORT%22%5D; FedAuth=77u/PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48U1A+MCMuZnxlY21tZW1iZXJzaGlwcHJvdmlkZXJ8emhhbmd6aGVmZW5nQHNhZ2VyZWFsLmNvbSwwIy5mfGVjbW1lbWJlcnNoaXBwcm92aWRlcnx6aGFuZ3poZWZlbmdAc2FnZXJlYWwuY29tLDEzMjExMzYxNjE1NTA2Njc1NixGYWxzZSx1SWtDQmtmUHZuY2MycmdRSDMrK2NrbnRIRWlINTdQemlIODk4bWtCRm5LWWEwNmRqSHJIV0xkdUNkQkprUUdFSmp6SzlrZy9FWDVacEFFak5LK0hMek9TYVFqQ0J2amZiQXM3TmF0bCtIZE1UNWlkc0dUeVlVdUVITUt3eHNlZ2pDVCt5ME5mcktPM2lHUGEzN3lMdi9yTHN6ZDNRYjVaNXZDZzVJaU9rNWNmVWYyRSt5Q2d6ekNzczZ0RkVyOFQzYTc0THYzZ2xQQWp4UGNkejh1bG1OUkpHM0loRVFocVk0NjF6QWFuaHFIa1h1anU1ZXlBNm00c3ROMEFrR0lJS1grZVA4TVdtQkxJUm5VSytIQWs3SEZUODc4bnQwYWNSZFBwK001bmNiM2h3ZTdCSVY0MWlpUVNBVVRMb0gzZ0wycWlhNWg5WklJaWpVL2ZsN3ppc2c9PSxodHRwczovL29ubGluZS5tZWRpYXRlay5jb20vX2xheW91dHMvMTUvbW9sL3BvcnRhbC9leHQvU2VhcmNoUmVzdWx0LmFzcHg/YWN0aW9uPVF1ZXJ5JmFtcDt0ZXh0PU1US19XQVBQVVNIX1NVUFBPUlQ8L1NQPg==; __utma=246731354.917593042.1555902973.1566450226.1566875581.33; __utmt=1; __utmb=246731354.2.10.1566875581; Hm_lpvt_fac1ca85886ec6ae51442958d23d7be2=1566875634
+Host: online.mediatek.com
+Origin: https://online.mediatek.com
+Referer: https://online.mediatek.com/FAQ
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
 
 ## Android学习网站
 
@@ -158,10 +169,10 @@ https://yisharepdf.site/topics/android 下载网站     易分享电子资源网
 《Android技术内幕：应用卷》
     《Android技术内幕：系统卷》
 《高性能Android应用开发》
-《Android C++高级编程 使用NDK》
+    《Android C++高级编程 使用NDK》
 《FFmpeg从入门到精通》
 《音视频开发进阶指南：基于Android与IOS平台的实践》
-《Android应用安全防护和逆向分析》
+    《Android应用安全防护和逆向分析》
 《Android系统安全和反编译实战》
 
     《增长黑客》
@@ -171,13 +182,12 @@ https://yisharepdf.site/topics/android 下载网站     易分享电子资源网
     《Android开发艺术探索》
 《Android开发进阶 从小工到专家》
 《Android 源码设计模式解析与实战》
-《Android内核剖析》
-《写给大忙人看的Java SE 8》
+    《Android内核剖析》
+    《写给大忙人看的Java SE 8》
 
 《腾讯Android自动化测试实战》
 《Android 进阶揭秘》刘望舒
 《Android 系统源代码情景分析》
-《深入理解 Android》系列
 《深入理解 Android 热修复技术原理》
 
 《Java 并发编程的艺术》
@@ -186,13 +196,12 @@ https://yisharepdf.site/topics/android 下载网站     易分享电子资源网
 《深入理解 Java 虚拟机》
     《程序员，你伤不起》
     《鸟哥的Linux私房菜：基础学习篇 第四版》https://wizardforcel.gitbooks.io/vbird-linux-basic-4e/content/
-
-《Android C++高级编程 使用NDK》
+《Android内核28讲》
 《编程珠玑》
 《大话设计模式》
-《算法导论》
-《数据结构与算法分析：Java语言描述》
-《啊哈 算法》
+    《算法导论》
+    《数据结构与算法分析：Java语言描述》
+    《啊哈 算法》
 LeetCode(算法题)
 https://leetcode.com/
 https://leetcode-cn.com/problemset/all/
@@ -201,11 +210,11 @@ https://leetcode-cn.com/problemset/all/
 ## 高级工程师目标
 
 ```
-小明成为了梦寐以求的高级工程师，月薪达到了20k，还拿到了一丢丢股票。这个时候小明的Android水平已经不错了，但是小明的目标是资深工程师，小明听说资深工程师月薪可以达到30k+。
-为了成为Android资深工程师，需要学习的东西就更多了，并且有些并不是那么具体了，如下所示：
+小明成为了梦寐以求的高级工程师，月薪达到了20k，还拿到了一丢丢股票。这个时候小明的 Android 水平已经不错了，但是小明的目标是资深工程师，小明听说资深工程师月薪可以达到30k+。
+为了成为 Android 资深工程师，需要学习的东西就更多了，并且有些并不是那么具体了，如下所示：
 - 继续加深理解”稍微深入的知识点“中所定义的内容
 - 了解系统核心机制：
-1. 了解SystemServer的启动过程
+1. 了解 SystemServer 的启动过程
 2. 了解主线程的消息循环模型
 3. 了解AMS和PMS的工作原理
 4. 能够回答问题”一个应用存在多少个Window？“
@@ -213,9 +222,9 @@ https://leetcode-cn.com/problemset/all/
 6. …
 
 - 基本知识点的细节
-1. Activity的启动模式以及异常情况下不同Activity的表现
-2. Service的onBind和onReBind的关联
-3. onServiceDisconnected(ComponentName className)和binderDied()的区别
+1. Activity 的 启动模式以及异常情况下不同 Activity 的表现
+2. Service 的 onBind 和 onReBind 的关联
+3. onServiceDisconnected(ComponentName className) 和 binderDied() 的区别
 4. AsyncTask在不同版本上的表现细节
 5. 线程池的细节和参数配置
 6. …
@@ -47527,7 +47536,7 @@ public class BitmapUtils {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
     public static Bitmap GetLocalOrNetBitmap(String path) {
-        final String  TAG="GetLocalOrNetBitmap";
+        final String TAG = "GetLocalOrNetBitmap";
         Bitmap bitmap = null;
         try {
             BitmapFactory.Options options = new BitmapFactory.Options();
@@ -47536,18 +47545,18 @@ public class BitmapUtils {
             options.inJustDecodeBounds = false; //缩放比。由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可
             int hi = (int) (options.outHeight / (float) GlobalConfig.scrhei);//以屏幕高度作为显示依据
             int wi = (int) (options.outWidth / (float) GlobalConfig.scrwid);//以屏幕高度作为显示依据
- 
             int be = 0;
-            if (wi > hi)
+            if (wi > hi) {
                 be = hi;
-            else
+            } else {
                 be = wi;
- 
+            }
             Log.d(TAG, "缩放比:"+be); //缩放之后
             Log.d(TAG, "原图宽高:"+options.outWidth+" "+options.outHeight); //缩放之后
  
-            if (be <= 0)
+            if (be <= 0) {
                 be = 1;
+            }
             options.inSampleSize = be; //重新读入图片，注意此时已经把 options.inJustDecodeBounds 设回 false 了
             options.inPreferredConfig = Bitmap.Config.RGB_565;//使用RGB_565后会是内存降低一半但是,不适合decode带有透明区域的PNG
             bitmap = BitmapFactory.decodeFile(path, options);
@@ -47555,11 +47564,10 @@ public class BitmapUtils {
             int h = bitmap.getHeight();
             Log.d(TAG, "缩放后:宽"+w + " 高" + h); //缩放之后
             Log.d(TAG, "RGB_565格式内存:"+bitmap.getByteCount() / 1024 + "KB");
-        }
-        catch (Exception ex)
-        {
-            if(bitmap!=null&&!bitmap.isRecycled())
+        } catch (Exception ex) {
+            if (bitmap!=null && !bitmap.isRecycled()) {
                 bitmap.recycle();
+            }
             System.gc();  //提醒系统及时回收
         }
         return bitmap;
@@ -47580,30 +47588,30 @@ public class BitmapUtils {
             int wi = (int) (options.outWidth / (float) GlobalConfig.scrwid);//以屏幕高度作为显示依据
  
             int be = 0;
-            if (wi > hi)
+            if (wi > hi) {
                 be = hi;
-            else
+            } else {
                 be = wi;
- 
- 
+            }
             Log.d(TAG, "缩放比:"+be); //缩放之后
             Log.d(TAG, "原图宽高:"+options.outWidth+" "+options.outHeight); //缩放之后
  
-            if (be <= 0)
+            if (be <= 0) {
                 be = 1;
+            }
             options.inSampleSize = be; //重新读入图片，注意此时已经把 options.inJustDecodeBounds 设回 false 了
-            if(isRGb_565)
+            if (isRGb_565) {
                 options.inPreferredConfig = Bitmap.Config.RGB_565;//使用RGB_565后会是内存降低一半但是,不适合decode带有透明区域的PNG
+            }
             bitmap = BitmapFactory.decodeFile(path, options);
             int w = bitmap.getWidth();
             int h = bitmap.getHeight();
             Log.d(TAG, "缩放后:宽" + w + " 高" + h); //缩放之后
             Log.d(TAG, "RGB_565格式内存:"+bitmap.getByteCount() / 1024 + "KB");
-        }
-        catch (Exception ex)
-        {
-            if(bitmap!=null&&!bitmap.isRecycled())
+        } catch (Exception ex) {
+            if(bitmap!=null&&!bitmap.isRecycled()) {
                 bitmap.recycle();
+            }
             System.gc();  //提醒系统及时回收
         }
         return bitmap;
@@ -47626,30 +47634,31 @@ public class BitmapUtils {
             int wi = (int) (options.outWidth / (float) maxheight);//以指定高度作为显示依据
  
             int be = 0;
-            if (wi < hi)
+            if (wi < hi) {
                 be = hi;
-            else
+            } else {
                 be = wi;
- 
+            }
  
             Log.d(TAG, "缩放比:"+be); //缩放之后
             Log.d(TAG, "原图宽高:"+options.outWidth+" "+options.outHeight); //缩放之后
  
-            if (be <= 0)
+            if (be <= 0) {
                 be = 1;
+            }
             options.inSampleSize = be; //重新读入图片，注意此时已经把 options.inJustDecodeBounds 设回 false 了
-            if(isRGb_565)
+            if(isRGb_565) {
                 options.inPreferredConfig = Bitmap.Config.RGB_565;//使用RGB_565后会是内存降低一半但是,不适合decode带有透明区域的PNG
+            }
             bitmap = BitmapFactory.decodeFile(path, options);
             int w = bitmap.getWidth();
             int h = bitmap.getHeight();
             Log.d(TAG, "缩放后:宽" + w + " 高" + h); //缩放之后
             Log.d(TAG, "RGB_565格式内存:"+bitmap.getByteCount() / 1024 + "KB");
-        }
-        catch (Exception ex)
-        {
-            if(bitmap!=null&&!bitmap.isRecycled())
+        } catch (Exception ex) {
+            if(bitmap!=null&&!bitmap.isRecycled()) {
                 bitmap.recycle();
+            }
             System.gc();  //提醒系统及时回收
         }
         return bitmap;
@@ -48019,12 +48028,17 @@ https://juejin.im/post/5cdcbb0ee51d453ce606dbd7
 
 ```
 https://mp.weixin.qq.com/s/f8rmlWR1ZHtAv-TvTGFy7Q
+
+1，YUV
+2，图像缩小
+3，裁剪
+4，使用OpenCV加快识别
 ```
 
 ## [算法] 寻找一个数组中是否有重复的数字
 
 ```
-public int duplicate(int arr[],int length) {
+public int duplicate(int arr[], int length) {
     int i = 0;
     while(i < length){
         if(arr[arr[i]] == arr[i]){

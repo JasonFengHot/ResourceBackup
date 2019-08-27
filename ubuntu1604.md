@@ -1097,7 +1097,7 @@ sudo apt-get install guake
 在 Startup Application 中设置为开机自启动
 ```
 
-## 安装 flatabulous 主题(主题可以到　https://www.gnome-look.org/　网站上搜索下载，目前使用 Canta theme挺不错)
+## 安装 flatabulous 主题(主题可以到　https://www.gnome-look.org/　网站上搜索下载，目前使用 Canta theme 挺不错)
 
 ``` bash
 sudo add-apt-repository ppa:noobslab/themes
