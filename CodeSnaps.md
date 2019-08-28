@@ -16,6 +16,17 @@ Origin: https://online.mediatek.com
 Referer: https://online.mediatek.com/FAQ
 User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
 
+\n      替换为 空
+&#58;   替换为 =
+&#160;  替换为 &nbsp;
+
+sed -i "s/\\\n//g" `grep '\\\n' -rl ./`
+sed -i "s/&#58;/=/g" `grep '&#58;' -rl ./`
+sed -i "s/&#160;/\&nbsp;/g" `grep '&#160;' -rl ./`
+
+
+sed -i "s/<br\/>//g" `grep '<br\/>' -rl ./`
+
 ## Android学习网站
 
 ```
@@ -48057,25 +48068,172 @@ public int duplicate(int arr[], int length) {
 }
 ```
 
+## Android签名机制详细介绍
+
+```
+https://blog.csdn.net/jiangwei0910410003/article/details/50402000
+```
+
+## [签名]EmmcTest_v1.2_mu.apk 在 drv_only 上无法安装，报错 INSTALL_FAILED_SHARED_USER_INCOMPATIBLE
+
+```
+用 apktool d EmmcTest_v1.2_mu.apk 发现这个 apk 用了 android:sharedUserId="android.uid.system"，需要 platform 的签名
+
+找到 drv_only 分支上的 build/target/product/security/platform.x509.pem 和 platform.pk8 并下载下来
+
+随便找一个编译过的工程找到 out/host/linux-x86/framework/signapk.jar
+
+然后用 java -jar signapk.jar platform.x509.pem platform.pk8 EmmcTest_v1.2_mu.apk EmmcTest_v1.2_mu_signed.apk 去签名
+
+发现报错信息如下
+
+Exception in thread "main" java.lang.UnsatisfiedLinkError: org.conscrypt.NativeCrypto.get_cipher_names(Ljava/lang/String;)[Ljava/lang/String;
+	at org.conscrypt.NativeCrypto.get_cipher_names(Native Method)
+	at org.conscrypt.NativeCrypto.<clinit>(NativeCrypto.java:764)
+	at org.conscrypt.OpenSSLProvider.<init>(OpenSSLProvider.java:56)
+	at org.conscrypt.OpenSSLProvider.<init>(OpenSSLProvider.java:49)
+	at com.android.signapk.SignApk.main(SignApk.java:942)
+
+百度之后发现要用如下的签名命令才可以签名成功
+java -Djava.library.path=out/host/linux-x86/lib64 -jar signapk.jar platform.x509.pem platform.pk8 EmmcTest_v1.2_mu.apk EmmcTest_v1.2_mu_signed.apk
+
+问题来了：为什么 dev 分支上的软件不需要给 apk 签名也可以成功安装呢？
+
+因为通过 keytool 查看了 EmmcTest_v1.2_mu.apk 的签名发现这个 apk 已经经过签名了，apk 的签名和系统签名不一致，所以无法安装
+```
+
+## [签名]如何查看 apk 签名？？？
+
+```
+1.解压 apk
+2.keytool -printcert -file META-INF/CERT.RSA
+
+Owner: EMAILADDRESS=android@android.com, CN=Android, OU=Android, O=Android, L=Mountain View, ST=California, C=US
+Issuer: EMAILADDRESS=android@android.com, CN=Android, OU=Android, O=Android, L=Mountain View, ST=California, C=US
+Serial number: b3998086d056cffa
+Valid from: Wed Apr 16 06:40:50 CST 2008 until: Sun Sep 02 06:40:50 CST 2035
+Certificate fingerprints:
+	 SHA1: 27:19:6E:38:6B:87:5E:76:AD:F7:00:E7:EA:84:E4:C6:EE:E3:3D:FA
+	 SHA256: C8:A2:E9:BC:CF:59:7C:2F:B6:DC:66:BE:E2:93:FC:13:F2:FC:47:EC:77:BC:6B:2B:0D:52:C1:1F:51:19:2A:B8
+Signature algorithm name: MD5withRSA (weak)
+Subject Public Key Algorithm: 2048-bit RSA key
+Version: 3
+
+Extensions: 
+
+#1: ObjectId: 2.5.29.35 Criticality=false
+AuthorityKeyIdentifier [
+KeyIdentifier [
+0000: 4F E4 A0 B3 DD 9C BA 29   F7 1D 72 87 C4 E7 C3 8F  O......)..r.....
+0010: 20 86 C2 99                                         ...
+]
+[EMAILADDRESS=android@android.com, CN=Android, OU=Android, O=Android, L=Mountain View, ST=California, C=US]
+SerialNumber: [    b3998086 d056cffa]
+]
+
+#2: ObjectId: 2.5.29.19 Criticality=false
+BasicConstraints:[
+  CA:true
+  PathLen:2147483647
+]
+
+#3: ObjectId: 2.5.29.14 Criticality=false
+SubjectKeyIdentifier [
+KeyIdentifier [
+0000: 4F E4 A0 B3 DD 9C BA 29   F7 1D 72 87 C4 E7 C3 8F  O......)..r.....
+0010: 20 86 C2 99                                         ...
+]
+]
+
+
+Warning:
+The certificate uses the MD5withRSA signature algorithm which is considered a security risk.
+```
+
+## [签名]查看 keystore
+
+```
+keytool -list -keystore debug.keystore
+```
+
+## [签名]给空白包签名
+
+```
+jarsigner -verbose -keystore [keystorePath] -signedjar [apkOut] [apkIn] [alias]
+
+jarsigner命令格式：-verbose输出详细信息 -keystore密钥库位置 -signedjar要生成的文件 要签名的文件 密钥库文件
+
+keystorePath--参数代表keyStore的绝对路径，如D:\keystore
+apkOut--参数代表签名后的apk路径，如D:\signed.apk
+apkOut--参数代表签名后的apk路径，如D:\signed.apk
+apkin--参数代表在腾讯应用中心下载的未签名apk，默认名称为tap_unsign.apk
+alias--参数代表签名用的alias名称（创建keyStore时所填写），如timdong
+
+jarsigner -verbose -keystore debug.keystore -signedjar test2.apk tap_unsign1.apk timdong
+```
+
+## apk打包时的系统签名
+
+```
+https://github.com/getfatday/keytool-importkeypair
+
+./keytool-importkeypair -k ./tg.jks -p myPassword -pk8 platform.pk8 -cert platform.x509.pem -alias myAlias
+```
+
+## jks 类型的签名和普通类型的签名的有什么区别
+
+## 什么是.pem和.pk8文件
+
+```
+.pem
+通过上面的分析，很明显，在android对apk签名的时候，.pem这种文件就是一个X.509的数字证书，里面有用户的公钥等信息，是用来解密的。但是由上文可知，这种文件格式里面不仅可以存储数字证书，还能存各种key。
+在 ubuntu 系统上直接双击就能打开查看里面的信息，这个是明文保存的
+
+.pk8 
+上文没有提过以.pk8为扩展名的文件，应该和PKCS #8是对应的，用来保存private key。
+```
+
+## jarsign 和 signapk 工具
+
+```
+jarsign是Java本生自带的一个工具，他可以对jar进行签名的。
+
+而signapk是后面专门为了Android应用程序apk进行签名的工具，他们两的签名算法没什么区别，主要是签名时使用的文件不一样，这个就要引出第三个问题了。
+```
+
+## keystore文件和pk8，x509.pem文件的区别
+
+```
+jarsigner签名时用的是keystore文件，signapk签名时用的是pk8和x509.pem文件，而且都是给apk进行签名的，那么keystore文件和pk8,x509.pem他们之间是不是有什么联系呢？答案是肯定的，网上搜了一下，果然他们之间是可以转化的，这里就不在分析如何进行转化的，网上的例子貌似很多，有专门的的工具可以进行转化：
+
+到这里我们就知道CERT.SF文件做了什么：
+
+1》计算这个MANIFEST.MF文件的整体SHA1值，再经过BASE64编码后，记录在CERT.SF主属性块（在文件头上）的“SHA1-Digest-Manifest”属性值值下
+
+2》逐条计算MANIFEST.MF文件中每一个块的SHA1，并经过BASE64编码后，记录在CERT.SF中的同名块中，属性的名字是“SHA1-Digest
 
 
 
+最后我们在来看一下CERT.RSA文件
+
+这里我们看到的都是二进制文件，因为RSA文件加密了，所以我们需要用openssl命令才能查看其内容
+
+openssl pkcs7 -inform DER -in CERT.RSA -noout -print_certs –text
 
 
 
+1、数据指纹，签名文件，证书文件的含义
+1》数据指纹就是对一个数据源做SHA/MD5算法，这个值是唯一的
+2》签名文件技术就是：数据指纹+RSA算法
+3》证书文件中包含了公钥信息和其他信息
+4》在Android签名之后，其中SF就是签名文件，RSA就是证书文件我们可以使用openssl来查看RSA文件中的证书信息和公钥信息
 
-
-
-
-
-
-
-
-
-
-
-
-
+2、我们了解了Android中的签名有两种方式：jarsigner和signapk 这两种方式的区别是：
+1》jarsigner签名时，需要的是keystore文件，而signapk签名的时候是pk8,x509.pem文件
+2》jarsigner签名之后的SF和RSA文件名默认是keystore的别名，而signapk签名之后文件名是固定的:CERT
+3》Eclipse中我们在跑Debug程序的时候，默认用的是jarsigner方式签名的，用的也是系统默认的debug.keystore签名文件
+4》keystore文件和pk8,x509.pem文件之间可以互相转化
+```
 
 
 
