@@ -16,15 +16,26 @@ Origin: https://online.mediatek.com
 Referer: https://online.mediatek.com/FAQ
 User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
 
+
+
+只要加上这个就好了
+sed -i "s/src=\\\\\"/src=\\\\\"https:\/\/online.mediatek.com\//g" `grep 'src=\\\"' -rl ./`
+
+
+
+
+
 \n      替换为 空
 &#58;   替换为 =
 &#160;  替换为 &nbsp;
+\"      替换为 "
+src="   替换为 src="https://online.mediatek.com/
 
 sed -i "s/\\\n//g" `grep '\\\n' -rl ./`
 sed -i "s/&#58;/=/g" `grep '&#58;' -rl ./`
 sed -i "s/&#160;/\&nbsp;/g" `grep '&#160;' -rl ./`
-
-
+sed -i "s/\\\\\"/\"/g" `grep '\\\"' -rl ./`
+sed -i "s/src=\"/src=\"https:\/\/online.mediatek.com\//g" `grep 'src=\"' -rl ./`
 sed -i "s/<br\/>//g" `grep '<br\/>' -rl ./`
 
 ## Android学习网站
@@ -21142,77 +21153,39 @@ mIsLosslessBTOn = (property_get(LOSSLESS_BT_PROP_NAME, value, "1") > 0) && (atoi
 
 ```
 在AudioProfile这边，是用isRingtoneExist()这个API来判断文件是否存在，但是Android5.1上google对system访问SD卡做了权限，而导致该API失效。 后来增加了validRingtoneUri这个API来去判断database里的URI存不存在，。 validRingtoneUri的缺点是一旦遇到文件已经不存在，但是database没有更新，就会有问题。 现提供新的判断方法。
- 
- 
+
 [SOLUTION]
- 
- 
- 
 1. alps\vendor\mediatek\proprietary\frameworks\common\src\com\mediatek\common\audioprofile\IAudioProfileService.aidl
-
 增加
-
 boolean isRingtoneCanOpen(String UriData);
 
- 
-
 2. AudioProfileManager.java
-
 增加
-
 public boolean isRingtoneCanOpen(String UriData){
-
 IAudioProfileService service = getService();
-
-try {
-
-return service.isRingtoneCanOpen(UriData);
-
-} catch (RemoteException e) {
-
-Log.e(TAG, "Dead object in isRingtoneCanOpen", e);
-
-return false;
-
+    try {
+        return service.isRingtoneCanOpen(UriData);
+    } catch (RemoteException e) {
+        Log.e(TAG, "Dead object in isRingtoneCanOpen", e);
+        return false;
+    }
 }
-
-}
-
- 
 
 3. AudioProfileService.java
-
 增加定义
-
 private static final String GET_FILE_IS_EXIST = "GetFileIsExist: ";
-
 增加API
-
 public boolean isRingtoneCanOpen(String UriData){
-
- 
-
-Log.d(TAG, "isRingtoneCanOpen() UriData= "+UriData);
-
-boolean ret=false;
-
-String validUri=null;
-
-// handle non-file sources
-
-String path= GET_FILE_IS_EXIST + UriData;
-
-validUri = mAudioManager.getParameters(path);
-
-Log.d(TAG, "isRingtoneCanOpen() validUri = "+validUri +", path= "+path);
-
-ret = validUri.equals("-1") ? false : true;
-
-return ret;
-
+    Log.d(TAG, "isRingtoneCanOpen() UriData= "+UriData);
+    boolean ret=false;
+    String validUri=null;
+    // handle non-file sources
+    String path= GET_FILE_IS_EXIST + UriData;
+    validUri = mAudioManager.getParameters(path);
+    Log.d(TAG, "isRingtoneCanOpen() validUri = "+validUri +", path= "+path);
+    ret = validUri.equals("-1") ? false : true;
+    return ret;
 }
-
- 
 
 3. AudioFlinger.cpp
 
@@ -21220,7 +21193,7 @@ return ret;
 
 char GET_FILE_IS_EXIST[] = "GetFileIsExist: "; // ddd file open
 
- 
+
 
 在 getParameters()的开头部分增加如下：
 
@@ -43832,9 +43805,9 @@ xpath的语法使用： 
 
 3.配置
 a、 启用proxy代理，proxy菜单下勾选启用proxy
-b、安装charles root 证书或模拟器证书。菜单help>SSL Proxying
+b、 安装charles root 证书或模拟器证书。菜单help>SSL Proxying
 c、 设置http proxy代理
-f、本机为wifi热点，手机端设置代理，于模拟器方式设置代理相同。
+f、 本机为wifi热点，手机端设置代理，于模拟器方式设置代理相同。
 
 4.使用
 ```
@@ -48220,8 +48193,6 @@ jarsigner签名时用的是keystore文件，signapk签名时用的是pk8和x509.
 
 openssl pkcs7 -inform DER -in CERT.RSA -noout -print_certs –text
 
-
-
 1、数据指纹，签名文件，证书文件的含义
 1》数据指纹就是对一个数据源做SHA/MD5算法，这个值是唯一的
 2》签名文件技术就是：数据指纹+RSA算法
@@ -48234,6 +48205,73 @@ openssl pkcs7 -inform DER -in CERT.RSA -noout -print_certs –text
 3》Eclipse中我们在跑Debug程序的时候，默认用的是jarsigner方式签名的，用的也是系统默认的debug.keystore签名文件
 4》keystore文件和pk8,x509.pem文件之间可以互相转化
 ```
+
+## 使用腾讯X5SDK优化webView加载
+
+## JSON解析的三种方式
+
+```
+第一. 传统的JSON解析  可以把json字符串解析为一个javabean，一个List数组，一个嵌套Map的List数组
+第二. GSON解析  Gson.fromJson(jsonString , cls);
+第三. FastJson解析 JSON.parseObject(jsonString, cls);
+```
+
+## 设置窗体背景模糊
+
+```
+getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+```
+
+## Android中WebViewClient与WebChromClient两个类的区别
+
+```
+https://blog.csdn.net/lanxingfeifei/article/details/52045082
+```
+
+## bmp格式图片详细介绍
+
+```
+https://www.jb51.net/article/78186.htm
+https://www.jb51.net/article/78187.htm
+```
+
+## 读取 FAQ00042 上的bmp格式的图片的时候，总是读了一会就关闭了 socket 链接，导致图片不完整，是否是图片格式有问题？？
+
+## 用 ffmpeg 下载 m3u8 视频
+
+```
+ffmpeg -i [m3u8地址] output.mp4
+```
+
+## TODO : javassist 和 asm 框架学习？？
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
