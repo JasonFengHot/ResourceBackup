@@ -38,6 +38,10 @@ sed -i "s/\\\\\"/\"/g" `grep '\\\"' -rl ./`
 sed -i "s/src=\"/src=\"https:\/\/online.mediatek.com\//g" `grep 'src=\"' -rl ./`
 sed -i "s/<br\/>//g" `grep '<br\/>' -rl ./`
 
+
+bmp 格式的图片如何下载？？
+exception:java.net.SocketException: Socket is closed
+
 ## Android学习网站
 
 ```
@@ -38164,7 +38168,7 @@ Fusion 和 鸿蒙 是基于 微内核
 http://portswigger.net/burp/download.html
 ```
 
-## content 命令的使用
+## [adb]content 命令的使用
 
 ```
 adb shell content query --uri content://settings/system --where "_id=1"
@@ -38172,7 +38176,7 @@ adb shell content query --uri content://settings/system --where "_id=1"
 
 ## 预置app需要 zipalign 吗？？
 
-## 手动编译 Java 文件生成 .class 再编译成 .dex 文件并push到 data/local/tmp 运行
+## [adb]手动编译 Java 文件生成 .class 再编译成 .dex 文件并push到 data/local/tmp 运行
 
 ```
 Main.java
@@ -38197,7 +38201,7 @@ adb shell dalvikvm -cp /data/local/tmp/Main.dex Main
 adb shell app_process -Djava.class.path=/data/local/tmp/hello.dex /data/local/tmp shellService.Main
 ```
 
-## 查看应用的 userid
+## [adb]查看应用的 userid
 
 ```
 adb shell cat /data/system/packages.xml
@@ -38234,7 +38238,7 @@ run app.activity.start --component com.android.launcher3 com.android.launcher3.L
 https://github.com/linkedin/qark .
 ```
 
-## adb backup 备份命令
+## [adb]adb backup 备份命令
 
 ```
 adb backup -f backup.ab com.whatsapplock
@@ -38248,7 +38252,7 @@ java -jar abe.jar -debug unpack backup.ab backup.tar
 pax -r < backup.tar
 ```
 
-## [Android]利用run-as命令在不root情况下读取data下面的数据
+## [adb][Android]利用run-as命令在不root情况下读取data下面的数据
 
 ```
 over@over-ThinkPad-R52:~$ adb shell
@@ -38283,13 +38287,21 @@ $ cat preferences.db > /mnt/sdcard/preferences1.db
 关于共享数据也可以研究一下/data/data/package/files，使用openFileOutput的第二个参数来指定访问权限。事物总有其多面性，本文有鼓励窥视apk之嫌，方法分享给你，至于你用来做什么我可以
 ```
 
-## adb restore 还原命令 ？？？？
+## [adb]adb restore 还原命令 ？？？？
 
-## adb shell pm list 已废弃，改用 adb shell cmd package list
+## [adb]adb shell pm list 已废弃，改用 adb shell cmd package list
 
-## adb jdwp 命令(Java debug wire protocal)
+## [adb]adb jdwp查看设备中可以被调试的应用的进程号
 
-## 学习 Frida 
+```
+adb jdwp
+```
+
+## [adb]dexdump 可以查看一个 dex 文件的相信信息
+
+```
+dexdump classes.dex
+```
 
 ## tcpdump 在哪里下载？？？
 
@@ -48244,6 +48256,178 @@ ffmpeg -i [m3u8地址] output.mp4
 ```
 
 ## TODO : javassist 和 asm 框架学习？？
+
+## 用 exe4j 将 java 程序作成可以运行的 exe 程序
+
+```
+https://blog.csdn.net/jiangwei0910410003/article/details/80148786
+```
+
+## 带你把Apk混淆成中文语言代码
+
+```
+http://www.520monkey.com/archives/992
+```
+
+## TODO : 学习使用 Packet Capture 和 Debug Proxy 工具抓包
+
+## TODO : Fiddler 和 Charles 等 pc 端工具抓包
+
+## MT管理器
+
+## 23Code UI动画特效的集中地
+
+## TODO : 学习 Frida, xposed, SubstrateCydia 等 hook 工具
+
+```
+https://blog.csdn.net/jiangwei0910410003/article/details/80372118
+```
+
+## 我们在开发Android应用的时候如果程序崩溃了最快的查看异常信息的方法就是用日志过滤方式：adb logcat -s AndroidRuntime
+
+## [动态壁纸]用摄像头拍摄制作动态壁纸
+
+```
+https://blog.csdn.net/jiangwei0910410003/article/details/80461169
+```
+
+## 通过抓包分析数据爬取 英语流利说 视频
+
+```
+https://blog.csdn.net/jiangwei0910410003/article/details/79367213
+```
+
+## VPNService
+
+## TODO : 如何读取图片中的 exif 信息？？
+
+## TODO : 如何读取头文件信息？？？
+
+## 利用 AXMLEditor 修改 AndroidManifest.xml 和 arsc 文件
+
+```
+AXMLEditor 的开源项目地址
+https://github.com/fourbrother/AXMLEditor
+
+第一、用途
+针对于特定apk反编译破解之后无法回编译操作，直接进行arsc文件的二进制文件修改，然后只需要二次签名即可。无需在进行反编译和回编译。
+
+第二、用法
+1》插入属性
+java -jar AXMLEditor.jar -attr -i [标签名] [标签唯一标识] [属性名] [属性值] [输入xml] [输出xml]
+案例：java -jar AXMLEditor.jar -attr -i application package debuggable true input_arsc.xml out_arsc.xml
+application的标签中插入android:debuggable="true"属性，让程序处于可调式状态
+
+2》删除属性
+java -jar AXMLEditor.jar -attr -r [标签名] [标签唯一标识] [属性名] [输入xml] [输出xml]
+案例：java -jar AXMLEditor.jar -attr -r application allowBackup input_arsc.xml out_arsc.xml
+application标签中删除allowBackup属性，这样此app就可以进行沙盒数据备份
+
+3》更改属性
+java -jar AXMLEditor.jar -attr -m [标签名] [标签唯一标识] [属性名] [属性值] [输入xml] [输出xml]
+案例：java -jar AXMLEditor.jar -attr -m application package debuggable true input_arsc.xml out_arsc.xml
+application的标签中修改android:debuggable="true"属性，让程序处于可调式状态
+
+4》插入标签
+java -jar AXMLEditor.jar -tag -i [需要插入标签内容的xml文件] [输入xml] [输出xml]
+案例：java -jar AXMLEditor.jar -tag -i [insert.xml] input_arsc.xml out_arsc.xml
+因为插入标签时一个标签内容比较多，所以命令方式不方便，而是输入一个需要插入标签内容的xml文件即可。
+
+5》删除标签
+java -jar AXMLEditor.jar -tag -r [标签名] [标签唯一标识] [输入xml] [输出xml]
+案例：java -jar AXMLEditor.jar -tag -r activity cn.wjdiankong.demo.MainActivity input_arsc.xml out_arsc.xml
+删除android:name="cn.wjdiankong.demo.MainActivity"的标签内容
+```
+
+## apktool 反编译失败
+
+```
+我们在使用apktools工具进行反编译失败的时候，我们可以这么做来避免：
+
+第一步：利用baksmali和smali工具直接修改器对应的dex文件
+第二步：利用AXMLEditor.jar工具直接修改对应的xml文件
+```
+
+## Xpatch
+
+```
+Xpatch用来重新签名打包Apk文件，使重打包后的Apk能加载安装在系统里的Xposed插件，从而实现免Root Hook任意App。
+
+java -jar ../../xpatch.jar ../../wechat.apk
+
+java -jar ../../xpatch.jar ../../source.apk -xm ../../module1.apk
+```
+
+## Xposed 模块编写
+
+```
+非常详细的教程
+https://www.52pojie.cn/thread-688466-1-1.html
+
+xposed 官方api
+https://api.xposed.info/reference/packages.html
+
+xposed 插件
+https://xposed.appkg.com/
+```
+
+## 太极·Magisk
+
+```
+https://magiskmanager.com/
+```
+
+## [adb] 可以查看指定包名应用的数据库存储信息(包括存储的sql语句)
+
+```
+adb shell dumpsys dbinfo [packagename]
+```
+
+## 编写简单的驱动程序并且将其编译到内核源码中
+
+```
+http://www.520monkey.com/archives/881
+```
+
+## 编写系统服务并且将其编译到系统源码中
+
+```
+http://www.520monkey.com/archives/893
+```
+
+## [重点研究]免root实现Hook系统服务拦截方法
+
+```
+http://www.520monkey.com/archives/861
+```
+
+## [重点研究]运行时修改内存中的Dalvik指令来改变代码逻辑
+
+```
+http://www.520monkey.com/archives/815
+```
+
+## [重点研究]Hook系统的AMS服务实现应用启动的拦截功能
+
+```
+http://www.520monkey.com/archives/870
+```
+
+## Android中利用ZipEntry漏洞实现免root写恶意文件到应用的沙盒中
+
+```
+http://www.520monkey.com/archives/833
+```
+
+
+
+
+
+
+
+
+
+
 
 
 
