@@ -1673,3 +1673,9 @@ https://blog.csdn.net/qq_29117915/article/details/81986509
 https://www.5yun.org/15363.html
 https://timelate.com/archives/install-aria2-and-ariang-on-ubuntu.html
 ```
+
+## 安装 LAMP + wordpress
+
+```
+https://www.howtoing.com/how-to-install-wordpress-with-lamp-on-ubuntu-18-04
+```

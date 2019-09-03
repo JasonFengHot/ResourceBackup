@@ -39,8 +39,21 @@ sed -i "s/src=\"/src=\"https:\/\/online.mediatek.com\//g" `grep 'src=\"' -rl ./`
 sed -i "s/<br\/>//g" `grep '<br\/>' -rl ./`
 
 
-bmp 格式的图片如何下载？？
-exception:java.net.SocketException: Socket is closed
+问题1.bmp 格式的图片如何下载？？ exception:java.net.SocketException: Socket is closed
+
+解答：
+这个是因为socket被手动关闭了，所以会显示 socket is closed
+
+问题2.version is not dcf version 1, no oma drm file
+
+解答：
+这个可能是因为手机打开了widevine导致的
+
+问题3.在电脑上下载图片的时候会出现400错误？？
+
+解答：
+这个可能是因为url中有中文导致的，用 URLEncoder.encode
+
 
 ## Android学习网站
 
@@ -72,9 +85,7 @@ http://www.maiziedu.com/article/28121/
 http://yun.itheima.com/map/21.html              黑马
 https://www.youtube.com/watch?v=EOfCEhWq8sg     treehouse
 
-
 https://www.wanandroid.com/blog/show/2561           各大互联网公司对外分享链接汇总
-
 
 https://www.reddit.com/r/androiddev/                reddit 上的 Android 开发专区
 https://plus.hencoder.com/                          hencoder
@@ -85,7 +96,6 @@ https://flutterchina.club/widgets-intro/        Flutter 中文开发者网站
 https://ebookfoundation.github.io/free-programming-books/free-programming-books-zh.html#android
 
 https://android-developers.googleblog.com/
-
 
 https://pangrongxian.github.io/
 
