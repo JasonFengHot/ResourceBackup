@@ -2,6 +2,9 @@
 研究输入法
 把培训做成视频
 整理bug并归类？？？？？？？
+微信小程序开发
+python爬虫
+
 
 FAQ 爬虫 https://online.mediatek.com/FAQ/api/ui/SW/FAQ19494/detail    需要post
 Accept: application/json, text/plain, */*
@@ -183,6 +186,28 @@ https://pan.baiduwp.com/        百度云盘高速下载，需要切换UA，里�
 http://www.yunpangou.com/                           搜索百度网盘资源
 
 https://yisharepdf.site/topics/android 下载网站     易分享电子资源网（专注于破解软件、游戏、电子书等资源的分享）
+
+https://dylanbai8.github.io/ideahub/#           精品电子书
+
+https://bbs.pediy.com/forum-128-2.htm?orderby=lastpid&digest=0      看雪
+
+    https://github.com/fuhmmin/it-ebooks-cn
+
+    https://github.com/a001189/dzbook
+
+    https://github.com/roseduan/e-book
+
+    https://github.com/zouyanjian/techbooks
+
+        https://github.com/dengyongstefan/Ebook
+
+        https://github.com/fancy88/iBook
+    
+    https://github.com/skeyboy/kBooks
+
+        https://github.com/Walker96/-
+
+https://github.com/jinweime/books
 
     《Code clean》代码整洁之道
 《App研发录》
@@ -48429,9 +48454,19 @@ http://www.520monkey.com/archives/870
 http://www.520monkey.com/archives/833
 ```
 
+## 硬上MTK平板-修改定制安卓系统
 
+```
+https://bbs.pediy.com/thread-249739.htm
 
+怎么才能知道 rom 分区的开始结束地址？？
+```
 
+## 解压 Android 系统中的 system.img
+
+```
+https://www.jianshu.com/p/db70835d41c8
+```
 
 
 
