@@ -48468,9 +48468,66 @@ https://bbs.pediy.com/thread-249739.htm
 https://www.jianshu.com/p/db70835d41c8
 ```
 
+## 输入法
 
+```
+//中州输入法
+https://rime.im/code/
 
+//印度输入法
+https://gitlab.com/indicproject/indic-keyboard/tree/master
+git clone --recursive git@gitlab.com:smc/Indic-Keyboard.git
 
+如何在一周内做一款拼音输入法
+https://www.jianshu.com/p/ea70b424030e
+```
+
+## 读取ini文件
+
+```
+package com.zryf.sotp;
+ 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+ 
+public class IniFile {
+ 
+	private Map<String, String> mIni = new HashMap<String, String>();
+ 
+	public IniFile(File file) throws IOException {
+		String line;
+		Pattern pattern = Pattern.compile("\\s*([^=]*)=(.*)");
+		FileReader fr = new FileReader(file);
+		BufferedReader br = new BufferedReader(fr);
+		while ((line = br.readLine()) != null)
+			if (!line.startsWith("#")) {
+				Matcher matcher = pattern.matcher(line);
+				if (matcher.matches()) {
+					String key = matcher.group(1).trim();
+					String value = matcher.group(2).trim();
+					mIni.put(key, value);
+				}
+			}
+		br.close();
+		fr.close();
+	}
+ 
+	public String get(String key, String defaultvalue) {
+		return mIni.get(key);
+	}
+	public static void main(String[] args) throws IOException {
+		IniFile iniFile=new IniFile(new File("c://test.ini"));
+		String data=iniFile.get("ID", "1234");
+		System.out.println(data);
+	}
+}
+```
 
 
 
