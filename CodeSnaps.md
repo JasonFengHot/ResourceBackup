@@ -1135,7 +1135,7 @@ vscode
 ## 打印当前所使用的类名、方法名、行号
 
 ``` Java
-android.util.Log.e("zq8888", Thread.currentThread().getStackTrace()[2].getMethodName()+"  "+Thread.currentThread().getStackTrace()[2].getMethodName()+"  "+Thread.currentThread().getStackTrace()[2].getLineNumber());
+android.util.Log.e("zq8888", Thread.currentThread().getStackTrace()[2].getFileName()+" "+Thread.currentThread().getStackTrace()[2].getClassName()+"  "+Thread.currentThread().getStackTrace()[2].getMethodName()+"  "+Thread.currentThread().getStackTrace()[2].getLineNumber());
 ```
 
 ## android:duplicateParentState 属性详解
@@ -6367,14 +6367,23 @@ AAPT会将xhdpi的资源打包。如果此时找不到xhdpi资源, AAPT会去找
 注意2: PRODUCT_AAPT_CONFIG在L1上已经失效.
 ```
 
-## makefile 中打 log
+## Android.mk 中打 log
 
 ``` bash
 $(warning Warning:xxxx)
 eg:$(warning Warning:BUILD_FINGERPRINT=$(BUILD_FINGERPRINT))
 
-1、输出打印信息的方法是：$(warning xxxxx)
+1、输出打印信息的方法是：
+$(warning xxxxx)
+$(info string)
+$(error string)
 2、输出打印变量值的方法是：$(warning  $(XXX))
+```
+
+## makefile里面加打印：
+
+```
+［table］@echo ' zImage - Compressed kernel image' 
 ```
 
 ## 监测设备是否root
@@ -46137,10 +46146,16 @@ http://blog.avlyun.com/show/%E3%80%8Asv%E7%94%A8%E6%88%B7%E6%8C%87%E5%8D%97%E3%8
 https://blog.csdn.net/jiangwei0910410003/article/details/51456735       Android逆向之旅---动态方式破解apk前奏篇(Eclipse动态调试smail源码)
 ```
 
-## 手把手教你逆向分析 Android 程序
+## [反编译]手把手教你逆向分析 Android 程序
 
 ```
 https://segmentfault.com/a/1190000005133219
+```
+
+## [反编译]26款优秀的Android逆向工程工具
+
+```
+https://www.freebuf.com/sectool/111532.html
 ```
 
 ## [反编译]反编译.vdex文件
@@ -48529,23 +48544,855 @@ public class IniFile {
 }
 ```
 
+## Android通用脱壳机FUPK3
+
+```
+https://blog.csdn.net/earbao/article/details/82761525
 
 
+https://github.com/F8LEFT/FUPK3
+```
+
+## AspectJ 埋点技术
+
+```
+http://ju.outofmemory.cn/entry/338292
+```
+
+## 安全的日志打印方法
+
+```
+//控制日志输出的开关必须是 final static 的常量
+private static final boolean DEBUG = false;
+
+// 然后用 if 语句把 LogUtil 给控制起来，就不会被编译到系统中了
+if (DEBUG) {
+    LogUtil.d(TAG, "msg");
+}
+
+用 Live Template 把上面的代码包装成一个模板 ifd
+```
+
+## [Log]Android之打印长日志（两种方法）
+
+```
+经过查询才得知，Android系统的单条日志打印长度是有限的，在底层Logger驱动程序的一个类Logger.h头文件中有如下两行代码
+#define LOGGER_ENTRY_MAX_LEN        (4*1024)  
+#define LOGGER_ENTRY_MAX_PAYLOAD    \\  
+    (LOGGER_ENTRY_MAX_LEN - sizeof(struct logger_entry))
+可以看出，系统显示单条Log信息的长度是固定的，为4*1024个字符长度！
+
+//第一种方式
+//打印长的日志
+public  static void  LongLoge(String str){
+    int max_str_length=2001-NOTGREENDAO.length();
+    //大于4000时
+    while (str.length()>max_str_length){
+        Log.d(NOTGREENDAO, str.substring(0,max_str_length) );
+        str=str.substring(max_str_length);
+    }
+    //剩余部分
+    Log.d(NOTGREENDAO, str );
+}
+
+//第二种方式
+//日志打印不全
+public static void d(String tag, String msg) {  //信息太长,分段打印
+    //因为String的length是字符数量不是字节数量所以为了防止中文字符过多，
+    //  把4*1024的MAX字节打印长度改为2001字符数
+    int max_str_length = 2001 - tag.length();
+    //大于4000时
+    while (msg.length() > max_str_length) {
+        Log.i(tag, msg.substring(0, max_str_length));
+        msg = msg.substring(max_str_length);
+    }
+    //剩余部分
+    Log.d(tag, msg);
+}
+```
+
+## 通过 dexloader 代码动态加载apk
+
+```
+public class TestAActivity extends Activity {
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
+		String path=Environment.getExternalStorageDirectory()+"/";
+		String fileName="TestB.apk";
+		DexClassLoader classLoader=new DexClassLoader(path+fileName, path, null, getClassLoader());
+		try {
+			Class mLoadClass=classLoader.loadClass("cn.jiepu.testb.TestBActivity");
+			Constructor constructor=mLoadClass.getConstructor(new Class[]{});
+			Object TestBActivity=constructor.newInstance(new Object[]{});
+			Method getMoney=mLoadClass.getMethod("getMoney", null);
+			getMoney.setAccessible(true);
+			Object money=getMoney.invoke(TestBActivity, null);
+			Toast.makeText(this, money.toString(), Toast.LENGTH_LONG).show();
+			Log.i("wjh", "success");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
+```
+
+## [adb]aapt
+
+```
+aapt dump xmltree applock.apk AndroidManifest.xml > D:\demo.txt
+```
+
+## 打开android debug设备系统调试
+
+```
+1. 修改boot.img
+不歪同学在 http://bbs.pediy.com/showthread.php?t=197334 这篇帖子中提到修改boot.img，从而打开系统调试，这样就可以省去给app添加android:debuggable="true"，再重打包的步骤了。（这个方法不歪同学讲的很详细了，我就不展开了）
+一、下载“Google Nexus 5 谷歌最新官方原厂安卓4.4.4固件”，从这个ROM中提取出boot.img文件。
+
+二、boot.img解包
+运行下面的命令将会对boot.img解包，得到boot.img-kernel和boot.img-ramdisk.gz两个文件：
+split-bootimg.pl boot.img
+
+三、处理boot.img-ramdisk.gz
+运行下面的命令，对boot.img-ramdisk.gz进行解压：
+mkdir ramdisk
+cd ramdisk
+gzip -dc ../boot.img-ramdisk.gz | cpio -i
+
+四、修改default.prop，打开系统调试标志
+找到解压出来的default.prop文件，将其中的ro.debuggable=0修改为ro.debuggable=1
+
+五、ramdisk目录打包
+返回ramdisk的上层目录，输入命令：
+mkbootfs ./ramdisk | gzip > ramdisk.img
+
+六、打包出新的boot.img
+命令：
+mkbootimg --base 0x00000000 --ramdisk_offset 0x02900000 --second_offset 0x00F00000 --tags_offset 0x02700000 --cmdline 'console=ttyHSL0 androidboot.hardware=hammerhead user_debug=31 maxcpus=2 msm_watchdog_v2.enable=1 earlyprintk' --kernel boot.img-kernel --ramdisk ramdisk.img -o newboot.img
+
+七、将新的boot.img刷入手机
+这时，在windows下还是linux下就无所谓了。将手机连上电脑输入下面的命令，重启手机进入fastboot：
+adb reboot bootloader
+当重启手机后，将新的boot.img刷入手机：
+fastboot flash boot newboot.img
+如果出现类似下图的输出，就说明刷入成功了：
 
 
+刷入成功并不代表你的手机可以正常使用~~不过只要严格按照上面的方法，在Nexus5这个手机下还是没有问题的。现在输入下面的命令重启手机吧：
+fastboot reboot
+
+八、系统中的APP都可以调试了！
+APP调试命令：adb shell am start -D -n <包名>/<Activity名>
+
+2. 直接修改系统属性
+使用setpropex工具在已经root的设备上修改只读的系统属性。使用此工具来修改ro.secure和ro.debuggable的值。
+工具地址：https://github.com/poliva/rootadb
+
+如果需要调试长期存在系统中的服务和进程等，那么我们可以强制重启android的Dalvik层，可以简单的结束system_server进程。
+```
+
+## android完美退出自身进程的方法
+
+```
+public static void exit(Context context){
+	Log.i(TAG, "Tool exit pid="+android.os.Process.myPid()+",tid="+Thread.currentThread().getId()+ ",mytid="+android.os.Process.myUid()+",tname="+Thread.currentThread().getName());
+	//需要申请权限<uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES"/>	
+	//ActivityManager manager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE); 
+    //manager.killBackgroundProcesses(getApplicationContext().getPackageName());
+	//android.os.Process.sendSignal(android.os.Process.myPid(),android.os.Process.SIGNAL_KILL);//发送杀死信号
+	//android.os.Process.sendSignal(android.os.Process.myPid(),android.os.Process.SIGNAL_QUIT);//发送退出信号
+	
+	//android进程完美退出方法。
+	Intent intent = new Intent(Intent.ACTION_MAIN);
+    intent.addCategory(Intent.CATEGORY_HOME);
+    //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+           
+    //让Activity的生命周期进入后台，否则在某些手机上即使sendSignal 3和9了，还是由于Activity的生命周期导致进程退出不了。除非调用了Activity.finish()
+    context.startActivity(intent);
+	android.os.Process.killProcess(android.os.Process.myPid());
+	//System.runFinalizersOnExit(true);
+    System.exit(0);
+}
+```
+
+## 获取apk的签名信息
+
+```
+public void getAPKSign(View view) {
+	Signature[]  signatures;
+	if(Build.VERSION.SDK_INT>=21)
+	{
+		signatures=showUninstallAPKSignaturesAfter21("/mnt/sdcard/qqemail.apk");			
+	}else{
+		signatures=showUninstallAPKSignatures("/mnt/sdcard/qqemail.apk");
+	}
+	parseSignature(signatures[0].toByteArray());
+	getSingInfo("com.android.phone");
+	
+}
+
+//反射调用android.content.pm.PackageParser的时候注意：android 4.4以下是有参构造 android5.0以上是无参构造函数了。
+//下面是android5.0以上的解决方法
+public Signature[]  showUninstallAPKSignaturesAfter21(String apkPath) {
+	String PATH_PackageParser = "android.content.pm.PackageParser";
+	try {
+		// PackageParser packageParser = new PackageParser();
+		
+		Class pkgParserCls = Class.forName(PATH_PackageParser);
+		Constructor pkgParserCt = pkgParserCls.getConstructor( new Class[]{});			
+		Object pkgParser = pkgParserCt.newInstance(new Object[]{});
+		Log.i(TAG, "pkgParser:" + pkgParser.toString());
+		// 这个是与显示有关的, 里面涉及到一些像素显示等等, 我们使用默认的情况
+		DisplayMetrics metrics = new DisplayMetrics();
+		metrics.setToDefaults();
+		//方法原型： public Package parsePackage(File packageFile, int flags) throws PackageParserException 
+		
+		Method pkgParser_parsePackageMtd = pkgParserCls.getDeclaredMethod(
+				"parsePackage",  new Class[]{File.class,int.class});
+		
+		Object pkgParserPkg = pkgParser_parsePackageMtd.invoke(pkgParser,
+				new Object[]{new File(apkPath),PackageManager.GET_SIGNATURES});
+
+		Method pkgParser_collectCertificatesMtd = pkgParserCls
+				.getDeclaredMethod("collectCertificates", new Class[]{ pkgParserPkg.getClass(),Integer.TYPE});
+				
+		pkgParser_collectCertificatesMtd.invoke(pkgParser, new Object[]{pkgParserPkg,PackageManager.GET_SIGNATURES});
+		// 应用程序信息包, 这个公开的, 不过有些函数, 变量没公开
+		Field packageInfoFld = pkgParserPkg.getClass().getDeclaredField("mSignatures");
+		Signature[] info = (Signature[]) packageInfoFld.get(pkgParserPkg);
+
+		Log.i(TAG, info[0].toCharsString());
+		return info;
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return null;
+}
+//反射调用android.content.pm.PackageParser的时候注意：android 4.4以下是有参构造 android5.0以上是无参构造函数了。
+//下面是android5.0以下的解决方法
+public Signature[]  showUninstallAPKSignatures(String apkPath) {
+	String PATH_PackageParser = "android.content.pm.PackageParser";
+	try {
+		// apk包的文件路径
+		// 这是一个Package 解释器, 是隐藏的
+		// 构造函数的参数只有一个, apk文件的路径
+		// PackageParser packageParser = new PackageParser(apkPath);
+		Class pkgParserCls = Class.forName(PATH_PackageParser);
+		Constructor pkgParserCt = pkgParserCls.getConstructor( new Class[]{String.class});
+		
+		Object pkgParser = pkgParserCt.newInstance(new Object[]{apkPath});
+		Log.i(TAG, "pkgParser:" + pkgParser.toString());
+		// 这个是与显示有关的, 里面涉及到一些像素显示等等, 我们使用默认的情况
+		DisplayMetrics metrics = new DisplayMetrics();
+		metrics.setToDefaults();
+		
+		//PackageParser.Package mPkgInfo = public Package parsePackage(File sourceFile, String destCodePath,DisplayMetrics metrics, int flags) 
+
+		Method pkgParser_parsePackageMtd = pkgParserCls.getDeclaredMethod(
+				"parsePackage",  new Class[]{File.class, String.class,DisplayMetrics.class,Integer.TYPE});
+		
+		Object pkgParserPkg = pkgParser_parsePackageMtd.invoke(pkgParser,
+				new Object[]{new File(apkPath), apkPath,metrics,PackageManager.GET_SIGNATURES});
+
+		Method pkgParser_collectCertificatesMtd = pkgParserCls
+				.getDeclaredMethod("collectCertificates", new Class[]{ pkgParserPkg.getClass(),Integer.TYPE});
+				
+		pkgParser_collectCertificatesMtd.invoke(pkgParser, new Object[]{pkgParserPkg,PackageManager.GET_SIGNATURES});
+		// 应用程序信息包, 这个公开的, 不过有些函数, 变量没公开
+		Field packageInfoFld = pkgParserPkg.getClass().getDeclaredField("mSignatures");
+		Signature[] info = (Signature[]) packageInfoFld.get(pkgParserPkg);
+
+		Log.i(TAG, info[0].toCharsString());
+		return info;
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return null;
+}
+
+private String getSign(Context context) {
+	PackageManager pm = context.getPackageManager();
+	List<PackageInfo> apps = pm
+			.getInstalledPackages(PackageManager.GET_SIGNATURES);
+	Iterator<PackageInfo> iter = apps.iterator();
+	while (iter.hasNext()) {
+		PackageInfo packageinfo = iter.next();
+		String packageName = packageinfo.packageName;
+		if (packageName.equals(context.getPackageName())) {
+			Log.i(TAG, packageinfo.signatures[0].toCharsString());
+			return packageinfo.signatures[0].toCharsString();
+		}
+	}
+	return null;
+}
+
+public void getSingInfo(String pkgName) {
+	try {
+		PackageInfo packageInfo = getPackageManager().getPackageInfo(pkgName, PackageManager.GET_SIGNATURES);
+		Signature[] signs = packageInfo.signatures;
+		Signature sign = signs[0];
+		parseSignature(sign.toByteArray());
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+}
+public void parseSignature(byte[] signature) {
+	try {
+		CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+		X509Certificate cert = (X509Certificate) certFactory.generateCertificate(new ByteArrayInputStream(signature));
+		String pubKey = cert.getPublicKey().toString();
+		String signNumber = cert.getSerialNumber().toString();
+		System.out.println("signName:" + cert.getSigAlgName());
+		System.out.println("pubKey:" + pubKey);
+		System.out.println("signNumber:" + signNumber);
+		System.out.println("subjectDN:"+cert.getSubjectDN().toString());
+	} catch (CertificateException e) {
+		e.printStackTrace();
+	}
+}
+```
+
+## Android小分队教你怎么利用Bluebox Security 曝的漏洞 
+
+```
+1.      漏洞原理
+漏洞的关键点在于，Android假设一个APK包中的文件是不会重名的。可实际上Zip格式是允许一个Zip文件包含具有相同文件命的文件。（注意，这里的文件名，包括这个文件在Zip包里的相对路径）。
+Android在安装应用时，会抽取APK包中每个文件，进行签名验证。但如果碰到了相同文件名的文件，则只会校验第二个文件，而忽略第一个文件。
+另外在应用运行前会释放classes.dex到/data/dalvik-cache/目录生成优化过的odex文件，然后再运行。这个阶段如果APK里有两个classes.dex，就只会抽取第一个classes.dex进行优化，而忽略第二。
+好了，说到这，相信读者应该明白怎么利用这个漏洞了吧。
+
+2.      攻击分析
+如果我们将一个APK包中放入两个classes.dex文件。第一个classes.dex是被我们篡改过的恶意dex文件；第二个classes.dex是原来这个APK中的classes.dex文件。那么在签名验证时，就会验证原来的classes.dex，因此通过验证；而执行时，却执行了被篡改过的第一个classes.dex。
+
+3.      攻击步骤
+a)      找个你想攻击的APK，抽取出其classes.dex保存
+b)      反编译 classes.dex，修改之，重新生成新的classes.dex，更名为classes.dey
+c)      用7z打开原APK包，删除其中的classes.dex，保存退出7z。
+d)      依次将classes.dey和保存的classes.dex，通过7z塞入APK，然后保存退出7z
+e)      用UltraEdit编辑修改过的APK，查找“classes.dey”，修改为“classes.dex”（共有两处），然后保存。
+f)       大功告成。
+
+4.      总结
+a)      这个漏洞可以攻击几乎所有的APK应用。利用该漏洞修改过的APK，能依然保留原签名，可以通过Android的签名验证，并能执行恶意代码。
+b)      如果手机里的一些应用是APK + odex形式存在的。很不幸，这个漏洞无法攻击这部手机上的这些应用。因为这个APK里没有classes.dex，无法借尸还魂。
+c)      如果手机里有Settings.apk（非APK + odex形式），取出来修改下，再安装覆盖，就能拿到System权限。因为Settings是system uid。
+```
+
+## 利用文件头的漏洞
+
+```
+1.      在讲这个漏洞之前，首先需要搞明白java里short类型转int类型的问题。要理解这个漏洞，必须明白这个技术点。
+
+public class JavaTest {
+
+    public static void main(String[] args) {
+
+       short a = (short)0xFFFF;
+
+       int b;
+
+       b = a;
+
+       System.out.println(b);
+
+       b = a & 0xFFFF;
+
+       System.out.println(b);
+
+   }
+
+}
+
+如果你能很清楚的了解上述代码中两次打印变量b的值有何不同，以及为何不同的话，这部分就可以先跳过了。否则还是要先弄清楚再往下看。
+
+ 
+
+2.      Zip文件格式
+
+在每个Zip文件中都有一个Central directory，Central directory中的每一项是一个File header。这个File header的结构对应到Android代码的类就是ZipEntry。File header结构中有一个偏移量指向local file header，local file header后面就紧跟着file data。接下来我们详细看一下local file header的结构。
+
+       local file header signature    4 bytes  (0x04034b50)
+
+       version needed to extract      2 bytes
+
+       general purpose bit flag       2 bytes
+
+       compression method             2 bytes
+
+       last mod file time             2 bytes
+
+       last mod file date             2 bytes
+
+       crc-32                         4 bytes
+
+       compressed size                4 bytes
+
+       uncompressed size              4 bytes
+
+       file name length               2 bytes
+
+       extra field length              2 bytes
+
+       file name (variable size)
+
+       extra field (variable size)
+
+可以看到，除最后2个域以外，local file header的其他域都是定长的。而这两个变长域的长度是由file name length和extra field length所确定。再次说明，紧跟在extra field后面的就是文件的数据file data了。
+
+ 
+
+3.      Android如何进行apk校验
+
+Android在进行apk文件校验时，会调到ZipFile的public InputStream getInputStream(ZipEntry entry)函数。这函数中，有这么一段：
+
+           RAFStream rafstrm = new RAFStream(raf, entry.mLocalHeaderRelOffset + 28);
+
+           DataInputStream is = new DataInputStream(rafstrm);
+
+           int localExtraLenOrWhatever = Short.reverseBytes(is.readShort());
+
+           is.close();
+
+ 
+
+           // Skip the name and this "extra" data or whatever it is:
+
+           rafstrm.skip(entry.nameLength + localExtraLenOrWhatever);
+
+           rafstrm.mLength = rafstrm.mOffset + entry.compressedSize;
+
+           if (entry.compressionMethod == ZipEntry.DEFLATED) {
+
+               int bufSize = Math.max(1024, (int)Math.min(entry.getSize(), 65535L));
+
+               return new ZipInflaterInputStream(rafstrm, new Inflater(true), bufSize, entry);
+
+           } else {
+
+               return rafstrm;
+
+           }
+
+注意：上述代码中红色部分。localExtraLenOrWhatever就是local file header结构中的extra field length。回想一下我们第一部分将的技术点，如果这里的extra filed length的大小是大于2^15，会怎么样？
+
+没错，localExtraLenOrWhatever将会是负值。因此接下来，rafstrm.skip(entry.nameLength + localExtraLenOrWhatever); 这句将无法真正跳过变长域file name (variable size) 和extra field (variable size)。反而有可能呢会跳到file name (variable size)中，甚至file name (variable size)之前。当然为了攻击方便，我们还是期望它跳到file name (variable size)中。
+
+ 
+
+4.      如何实施攻击
+
+要改变一个apk的行为，显然攻击的目标就是apk里的classes.dex文件。对于classes.dex文件在apk文件中的local file header结构，其file name (variable size)域的内容肯定就是“classes.dex”了。注意，这里的后缀名dex，正好和dex文件开头的三个字节完全相同（不理解的，参见dex文件格式）。
+
+a)      利用这一点，从file name (variable size)域“classex.dex”的“.”之后开始我们可以写入一个完整的dex文件。这个dex文件必须是原apk里的classes.dex文件。只有这样才能绕过签名验证
+
+b)      修改extra field length，使之为0xFFFD。因为这个值刚好为-3。根据漏洞，rafstrm.skip(entry.nameLength + localExtraLenOrWhatever); 这句就会跳到file name (variable size)域中的“.”之后。也就是一个dex文件的开始，这里必须是原dex文件内容。
+
+c)      修改local file header之后的file data数据。在这里写入带有攻击代码的classes.dex内容。
+
+d)      以上的修改会带来apk文件一些结构上的调整，比如扩充extra field域，调整file data大小等。
+
+具体攻击模型，如下图。
+
+安卓安全小分队发现Android新漏洞
 
 
+ 
 
+5.      总结
 
+总的来说该攻击手段，首先利用了Android在签名验证过程中，对Zip文件相应16位域的读取时，没有考虑到大于2^15的情况。（因为java的int , short, long都是有符号数，而不像C/C++里有无符号数）。
 
+其次利用了Zip文件中的local file header结构的extra field域来存放原classes.dex。但这个域的大小最多只能是2^16-1，因此被攻击的Apk里的classes.dex大小必须在64K以内。否则，就无法对其进行攻击。这算是这种攻击方式的一个限制。
 
+最后还有一个问题补充说明：之所以这种攻击方式能成功，还在于在运行时，系统抽取的是hacked classes.dex，而在签名校验时，验证的是extra域里的classes.dex。前者是在libdex.so中实现，后者在Java层实现。是由Java层跟Native层不一致导致。
+```
 
+## sdcard是采用fat32格式的，无法保存权限相关的数据
 
+## 使用系统隐藏api的另外一种方法，使用系统编译的 android.jar 包，并使其的优先级最高
 
+```
+将out/target/common/obj/JAVA_LIBRARIES/framework_intermediates/classes.jar复制到eclipse开发环境中，用user library的方式挂载，使其的优先级比android.jar要高即可
+```
 
+## 修改了系统的/etc/hosts文件。让广告域名都指向本机IP地址
 
+## Android网络防火墙的几种实现方式
 
+```
+a)        Android应用层：敏感函数hook
+i.             绝大多数Android应用都是调用Android Framework来实现网络通讯。例如：WebView.loadUrl()，HttpClient.execute()，DefaultHttpClient.execute()等。只需穷举这些类的函数，并将它们都Hook住，就可实现拦截上网的功能了。
 
+ii.             当然想要Hook这些函数入口，有两种方式：1. 首先获得root权限，然后通过进程注入，将Client代码注入到应用进程，在进程上网时，应用进程将会发起IPC请求到Server进程，由Server进程来决定是否允许其访问网络。2. 通过修改应用本身来加入Hook代码，从而避免了root手机，相对比较安全。洗大师就是使用了这种方法。
+
+iii.             这种方案的优点是：简单、快速、可实现网络热开关（无需杀死进程）。缺点是：不能拦截所有的网络访问入口。例如：某应用没有调用Android的库，而是自己实现了一个访问网络的库，或者甚至用native代码来实现，那么这时候这个方案将拦截不到任何的上网请求。
+
+b)        Android框架层：android.permission.INTERNET权限
+
+i.             在Android系统中，任何想访问网络的应用必须申请android.permission.INTERNET权限。当Zygote在fork()一个AndroidManifest.xml中带有这个权限的应用时，会将当前应用加到inet组中。凡是一个进程的gid组中有inet，那么这个应用就有权限上网。
+
+ii.             因此禁止应用上网有两种方式：1. 修改应用的AndroidManifest.xml，使其没有android.permission.INTERNET权限。2. 获得root权限，然后注入zygote进程，使其在fork()之后，不要将inet设到应用的gid组中。
+
+iii.             这个方案相对于第一个方案来说，它可以彻底的屏蔽一个应用上网。实现起来也不复杂，但是gid组一旦设定后，应用进程将再无权限修改。因此被禁止掉上网权限的进程，想要再次获得上网权限，则必须杀死，然后重新由zygote进程fork()生成。
+
+c)        Linux内核层：iptables
+
+i.             在Linux内核中，NetworkFilter在TCP/IP的协议栈中加了相应的Hook。通过这些Hook我们可以对网络数据包可以进行过滤，丢弃，修改等。但直接使用起来相对麻烦。幸好Linux给我们提供了一个强大的工具：iptables来简化这一过程。Iptables是一个Linux命令，通过这个命令，可以对整个系统发出去的包，接收到的包，以及转发的包进行拦截，修改，拒绝等操作。具体起使用方法，这里不再展开，有兴趣的朋友可以自行到网上搜索相应的资料即可。
+
+ii.             Iptable不仅可以按照uid来禁用应用上网，还可以分别禁用某个uid的3G上网和Wifi上网。这给用户带来的极大的方便。
+
+iii.             这个方案的优点是，不需要进程注入，所以实现起来相对简单。同时能够将3G网络和Wifi网络分别禁用，用户体验将更加好。此外由于iptables的功能远不止这些，基于iptables可以实现功能更加强大的防火墙。Iptable虽然好，但是也是有缺点的，运行iptables需要root权限。基于iptables的Android防火墙目前有许多，这里有一个开源的项目http://code.google.com/p/droidwall/
+
+有兴趣的朋友，可以研究一下。目前主流安全软件的联网拦截功能，如360手机卫士，手机毒霸等都是使用这一方案。
+
+总结：
+以上主要介绍了通过三个层面来控制一个应用的上网。具体使用哪一种，需要看用户的需求，以及手机的系统环境而定。
+a)      如果不能获得root权限，基本思路就是定制修改apk，可以考虑加入hook代码，或者是压根在AndroidManifest.xml里将android.permission.INTERNET权限去除。
+b)      如果能获得root权限，可以考虑注入zygote，使之fork()之后不加入inet组，还可以注入应用进程加上敏感函数的hook。此外还可以使用iptables命令。
+c)      如果用户希望不杀死进程就实现上网权限的开关，并且要求可以分别禁用3G网络和Wifi网络的话，那么非iptables不可了。
+
+其实比较下来，还是基于iptables的方案相对较好。它似乎只有一个缺点就是需要root权限。但大家又知道一旦手机被root以后，安全性反而将大大降低。我们可否找到一种手机既不被root，又能使用iptables的方案呢？
+
+其实是有的。只是这无法通过第三方的应用实现。必须有手机厂商对Android系统进行定制化修改，添加一个具有root权限的service来负责iptables命令的操作。其他进程只有向这个service提出请求，才能间接调用iptables。当然app应用要和这个service沟通，必须遵循一定的协议和获得相应的授权才行，否则又会变的不安全了。
+
+我们 @安卓安全小分队 已经实现了上述方案，并且效果还不错。我们在init.rc里添加了一个service，并且授予这个service root权限。这个service起来之后，会等待client端请求。对于这个client端，我们对外提供了一套SDK，应用程序只需调用这套SDK API就可以和这个root service进行通信了，然后就可以间接执行iptables命令。
+
+以下是我们的SDK API接口。Uid指应用的uid。type是针对的网络类型，可以是3G网络或者是Wifi网络。Blocked表示禁用还是启用网络。
+
+public static final int MOBILE_NETWORK = 1;
+public static final int WIFI_NETWORK = 2;
+public void setApplicationPolicy(int uid, int type, boolean blocked); //设置拦截状态
+public boolean getApplicationPolicy(int uid, int type); //获得当前的拦截状态
+```
+
+## 获取wifi信息
+
+```
+public void GetWifi() {
+	if (!mWifi.isWifiEnabled()) {
+		mWifi.setWifiEnabled(true);
+	}
+	WifiInfo wifiInfo = mWifi.getConnectionInfo();
+
+	if (bAdapt != null) {
+		if (!bAdapt.isEnabled()) {
+			Intent enBT = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			startActivityForResult(enBT, REQUEST_ENABLE_BT);
+		}
+
+		btMac = bAdapt.getAddress();
+	} else {
+		btMac = "No Bluetooth Device!";
+	}
+
+	if ((WifiMac = wifiInfo.getMacAddress()) == null) {
+		WifiMac = "No Wifi Device";
+	}
+
+	mac.setTextSize(16);
+	String ipString = "";// 本机在WIFI状态下路由分配给的IP地址
+	
+	/**获得IP地址的方法一：
+	int ipAddress = wifiInfo.getIpAddress();
+	if (ipAddress != 0) {
+	       ipString = ((ipAddress & 0xff) + "." + (ipAddress >> 8 & 0xff) + "."
+	        + (ipAddress >> 16 & 0xff) + "." + (ipAddress >> 24 & 0xff));
+	}*/
+	//Log.i(this.getClass().getSimpleName(), TypeUtil.typeToString("wifiInfo", wifiInfo));
+
+	// 获得IP地址的方法二（反射的方法）：
+	try {
+		Field field = wifiInfo.getClass().getDeclaredField("mIpAddress");  
+	    field.setAccessible(true); 
+	    InetAddress address =  (InetAddress) field.get(wifiInfo);
+	    ipString=address.getHostAddress();
+	    System.out.println("ipString:" + ipString);
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+	// 查看已经连接上的WIFI信息，在Android的SDK中为我们提供了一个叫做WifiInfo的对象，这个对象可以通过WifiManager.getConnectionInfo()来获取。WifiInfo中包含了当前连接中的相关信息。
+	// getBSSID() 获取BSSID属性
+	// getDetailedStateOf() 获取客户端的连通性
+	// getHiddenSSID() 获取SSID 是否被隐藏
+	// getIpAddress() 获取IP 地址
+	// getLinkSpeed() 获取连接的速度
+	// getMacAddress() 获取Mac 地址
+	// getRssi() 获取802.11n 网络的信号
+	// getSSID() 获取SSID
+	// getSupplicanState() 获取具体客户端状态的信息
+	StringBuffer sb = new StringBuffer();
+	sb.append("\n获取BSSID属性（所连接的WIFI设备的MAC地址）：" + wifiInfo.getBSSID());
+	// sb.append("getDetailedStateOf()  获取客户端的连通性：");
+	sb.append("\n\n获取SSID 是否被隐藏：" + wifiInfo.getHiddenSSID());
+	
+	sb.append("\n\n获取wifi IP 地址：" +ipString);
+	sb.append("\n\n获取连接的速度：" + wifiInfo.getLinkSpeed());
+	sb.append("\n\n获取Mac 地址（手机本身网卡的MAC地址）：" + WifiMac);
+	sb.append("\n\n获取802.11n 网络的信号：" + wifiInfo.getRssi());
+	sb.append("\n\n获取SSID（所连接的WIFI的网络名称）：" + wifiInfo.getSSID());
+	sb.append("\n\n获取具体客户端状态的信息：" + wifiInfo.getSupplicantState());
+	mac.setText("WIFI网络信息:  " + sb.toString() + "\n\n蓝牙MAC:  " + btMac);
+}
+```
+
+## Java 重启应用
+
+```
+public static void restartApplication() throws URISyntaxException, IOException {
+    final String javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
+    final File currentJar = new File(Start.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+    if(!currentJar.getName().endsWith(".jar")){
+        return;
+    }
+    final ArrayList<String> command = new ArrayList<String>();
+    command.add(javaBin);
+    command.add("-jar");
+    command.add(currentJar.getPath());
+    final ProcessBuilder builder = new ProcessBuilder(command);
+    builder.start();
+    System.exit(0);
+}
+```
+
+## java管道通讯
+
+```
+public InputStream getInputStream(final FileHeader hd) throws RarException, IOException {
+	final PipedInputStream in = new PipedInputStream(32 * 1024);
+	final PipedOutputStream out = new PipedOutputStream(in);
+
+	// creates a new thread that will write data to the pipe. Data will be
+	// available in another InputStream, connected to the OutputStream.
+	new Thread(new Runnable() {
+		public void run() {
+			try {
+				extractFile(hd, out);
+			} catch (RarException e) {
+			} finally {
+				try {
+					out.close();
+				} catch (IOException e) {
+				}
+			}
+		}
+	}).start();
+	return in;
+}
+```
+
+## TODO : busybox 如何使用？？
+
+```
+1、 BusyBox 的诞生 
+BusyBox 最初是由 Bruce Perens 在 1996 年为 Debian GNU/Linux 安装盘编写的。其目标是在一张软盘上创建一个可引导的 GNU/Linux 系统，这可以用作安装盘和急救盘。 
+
+2、busybox的用法 
+可以这样用busybox 
+#busybox ls 
+他的功能就相当运行ls命令 
+最常用的用法是建立指向busybox的链接,不同的链接名完成不同的功能. 
+#ln -s busybox ls 
+#ln -s busybox rm 
+#ln -s busybox mkdir 
+然后分别运行这三个链接: 
+#./ls 
+#./rm 
+#./mkdir 
+就可以分别完成了ls rm 和mkdir命令的功能.虽然他们都指向同一个可执行程序busybox，但是只要链接名不同,完成的功能就不同，很多linux网站都提供busybox的源代码下载。
+
+3、配置busybox 
+busybox的配置程序和linux内核菜单配置方式简直一模一样.熟悉用make menuconfig方式配置linux内核的朋友很容易上手. 
+#cp busybox-1.00.tar.gz /babylinux 
+#cd /babylinux 
+#tar xvfz busybox-1.00.tar.gz 
+#cd busybox-1.00 
+#make menuconfig 
+下面是需要编译进busybox的功能选项。 
+General Configuration应该选的选项 
+Show verbose applet usage messages 
+Runtime SUID/SGID configuration via /etc/busybox.conf 
+Build Options 
+Build BusyBox as a static binary (no shared libs) 
+这个选项是一定要选择的,这样才能把busybox编译成静态链接的可执行文件,运行时才独立于其他函数库.否则必需要其他库文件才能运行,在单一个linux内核不能使它正常工作. 
+Installation Options 
+Don't use /usr 
+这个选项也一定要选,否则make install 后busybox将安装在原系统的/usr下,这将覆盖掉系统原有的命令.选择这个选项后,make install后会在busybox目录下生成一个叫_install的目录,里面有busybox和指向它的链接. 
+其它选项都是一些linux基本命令选项,自己需要哪些命令就编译进去,一般用默认的就可以了，配置好后退出并保存。
+
+4、编译并安装busybox 
+#make 
+#make install 
+编译好后在busybox目录下生成子目录_install,里面的内容: 
+drwxr-xr-x 2 root root 4096 11月 24 15:28 bin 
+rwxrwxrwx 1 root root 11 11月 24 15:28 linuxrc -> bin/busybox 
+drwxr-xr-x 2 root root 4096 11月 24 15:28 sbin 
+其中可执行文件busybox在bin目录下,其他的都是指向他的符号链接. 
+```
+
+## MyClass 反射模板类
+
+```
+public class MyClass {
+	private Class<?> class1;
+	private Method method1;
+ 
+	private MyClass(Class<?> class1,String name, Class<?>... parameterTypes) throws NoSuchMethodException {
+		super();
+		this.class1 = class1;
+		this.method1=class1.getMethod(name, parameterTypes);
+	}
+	public static MyClass build(String className,String name, Class<?>... parameterTypes) throws ClassNotFoundException, NoSuchMethodException {
+		return new MyClass(className, name, parameterTypes);
+		
+	}
+	public static MyClass build(Class<?> class1,String name, Class<?>... parameterTypes) throws ClassNotFoundException, NoSuchMethodException {
+		return new MyClass(class1, name, parameterTypes);
+		
+	}
+	private MyClass(String className,String name, Class<?>... parameterTypes) throws ClassNotFoundException, NoSuchMethodException {
+		super();
+		this.class1 = forName(className);
+		this.method1=class1.getMethod(name, parameterTypes);
+	}
+ 
+	public Class<?> getClass1() {
+		return class1;
+	}
+ 
+	public void setClass1(Class<?> class1) {
+		this.class1 = class1;
+	}
+ 
+	public Method getMethod1() {
+		return method1;
+	}
+ 
+	public void setMethod1(Method method1) {
+		this.method1 = method1;
+	}
+ 
+	public static Class<?> forName(String className) throws ClassNotFoundException {
+		return Class.forName(className);
+	}
+	
+    public Object invoke(Object receiver, Object... args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        return method1.invoke(receiver, args);
+    }
+}
+
+//使用方法
+MyClass class1 = MyClass.build("android.util.Log", "i", new Class[] { String.class, String.class });
+class1.invoke(class1.getClass1(), "tag", "ok");
+
+TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Activity.TELEPHONY_SERVICE);
+// telephonyManager.getDeviceId();
+MyClass class1 = MyClass.build("android.telephony.TelephonyManager", "getDeviceId", new Class[] {});
+String result = (String) class1.invoke(telephonyManager);
+Log.i("xx", result);
+Log.i("fuck",(String) MyClass.build("android.telephony.TelephonyManager", "getDeviceId", new Class[] {}).invoke(telephonyManager));
+```
+
+## Java 反射例子之android Application 查看和设置：meta-data
+
+```
+http://my.oschina.net/xesam/blog/135333
+public class BaseApplication extends Application {
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		// android Application 查看和设置：meta-data 
+		// 在application应用<meta-data>元素。
+		ApplicationInfo appInfo;
+		try {
+			appInfo = this.getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+			Bundle bundle = appInfo.metaData;
+			if (bundle == null) {
+				System.out.println("bundle==null");
+			}
+			bundle.putString("ddd", "xxx");
+			Class class1 = Class.forName("android.os.Bundle");			
+			Field[] fields = class1.getFields();//和getDeclaredFields不同
+			for (Field field : fields) {
+				System.out.println(field.getName());
+			}
+			System.out.println("========");
+			fields = class1.getDeclaredFields();
+			for (Field field : fields) {
+				System.out.println(field.getName());
+			}
+
+			Field field = class1.getDeclaredField("mMap");
+			if (field != null) {
+				field.setAccessible(true);
+				Map<String, Object> mMap = (Map<String, Object>) field.get(bundle);
+				if (mMap==null) {
+					System.out.println("mMap==null");
+					return ;
+				}
+				for(Map.Entry<String, Object> entry:mMap.entrySet()) {
+					String key=entry.getKey();
+					Object value=entry.getValue();
+					System.out.println(key+"="+value);
+				}
+			} else {
+				System.out.println("field==null");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
+```
+
+## Android Json RPC
+
+```
+JSONRPCClient client = JSONRPCClient.create("http://service/uri");
+client.setConnectionTimeout(2000);
+client.setSoTimeout(2000);
+try {
+    String string = client.callString("mymethod");
+    double d = client.callDouble("pow", x, y);
+    int i = client.callInt("add", 56, 25); ...
+} catch (JSONRPCException e) {
+    e.printStackTrace();
+}
+```
+
+## Android lib与libs的区别和解决apk动态加载时异常
+
+```
+Android lib与libs的区别和解决apk动态加载时java.lang.IllegalAccessError: Class ref in pre-verified class resolved to unexpected implementation
+
+异常：
+
+按照文章中的理解：
+
+http://www.bubuko.com/infodetail-842175.html，出现java.lang.IllegalAccessError: Class ref in pre-verified class resolved to unexpected implementation 动态加载apk/jar时出现异常的原因是jar中的类冲突。解决办法是：把接口的jar放到lib目录去打包编译，然后config buildpath。不要放在libs,放在libs目录的jar会一起打包进入apk，动态加载相同的类时就会出现java.lang.IllegalAccessError: Class ref in pre-verified class resolved to unexpected implementation异常。
+
+总之解决该异常的方法是：整个程序运行中，包括主程序和插件程序，jar包中的类只包含唯一实例。重复的类不要打包进入apk。即不放在libs目录。
+```
+
+## 在 Android 上使用 LocalSocket 进行进程间通信
+
+```
+https://blog.csdn.net/earbao/article/details/50722080
+```
+
+## 自己用 c 编写一个可以在android 上运行的命令
+
+```
+https://blog.csdn.net/earbao/article/details/51275463
+
+https://blog.csdn.net/earbao/article/details/51275705
+
+https://blog.csdn.net/earbao/article/details/51277087
+
+https://blog.csdn.net/earbao/article/details/51277160
+```
 
 
 
