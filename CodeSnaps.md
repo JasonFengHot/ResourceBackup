@@ -4,6 +4,7 @@
 整理bug并归类？？？？？？？
 微信小程序开发
 python爬虫
+学习编写ubuntu程序？？
 
 
 FAQ 爬虫 https://online.mediatek.com/FAQ/api/ui/SW/FAQ19494/detail    需要post
@@ -33196,8 +33197,8 @@ ro.com.google.clientidbase.vs = android-americamovil-br
 1.Google 设计来确认在不启动第三方app/service 的情况下，确认机器的稳定性的一个开机方式，通常普通用户很少用到。在framework 内部会影响到AMS&WMS&PMS 的行为。
 2.安全模式是在开机system server 的windowmanagerserivce 启动时检测的，一般是power + memu 键 ，并且在开机的过程中还要长按，或者滑轮之类。
 3.如何屏蔽，这个最终的检测是在PhoneWindowManager.java 中执行。
-alps/frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java 中的detectSafeMode() 方法，请参考里面的
-mSafeMode= menuState > 0 ........................................ 
+alps/frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java 中的 detectSafeMode() 方法，请参考里面的
+mSafeMode = menuState > 0 ........................................ 
 把这一行直接设置为
 mSafeMode = false 即可。
 在这一行你也可以看到哪些按键对safemode 有影响。
@@ -37935,9 +37936,9 @@ Xposed数据获取
 https://juejin.im/post/5d1d9d2e6fb9a07ecf72429e
 ```
 
-## BootLoader 锁是什么意思？？如何解锁bootloader？？？fastboot？？？
+## TODO : BootLoader 锁是什么意思？？如何解锁 bootloader？？？fastboot？？？
 
-## shadow 是什么东西？？？
+## TODO : shadow 是什么东西？？？
 
 ```
 Shadow是通过字节码编辑技术向插件插入中间层，完成插件技术的核心工作的
@@ -46082,6 +46083,30 @@ Hex-Rays
 dexopt
 
 jadx
+
+gda     http://www.gda.wiki:9090/index.php
+```
+
+## [反编译]资料
+
+```
+（1）Android安全大牛的博客：
+鬼哥的博客： 听鬼哥说故事           https://blog.csdn.net/guiguzi1110/article/list/1?
+Jack_Jia的博客： Android手机病毒分析及研究       https://blog.csdn.net/androidsecurity?viewmode=contents
+i 简行的博客：简行之旅            https://blog.csdn.net/l173864930?viewmode=contents
+淡然出尘的博客：淡然出尘            https://blog.csdn.net/zihao2012
+爱加密系列教程：爱加密             https://www.cnblogs.com/ijiami/
+
+（2）Android逆向学习论坛：
+看雪论坛Android安全板块：看雪论坛-Android安全  https://bbs.pediy.com/
+逆向未来论坛：逆向未来                 https://www.pd521.com/forum-37-1.html
+吾爱破解：       https://www.52pojie.cn/forum-5-1.html
+
+（3）看过的书：《Android软件安全与逆向分析》
+
+（4）安卓安全学习QQ群：
+Android安全实验室 296752155
+爱破解，爱鬼哥 377724636
 ```
 
 ## [反编译]apktool 下载编译
@@ -46679,7 +46704,7 @@ frameworks/base/core/res/res/values/config.xml
 <item>screencapture</item>截图、录制选项
 <item>users</item>用户选项
 
-十、无法写入sn号，需要把这个 宏 打开,这个去掉注释,让写的barcode生效,barcode就是SN,不然都是默认的123456789ABCDEF
+十、无法写入sn号，需要把这个 宏 打开,这个去掉注释,让写的barcode生效,barcode就是SN,不然都是默认的 0123456789ABCDEF
 vendor/mediatek/proprietary/bootable/bootloader/lk/app/mt_boot/mt_boot.c
 /* #define SERIAL_NUM_FROM_BARCODE */
 
@@ -49394,8 +49419,11 @@ https://blog.csdn.net/earbao/article/details/51277087
 https://blog.csdn.net/earbao/article/details/51277160
 ```
 
+## AndroidManifest Ambiguity方案原理及代码
 
-
+```
+https://www.cnblogs.com/wanyuanchun/p/4084292.html
+```
 
 
 
