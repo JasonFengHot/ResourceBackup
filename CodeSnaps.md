@@ -3,7 +3,9 @@
 把培训做成视频
 整理bug并归类？？？？？？？
 微信小程序开发
-python爬虫
+    python爬虫
+    https://github.com/wistbean/learn_python3_spider
+
 学习编写ubuntu程序？？
 
 
