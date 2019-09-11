@@ -1296,6 +1296,13 @@ download the latest version from
 sudo mkdir -p /opt/calibre && sudo rm -rf /opt/calibre/* && sudo tar xvf calibre-3.37.0-x86_64.txz -C /opt/calibre && sudo /opt/calibre/calibre_postinstall
 
 sudo apt-get install calibre
+
+电子书转换
+ebook-convert demo.zip .epub -vv --authors "Kovid Goyal" --language en --level1-toc '//*[@class="title"]' --disable-font-rescaling --page-breaks-before / --no-default-epub-cover
+
+https://manual.calibre-ebook.com/conversion.html
+
+https://bookfere.com/post/562.html
 ```
 
 ## 卸载 LibreOffice

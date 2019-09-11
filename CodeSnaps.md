@@ -5,6 +5,11 @@
 微信小程序开发
     python爬虫
     https://github.com/wistbean/learn_python3_spider
+    
+    python学习网站
+    https://realpython.com/
+    https://www.python-course.eu/python3_course.php
+    https://bitbucket.org/
 
 学习编写ubuntu程序？？
 
@@ -31992,6 +31997,11 @@ KK 版本在 /packages/inputmethods/LatinIME/java/res/raw/目录下已经有英�
 3 将生成的main_xx.dict文件拷贝到packages\inputmethods\LatinIME\java\res\raw下
 4.然后在packages\inputmethods\LatinIME\java\res\xml\spellchecker.xml文件中查看是否已经有该语言的subtype，如果没有则添加对应语言的subtype。
 5.然后重编latin 输入法。
+
+
+下载官方的 LatinIME 代码，切换到 kitkat 分支
+把 LatinIME 代码整个拷贝到 packages/inputmethods 目录下
+然后用 ./makeMtk xxx -t mma packages/inputmethods/LatinIME/ 的方式模块编译就可以生成 dicttool_aosp
 ```
 
 ## [FAQ11526] [COMMON]modem版本如何实现通话DTMF检测功能
