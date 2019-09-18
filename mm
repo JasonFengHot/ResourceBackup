@@ -808,7 +808,7 @@ push(){
         adb shell am start -n $componentName
     fi
     # pull to last version when push done!
-    git pull;
+    #git pull;
 }
 
 # Print system info
