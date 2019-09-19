@@ -759,9 +759,9 @@ push(){
             # framework/base
             adb push out/target/product/$target_project/system/framework/framework.jar system/framework/;
             adb push out/target/product/$target_project/system/framework/arm/boot* system/framework/arm/;
-            #make services;
-            #make wifi-service;
-            #make MtkSettingsProvider;
+            make services;
+            make wifi-service;
+            make MtkSettingsProvider;
             adb reboot;
         elif [ $module == "services" ] ; then
             adb push out/target/product/$target_project/system/framework/services.jar system/framework/;
