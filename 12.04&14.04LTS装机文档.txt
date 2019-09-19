@@ -1,0 +1,254 @@
+1、安装系统（ubuntu12.04LTS | ubuntu14.04LTS）
+
+2、检查更新、安装完整语言包
+	sudo apt-get update
+	sudo apt-get upgrade
+	安装完整语言包请点击电脑右上角的系统设置->语言支持，然后根据提示安装
+
+3、安装编译所需的软件包：
+	sudo apt-get install bison flex gperf mingw32 curl tofrodos g++-multilib openssh-server zip wine libqt3-mt;//(14.04无需安装命令最后的依赖包libqt3-mt)
+	*** 14.04LTS 还需安装sudo apt-get install libxml2-utils
+	//如果在终端碰到“你希望继续执行吗？【Y/n】”。选择Y。在中途碰到需要licence的选择时，用上下左右的四个方向键，选择“确定”或“是”，然后回车。
+
+4、安装arm-eabi-4.4.3和安装JDK  //路径（/opt）下一般存储用户安装的软件
+	a. 将arm-eabi-4.4.3.tar.gz和jdk-6u27-linux-x64.bin复制到根目录 /opt下
+	b. sudo cp -r /文件路径/arm-eabi-4.4.3.tar.gz /opt
+	c. sudo cp /文件路径/jdk-6u27-linux-x64.bin /opt
+	d. cd /opt  //进入opt文件下
+	f. sudo tar zvxf arm-eabi-4.4.3.tar.gz  //解压arm-eabi-4.4.3.tar.gz 使用该命令解压后的文件夹arm-eabi-4.43不存在限制权限,可以正常使用。
+	g. 给bin文件添加可执行权限:sudo chmod a+x jdk-6u27-linux-x64.bin
+	h. 运行安装：sudo ./jdk-6u27-linux-x64.bin
+
+5、
+	1)更新open JDK1.7
+		a. sudo mkdir -p /mtkoss/jdk/1.6.0_45-ubuntu-10.04/x86_64/   	（请查看KK工程根目录下的mbldenv.sh）
+		b. cd /mtkoss/jdk/1.6.0_45-ubuntu-10.04/x86_64/
+		c. sudo ln -s /opt/jdk1.6.0_27/*  ./          
+		d. sudo mkdir -p /mtkoss/jdk/jdk1.6.0_23/	（请查看JB工程根目录下的mbldenv.sh）
+		e. cd /mtkoss/jdk/jdk1.6.0_23/
+		f. sudo ln -s /opt/jdk1.6.0_27/*  ./       //将/opt/jdk1.6.0_27/下所有内容与当前目录建立链接（相当于快捷方式）
+		g. sudo apt-get update（联网状态）
+		h. sudo apt-get install openjdk-7-jdk（联网状态）
+		i. 重启
+		j. java -version
+		   显示：java version "1.7.0_65"
+			OpenJDK Runtime Environment (IcedTea 2.5.3) (7u71-2.5.3-0ubuntu0.12.04.1)
+			OpenJDK 64-Bit Server VM (build 24.65-b04, mixed mode)
+		k.如何测试安装成功？
+			编译JB，KK，82L代码看是否会报错(支持mm模块编译)
+	2)更新openJDK 1.8
+		1. sudo add-apt-repository ppa:openjdk-r/ppa
+		2. sudo apt-get update
+		3. sudo apt-get install openjdk-8-jdk
+		4. sudo update-alternatives --config java	//查看java版本,选择对应版本
+		   sudo update-alternatives --config javac	//查看javac版本,选择对应版本
+
+6、eclipse和Android studio 以及adb的配置：
+	1、解压adt-bundle-linux-x86_64-20140702.zip或studio到主目录
+	2、右键给~/adt-bundle-linux-x86_64-20140702/sdk/platform-tools/adb添加执行权限    //给sdk/platform-tools/adb添加执行权限
+	3、创建adb链接：sudo ln -s ~/adt-bundle-linux-x86_64-20140702/sdk/platform-tools/adb /usr/bin/adb   //注意替换adb路径 
+	4、配置sdk工具的环境变量
+		a. sudo gedit /etc/profile
+		b. 在文件末尾加入工具的全路径
+			export PATH=$PATH:/your_android-sdk-linux_path/tools/
+			export PATH=$PATH:/your_android-sdk-linux_path/platform-tools/
+		c. source /etc/profile //保存后同步更新
+
+7、安装svn：
+	a. sudo apt-get install subversion (先察看svn版本，如果不是1.7，则执行下列命令)
+	b. sudo apt-add-repository ppa:dominik-stadler/subversion-1.7
+	c. sudo apt-get update
+	d. sudo apt-get install libsvn-java
+	e. sudo apt-get install subversion
+	f. svn --version //查看svn版本
+	打开Ubuntu软件中心，搜索kdesvn并安装
+	g. sudo apt-get install kdesvn
+
+8、解压并安装source insight（右键exe文件用wine打开）
+
+9、安装bcompare
+	1)方式1（14.04LTS亲测）
+	 ************************************简便方法************************************
+	 去官网下载bcompare,按照官网说明安装
+	 ----------------->Terminal Install
+
+	 wget http://www.scootersoftware.com/bcompare-4.1.9.21719_amd64.deb
+	 sudo apt-get update
+	 sudo apt-get install gdebi-core
+	 sudo gdebi bcompare-4.1.9.21719_amd64.deb
+	 
+	 beyond compare 4目前网上未找到好的破解方法.  防止试用时间到期, 可以定期删除注册文件:
+	 rm ~/.config/bcompare/registry.dat
+	 
+	 
+	 ----------------->Terminal Uninstall
+	 sudo apt-get remove bcompare
+	 ********************************************************************************
+	2）方式2
+      (1). 解压bcompare-3.3.10.17762.tar.gz到主文件夹
+      (2). 将 keygen 文件拷贝到上述解压出的文件夹中
+      (3). 执行解压目录下的install.sh
+ 
+      sudo ./install.sh
+      [sudo] password for sunzy:
+ 
+      install prefix? [/usr] /opt
+      ======================================
+      Please place the following in your .bashrc or .cshrc (etc.)
+      export PATH=/opt/bin:$PATH
+      ======================================
+      Executable is /opt/bin/bcompare
+      (4). 执行 keygen，如果没有执行权限，先给权限
+      sunzy@sunzy:~/Downloads/bcompare-3.3.5.15075$ sudo ./keygen
+      =================================================
+      ******              TEAM ZWT               ******
+      ******Keygen&Patch for Beyond Compare Linux******
+      ******           by ygeR@team.zwt          ******
+      =================================================
+      1. Do you want me to patch Beyond Compare?(y/n)y
+      Begin patching...
+      I can't patch.
+      Please check if the file is correct and hasn't been modified!
+      2. Do you want me to generate a valid license?(y/n)y
+      2.a please give me your user name:sunzy993
+      2.b please give me the number of licenses:(max 9999)1
+      2.c please select the Platform(0,Windows;1,Linux;2,Linux/Windows):1
+      2.d please select the Edition(0,Pro;1,Standard):0
+ 
+      The License key is:
+ 
+      --- BEGIN LICENSE KEY ---
+      8dsfz+GGuusybmJ-6ROrCrYWNLYeAbCHHRFQffhmz50w8zf3eA2dPPcdt
+	N5LDjGm2TxT5TtdTy-nG7C3rV1hONM1PrkfQr96Czn52qQhjN+bgTr0If
+	atliY4hUdXp40AB64mdbjGOJfeMDNXyaxnzS394D1HS4Hp7O1+Vqwul1U+
+      --- END LICENSE KEY -----
+      Bye! Have a nice day!
+
+
+--- BEGIN LICENSE KEY ---
+rPBLR6vg109U8GTcehxxjPpwtNKKZ4I+URY+dF10t4SfRhq1Vg8-V2bdp
+4P9bwIzzOvzD40EkqVO5wDD4KRy-dM1PrkfQr96Czn52qQhjN+bgTr0If
+atliY4hUdXp40AB64mdbjGOJfeMDNXyaxnzS394D1HS4Hp7O1+Vqwul1U+
+--- END LICENSE KEY -----
+      =================================================
+      (5). 请保存上述的license key，第一次使用时用于激活
+ 
+      (5). 重新执行:sudo ./install.sh (假如报错缺少库文件执行该命令：sudo apt-get install libXft2:i386)
+      (6). 在.bashrc文件末尾加上：export PATH=/opt/bin/bcompare:$PATH
+      (7). 重启
+      (8). 创建bcompare链接：sudo ln -s /opt/bin/bcompare /usr/bin/bcompare
+      (9). sudo apt-get install libqt3-mt:i386;
+
+10、安装虚拟机
+	(1)、终端命令 编辑sources.list
+		sudo gedit /etc/apt/sources.list
+
+	(2)、添加 软件源将下面的地址加入sources.list 的末尾，保存并退出
+		deb http://download.virtualbox.org/virtualbox/debian precise contrib
+
+	(3)、终端命令 导入公钥，并更新源
+		wget -q http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc -O- | sudo apt-key add - 
+		sudo apt-get update
+
+	(4)、终端命令安装（4.3是当前最新版本） 
+		方式1. sudo apt-get install virtualbox-4.3
+		(PS:有时候virtualbox服务器速度不稳定，这一步执行很慢)，可以使用另一种方法）
+		方式2 a. sudo apt-get install dkms libsdl-ttf2.0-0 libvpx1  
+			  b. 安装下载好的安装包virtualbox-******~Ubuntu~precise_amd64.deb //双击即可()
+
+	(5)、将当前用户添加到 用户组vboxusers，以支持usb. 注：添加完成后要注销后重新登录才会生效
+		sudo usermod -a -G vboxusers ysq 
+		PS：ysq为当前电脑用户名，自行修改
+
+	(6)、安装 VirtualBox扩展包，以支持USB2.0等 ,版本要与VirtualBox一致。
+	     文件夹中有Oracle_VM_VirtualBox_Extension_Pack-4.3.10-93012.vbox-extpack. 双击安装即可。（右键 Open with other application 选择 Oracle vm virtualbox）
+
+		安装扩展包之后，找到找到计算机，里面有个 C盘符下面有 add guest选项，点击更新即可调整显示大小
+		(virtualbox和扩展包的版本需一致）
+	(7)、新建虚拟系统winxp或win7
+		a:下载安装notes,foxmail(记得备份替换foxmail7.2/storage/***@sagereal.com)
+		b:下载安装RTX
+		c:下载安装QQ
+		d:安装驱动	Driver_Auto_Installer_EXE_v1.1352.00
+
+11.安装GIT
+	a. sudo apt-get install git-core qgit
+	b. git config --global user.name "Your Name" 
+	c. git config --global user.email "Your Name@example.com" 
+	d. ssh-keygen -t rsa  //执行该命令后只需一直按回车即可。最后在~/.ssh目录下会生成id_rsa.pub文件，拷贝这个文件并修改为你的名字拼音.pub，发送给驱动王梁杰完成，等待确认，确认ok好即可使用git
+        現在的 ssh 使用同樣的方法會出現錯誤訊息
+        Agent admitted failure to sign using the key
+        解決方式 使用 ssh-add 指令将私钥 加进来 （根据个人的密匙命名不同更改 id_rsa）
+        # ssh-add   ~/.ssh/id_rsa  
+	下载一个82L的工程试一下
+	git clone git@172.16.64.73:SAGETEL6582_WT_L.git
+	source build/envsetup.sh
+	lunch 19
+	make -j4 2>&1 | tee build.log
+
+
+	下列内容可以不看，“12”是用在服务器中的，“其他”根据自己的需要执行
+12、命令行访问192.168.0.31/bal，该服务器使用的是windows共享，服务器共享方式不同，使用的访问方法也不一样，目前已经经过测试的访问windows共享的可行的方法如下：
+	(1). 安装cifs功能包：sudo apt-get install cifs-utils
+	(2). 创建挂载文件夹，如果已有该文件夹，可以不用创建：sudo mkdir /mnt/wind
+	(3). 使用命令挂载：sudo mount -t cifs -o username=gsm\\63994,password=smn123456 //192.168.0.31/bal /mnt/wind
+	(4). 进入挂载文件夹就可以查看服务器中的文件：cd /mnt/wind; ls
+
+	
+其他：
+	(1)、切换到10.04的界面：在开机选择的时候选择Gnome Classic 经典界面就可以了，如果没有选项的话：sudo apt-get install gnome-panel，然后注销重新选择
+	(2)、安装右键终端：sudo apt-get install nautilus-open-terminal
+	(3)、12.04的eclipse默认不能固定到启动器上，可以通过一下方法添加：
+		a、在主文件下新建一个空白文档；
+		b、将以下内容拷贝到文档中：
+			[Desktop Entry]
+			Encoding=UTF-8
+			Name=Eclipse
+			Comment=Eclipse IDE
+			Exec=/home/ysq/adt-bundle-linux-x86_64-20140321/eclipse/eclipse
+			Icon=/home/ysq/adt-bundle-linux-x86_64-20140321/eclipse/icon.xpm
+			Terminal=false
+			StartupNotify=true
+			Type=Application
+			Categories=Application;Development;
+		c、拷贝时请注意去掉每一行的前后空格，并修改Exec=/home/ysq/adt-bundle-linux-x86_64-20140321/eclipse/eclipse和Icon=/home/ysq/adt-bundle-linux-x86_64-20140321/eclipse/icon.xpm的路径；
+		d、保存完成后将文档名命名为"eclipse.desktop"；
+		e、给该文件赋权 ,运行“chmod u+x eclipse.desktop“命令即可，或者直接右键点击文档-》属性-》权限，勾上“允许做为程序执行文件”；
+		f、双击执行该文件，然后就可以在启动器上勾选“锁定到启动器”了。
+
+
+
+
+
+	注意：安装编译过程中可能会遇到的问题
+		a:/bin/bash: xmllint: command not found
+		解决：
+		sudo apt-get install git-core gnupg build-essential curl libc6-dev libncurses5-dev x11proto-core-dev libx11-dev libreadline6-dev libgl1-mesa-dri  libgl1-mesa-dev python-markdown libxml2-utils xsltproc zlib1g-dev lib32readline6-dev gcc-4.4 g++-4.4 g++-4.4-multilib gcc-4.4-multilib lib32ncurses5  ; sudo apt-get install ia32-libs; sudo apt-get install lib32ncurses5-dev	//重新更新需要的软件包
+
+	b:zip error: Invalid command arguments		
+	解决：
+	svn版本不对，需要更新一下svn，重新下载工程，重新编译
+
+	c:beyond compare 没有右键菜单
+	解决：
+	按照yaowen发的第九步，两种方法都试一下
+
+	d:不能刷机（最好装win7虚拟机）
+	解决：
+	需要安装驱动 Driver_Auto_Installer_v1.1208.00
+    
+    e:在编译jb3版本中，报错（Can't locate Switch.pm）
+	解决：
+	sudo apt-get install libswitch-perl
+
+
+
+==============================================卸载命令=============================================
+
+1.dpkg --list//浏览已安装的程序。要查看已安装的软件包列表，请输入以下命令。请注意你希望卸载的软件包的名称。
+2.sudo apt-get --purge remove <programname>//卸载程序和所有配置文件。在终端中输入以下命令，把<programname>替换成你希望完全移除的程序：
+3.sudo apt-get remove <programname> //只卸载程序。如果你移除程序但保留配置文件，请输入以下命令：
+=====================================================================================================
+
+
+

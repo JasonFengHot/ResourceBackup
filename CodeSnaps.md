@@ -49437,9 +49437,101 @@ https://blog.csdn.net/earbao/article/details/51277160
 https://www.cnblogs.com/wanyuanchun/p/4084292.html
 ```
 
+## 应用程序的异常处理，捕获到异常信息存进指定的目录，可以上传至服务器中
+
+```
+public class MobileSafeApplication extends Application {
+    //开天地，老母子方法
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Thread.currentThread().setUncaughtExceptionHandler(new MyExceptionHandler());
+    }
+    private class MyExceptionHandler implements UncaughtExceptionHandler{
+        @Override
+        public void uncaughtException(Thread thread, Throwable ex) {
+            Logger.i("","发生了异常，被哥捕获到了。。。。。");
+            //并不能把异常消化掉，只是在应用程序挂掉之前，来一个留遗嘱的时间
+            try {
+                //获取手机适配的信息
+                Field[] fields = Builder.class.getDeclaredFields();
+                StringBuffer sb = new StringBuffer();
+                for (Field field:fields){
+                    String value=field.get(null).toString();
+                    String name=field.getName();
+                    sb.append(value);
+                    sb.append(":");
+                    sb.append(name);
+                    sb.append("\n");
+                }
+                //输出异常信息
+                FileOutputStream out = new FileOutputStream("/mnt/sdcard/error.log");
+                //阻塞性方法，直接写到内存中，内存输出流
+                StringWriter wr = new StringWriter();
+                PrintWriter err = new PrintWriter(wr);//打印输出流，异步输出流
+                ex.printStackTrace(err);
+                String errorlog=wr.toString();
+                out.write(errorlog.getBytes());
+                out.flush();
+                out.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            //ActivityManager 可以杀死别的进程，不能自杀，而专注于自杀是 android.os.Process
+            android.os.Process.killProcess(android.os.Process.myPid());
+        }
+    }
+}
+```
+
+## sqlite3数据库的几种操作方法
+
+```
+// 第一种方法，使用 database.execSQL
+public void inertOrUpdateDateBatch(List<String> sqls) {
+    SQLiteDatabase db = getWritableDatabase();
+    db.beginTransaction();
+    try {
+        for (String sql : sqls) {
+            db.execSQL(sql);
+        }
+        // 设置事务标志为成功，当结束事务时就会提交事务
+        db.setTransactionSuccessful();
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        // 结束事务
+        db.endTransaction();
+        db.close();
+    }
+}
 
 
+// 第二种方法，使用 database.insert
+db.beginTransaction(); // 手动设置开始事务
+for (ContentValues v : list) {
+    db.insert("bus_line_station", null, v);
+}
+db.setTransactionSuccessful(); // 设置事务处理成功，不设置会自动回滚不提交
+db.endTransaction(); // 处理完成
+db.close()
 
+
+// 第三种方法，效率最高，使用SQLiteStatement
+String sql = "insert into bus_line_station(direct,line_name,sno,station_name) values(?,?,?,?)";
+SQLiteStatement stat = db.compileStatement(sql);
+db.beginTransaction();
+for (Station line : busLines) {
+    stat.bindLong(1, line.direct);
+    stat.bindString(2, line.lineName);
+    stat.bindLong(3, line.sno);
+    stat.bindString(4, line.stationName);
+    stat.executeInsert();
+}
+db.setTransactionSuccessful();
+db.endTransaction();
+db.close();
+```
 
 
 
