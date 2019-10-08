@@ -2122,8 +2122,12 @@ builder.create().show();
 //使用 Application 作为 Dialog 的 Context 将对话框的window类型设置为 WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
 AlertDialog.Builder builder = new AlertDialog.Builder(mApplicationContext);
 ...
-AlertDialog alertDialog = builder.create();
-alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+android.app.AlertDialog alertDialog = builder.create();
+if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M){
+    alertDialog.getWindow().setType(android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+} else {
+    alertDialog.getWindow().setType(android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+}
 alertDialog.show();
 ```
 
@@ -6767,8 +6771,8 @@ try {
 } catch (Exception e) {
 }
 
-adb shell settings put  global device_provisioned 0
-adb shell settings get  global device_provisioned
+adb shell settings put global device_provisioned 0
+adb shell settings get global device_provisioned
 ```
 
 ## 在 app 中使用自定义字体
@@ -11597,6 +11601,21 @@ Verified using v2 scheme (APK Signature Scheme v2): false
 Number of signers
 
 具体可以参考：https://developer.android.com/studio/command-line/apksigner.html#usage
+
+
+
+Android 7.0 中引入了 APK Signature Scheme v2，v1 是 jar Signature 来自 JDK
+V1：通过 ZIP 条目进行验证，这样 APK 签署后可进行许多修改 - 可以移动甚至重新压缩文件。
+V2：验证压缩文件的所有字节，而不是单个 ZIP 条目，因此，在签名后无法再更改(包括 zipalign)。
+所以 Signature Scheme v2 签名的 apk 经过编译系统重新编译打包后会导致系统解析时无
+法获取到该 apk 的签名，从而安装失败。预置该类型 apk 时需要通过直接拷贝到指定位置
+的方式，避免经过编译过程。
+编译配置参考代码如下（直接拷贝不编译）：
+LOCAL_PATH := $(call my-dir)
+include $(CLEAR_VARS)
+$(shell mkdir -p $(TARGET_OUT)/preloadapp/Deliveryclub)
+$(shell cp -r $(LOCAL_PATH)/Deliveryclub.apk $(TARGET_OUT)/preloadapp/Deliveryclub)
+LOCAL_PACKAGE_NAME := Deliveryclub
 ```
 
 ## [FAQ20246] [EM]N版本User-Load工模中没有以往的功能项
@@ -49533,13 +49552,39 @@ db.endTransaction();
 db.close();
 ```
 
+## Python+UIA 自动测试
 
+## systrace
 
+```
+https://online.mediatek.com/QuickStart/cfad1ac8-4937-49c1-8767-c6020ff2bcb0
 
+Systrace获取：
+Android\Sdk\platform-tools\systrace\systrace.py
 
+python systrace.py --time=10 -o trace.html gfx input view webview wm am sm audio video hal  res dalvik bionic power pm ss pdx sched freq idle load binder_driver binder_lock
 
+// tecno
+python systrace.py -b 10240 rs webview dalvik freq video binder_driver view hal database load wm sm audio power camera memreclaim app ss res idle am input sched binder_lock bionic gfx pm
 
+视频获取：
+高清DV（至少>60fps）
+是指点击app icon后，到app画面显示清晰完整的时间
+起始点：手机快速点击app icon并离开屏幕的那一帧
+结束点：app画面显示清晰完整的那一帧
+```
 
+## [adb]查看当前activity
+
+```
+adb shell dumpsys window | grep "mCurrentFocus"
+```
+
+## [adb]查看应用启动时间
+
+```
+adb shell logcat -b events | grep am_activity_launch_time
+```
 
 
 

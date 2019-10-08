@@ -718,7 +718,7 @@ sudo apt-get remove modemmanager
 https://spflashtools.com/category/linux
 https://androidmtk.com/smart-phone-flash-tool
 
-#报错1：Connect BROM failed: STATUS_ERR
+# 报错1：Connect BROM failed: STATUS_ERR
 USB port is obtained. path name(/dev/ttyACM0), port name(/dev/ttyACM0)
 USB port detected: /dev/ttyACM0
 Connect BROM failed: STATUS_ERR

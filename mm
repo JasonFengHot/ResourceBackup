@@ -746,6 +746,14 @@ push(){
     remount;
     module=$1;
     if [ $moduleType == "1" ] ; then
+        if [ $module == "SageRealIME" ] ; then
+            adb shell mkdir system/app/SageRealIME/
+            adb shell mkdir system/app/SageRealIME/oat/
+            adb shell mkdir system/app/SageRealIME/oat/arm/
+            echo "install SageRealIME begin"
+            adb install -r out/target/product/k39tv1_bsp_512/system/app/SageRealIME/SageRealIME.apk
+            echo "install SageRealIME end"
+        fi
         # system/priv-app
         adb push out/target/product/$target_project/system/priv-app/$module/$module.apk system/priv-app/$module/
         adb push out/target/product/$target_project/system/priv-app/$module/oat/arm/$module.odex system/priv-app/$module/oat/arm/
